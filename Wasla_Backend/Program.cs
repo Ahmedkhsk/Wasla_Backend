@@ -1,3 +1,6 @@
+using Wasla_Backend.BackgroundServices;
+using Wasla_Backend.Helpers;
+
 namespace Wasla_Backend
 {
     public class Program
@@ -15,6 +18,10 @@ namespace Wasla_Backend
             builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<Context>()
                 .AddDefaultTokenProviders();
+            builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
+            builder.Services.AddHostedService<ExpiredEmailVerificationCleaner>();
+
+
 
 
             #region Injection for Repsitory
@@ -30,6 +37,7 @@ namespace Wasla_Backend
 
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IRoleService, RoleService>();
+            builder.Services.AddScoped<TokenHelper>();
 
             #endregion
 

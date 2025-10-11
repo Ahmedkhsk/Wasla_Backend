@@ -49,6 +49,14 @@
                 ["en"] = "The password has been changed successfully.",
                 ["ar"] = "تم تغيير كلمة المرور بنجاح."
             },
+
+
+            ["ChangePasswordFailed"] = new()
+            {
+                ["en"] = "Failed to change the password.",
+                ["ar"] = "فشل في تغيير كلمة المرور."
+            },
+
             ["PassFailed"] = new()
             {
                 ["en"] = "Password is incorrect.",
@@ -118,6 +126,16 @@
             {
                 ["en"] = "All roles retrieved successfully.",
                 ["ar"] = "تم جلب جميع الأدوار بنجاح."
+            },
+            ["verficationEmailSent"] = new()
+            {
+                ["en"] = "Verification code sent successfully.",
+                ["ar"] = "تم إرسال رمز التحقق بنجاح."
+            },
+            ["verficationEmailFailed"] = new()
+            {
+                ["en"] = "Failed to send verification code.",
+                ["ar"] = "فشل في إرسال رمز التحقق."
             }
         };
 

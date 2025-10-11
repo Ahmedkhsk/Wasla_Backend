@@ -12,12 +12,23 @@ namespace Wasla_Backend.Controllers
         {
             _userService = userService;
         }
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto model,string lan="en")
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ResponseHelper.Fail("InvalidData", lan, ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
+
+
+            var response = await _userService.LoginAsync(model);
+
+            return Ok(ResponseHelper.Success("LoginSuccess", lan, response));
+        }
 
         [HttpPost("register")]
         public async Task<IActionResult> PreRegister(RegisterDto model, string lan = "en")
         {
             if(!ModelState.IsValid)
-                return BadRequest(ResponseHelper.Fail("InvalidData", lan, ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
+                return BadRequest(ResponseHelper.Fail("InvalidRequest", lan, ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
 
             if (model.Password != model.ConfirmPassword)
                 return BadRequest(ResponseHelper.Fail("PassMismatch", lan));
@@ -34,6 +45,43 @@ namespace Wasla_Backend.Controllers
             };
 
             return Ok(ResponseHelper.Success("RegistrationSuccess", lan, returnModel));
+        }
+
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto model, string lan = "en")
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ResponseHelper.Fail("InvalidRequest", lan, ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
+            var result = await _userService.ChangePasswordAsync(model);
+            if (!result.Succeeded)
+                return BadRequest(ResponseHelper.Fail("ChangePasswordFailed", lan, result.Errors));
+
+            return Ok(ResponseHelper.Success("ChangePassSuccess", lan)); 
+        }
+
+        [HttpPost("check-mail-verification")]
+        public async Task<IActionResult> CheckMailForVerification([FromBody] CheckMailDto model, string lan = "en")
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ResponseHelper.Fail("InvalidRequest", lan, ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
+
+            var result = await _userService.CheckMailForVerficatio(model);
+            if (!result.Succeeded)
+                return BadRequest(ResponseHelper.Fail("verficationEmailFailed", lan, result.Errors));
+            return Ok(ResponseHelper.Success("verficationEmailSent", lan, result));
+        }
+
+        [HttpPost("forget-password")]
+        public async Task<IActionResult> ForgetPassword([FromBody] ForgetPasswordDto model, string lan = "en")
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ResponseHelper.Fail("InvalidData", lan, ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
+
+
+            var result = await _userService.ForgetPasswordAsync(model);
+            if (!result.Succeeded)
+                return BadRequest(ResponseHelper.Fail("ChangePassFailed", lan, result.Errors));
+            return Ok(ResponseHelper.Success("ChangePassSuccess", lan, result));
         }
 
     }
