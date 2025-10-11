@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using Wasla_Backend.BackgroundServices;
 using Wasla_Backend.Helpers;
 
@@ -46,6 +49,28 @@ namespace Wasla_Backend
             builder.Services.AddScoped<IUserFactory, UserFactory>();
 
             #endregion
+
+            builder.Services.AddAuthentication(options => {
+                options.DefaultAuthenticateScheme =
+                JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme =
+                JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme =
+                JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options => {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidAudience = builder.Configuration["JWT:Audience"],
+                    ValidIssuer = builder.Configuration["JWT:Issuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
+
+                };
+            });
 
 
             builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Email"));
