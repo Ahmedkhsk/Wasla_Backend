@@ -29,4 +29,12 @@ global using Wasla_Backend.Exceptions;
 global using Shoes_Ecommerce.Helpers.EmailSender;
 global using Wasla_Backend.Middlewares;
 global using Shoes_Ecommerce.Helpers.Images;
+global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Microsoft.IdentityModel.Tokens;
+global using System.Text;
+global using Wasla_Backend.BackgroundServices;
+global using Wasla_Backend.Helpers;
+global using System.IdentityModel.Tokens.Jwt;
+global using System.Security.Claims;
+global using System.Security.Cryptography;
 

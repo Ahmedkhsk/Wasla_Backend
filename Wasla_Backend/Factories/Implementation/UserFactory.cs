@@ -9,8 +9,8 @@
                 "doctor" => new Doctor(),
                 "driver" => new Driver(),
                 "resident" => new Resident(),
-                "restaurant" => new Restaurant(),
-                "gym" => new Gym(),
+                "restaurantOwner" => new Restaurant(),
+                "gymOwner" => new Gym(),
                 "technician" => new Technician(),
                 _ => throw new NotFoundException($"Unsupported role: {role}")
             };

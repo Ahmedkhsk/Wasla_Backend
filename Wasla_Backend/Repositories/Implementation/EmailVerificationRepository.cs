@@ -26,6 +26,11 @@
             return await _context.EmailVerifications
                 .FirstOrDefaultAsync(v => v.Email == email && v.VerificationCode == code && v.ExpiresAt > DateTime.UtcNow);
         }
+        public async Task<EmailVerification?> GetVerificationAsync(string email)
+        {
+            return await _context.EmailVerifications
+                .FirstOrDefaultAsync(v => v.Email == email && v.ExpiresAt > DateTime.UtcNow);
+        }
 
         public async Task RemoveAsync(EmailVerification entity)
         {

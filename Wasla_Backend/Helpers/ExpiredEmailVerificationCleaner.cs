@@ -1,10 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Wasla_Backend.Data;
-using Microsoft.EntityFrameworkCore;
-
-namespace Wasla_Backend.BackgroundServices
+﻿namespace Wasla_Backend.BackgroundServices
 {
     public class ExpiredEmailVerificationCleaner : BackgroundService
     {

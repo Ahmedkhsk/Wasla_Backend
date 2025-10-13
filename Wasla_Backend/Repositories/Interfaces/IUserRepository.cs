@@ -4,6 +4,7 @@
     {
         public Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password);
         public Task<ApplicationUser> GetUserByEmailAsync(string email);
+        public Task<IdentityResult> UpdateUserAsync(ApplicationUser user);
         Task<ApplicationUser> GetUserByIdAsync(string id); 
 
     }

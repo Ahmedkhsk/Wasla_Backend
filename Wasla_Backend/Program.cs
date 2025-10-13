@@ -1,9 +1,3 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Wasla_Backend.BackgroundServices;
-using Wasla_Backend.Helpers;
-
 namespace Wasla_Backend
 {
     public class Program

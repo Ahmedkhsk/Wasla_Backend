@@ -1,8 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
-
-using Wasla_Backend.Helpers;
+﻿using System.Linq;
 
 namespace Wasla_Backend.Services.Implementation
 {
@@ -33,7 +29,23 @@ namespace Wasla_Backend.Services.Implementation
         }
 
 
-        
+        public async Task<IdentityResult> VerifyEmailAsync(VerificationEmailDto model)
+        {
+            var user = await _userRepository.GetUserByEmailAsync(model.Email);
+            if (user == null)
+                throw new NotFoundException("User not found.");
+            if (user.IsVerified)
+                throw new BadRequestException("User is already verified.");
+            var verification = await _emailVerificationRepository.GetByEmailAndCodeAsync(model.Email,model.VerificationCode);
+            if (verification == null || verification.ExpiresAt < DateTime.UtcNow)
+                throw new BadRequestException("Invalid or expired verification code.");
+            user.IsVerified = true;
+            var result = await _userRepository.UpdateUserAsync(user);
+            if (!result.Succeeded)
+                return result;
+            await _emailVerificationRepository.RemoveAsync(verification);
+            return result;
+        }
         public async Task<IdentityResult>CheckMailForVerficatio(CheckMailDto model)
         {
             var user = await _userRepository.GetUserByEmailAsync(model.Email);
@@ -141,6 +153,11 @@ namespace Wasla_Backend.Services.Implementation
 
             _mapper.Map(model, user);
             
+            var roles = await _roleRepository.GetRolesNameAsync();
+
+            if (!roles.Contains(model.Role))
+                throw new NotFoundException("Role Not Found.");
+
             var result = await _userRepository.CreateUserAsync(user, model.Password);
 
             if (!result.Succeeded)

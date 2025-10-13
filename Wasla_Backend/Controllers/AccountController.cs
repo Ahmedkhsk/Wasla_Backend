@@ -46,7 +46,7 @@ namespace Wasla_Backend.Controllers
 
             return Ok(ResponseHelper.Success("RegistrationSuccess", lan, returnModel));
         }
-
+        
         [HttpPost("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto model, string lan = "en")
         {
@@ -57,6 +57,17 @@ namespace Wasla_Backend.Controllers
                 return BadRequest(ResponseHelper.Fail("ChangePasswordFailed", lan, result.Errors));
 
             return Ok(ResponseHelper.Success("ChangePassSuccess", lan)); 
+        }
+
+        [HttpPost("verify-email")]
+        public async Task<IActionResult> VerifyEmail([FromBody] VerificationEmailDto model, string lan = "en")
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ResponseHelper.Fail("InvalidRequest", lan, ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
+            var result = await _userService.VerifyEmailAsync(model);
+            if (!result.Succeeded)
+                return BadRequest(ResponseHelper.Fail("EmailVerificationFailed", lan, result.Errors));
+            return Ok(ResponseHelper.Success("EmailVerified", lan, result));
         }
 
         [HttpPost("check-mail-verification")]

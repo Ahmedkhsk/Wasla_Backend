@@ -11,6 +11,10 @@
             _userManager = userManager;
         }
 
+        public async Task<List<string>> GetRolesNameAsync()
+                 => await _roleManager.Roles.Select(r => r.Name).ToListAsync();
+        
+
         public async Task<bool> RoleExistsAsync(string roleName)
             => await _roleManager.RoleExistsAsync(roleName);
 
