@@ -8,68 +8,65 @@ namespace Wasla_Backend
 
             builder.Services.AddDbContext<Context>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")
-                );
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
             builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<Context>()
                 .AddDefaultTokenProviders();
+
             builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
             builder.Services.AddHostedService<ExpiredEmailVerificationCleaner>();
 
-
-
-
             #region Injection for Repsitory
-
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
             builder.Services.AddScoped<IEmailVerificationRepository, EmailVerificationRepository>();
             builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             builder.Services.AddTransient<EmailSenderHelper>();
-
             #endregion
 
             #region Injection for Services
-
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<TokenHelper>();
-
             #endregion
 
             #region Injection for Factory
-
             builder.Services.AddScoped<IUserFactory, UserFactory>();
-
             #endregion
 
-            builder.Services.AddAuthentication(options => {
-                options.DefaultAuthenticateScheme =
-                JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme =
-                JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme =
-                JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options => {
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
                 options.SaveToken = true;
                 options.RequireHttpsMetadata = false;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidAudience = builder.Configuration["JWT:Audience"],
                     ValidIssuer = builder.Configuration["JWT:Issuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
-
                 };
             });
 
-
             builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Email"));
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
@@ -83,10 +80,12 @@ namespace Wasla_Backend
 
             app.UseHttpsRedirection();
 
+            app.UseCors("AllowAll");
+
             app.UseMiddleware<ExceptionMiddleware>();
 
+            app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.MapControllers();
 
