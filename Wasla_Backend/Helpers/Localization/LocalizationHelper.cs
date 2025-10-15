@@ -1,4 +1,4 @@
-﻿namespace Shoes_Ecommerce.Helpers.Localization
+﻿namespace Wasla_Backend.Helpers.Localization
 {
     public class LocalizationHelper
     {

@@ -1,4 +1,4 @@
-﻿namespace Shoes_Ecommerce.Helpers.Images
+﻿namespace Wasla_Backend.Helpers.Images
 {
     public static class Images
     {

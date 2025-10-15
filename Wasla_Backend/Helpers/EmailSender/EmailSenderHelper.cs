@@ -1,8 +1,4 @@
-﻿using MailKit.Net.Smtp;
-
-using Microsoft.Extensions.Options;
-
-namespace Shoes_Ecommerce.Helpers.EmailSender
+﻿namespace Wasla_Backend.Helpers.EmailSender
 {
     public class EmailSenderHelper
     {

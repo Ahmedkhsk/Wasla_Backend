@@ -1,9 +1,0 @@
-services:
-  - type: web
-    name: wasla-backend
-    env: docker
-    plan: free
-    branch: main
-    dockerfilePath: ./Dockerfile
-    autoDeploy: true
-    healthCheckPath: /swagger/index.html
