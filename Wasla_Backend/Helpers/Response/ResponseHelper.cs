@@ -1,4 +1,5 @@
-﻿namespace Wasla_Backend.Helpers.Response
+﻿
+namespace Wasla_Backend.Helpers.Response
 {
     public static class ResponseHelper
     {

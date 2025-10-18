@@ -12,7 +12,6 @@ global using Wasla_Backend.Services.Interfaces;
 global using AutoMapper;
 global using Wasla_Backend.DTOs;
 global using Microsoft.AspNetCore.Mvc;
-global using Shoes_Ecommerce.Helpers.Localization;
 global using Wasla_Backend.Factories.Implementation;
 global using Wasla_Backend.Repositories.Implementation;
 global using Wasla_Backend.Services.Implementation;
@@ -38,4 +37,5 @@ global using System.IdentityModel.Tokens.Jwt;
 global using System.Security.Claims;
 global using System.Security.Cryptography;
 global using Microsoft.Extensions.Localization;
+global using Wasla_Backend.Helpers.Localization;
 
