@@ -4,8 +4,9 @@
     {
         public string? FullName { get; set; } 
         public string? ProfilePhoto { get; set; } 
-        public string? Phone { get; set; } 
-        public string? Address { get; set; } 
+        public string? Phone { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
         public char Gender { get; set; }
         public string? BirthDay { get; set; }
         public bool IsApproved { get; set; }
