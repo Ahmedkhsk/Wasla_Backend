@@ -24,16 +24,19 @@ namespace Wasla_Backend
             builder.Services.AddScoped<IEmailVerificationRepository, EmailVerificationRepository>();
             builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
+            builder.Services.AddScoped<IResidentRepository, ResidentRepository>();
+            builder.Services.AddScoped<IResidentIdentityRepository, ResidentIdentityRepository>(); 
             builder.Services.AddTransient<EmailSenderHelper>();
 
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IDoctorService, DoctorService>();
+            builder.Services.AddScoped<IResidentService, ResidentService>();
             builder.Services.AddScoped<TokenHelper>();
 
             builder.Services.AddScoped<IUserFactory, UserFactory>();
 
-            builder.Services.AddAuthentication(options =>
+           builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;

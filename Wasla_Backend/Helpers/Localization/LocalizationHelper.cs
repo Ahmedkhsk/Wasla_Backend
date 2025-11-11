@@ -69,11 +69,7 @@
                 ["en"] = "Password is incorrect.",
                 ["ar"] = "كلمة المرور غير صحيحة."
             },
-            ["UserNotFound"] = new()
-            {
-                ["en"] = "User not found.",
-                ["ar"] = "لم يتم العثور على المستخدم."
-            },
+  
             ["PassMismatch"] = new()
             {
                 ["en"] = "New password and confirm password do not match.",
@@ -224,6 +220,21 @@
                 ["en"] = "Doctor specializations fetched successfully",
                 ["ar"] = "تم جلب تخصصات الأطباء بنجاح"
             },
+            ["InvalidNationalId"] = new()
+            {
+                ["en"] = "The national ID provided is invalid.",
+                ["ar"] = "رقم الهوية الوطنية المقدم غير صالح."
+            },
+            ["NoUnitFound"] = new()
+            {
+                ["en"] = "You don't have a unit here.",
+                ["ar"] = "ليس لديك وحدة هنا."
+            },
+            ["CompleteResidentRegisterSuccess"] = new()
+            {
+                ["en"] = "Resident registration completed successfully",
+                ["ar"] = "تم إكمال تسجيل المقيم بنجاح"
+            }
 
         };
 

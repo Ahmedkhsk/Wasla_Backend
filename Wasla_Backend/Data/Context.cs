@@ -12,6 +12,7 @@ namespace Wasla_Backend.Data
         public DbSet<DoctorSpecialization> DoctorSpecializations { get; set; }
         public DbSet<EmailVerification> EmailVerifications { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<ResidentIdentity>residentIdentities { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options) { }
         protected override void OnModelCreating(ModelBuilder builder)
