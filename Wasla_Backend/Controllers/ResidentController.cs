@@ -15,25 +15,13 @@ namespace Wasla_Backend.Controllers
         [HttpPost("CompleteRegister")]
         public async Task<IActionResult> CompleteRegister([FromForm] ResidentCompleteRegisterDto model, string lan = "en")
         {
-            try
-            {
+            
                 if (!ModelState.IsValid)
                     return BadRequest(ResponseHelper.Fail("InvalidData", lan, ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
                 await _residentService.CompleteResidentRegister(model);
                 return Ok(ResponseHelper.Success("CompleteResidentRegisterSuccess", lan));
-            }
-            catch (BadRequestException ex)
-            {
-                return BadRequest(ResponseHelper.Fail(ex.Message, lan));
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ResponseHelper.Fail(ex.Message, lan));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ResponseHelper.Fail("ServerError", lan, ex.Message));
-            }
+            
+
         }
     }
 }
