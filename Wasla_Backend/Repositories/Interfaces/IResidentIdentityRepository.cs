@@ -2,6 +2,6 @@
 {
     public interface IResidentIdentityRepository : IGenericRepository<ResidentIdentity>
     {
-        public Task<ResidentIdentity> GetByNationalID(string NationalID);
+        public Task<ResidentIdentity> GetByNationalIDAndGmail(string NationalID,string Gmail);
     }
 }

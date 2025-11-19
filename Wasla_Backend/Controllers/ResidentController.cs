@@ -22,9 +22,9 @@
         
         }
         [HttpPost("UploadIdentity")]
-        public Task AddIdentity(string NationalI)
+        public Task AddIdentity(string NationalI,string gmail)
         {
-            var residentIdentity =new ResidentIdentity { NationalId = NationalI };
+            var residentIdentity =new ResidentIdentity { NationalId = NationalI,Gmail=gmail  };
             _residentIdentityRepository.AddAsync(residentIdentity);
             return _residentIdentityRepository.SaveChangesAsync();
         }

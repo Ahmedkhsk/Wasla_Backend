@@ -32,7 +32,7 @@ namespace Wasla_Backend.Services.Implementation
             if (!regex.IsMatch(model.NationalId))
                 throw new BadRequestException(_localizer["InvalidNationalId"]);
 
-            var existingIdentity = await _ResidentIdentityRepository.GetByNationalID(model.NationalId);
+            var existingIdentity = await _ResidentIdentityRepository.GetByNationalIDAndGmail(model.NationalId,model.Email);
             if (existingIdentity == null)
                 throw new BadRequestException(_localizer["NoUnitFound"]);
 
