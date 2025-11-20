@@ -11,6 +11,7 @@
         private readonly IMapper _mapper;
         private readonly TokenHelper _TokenHelper;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly string _imagePath;
 
         public UserService(
             IUserFactory userFactory,
@@ -21,7 +22,8 @@
             IMapper mapper,
             TokenHelper tokenHelper,
             UserManager<ApplicationUser> userManager,
-            IRefreshTokenRepository refreshTokenRepository
+            IRefreshTokenRepository refreshTokenRepository,
+            IWebHostEnvironment webHostEnvironment
         )
         {
             _userFactory = userFactory;
@@ -32,6 +34,7 @@
             _mapper = mapper;
             _TokenHelper = tokenHelper;
             _userManager = userManager;
+            _imagePath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.ImagesPathUser.TrimStart('/'));
             _refreshTokenRepository = refreshTokenRepository;
         }
 
@@ -200,6 +203,31 @@
                 Role = roles.FirstOrDefault(),
                 RefreshToken = refreshToken.Token
             };
+        }
+
+        public async Task EditProfile(EditProfileDto editProfileDto)
+        {
+            var user = await _userRepository.GetUserByIdAsync(editProfileDto.id);
+
+            if (user == null)
+                throw new NotFoundException("UserNotFound");
+
+            _mapper.Map(editProfileDto, user);
+
+            var image = user.ProfilePhoto;
+
+            if(editProfileDto.image == null)
+            {
+                user.ProfilePhoto = image;
+            }
+            else
+            {
+                FileOperation.DeleteFile(image, _imagePath);
+                image = await FileOperation.SaveFile(editProfileDto.image, _imagePath);
+                user.ProfilePhoto = image;
+            }
+
+            await _userRepository.UpdateUserAsync(user);
         }
     }
 }

@@ -120,5 +120,14 @@
 
             return Ok(ResponseHelper.Success("TokenRefreshSuccess", lan, response));
         }
+
+        [HttpPut("edit-Profile")]
+        public async Task<IActionResult> EditProfile(EditProfileDto editProfileDto, string lan = "en")
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ResponseHelper.Fail("InvalidData", lan, ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
+            await _userService.EditProfile(editProfileDto);
+            return Ok(ResponseHelper.Success("ProfileEditSuccess", lan));
+        }
     }
 }

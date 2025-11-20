@@ -49,6 +49,11 @@
                 ["en"] = "The OTP code has been sent.",
                 ["ar"] = "تم إرسال رمز التحقق."
             },
+            ["ProfileEditSuccess"] = new()
+            {
+                ["en"] = "Profile updated successfully.",
+                ["ar"] = "تم تحديث الملف الشخصي بنجاح."
+            },
             ["ChangePassSuccess"] = new()
             {
                 ["en"] = "Password changed successfully.",
