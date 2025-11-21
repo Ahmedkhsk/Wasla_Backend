@@ -1,10 +1,10 @@
 ﻿namespace Wasla_Backend.Repositories.Implementation
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository :  IUserRepository
     {
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public UserRepository(UserManager<ApplicationUser> userManager)
+        public UserRepository(UserManager<ApplicationUser> userManager) 
         {
             _userManager = userManager;
         }
@@ -17,7 +17,9 @@
             => await _userManager.UpdateAsync(user);
         public async Task<ApplicationUser> GetUserByIdAsync(string id)
             => await _userManager.FindByIdAsync(id);
-        
+        public async Task<IEnumerable<ApplicationUser>>GetAll()
+            => await _userManager.Users.ToListAsync();
+
 
 
     }

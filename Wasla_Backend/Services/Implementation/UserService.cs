@@ -242,5 +242,36 @@
 
 
         }
+
+        public async Task<object> AllUsers()
+        {
+           var users= await _userRepository.GetAll();
+            return users.Select(u => new
+            {
+                u.Id,
+                u.Email,
+
+            });
+        }
+        public async Task Delete(string gmail)
+        {
+            var user = await _userRepository.GetUserByEmailAsync(gmail);
+            if (user == null)
+                throw new NotFoundException("UserNotFound");
+
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Any())
+            {
+                await _userManager.RemoveFromRolesAsync(user, roles);
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                throw new Exception(errors);
+            }
+        }
+
     }
 }

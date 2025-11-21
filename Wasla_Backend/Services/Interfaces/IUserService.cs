@@ -14,6 +14,9 @@ namespace Wasla_Backend.Services.Interfaces
         public Task EditProfile(EditProfileDto editProfileDto);
         public Task approveAndVerify(string gmail);
         public Task<ResponseProfileDto>GetProfile(string userId);
+        public Task<object> AllUsers();
+        public  Task Delete(string gmail);
+
 
 
     }

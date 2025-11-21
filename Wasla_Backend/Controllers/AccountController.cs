@@ -137,5 +137,17 @@
             var response = await _userService.GetProfile(userId);
             return Ok(ResponseHelper.Success("GetProfileSuccess", lan, response));
         }
+        [HttpGet("all-users")]
+        public async Task<IActionResult> AllUsers(string lan = "en")
+        {
+            var response = await _userService.AllUsers();
+            return Ok(ResponseHelper.Success("GetAllUsersSuccess", lan, response));
+        }
+        [HttpDelete("delete-user")]
+        public async Task<IActionResult> DeleteUser(string gmail, string lan = "en")
+        {
+            await _userService.Delete(gmail);
+            return Ok(ResponseHelper.Success("DeleteUserSuccess", lan));
+        }
     }
 }

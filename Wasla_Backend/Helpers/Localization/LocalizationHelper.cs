@@ -249,6 +249,16 @@
             {
                 ["en"] = "Profile fetched successfully",
                 ["ar"] = "تم جلب الملف الشخصي بنجاح"
+            },
+            ["GetAllUsersSuccess"]=new()
+            {
+                ["en"] = "All users fetched successfully",
+                ["ar"] = "تم جلب جميع المستخدمين بنجاح"
+            },
+            ["DeleteUserSuccess"]= new()
+            {
+                ["en"] = "User deleted successfully",
+                ["ar"] = "تم حذف المستخدم بنجاح"
             }
 
         };
