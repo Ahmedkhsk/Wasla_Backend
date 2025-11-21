@@ -57,14 +57,14 @@ namespace Wasla_Backend.Services.Implementation
 
             return SpecializationResponse;
         }
-        public async Task<IEnumerable<DoctorProfileResponse>> GetDoctorProfile(string id , string lan)
+        public async Task<DoctorProfileResponse> GetDoctorProfile(string id , string lan)
         {
             var doctor = await _doctorRepository.GetById(id);
             
             if (doctor == null)
                 throw new NotFoundException("DoctorNotFound");
 
-            var doctorProfileResponses = _mapper.Map<IEnumerable<DoctorProfileResponse>>(doctor, opt =>
+            var doctorProfileResponses = _mapper.Map<DoctorProfileResponse>(doctor, opt =>
             {
                 opt.Items["lan"] = lan;
             });
