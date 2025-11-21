@@ -129,6 +129,7 @@
             await _userService.EditProfile(editProfileDto);
             return Ok(ResponseHelper.Success("ProfileEditSuccess", lan));
         }
+
         [HttpGet("get-Profile")]
         public async Task<IActionResult> GetProfile(string userId, string lan = "en")
         {
