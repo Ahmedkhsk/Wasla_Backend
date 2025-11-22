@@ -49,5 +49,43 @@ namespace Wasla_Backend.Services.Implementation
 
 
         }
+
+        public async Task EditProfile(EditProfileDto editProfileDto)
+        {
+            var user = await _ResidentRepository.GetByIdAsync(editProfileDto.id);
+
+            if (user == null)
+                throw new NotFoundException("UserNotFound");
+
+            _mapper.Map(editProfileDto, user);
+
+            var image = user.ProfilePhoto;
+
+            if (editProfileDto.image == null)
+            {
+                user.ProfilePhoto = image;
+            }
+            else
+            {
+                FileOperation.DeleteFile(image, _imagePath);
+                image = await FileOperation.SaveFile(editProfileDto.image, _imagePath);
+                user.ProfilePhoto = image;
+            }
+
+             _ResidentRepository.Update(user);
+            await _ResidentRepository.SaveChangesAsync();
+        }
+
+        public async Task<ResponseProfileDto> GetProfile(string userId)
+        {
+            var user = await _ResidentRepository.GetByIdAsync(userId);
+            if (user == null)
+                throw new NotFoundException("UserNotFound");
+            var response = _mapper.Map<ResponseProfileDto>(user);
+            return response;
+
+
+        }
+
     }
 }

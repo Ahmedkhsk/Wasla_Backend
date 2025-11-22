@@ -28,5 +28,22 @@
             _residentIdentityRepository.AddAsync(residentIdentity);
             return _residentIdentityRepository.SaveChangesAsync();
         }
+        [HttpPut("edit-Profile")]
+        public async Task<IActionResult> EditProfile(EditProfileDto editProfileDto, string lan = "en")
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ResponseHelper.Fail("InvalidData", lan, ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
+            await _residentService.EditProfile(editProfileDto);
+            return Ok(ResponseHelper.Success("ProfileEditSuccess", lan));
+        }
+
+        [HttpGet("get-Profile")]
+        public async Task<IActionResult> GetProfile(string userId, string lan = "en")
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ResponseHelper.Fail("InvalidData", lan, ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
+            var response = await _residentService.GetProfile(userId);
+            return Ok(ResponseHelper.Success("GetProfileSuccess", lan, response));
+        }
     }
 }

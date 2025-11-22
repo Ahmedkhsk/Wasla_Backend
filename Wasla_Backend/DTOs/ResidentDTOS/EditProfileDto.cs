@@ -1,4 +1,4 @@
-﻿namespace Wasla_Backend.DTOs.Authentication
+﻿namespace Wasla_Backend.DTOs.ResidentDTOS
 {
     public class EditProfileDto
     {

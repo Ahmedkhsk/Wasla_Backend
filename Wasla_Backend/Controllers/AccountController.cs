@@ -121,23 +121,7 @@
             return Ok(ResponseHelper.Success("TokenRefreshSuccess", lan, response));
         }
 
-        [HttpPut("edit-Profile")]
-        public async Task<IActionResult> EditProfile(EditProfileDto editProfileDto, string lan = "en")
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ResponseHelper.Fail("InvalidData", lan, ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
-            await _userService.EditProfile(editProfileDto);
-            return Ok(ResponseHelper.Success("ProfileEditSuccess", lan));
-        }
-
-        [HttpGet("get-Profile")]
-        public async Task<IActionResult> GetProfile(string userId, string lan = "en")
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ResponseHelper.Fail("InvalidData", lan, ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
-            var response = await _userService.GetProfile(userId);
-            return Ok(ResponseHelper.Success("GetProfileSuccess", lan, response));
-        }
+ 
         [HttpGet("all-users")]
         public async Task<IActionResult> AllUsers(string lan = "en")
         {
