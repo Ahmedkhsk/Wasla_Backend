@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace Wasla_Backend.Data
 {
@@ -13,6 +14,10 @@ namespace Wasla_Backend.Data
         public DbSet<EmailVerification> EmailVerifications { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<ResidentIdentity>residentIdentities { get; set; }
+        public DbSet<Models.Service> Service { get; set; }
+        public DbSet<TimeSlot> TimeSlot { get; set; }
+        public DbSet<ServiceDate> ServiceDate { get; set; }
+        public DbSet<ServiceDay> ServiceDay { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options) { }
         protected override void OnModelCreating(ModelBuilder builder)
@@ -29,6 +34,22 @@ namespace Wasla_Backend.Data
 
             foreach (var fk in builder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
                 fk.DeleteBehavior = DeleteBehavior.NoAction;
+
+            builder.Entity<Service>(entity =>
+            {
+                entity.OwnsOne(s => s.description, sa =>
+                {
+                    sa.Property(p => p.English).HasColumnName("description_English");
+                    sa.Property(p => p.Arabic).HasColumnName("description_Arabic");
+                });
+
+                entity.OwnsOne(s => s.serviceName, sa =>
+                {
+                    sa.Property(p => p.English).HasColumnName("serviceName_English");
+                    sa.Property(p => p.Arabic).HasColumnName("serviceName_Arabic");
+                });
+            });
         }
     }
 }
+

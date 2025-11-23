@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wasla_Backend.Data;
 
@@ -11,9 +12,11 @@ using Wasla_Backend.Data;
 namespace Wasla_Backend.Data.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20251123000408_updateDoctorService")]
+    partial class updateDoctorService
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -757,13 +760,11 @@ namespace Wasla_Backend.Data.Migrations
 
                             b1.Property<string>("Arabic")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("description_Arabic");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("English")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("description_English");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("Serviceid");
 
@@ -780,13 +781,11 @@ namespace Wasla_Backend.Data.Migrations
 
                             b1.Property<string>("Arabic")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("serviceName_Arabic");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("English")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("serviceName_English");
+                                .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("Serviceid");
 

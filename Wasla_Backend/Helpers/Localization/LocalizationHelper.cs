@@ -264,7 +264,33 @@
             {
                 ["en"] = "Doctor profile fetched successfully.",
                 ["ar"] = "تم جلب ملف الطبيب بنجاح."
+            },
+            ["FetchDoctorProfileSuccess"] = new()
+            {
+                ["en"] = "Doctor profile fetched successfully.",
+                ["ar"] = "تم جلب ملف الطبيب بنجاح."
+            },
+            ["ServiceAddedSuccessfully"] = new()
+            {
+                ["en"] = "Service added successfully.",
+                ["ar"] = "تمت إضافة الخدمة بنجاح."
+            },
+            ["ServiceNotFound"] = new()
+            {
+                ["en"] = "Service not found.",
+                ["ar"] = "الخدمة غير موجودة."
+            },
+            ["FetchServicesSuccess"] = new()
+            {
+                ["en"] = "Services fetched successfully.",
+                ["ar"] = "تم جلب الخدمات بنجاح."
+            },
+            ["ServiceUpdatedSuccessfully"] = new()
+            {
+                ["en"] = "Service updated successfully.",
+                ["ar"] = "تم تحديث الخدمة بنجاح."
             }
+
         };
 
         public static string GetLocalizedMessage(string key, string lan)
