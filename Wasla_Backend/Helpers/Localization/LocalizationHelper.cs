@@ -289,7 +289,12 @@
             {
                 ["en"] = "Service updated successfully.",
                 ["ar"] = "تم تحديث الخدمة بنجاح."
-            }
+            },
+            ["ServiceDeletedSuccessfully"] = new()
+            {
+                ["en"] = "Service deleted successfully.",
+                ["ar"] = "تم حذف الخدمة بنجاح."
+            },
 
         };
 

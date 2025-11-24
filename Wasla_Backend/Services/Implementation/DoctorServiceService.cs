@@ -65,8 +65,11 @@
             service.price = updateServiceDto.price;
 
             _serviceDayRepo.RemoveRange(service.ServiceDays);
+            await _serviceDayRepo.SaveChangesAsync();
             _serviceDateRepo.RemoveRange(service.ServiceDates);
+            await _serviceDateRepo.SaveChangesAsync();
             _timeSlotRepo.RemoveRange(service.TimeSlots);
+            await _timeSlotRepo.SaveChangesAsync();
 
             service.ServiceDays = updateServiceDto.serviceDays
                 .Select(d => new ServiceDay { dayOfWeek = d.dayOfWeek })
@@ -96,8 +99,10 @@
             return services.Select(service => new ServiceResponse
             {
                 id = service.id,
-                serviceName = service.serviceName.GetText(lan),
-                description = service.description.GetText(lan),
+                serviceNameArabic = service.serviceName.Arabic,
+                serviceNameEnglish = service.serviceName.English,
+                descriptionArabic = service.description.Arabic,
+                descriptionEnglish = service.description.English,
                 price = service.price,
                 serviceDays = service.ServiceDays.Select(day => new ServiceDayResponse
                 {
@@ -126,7 +131,8 @@
                 throw new NotFoundException("ServiceNotFound");
             }
 
-            _doctorServiceRepository.Delete(service);
+            await _doctorServiceRepository.DeleteByIdAsync(serviceId);
+            await _doctorServiceRepository.SaveChangesAsync();
         }
 
     }
