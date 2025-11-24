@@ -9,9 +9,9 @@
         public ICollection<ServiceDay> ServiceDays { get; set; }
         public ICollection<ServiceDate> ServiceDates { get; set; }
         public ICollection<TimeSlot> TimeSlots { get; set; }
-        public bool IsBooked { get; set; }= false;
+        public bool isbooked { get; set; }= false;
         [Timestamp]
-        public byte[] RowVersion { get; set; }
+        public byte[] rowversion { get; set; }
         public Doctor doctor { get; set; }
 
         [ForeignKey("doctor")]

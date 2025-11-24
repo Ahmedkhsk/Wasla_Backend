@@ -5,6 +5,6 @@
         Doctor = 1,
         Restaurant=2,
         Driver = 3,
-        Gym = 4,
+        Gym = 4
     }
 }
