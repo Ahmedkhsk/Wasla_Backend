@@ -9,6 +9,6 @@
         public string? Description { get; set; } 
         public string? OpeningHours { get; set; } 
         public float Rating { get; set; }
-        public int TotalReviews { get; set; }
+        public ICollection<Review>? Reviews { get; set; }
     }
 }

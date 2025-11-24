@@ -5,6 +5,7 @@
         public int ExperienceYears { get; set; }
         public string? UniversityName { get; set; }
         public double GraduationYear { get; set; }
+        public string? HospitalName { get; set; }
         public ICollection<Service> services { get; set; }
         public DoctorSpecialization? Specialization { get; set; }
 

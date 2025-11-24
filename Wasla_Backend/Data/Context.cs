@@ -18,6 +18,8 @@ namespace Wasla_Backend.Data
         public DbSet<TimeSlot> TimeSlot { get; set; }
         public DbSet<ServiceDate> ServiceDate { get; set; }
         public DbSet<ServiceDay> ServiceDay { get; set; }
+        public DbSet<Favorite> Favorites { get; set; }
+        public DbSet<Review> Reviews { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options) { }
         protected override void OnModelCreating(ModelBuilder builder)
