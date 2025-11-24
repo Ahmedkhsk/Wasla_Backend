@@ -14,7 +14,7 @@ namespace Wasla_Backend.Data
         public DbSet<EmailVerification> EmailVerifications { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<ResidentIdentity>residentIdentities { get; set; }
-        public DbSet<Models.Service> Service { get; set; }
+        public DbSet<Service> Service { get; set; }
         public DbSet<TimeSlot> TimeSlot { get; set; }
         public DbSet<ServiceDate> ServiceDate { get; set; }
         public DbSet<ServiceDay> ServiceDay { get; set; }
