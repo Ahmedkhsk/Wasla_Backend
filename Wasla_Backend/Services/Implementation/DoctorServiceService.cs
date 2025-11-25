@@ -180,6 +180,7 @@ namespace Wasla_Backend.Services.Implementation
             if (service.isbooked)
                 throw new BadRequestException("ServiceAlreadyBooked");
 
+
             var booking = new Booking
             {
                 UserId = bookServiceDto.UserId,
@@ -189,6 +190,11 @@ namespace Wasla_Backend.Services.Implementation
                 ServiceProviderType = bookServiceDto.ServiceProviderType,
                 BookingDate = DateTime.Now
             };
+            if (serviceProvider is Doctor doctor)
+            {
+                doctor.NumberOfPatient += 1;
+                _doctorRepository.Update(doctor);
+            }
 
             service.isbooked = true;
             _doctorServiceRepository.Update(service);
