@@ -23,6 +23,11 @@
                        opt => opt.MapFrom((src, dest, destMember, context) =>
                        src.Specialization.Specialization.GetText(context.Items["lan"].ToString())));
 
+            CreateMap<Doctor, AllDoctorDataDto>()
+                .ForMember(d => d.ImageUrl, o => o.MapFrom(s => s.ProfilePhoto))
+                .ForMember(d => d.CVUrl, o => o.MapFrom(s => s.CV));
+            
+
 
         }
     }

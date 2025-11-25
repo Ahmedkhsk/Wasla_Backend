@@ -57,6 +57,29 @@ namespace Wasla_Backend.Services.Implementation
 
             return SpecializationResponse;
         }
+
+        public async Task<IEnumerable<AllDoctorDataDto>> GetAllDoctors(string lan)
+        {
+           var doctors =await _doctorRepository.GetAllAsync();
+            var allDoctorDataDtos = _mapper.Map<IEnumerable<AllDoctorDataDto>>(doctors);
+            foreach (var doctor in allDoctorDataDtos)
+            {
+                doctor.Specialization = await _doctorRepository.GetDoctorSpecializationName(doctor.Id, lan);
+            }
+            return allDoctorDataDtos;
+        }
+
+        public async Task<IEnumerable<AllDoctorDataDto>> GetDoctorBySpecialist(int specialistId,string lan)
+        {
+           var doctors =await _doctorRepository.GetBySpecialist(specialistId);
+            var allDoctorDataDtos = _mapper.Map<IEnumerable<AllDoctorDataDto>>(doctors);
+            foreach (var doctor in allDoctorDataDtos)
+            {
+                doctor.Specialization = await _doctorRepository.GetDoctorSpecializationName(doctor.Id, lan);
+            }
+            return allDoctorDataDtos;
+        }
+
         public async Task<DoctorProfileResponse> GetDoctorProfile(string id , string lan)
         {
             var doctor = await _doctorRepository.GetById(id);

@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Data
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Wasla_Backend.Data
 {
     public class Context : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
@@ -17,6 +19,7 @@
         public DbSet<ServiceDay> ServiceDay { get; set; }
         public DbSet<Favorites> Favorite { get; set; }
         public DbSet<Reviews> Review { get; set; }
+        public DbSet<Booking> Booking { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options) { }
 
@@ -39,6 +42,11 @@
                     sa.WithOwner();
                 });
             });
+            builder.Entity<Booking>()
+            .HasOne(b => b.Service)
+             .WithMany() 
+            .HasForeignKey(b => b.ServiceId)
+           .OnDelete(DeleteBehavior.Restrict);
 
 
             builder.Entity<ApplicationRole>(entity =>

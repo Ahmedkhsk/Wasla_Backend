@@ -27,6 +27,8 @@ namespace Wasla_Backend
             builder.Services.AddScoped<IResidentRepository, ResidentRepository>();
             builder.Services.AddScoped<IResidentIdentityRepository, ResidentIdentityRepository>();
             builder.Services.AddScoped<IDoctorServiceRepository, DoctorServiceRepository>();
+            builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+            builder.Services.AddScoped < IBookingRepository, BookingRepository > ();
             builder.Services.AddTransient<EmailSenderHelper>();
 
             builder.Services.AddScoped<IUserService, UserService>();
@@ -34,6 +36,7 @@ namespace Wasla_Backend
             builder.Services.AddScoped<IDoctorService, DoctorService>();
             builder.Services.AddScoped<IResidentService, ResidentService>();
             builder.Services.AddScoped<IDoctorServiceService, DoctorServiceService>();
+            builder.Services.AddScoped<IReviewService, ReviewService>();
             builder.Services.AddScoped<TokenHelper>();
 
             builder.Services.AddScoped<IUserFactory, UserFactory>();

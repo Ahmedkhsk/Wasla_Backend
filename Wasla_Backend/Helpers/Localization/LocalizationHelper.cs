@@ -295,6 +295,46 @@
                 ["en"] = "Service deleted successfully.",
                 ["ar"] = "تم حذف الخدمة بنجاح."
             },
+            ["FetchAllDoctorsSuccess"] = new()
+            {
+                ["en"] = "All doctors fetched successfully.",
+                ["ar"] = "تم جلب جميع الأطباء بنجاح."
+            },
+            ["FetchDoctorsBySpecialistSuccess"] = new()
+            {
+                ["en"] = "Doctors fetched by specialist successfully.",
+                ["ar"] = "تم جلب الأطباء حسب التخصص بنجاح."
+            },
+            ["GetReviewsSuccess"] = new()
+            {
+                ["en"] = "Reviews fetched successfully.",
+                ["ar"] = "تم جلب التقييمات بنجاح."
+            },
+            ["ServiceNotFound"] = new()
+            {
+                ["en"] = "Service not found.",
+                ["ar"] = "الخدمة غير موجودة."
+            },
+            ["ServiceProviderNotFound"] = new()
+            {
+                ["en"] = "Service provider not found.",
+                ["ar"] = "مزود الخدمة غير موجود."
+            },
+            ["ServiceAlreadyBooked"] = new()
+            {
+                ["en"] = "Service is already booked.",
+                ["ar"] = "الخدمة محجوزة بالفعل."
+            },
+            ["BookingSuccess"] = new()
+            {
+                ["en"] = "Service booked successfully.",
+                ["ar"] = "تم حجز الخدمة بنجاح."
+            },
+            ["ServiceBookedSuccessfully"] = new()
+            {
+                ["en"] = "Service booked successfully.",
+                ["ar"] = "تم حجز الخدمة بنجاح."
+            },
 
         };
 

@@ -38,5 +38,11 @@
             await _doctorServiceService.DeleteServiceAsync(serviceId);
             return Ok(ResponseHelper.Success("ServiceDeletedSuccessfully", lan));
         }
+        [HttpPost("BookService")]
+        public async Task<IActionResult> BookService(BookServiceDto bookServiceDto, string lan = "en")
+        {
+            await _doctorServiceService.Book(bookServiceDto);
+            return Ok(ResponseHelper.Success("ServiceBookedSuccessfully", lan));
+        }
     }
 }

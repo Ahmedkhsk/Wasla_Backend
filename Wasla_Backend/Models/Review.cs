@@ -5,7 +5,7 @@
         public int Id { get; set; }
         public string ReviewerName { get; set; }
         public string Content { get; set; }
-        public float Rating { get; set; }
+        public int Rating { get; set; }
         public string UserId { get; set; }
 
         [ForeignKey("UserId")]

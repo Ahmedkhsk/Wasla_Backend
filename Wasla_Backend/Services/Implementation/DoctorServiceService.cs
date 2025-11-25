@@ -7,18 +7,26 @@
         private readonly IGenericRepository<ServiceDate> _serviceDateRepo;
         private readonly IGenericRepository<ServiceDay> _serviceDayRepo;
         private readonly IGenericRepository<TimeSlot> _timeSlotRepo;
+        private readonly IUserRepository _userRepository;
+        private readonly IBookingRepository _bookingRepository;
+
 
         public DoctorServiceService(IDoctorServiceRepository doctorServiceRepository
             ,IDoctorRepository doctorRepository
             ,IGenericRepository<ServiceDate> serviceDateRepo
             ,IGenericRepository<ServiceDay> serviceDayRepo
-            , IGenericRepository<TimeSlot> timeSlotRepo)
+            , IGenericRepository<TimeSlot> timeSlotRepo
+            , IUserRepository userRepository
+            , IBookingRepository bookingRepository
+            )
         {
             _doctorServiceRepository = doctorServiceRepository;
             _doctorRepository = doctorRepository;
             _serviceDateRepo = serviceDateRepo;
             _serviceDayRepo = serviceDayRepo;
             _timeSlotRepo = timeSlotRepo;
+            _userRepository = userRepository;
+            _bookingRepository = bookingRepository;
         }
         public async Task AddServiceAsync(AddServiceDto addServiceDto)
         {
@@ -149,5 +157,47 @@
             await _doctorServiceRepository.SaveChangesAsync();
         }
 
+        public async Task Book(BookServiceDto bookServiceDto)
+        {
+            var service =await _doctorServiceRepository.GetByIdAsync(bookServiceDto.ServiceId);
+            if (service == null)
+            {
+                throw new NotFoundException("ServiceNotFound");
+            }
+            var user = await _userRepository.GetUserByIdAsync(bookServiceDto.UserId);
+            if (user == null)
+            {
+                throw new NotFoundException("UserNotFound");
+            }
+            var serviceProvider = await _userRepository.GetUserByIdAsync(bookServiceDto.ServiceProviderId);
+            if (serviceProvider == null)
+            {
+                throw new NotFoundException("ServiceProviderNotFound");
+            }
+            if(service.isbooked)
+            {
+                throw new BadRequestException("ServiceAlreadyBooked");
+            }
+            var booking = new Booking
+            {
+                UserId = bookServiceDto.UserId,
+                ServiceId = bookServiceDto.ServiceId,
+                ServiceProviderId = bookServiceDto.ServiceProviderId,
+                Price = bookServiceDto.Price,
+                ServiceProviderType = bookServiceDto.ServiceProviderType,
+                BookingDate = DateTime.Now
+            };
+            service.isbooked = true;
+            _doctorServiceRepository.Update(service);
+            await _bookingRepository.AddAsync(booking);
+            try
+            {
+                await _doctorServiceRepository.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw new BadRequestException("ServiceAlreadyBooked");
+            }
+        }
     }
 }
