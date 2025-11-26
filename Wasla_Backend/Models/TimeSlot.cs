@@ -3,8 +3,8 @@
     public class TimeSlot
     {
         public int id { get; set; }
-        public TimeSpan start { get; set; }
-        public TimeSpan end { get; set; }
+        public string start { get; set; }
+        public string end { get; set; }
 
         public Service service { get; set; }
 

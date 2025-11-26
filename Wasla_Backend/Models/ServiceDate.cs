@@ -3,7 +3,7 @@
     public class ServiceDate
     {
         public int id { get; set; }
-        public DateOnly date { get; set; }
+        public string date { get; set; }
         public Service service { get; set; }
 
         [ForeignKey("service")]

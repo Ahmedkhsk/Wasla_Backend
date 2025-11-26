@@ -1,8 +1,7 @@
 ﻿namespace Wasla_Backend.DTOs.ServiceDTOS
 {
-    public class ServiceDateResponse
+    public class ServiceDateDto
     {
-        public int id { get; set; }
         public string date { get; set; }
     }
 }

@@ -12,7 +12,7 @@
         }
 
         [HttpPost("AddService")]
-        public async Task<IActionResult> AddService(AddServiceDto addServiceDto,string lan = "en")
+        public async Task<IActionResult> AddService(ServiceDto addServiceDto,string lan = "en")
         {
             await _doctorServiceService.AddServiceAsync(addServiceDto);
             return Ok(ResponseHelper.Success("ServiceAddedSuccessfully", lan));

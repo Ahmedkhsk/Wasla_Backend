@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Repositories.Implementation
+﻿using System.Linq.Expressions;
+
+namespace Wasla_Backend.Repositories.Implementation
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
@@ -24,7 +26,10 @@
             
             _dbSet.RemoveRange(entities);
         }
-           
+        public async Task<List<T>> FindAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.Where(predicate).ToListAsync();
+        }
 
         public async Task<IEnumerable<T>> GetAllAsync()
             => await _dbSet.ToListAsync();

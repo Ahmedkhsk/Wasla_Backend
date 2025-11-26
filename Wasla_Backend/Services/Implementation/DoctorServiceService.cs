@@ -11,7 +11,6 @@ namespace Wasla_Backend.Services.Implementation
         private readonly IGenericRepository<TimeSlot> _timeSlotRepo;
         private readonly IUserRepository _userRepository;
         private readonly IBookingRepository _bookingRepository;
-        private readonly Context _context;
 
 
         public DoctorServiceService(IDoctorServiceRepository doctorServiceRepository
@@ -21,7 +20,6 @@ namespace Wasla_Backend.Services.Implementation
             , IGenericRepository<TimeSlot> timeSlotRepo
             , IUserRepository userRepository
             , IBookingRepository bookingRepository
-            , Context context
             )
         {
             _doctorServiceRepository = doctorServiceRepository;
@@ -31,10 +29,8 @@ namespace Wasla_Backend.Services.Implementation
             _timeSlotRepo = timeSlotRepo;
             _userRepository = userRepository;
             _bookingRepository = bookingRepository;
-            
-            _context = context;
         }
-        public async Task AddServiceAsync(AddServiceDto addServiceDto)
+        public async Task AddServiceAsync(ServiceDto addServiceDto)
         {
             var doctor = await _doctorRepository.GetByIdAsync(addServiceDto.doctorId);
             
@@ -75,35 +71,49 @@ namespace Wasla_Backend.Services.Implementation
 
             service.serviceName = updateServiceDto.serviceName;
             service.description = updateServiceDto.description;
-            
             service.price = updateServiceDto.price;
 
-
-            if(updateServiceDto.serviceDays != null)
+            if (updateServiceDto.serviceDays != null)
             {
-                _serviceDayRepo.RemoveRange(service.ServiceDays);
+                var oldDays = await _serviceDayRepo.FindAsync(sd => sd.serviceId == service.id);
+                _serviceDayRepo.RemoveRange(oldDays);
                 await _serviceDayRepo.SaveChangesAsync();
 
                 service.ServiceDays = updateServiceDto.serviceDays
-                .Select(d => new ServiceDay { dayOfWeek = d.dayOfWeek })
-                .ToList();
-            }
-            
-            if(updateServiceDto.serviceDates != null)
-            {
-                _serviceDateRepo.RemoveRange(service.ServiceDates);
-                await _serviceDateRepo.SaveChangesAsync();
-
-                service.ServiceDates = updateServiceDto.serviceDates
-                    .Select(d => new ServiceDate { date = d.date })
+                    .Select(d => new ServiceDay
+                    {
+                        dayOfWeek = d.dayOfWeek,
+                        serviceId = service.id
+                    })
                     .ToList();
             }
 
-            _timeSlotRepo.RemoveRange(service.TimeSlots);
+            if (updateServiceDto.serviceDates != null)
+            {
+                var oldDates = await _serviceDateRepo.FindAsync(sd => sd.serviceId == service.id);
+                _serviceDateRepo.RemoveRange(oldDates);
+                await _serviceDateRepo.SaveChangesAsync();
+
+                service.ServiceDates = updateServiceDto.serviceDates
+                    .Select(d => new ServiceDate
+                    {
+                        date = d.date,
+                        serviceId = service.id
+                    })
+                    .ToList();
+            }
+
+            var oldSlots = await _timeSlotRepo.FindAsync(t => t.serviceId == service.id);
+            _timeSlotRepo.RemoveRange(oldSlots);
             await _timeSlotRepo.SaveChangesAsync();
 
             service.TimeSlots = updateServiceDto.timeSlots
-                .Select(t => new TimeSlot { start = t.start, end = t.end })
+                .Select(t => new TimeSlot
+                {
+                    start = t.start,
+                    end = t.end,
+                    serviceId = service.id
+                })
                 .ToList();
 
             _doctorServiceRepository.Update(service);
