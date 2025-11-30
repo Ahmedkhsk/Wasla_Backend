@@ -7,13 +7,17 @@
         private readonly IGenericRepository<ServiceDay> _serviceDayRepository;
         private readonly IDoctorServiceRepository _doctorServiceRepository;
         private readonly IDoctorRepository _doctorRepository;
+        private readonly  IResidentRepository _residentRepository;
         private readonly string _imagePath;
         public BookService( IBookingRepository bookingRepository, 
                             IUserRepository userRepository, 
                             IGenericRepository<ServiceDay> serviceDay,
                             IWebHostEnvironment webHostEnvironment, 
                             IDoctorServiceRepository doctorServiceRepository,
-                            IDoctorRepository doctorRepository)
+                            IDoctorRepository doctorRepository,
+                            IResidentRepository residentRepository
+
+            )
         {
             _bookingRepository = bookingRepository;
             _userRepository = userRepository;
@@ -21,6 +25,7 @@
             _imagePath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.ImagesPathBooking.TrimStart('/'));
             _doctorServiceRepository = doctorServiceRepository;
             _doctorRepository = doctorRepository;
+            _residentRepository = residentRepository;
         }
         public async Task<List<ServiceBookingDetailsDto>> GetBookingDetailsForUserAsync(string userId, string language)
         {
@@ -35,7 +40,7 @@
         public async Task Book(BookServiceDto dto)
         {
 
-            var user = await _userRepository.GetUserByIdAsync(dto.userId);
+            var user = await _residentRepository.GetByIdAsync(dto.userId);
             if (user == null)
                 throw new NotFoundException("UserNotFound");
 

@@ -167,5 +167,12 @@ namespace Wasla_Backend.Repositories.Implementation
                        b.bookingStatus == BookingStatus.completed)
                 .SumAsync(b => (decimal)b.price);
         }
+        public async Task<List<Booking>> GetBookingsForResidentAsync(string residentId)
+        {
+            return await _context.Booking
+                .Where(b => b.userId == residentId)
+                .ToListAsync();
+        }
+
     }
 }

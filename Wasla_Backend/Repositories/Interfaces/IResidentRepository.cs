@@ -3,5 +3,6 @@
     public interface IResidentRepository : IGenericRepository<Resident>
     {
         Task<Resident> GetByEmail(string email);
+
     }
 }

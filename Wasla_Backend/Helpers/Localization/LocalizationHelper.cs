@@ -395,6 +395,11 @@
                 ["en"] = "All doctor bookings fetched successfully.",
                 ["ar"] = "تم جلب جميع حجوزات الطبيب بنجاح."
             },
+            ["GetResidentChartSuccess"] = new()
+            {
+                ["en"] = "Resident chart fetched successfully.",
+                ["ar"] = "تم جلب مخطط المقيم بنجاح."
+            },
         };
 
         public static string GetLocalizedMessage(string key, string lan)

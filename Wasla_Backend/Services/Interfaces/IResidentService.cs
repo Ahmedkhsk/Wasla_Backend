@@ -6,5 +6,7 @@
         public Task EditProfile(EditProfileDto editProfileDto);
 
         public Task<ResponseProfileDto> GetProfile(string userId);
+        Task<ResidentChartDto> GetResidentChartAsync(string residentId);
+
     }
 }
