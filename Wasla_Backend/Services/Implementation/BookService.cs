@@ -1,4 +1,5 @@
-﻿namespace Wasla_Backend.Services.Implementation
+﻿
+namespace Wasla_Backend.Services.Implementation
 {
     public class BookService: IBookService
     {
@@ -9,13 +10,20 @@
         private readonly IDoctorRepository _doctorRepository;
         private readonly  IResidentRepository _residentRepository;
         private readonly string _imagePath;
+        private readonly IHubContext<BookingHub> _hub;
+        private readonly ILogger<BookService> _logger = LoggerFactory.Create(builder =>
+        {
+            builder.AddConsole();
+        }).CreateLogger<BookService>();
+
         public BookService( IBookingRepository bookingRepository, 
                             IUserRepository userRepository, 
                             IGenericRepository<ServiceDay> serviceDay,
                             IWebHostEnvironment webHostEnvironment, 
                             IDoctorServiceRepository doctorServiceRepository,
                             IDoctorRepository doctorRepository,
-                            IResidentRepository residentRepository
+                            IResidentRepository residentRepository,
+                            IHubContext<BookingHub> hub
 
             )
         {
@@ -26,6 +34,7 @@
             _doctorServiceRepository = doctorServiceRepository;
             _doctorRepository = doctorRepository;
             _residentRepository = residentRepository;
+            _hub = hub;
         }
         public async Task<List<ServiceBookingDetailsDto>> GetBookingDetailsForUserAsync(string userId, string language)
         {
@@ -107,7 +116,13 @@
             try
             {
                 await _bookingRepository.SaveChangesAsync();
-                await _doctorRepository.SaveChangesAsync(); 
+                await _doctorRepository.SaveChangesAsync();
+                await _hub.Clients.All.SendAsync("ServiceDayBooked", dto.serviceDayId);
+                _logger.LogInformation("Broadcasted ServiceDayBooked for ServiceDayId: {ServiceDayId}", dto.serviceDayId);
+
+
+
+
 
             }
             catch (DbUpdateException ex)

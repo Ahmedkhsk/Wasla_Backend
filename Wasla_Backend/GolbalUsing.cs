@@ -6,6 +6,8 @@ global using Microsoft.Extensions.Options;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.Extensions.Localization;
+global using Microsoft.AspNetCore.SignalR;
+
 
 
 global using System.Text.RegularExpressions;
@@ -50,6 +52,8 @@ global using Wasla_Backend.DTOs.ServiceDTOS;
 global using Wasla_Backend.DTOs.ReviewDtos;
 global using Wasla_Backend.DTOs.BookDTOS;
 global using Wasla_Backend.Helpers.BackgroundServiceHelper;
+global using Wasla_Backend.Hubs.BookingHubs;
+
 
 
 

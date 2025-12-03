@@ -63,6 +63,8 @@ namespace Wasla_Backend
             });
 
             builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Email"));
+           
+
 
             builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
@@ -90,8 +92,14 @@ namespace Wasla_Backend
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            builder.Services.AddSignalR();
+            builder.Logging.AddDebug();
+            builder.Logging.AddConsole();
+
+
 
             var app = builder.Build();
+            app.MapHub<BookingHub>("/bookingHub");
 
             app.UseSwagger();
             app.UseSwaggerUI();
