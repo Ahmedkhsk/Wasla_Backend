@@ -8,41 +8,18 @@ namespace Wasla_Backend
 
             builder.Services.AddDbContext<Context>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlServer(
+                    builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
             builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<Context>()
                 .AddDefaultTokenProviders();
 
-            builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
-            builder.Services.AddHostedService<ExpiredEmailVerificationCleaner>();
+            builder.Services.Configure<JwtSettings>(
+                builder.Configuration.GetSection("Jwt"));
 
-            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-            builder.Services.AddScoped<IEmailVerificationRepository, EmailVerificationRepository>();
-            builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
-            builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
-            builder.Services.AddScoped<IResidentRepository, ResidentRepository>();
-            builder.Services.AddScoped<IResidentIdentityRepository, ResidentIdentityRepository>();
-            builder.Services.AddScoped<IDoctorServiceRepository, DoctorServiceRepository>();
-            builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
-            builder.Services.AddScoped < IBookingRepository, BookingRepository > ();
-            builder.Services.AddTransient<EmailSenderHelper>();
-
-            builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<IRoleService, RoleService>();
-            builder.Services.AddScoped<IDoctorService, DoctorService>();
-            builder.Services.AddScoped<IResidentService, ResidentService>();
-            builder.Services.AddScoped<IDoctorServiceService, DoctorServiceService>();
-            builder.Services.AddScoped<IReviewService, ReviewService>();
-            builder.Services.AddScoped<IBookService, BookService>();
-            builder.Services.AddScoped<TokenHelper>();
-
-            builder.Services.AddScoped<IUserFactory, UserFactory>();
-
-          builder.Services.AddAuthentication(options =>
+            builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -58,13 +35,16 @@ namespace Wasla_Backend
                     ValidateAudience = true,
                     ValidAudience = builder.Configuration["JWT:Audience"],
                     ValidIssuer = builder.Configuration["JWT:Issuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
                 };
             });
-
             builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Email"));
 
             builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+            builder.Services.AddLocalization(options =>
+                options.ResourcesPath = "Resources");
 
             builder.Services.Configure<RequestLocalizationOptions>(options =>
             {
@@ -85,28 +65,71 @@ namespace Wasla_Backend
                 });
             });
 
+            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+            builder.Services.AddScoped<IEmailVerificationRepository, EmailVerificationRepository>();
+            builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
+            builder.Services.AddScoped<IResidentRepository, ResidentRepository>();
+            builder.Services.AddScoped<IResidentIdentityRepository, ResidentIdentityRepository>();
+            builder.Services.AddScoped<IDoctorServiceRepository, DoctorServiceRepository>();
+            builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+            builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IRoleService, RoleService>();
+            builder.Services.AddScoped<IDoctorService, DoctorService>();
+            builder.Services.AddScoped<IResidentService, ResidentService>();
+            builder.Services.AddScoped<IDoctorServiceService, DoctorServiceService>();
+            builder.Services.AddScoped<IReviewService, ReviewService>();
+            builder.Services.AddScoped<IBookService, BookService>();
+
+            builder.Services.AddScoped<TokenHelper>();
+            builder.Services.AddScoped<IUserFactory, UserFactory>();
+            builder.Services.AddTransient<EmailSenderHelper>();
+
+            builder.Services.AddHostedService<ExpiredEmailVerificationCleaner>();
             builder.Services.AddHostedService<BookingStatusUpdaterService>();
-            builder.Services.AddControllers();
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             var app = builder.Build();
+            builder.Services.AddSignalR();
+
+            builder.Services.AddControllers();
+            builder.Services.AddEndpointsApiExplorer();
+
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Wasla API",
+                    Version = "v1"
+                });
+            });
+
+            builder.Logging.AddDebug();
+            builder.Logging.AddConsole();
+
+            var app = builder.Build();
+
+            app.MapHub<BookingHub>("/bookingHub");
+
 
             app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Wasla API v1");
+                c.RoutePrefix = string.Empty;
+            });
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCors("AllowAll");
 
-            app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
-            
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
-                c.RoutePrefix = string.Empty; 
-            });
+            app.UseRequestLocalization(
+                app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
             app.UseMiddleware<ExceptionMiddleware>();
 
