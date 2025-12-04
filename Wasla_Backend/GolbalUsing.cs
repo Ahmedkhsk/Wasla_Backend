@@ -6,6 +6,7 @@ global using Microsoft.Extensions.Options;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.Extensions.Localization;
+global using Microsoft.OpenApi.Models;
 global using Microsoft.AspNetCore.SignalR;
 
 

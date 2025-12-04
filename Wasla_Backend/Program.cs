@@ -28,7 +28,8 @@ namespace Wasla_Backend
             builder.Services.AddScoped<IResidentIdentityRepository, ResidentIdentityRepository>();
             builder.Services.AddScoped<IDoctorServiceRepository, DoctorServiceRepository>();
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
-            builder.Services.AddScoped < IBookingRepository, BookingRepository > ();
+            builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+
             builder.Services.AddTransient<EmailSenderHelper>();
 
             builder.Services.AddScoped<IUserService, UserService>();
@@ -42,7 +43,7 @@ namespace Wasla_Backend
 
             builder.Services.AddScoped<IUserFactory, UserFactory>();
 
-          builder.Services.AddAuthentication(options =>
+            builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -58,13 +59,12 @@ namespace Wasla_Backend
                     ValidateAudience = true,
                     ValidAudience = builder.Configuration["JWT:Audience"],
                     ValidIssuer = builder.Configuration["JWT:Issuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
                 };
             });
 
             builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Email"));
-           
-
 
             builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
@@ -88,33 +88,43 @@ namespace Wasla_Backend
             });
 
             builder.Services.AddHostedService<BookingStatusUpdaterService>();
+
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Wasla API",
+                    Version = "v1"
+                });
+            });
+
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
             builder.Services.AddSignalR();
+
             builder.Logging.AddDebug();
             builder.Logging.AddConsole();
 
-
-
             var app = builder.Build();
+
             app.MapHub<BookingHub>("/bookingHub");
 
             app.UseSwagger();
-            app.UseSwaggerUI();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Wasla API v1");
+                c.RoutePrefix = string.Empty;
+            });
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCors("AllowAll");
 
-            app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
-            
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
-                c.RoutePrefix = string.Empty; 
-            });
+            app.UseRequestLocalization(
+                app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
             app.UseMiddleware<ExceptionMiddleware>();
 
