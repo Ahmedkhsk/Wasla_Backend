@@ -117,7 +117,7 @@ namespace Wasla_Backend.Services.Implementation
             {
                 await _bookingRepository.SaveChangesAsync();
                 await _doctorRepository.SaveChangesAsync();
-                await _hub.Clients.All.SendAsync("ServiceDayBooked", dto.serviceDayId);
+                await _hub.Clients.All.SendAsync("ServiceDayBooked", new {dto.serviceDayId,dto.userId,dto.serviceProviderId});
                 _logger.LogInformation("Broadcasted ServiceDayBooked for ServiceDayId: {ServiceDayId}", dto.serviceDayId);
 
 
