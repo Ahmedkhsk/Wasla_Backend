@@ -18,6 +18,12 @@
             return Ok(ResponseHelper.Success("CompleteDataSuccess", lan));
         }
 
+        [HttpPut("UpdateDoctorProfile")]
+        public async Task<IActionResult> UpdateDoctorProfile([FromForm] UpdateDoctorDto doctorDto, string lan = "en")
+        {
+            await _doctorService.UpdateDoctorProfile(doctorDto);
+            return Ok(ResponseHelper.Success("UpdateDoctorProfileSuccess", lan));
+        }
         [HttpGet("DoctorSpecializations")]
         public async Task<IActionResult> DoctorSpecializations(string lan = "en")
         {

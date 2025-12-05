@@ -132,5 +132,29 @@ namespace Wasla_Backend.Services.Implementation
             return doctorProfileResponse;
         }
 
+        public async Task UpdateDoctorProfile(UpdateDoctorDto updateDoctorDto)
+        {
+            var doctor = await _doctorRepository.GetById(updateDoctorDto.userId);
+            if (doctor == null)
+                throw new NotFoundException("DoctorNotFound");
+            
+            _mapper.Map(updateDoctorDto, doctor);
+           
+            if (updateDoctorDto.profilePhoto != null)
+            {
+                FileOperation.DeleteFile(doctor.ProfilePhoto, _imagePath);
+                var image = await FileOperation.SaveFile(updateDoctorDto.profilePhoto, _imagePath);
+                doctor.ProfilePhoto = image;
+            }
+
+            if (updateDoctorDto.cv != null)
+            {
+                FileOperation.DeleteFile(doctor.CV, _cvPath);
+                var cv = await FileOperation.SaveFile(updateDoctorDto.profilePhoto, _cvPath);
+                doctor.CV = cv;
+            }
+            _doctorRepository.Update(doctor);
+            await _doctorRepository.SaveChangesAsync();
+        }
     }
 }

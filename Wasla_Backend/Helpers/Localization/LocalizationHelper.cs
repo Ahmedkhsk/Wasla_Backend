@@ -415,6 +415,11 @@
                 ["en"] = "This service cannot be updated because it has existing bookings.",
                 ["ar"] = "لا يمكن تعديل هذه الخدمة لوجود حجوزات مرتبطة بها."
             },
+            ["UpdateDoctorProfileSuccess"] = new()
+            {
+                ["en"] = "Doctor profile updated successfully.",
+                ["ar"] = "تم تحديث ملف الطبيب بنجاح."
+            },
         };
 
         public static string GetLocalizedMessage(string key, string lan)

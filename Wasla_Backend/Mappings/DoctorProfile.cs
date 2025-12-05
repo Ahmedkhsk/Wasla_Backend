@@ -45,6 +45,20 @@
                 .ForMember(d => d.Description, o => o.MapFrom(s => s.Description))
                 .ForMember(d => d.ImageUrl, o => o.MapFrom(s => s.ProfilePhoto))
                 .ForMember(d => d.CVUrl, o => o.MapFrom(s => s.CV));
+
+
+            CreateMap<UpdateDoctorDto, Doctor>()
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.fullName))
+                .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.phone))
+                .ForMember(dest => dest.Latitude, opt => opt.MapFrom(src => src.latitude))
+                .ForMember(dest => dest.Longitude, opt => opt.MapFrom(src => src.longitude))
+                .ForMember(dest => dest.BirthDay, opt => opt.MapFrom(src => src.birthDay))
+                .ForMember(dest => dest.ExperienceYears, opt => opt.MapFrom(src => src.experienceYears))
+                .ForMember(dest => dest.UniversityName, opt => opt.MapFrom(src => src.universityName))
+                .ForMember(dest => dest.GraduationYear, opt => opt.MapFrom(src => src.graduationYear))
+                .ForMember(dest => dest.hospitalname, opt => opt.MapFrom(src => src.hospitalName))
+                .ForMember(dest => dest.SpecializationId, opt => opt.MapFrom(src => src.specializationId));
+
         }
 
     }

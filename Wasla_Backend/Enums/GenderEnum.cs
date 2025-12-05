@@ -1,9 +1,8 @@
 ﻿namespace Wasla_Backend.Enums
 {
-    public enum Gender
+    public enum GenderEnum
     {
         Male = 1,
-        Female,
-        Other
+        Female
     }
 }
