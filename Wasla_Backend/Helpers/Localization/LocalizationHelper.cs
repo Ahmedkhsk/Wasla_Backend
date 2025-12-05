@@ -400,6 +400,16 @@
                 ["en"] = "Resident chart fetched successfully.",
                 ["ar"] = "تم جلب مخطط المقيم بنجاح."
             },
+            ["BookingStatusUpdatedSuccessfully"] = new()
+            {
+                ["en"] = "Booking status updated successfully.",
+                ["ar"] = "تم تحديث حالة الحجز بنجاح."
+            },
+            ["BookingStatusIsAlreadyCompleted"] = new()
+            {
+                ["en"] = "The booking is already completed and cannot be updated.",
+                ["ar"] = "هذا الحجز مكتمل بالفعل ولا يمكن تغيير حالته."
+            },
         };
 
         public static string GetLocalizedMessage(string key, string lan)

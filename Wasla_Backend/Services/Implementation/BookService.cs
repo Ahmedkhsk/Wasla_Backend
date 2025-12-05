@@ -36,6 +36,25 @@ namespace Wasla_Backend.Services.Implementation
             _residentRepository = residentRepository;
             _hub = hub;
         }
+
+        public async Task UpdateBookingStatus(int bookingId , BookingStatus status)
+        {
+            var booking = await _bookingRepository.GetByIdAsync(bookingId);
+            
+            if (booking == null)
+                throw new NotFoundException("BookingNotFound");
+
+            if (booking.bookingStatus == BookingStatus.completed)
+                throw new BadRequestException("BookingStatusIsAlreadyCompleted");
+
+            if (status == BookingStatus.all||!Enum.IsDefined(typeof(BookingStatus), status))
+                throw new BadRequestException("InvalidBookingStatus");
+            
+            booking.bookingStatus = status;
+            _bookingRepository.Update(booking);
+            await _bookingRepository.SaveChangesAsync();
+        }
+
         public async Task<List<ServiceBookingDetailsDto>> GetBookingDetailsForUserAsync(string userId, string language)
         {
             var user = await _userRepository.GetUserByIdAsync(userId);

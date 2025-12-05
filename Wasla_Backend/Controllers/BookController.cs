@@ -23,5 +23,12 @@
             var bookingDetails = await _bookService.GetBookingDetailsForUserAsync(userId, language);
             return Ok(ResponseHelper.Success("BookingRetrievedsuccess", language, bookingDetails));
         }
+
+        [HttpPut("UpdateBookingStatus")]
+        public async Task<IActionResult> UpdateBookingStatus([FromQuery] int bookingId, [FromQuery] BookingStatus status, [FromQuery] string lan = "en")
+        {
+            await _bookService.UpdateBookingStatus(bookingId, status);
+            return Ok(ResponseHelper.Success("BookingStatusUpdatedSuccessfully", lan));
+        }
     }
 }
