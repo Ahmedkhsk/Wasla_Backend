@@ -9,8 +9,6 @@ global using Microsoft.Extensions.Localization;
 global using Microsoft.AspNetCore.SignalR;
 global using Microsoft.OpenApi.Models;
 
-
-
 global using System.Text.RegularExpressions;
 global using System.Reflection;
 global using System.ComponentModel.DataAnnotations;
@@ -21,12 +19,12 @@ global using System.Text;
 global using System.IdentityModel.Tokens.Jwt;
 global using System.Security.Claims;
 global using System.Security.Cryptography;
+global using System.Data;
+
 global using MailKit.Security;
 global using MimeKit;
 global using MimeKit.Text;
 global using AutoMapper;
-global using System.Data;
-
 
 global using Wasla_Backend.Repositories.Interfaces;
 global using Wasla_Backend.Enums;
@@ -53,9 +51,4 @@ global using Wasla_Backend.DTOs.ServiceDTOS;
 global using Wasla_Backend.DTOs.ReviewDtos;
 global using Wasla_Backend.DTOs.BookDTOS;
 global using Wasla_Backend.Helpers.BackgroundServiceHelper;
-
-
-
-
-
-
+global using Wasla_Backend.Hubs.BookingHubs;

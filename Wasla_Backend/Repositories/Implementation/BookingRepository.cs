@@ -43,7 +43,7 @@ namespace Wasla_Backend.Repositories.Implementation
                         : b.serviceDay.service.serviceName.English,
                     userName = b.user.FullName,
                     userImage = b.user.ProfilePhoto,
-                    bookingType = b.bookingType.ToString(),
+                    bookingType = b.bookingType,
                     phone = b.user.Phone,
                     day = b.serviceDay.dayOfWeek,
                     price = (decimal)b.price,
@@ -167,5 +167,12 @@ namespace Wasla_Backend.Repositories.Implementation
                        b.bookingStatus == BookingStatus.completed)
                 .SumAsync(b => (decimal)b.price);
         }
+        public async Task<List<Booking>> GetBookingsForResidentAsync(string residentId)
+        {
+            return await _context.Booking
+                .Where(b => b.userId == residentId)
+                .ToListAsync();
+        }
+
     }
 }

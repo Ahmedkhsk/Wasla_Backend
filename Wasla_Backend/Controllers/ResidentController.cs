@@ -45,5 +45,13 @@
             var response = await _residentService.GetProfile(userId);
             return Ok(ResponseHelper.Success("GetProfileSuccess", lan, response));
         }
+        [HttpGet("resident-chart")]
+        public async Task<IActionResult> GetResidentChart(string residentId, string lan = "en")
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ResponseHelper.Fail("InvalidData", lan, ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
+            var response = await _residentService.GetResidentChartAsync(residentId);
+            return Ok(ResponseHelper.Success("GetResidentChartSuccess", lan, response));
+        }
     }
 }

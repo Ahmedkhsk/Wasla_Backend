@@ -1,4 +1,5 @@
-﻿namespace Wasla_Backend.Services.Implementation
+﻿
+namespace Wasla_Backend.Services.Implementation
 {
     public class BookService: IBookService
     {
@@ -7,13 +8,24 @@
         private readonly IGenericRepository<ServiceDay> _serviceDayRepository;
         private readonly IDoctorServiceRepository _doctorServiceRepository;
         private readonly IDoctorRepository _doctorRepository;
+        private readonly  IResidentRepository _residentRepository;
         private readonly string _imagePath;
+        private readonly IHubContext<BookingHub> _hub;
+        private readonly ILogger<BookService> _logger = LoggerFactory.Create(builder =>
+        {
+            builder.AddConsole();
+        }).CreateLogger<BookService>();
+
         public BookService( IBookingRepository bookingRepository, 
                             IUserRepository userRepository, 
                             IGenericRepository<ServiceDay> serviceDay,
                             IWebHostEnvironment webHostEnvironment, 
                             IDoctorServiceRepository doctorServiceRepository,
-                            IDoctorRepository doctorRepository)
+                            IDoctorRepository doctorRepository,
+                            IResidentRepository residentRepository,
+                            IHubContext<BookingHub> hub
+
+            )
         {
             _bookingRepository = bookingRepository;
             _userRepository = userRepository;
@@ -21,6 +33,8 @@
             _imagePath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.ImagesPathBooking.TrimStart('/'));
             _doctorServiceRepository = doctorServiceRepository;
             _doctorRepository = doctorRepository;
+            _residentRepository = residentRepository;
+            _hub = hub;
         }
         public async Task<List<ServiceBookingDetailsDto>> GetBookingDetailsForUserAsync(string userId, string language)
         {
@@ -35,7 +49,7 @@
         public async Task Book(BookServiceDto dto)
         {
 
-            var user = await _userRepository.GetUserByIdAsync(dto.userId);
+            var user = await _residentRepository.GetByIdAsync(dto.userId);
             if (user == null)
                 throw new NotFoundException("UserNotFound");
 
@@ -102,7 +116,13 @@
             try
             {
                 await _bookingRepository.SaveChangesAsync();
-                await _doctorRepository.SaveChangesAsync(); 
+                await _doctorRepository.SaveChangesAsync();
+                await _hub.Clients.All.SendAsync("ServiceDayBooked", new {dto.serviceDayId,dto.userId,dto.serviceProviderId});
+                _logger.LogInformation("Broadcasted ServiceDayBooked for ServiceDayId: {ServiceDayId}", dto.serviceDayId);
+
+
+
+
 
             }
             catch (DbUpdateException ex)

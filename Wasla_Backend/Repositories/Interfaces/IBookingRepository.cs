@@ -14,5 +14,7 @@
         public Task<List<Booking>> GetByServiceProviderId(string userId);
         public Task<List<GetAllBookingResponse>> GetBookingsByDoctorIdAsync(string doctorId, BookingStatus status, string lan);
         public Task<bool>GetByUserIdAndDoctorID(string userId, string doctorId);
+        public Task<List<Booking>> GetBookingsForResidentAsync(string residentId);
+
     }
 }

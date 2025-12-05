@@ -306,7 +306,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("userId");
 
-                    b.ToTable("Booking");
+                    b.ToTable("Booking", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.DoctorSpecialization", b =>
@@ -319,7 +319,7 @@ namespace Wasla_Backend.data
 
                     b.HasKey("Id");
 
-                    b.ToTable("DoctorSpecializations");
+                    b.ToTable("DoctorSpecializations", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.EmailVerification", b =>
@@ -346,7 +346,7 @@ namespace Wasla_Backend.data
 
                     b.HasKey("Id");
 
-                    b.ToTable("EmailVerifications");
+                    b.ToTable("EmailVerifications", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Favorites", b =>
@@ -375,7 +375,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Favorite");
+                    b.ToTable("Favorite", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.RefreshToken", b =>
@@ -399,7 +399,7 @@ namespace Wasla_Backend.data
 
                     b.HasKey("Id");
 
-                    b.ToTable("RefreshTokens");
+                    b.ToTable("RefreshTokens", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.ResidentIdentity", b =>
@@ -423,7 +423,7 @@ namespace Wasla_Backend.data
 
                     b.HasKey("Id");
 
-                    b.ToTable("residentIdentities");
+                    b.ToTable("residentIdentities", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Reviews", b =>
@@ -480,7 +480,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Review");
+                    b.ToTable("Review", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Service", b =>
@@ -502,7 +502,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("doctorId");
 
-                    b.ToTable("Service");
+                    b.ToTable("Service", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.ServiceDay", b =>
@@ -534,7 +534,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("serviceId");
 
-                    b.ToTable("ServiceDay");
+                    b.ToTable("ServiceDay", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Doctor", b =>
@@ -800,7 +800,7 @@ namespace Wasla_Backend.data
 
                             b1.HasKey("ApplicationRoleId");
 
-                            b1.ToTable("AspNetRoles");
+                            b1.ToTable("AspNetRoles", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("ApplicationRoleId");
@@ -848,7 +848,7 @@ namespace Wasla_Backend.data
 
                             b1.HasKey("DoctorSpecializationId");
 
-                            b1.ToTable("DoctorSpecializations");
+                            b1.ToTable("DoctorSpecializations", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("DoctorSpecializationId");
@@ -921,7 +921,7 @@ namespace Wasla_Backend.data
 
                             b1.HasKey("Serviceid");
 
-                            b1.ToTable("Service");
+                            b1.ToTable("Service", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("Serviceid");
@@ -944,7 +944,7 @@ namespace Wasla_Backend.data
 
                             b1.HasKey("Serviceid");
 
-                            b1.ToTable("Service");
+                            b1.ToTable("Service", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("Serviceid");

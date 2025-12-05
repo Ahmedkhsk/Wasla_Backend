@@ -19,52 +19,6 @@ namespace Wasla_Backend
             builder.Services.Configure<JwtSettings>(
                 builder.Configuration.GetSection("Jwt"));
 
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.SaveToken = true;
-                options.RequireHttpsMetadata = false;
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidAudience = builder.Configuration["JWT:Audience"],
-                    ValidIssuer = builder.Configuration["JWT:Issuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
-                };
-            });
-            builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Email"));
-
-            builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
-
-            builder.Services.AddLocalization(options =>
-                options.ResourcesPath = "Resources");
-
-            builder.Services.Configure<RequestLocalizationOptions>(options =>
-            {
-                var supportedCultures = new[] { "en", "ar" };
-                options.SetDefaultCulture("en");
-                options.AddSupportedCultures(supportedCultures);
-                options.AddSupportedUICultures(supportedCultures);
-                options.ApplyCurrentCultureToResponseHeaders = true;
-            });
-
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAll", policy =>
-                {
-                    policy.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader();
-                });
-            });
-
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
@@ -92,14 +46,54 @@ namespace Wasla_Backend
             builder.Services.AddHostedService<ExpiredEmailVerificationCleaner>();
             builder.Services.AddHostedService<BookingStatusUpdaterService>();
 
-            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidAudience = builder.Configuration["JWT:Audience"],
+                    ValidIssuer = builder.Configuration["JWT:Issuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
+                };
+            });
 
-            var app = builder.Build();
-            builder.Services.AddSignalR();
+            builder.Services.Configure<EmailSettings>(
+                builder.Configuration.GetSection("Email"));
+
+            builder.Services.AddLocalization(options =>
+                options.ResourcesPath = "Resources");
+
+            builder.Services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new[] { "en", "ar" };
+                options.SetDefaultCulture("en");
+                options.AddSupportedCultures(supportedCultures);
+                options.AddSupportedUICultures(supportedCultures);
+                options.ApplyCurrentCultureToResponseHeaders = true;
+            });
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
-
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -109,13 +103,15 @@ namespace Wasla_Backend
                 });
             });
 
+            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            builder.Services.AddSignalR();
+
             builder.Logging.AddDebug();
             builder.Logging.AddConsole();
 
             var app = builder.Build();
 
             app.MapHub<BookingHub>("/bookingHub");
-
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>

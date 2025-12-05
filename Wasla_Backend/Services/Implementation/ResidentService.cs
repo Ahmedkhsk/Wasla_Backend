@@ -12,18 +12,22 @@ namespace Wasla_Backend.Services.Implementation
         private readonly IMapper _mapper;
         private readonly IStringLocalizer<ResidentService> _localizer;
         private readonly string _imagePath;
+        private readonly IBookingRepository _bookingRepository;
 
         public ResidentService(IResidentRepository ResidentRepository,
             IResidentIdentityRepository ResidentIdentityRepository,
             IWebHostEnvironment webHostEnvironment,
             IMapper mapper,
-            IStringLocalizer<ResidentService> localizer)
+            IStringLocalizer<ResidentService> localizer
+            , IBookingRepository bookingRepository
+            )
         {
             _ResidentRepository = ResidentRepository;
             _ResidentIdentityRepository = ResidentIdentityRepository;
             _mapper = mapper;
             _localizer = localizer;
             _imagePath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.ImagesPathUser.TrimStart('/'));
+            _bookingRepository = bookingRepository;
         }
         
         public async Task CompleteResidentRegister(ResidentCompleteRegisterDto model)
@@ -86,6 +90,42 @@ namespace Wasla_Backend.Services.Implementation
 
 
         }
+        public async Task<ResidentChartDto> GetResidentChartAsync(string residentId)
+        {
+            var resident = await _ResidentRepository.GetByIdAsync(residentId);
+            if (resident == null)
+                throw new NotFoundException(_localizer["UserNotFound"]);
+
+            var bookings = await _bookingRepository.GetBookingsForResidentAsync(residentId);
+
+            var dto = new ResidentChartDto
+            {
+                numOfBookings = bookings.Count,
+                totalAmount = bookings.Sum(b => b.price),
+            };
+
+            dto.years = bookings
+                .GroupBy(b => b.bookingDate.Year)
+                .Select(yearGroup => new ResidentYearDto
+                {
+                    year = yearGroup.Key,
+                    months = yearGroup
+                        .GroupBy(b => b.bookingDate.Month)
+                        .Select(monthGroup => new ResidentMonthDto
+                        {
+                            month = monthGroup.Key,
+                            bookings = monthGroup.Count(),
+                            amount = monthGroup.Sum(b => b.price)
+                        })
+                        .OrderBy(m => m.month)
+                        .ToList()
+                })
+                .OrderBy(y => y.year)
+                .ToList();
+
+            return dto;
+        }
+
 
     }
 }
