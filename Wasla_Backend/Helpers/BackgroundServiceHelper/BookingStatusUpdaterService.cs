@@ -33,7 +33,11 @@
                     var toComplete = upcomingBookings
                         .Where(b =>
                         {
-                            var endTime = TimeOnly.Parse(b.serviceDay.end);
+                            var endString = !string.IsNullOrWhiteSpace(b.newEnd)
+                                ? b.newEnd
+                                : b.serviceDay.end;
+
+                            var endTime = TimeOnly.Parse(endString);
                             var bookingDateTime = b.bookingDate.ToDateTime(endTime);
                             return bookingDateTime <= now;
                         })

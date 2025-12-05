@@ -6,6 +6,5 @@
         Suspended,
         Pending,
         Disabled
-
     }
 }

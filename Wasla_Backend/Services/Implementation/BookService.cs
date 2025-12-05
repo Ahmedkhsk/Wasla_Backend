@@ -11,6 +11,7 @@ namespace Wasla_Backend.Services.Implementation
         private readonly  IResidentRepository _residentRepository;
         private readonly string _imagePath;
         private readonly IHubContext<BookingHub> _hub;
+        private readonly IMapper _mapper;
         private readonly ILogger<BookService> _logger = LoggerFactory.Create(builder =>
         {
             builder.AddConsole();
@@ -23,7 +24,8 @@ namespace Wasla_Backend.Services.Implementation
                             IDoctorServiceRepository doctorServiceRepository,
                             IDoctorRepository doctorRepository,
                             IResidentRepository residentRepository,
-                            IHubContext<BookingHub> hub
+                            IHubContext<BookingHub> hub,
+                            IMapper mapper
 
             )
         {
@@ -35,6 +37,7 @@ namespace Wasla_Backend.Services.Implementation
             _doctorRepository = doctorRepository;
             _residentRepository = residentRepository;
             _hub = hub;
+            _mapper = mapper;
         }
 
         public async Task UpdateBookingStatus(int bookingId , BookingStatus status)
@@ -51,6 +54,22 @@ namespace Wasla_Backend.Services.Implementation
                 throw new BadRequestException("InvalidBookingStatus");
             
             booking.bookingStatus = status;
+            _bookingRepository.Update(booking);
+            await _bookingRepository.SaveChangesAsync();
+        }
+
+        public async Task UpdateBookingStatus(UpdateBookingDto updateBookingDto)
+        {
+            var booking = await _bookingRepository.GetByIdAsync(updateBookingDto.BookingId);
+            
+            if (booking == null)
+                throw new NotFoundException("BookingNotFound");
+            
+            if (booking.bookingStatus == BookingStatus.completed)
+                throw new BadRequestException("BookingStatusIsAlreadyCompleted");
+
+            booking = _mapper.Map(updateBookingDto, booking);
+
             _bookingRepository.Update(booking);
             await _bookingRepository.SaveChangesAsync();
         }
@@ -138,10 +157,6 @@ namespace Wasla_Backend.Services.Implementation
                 await _doctorRepository.SaveChangesAsync();
                 await _hub.Clients.All.SendAsync("ServiceDayBooked", new {dto.serviceDayId,dto.userId,dto.serviceProviderId});
                 _logger.LogInformation("Broadcasted ServiceDayBooked for ServiceDayId: {ServiceDayId}", dto.serviceDayId);
-
-
-
-
 
             }
             catch (DbUpdateException ex)

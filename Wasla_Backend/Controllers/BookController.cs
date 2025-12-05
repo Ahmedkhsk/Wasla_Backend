@@ -17,11 +17,11 @@
                 return Ok(ResponseHelper.Success("ServiceBookedSuccessfully", lan));
         }
 
-        [HttpGet("GetBookingDetailsForUser")]
-        public async Task<IActionResult> GetBookingDetailsForUser([FromQuery]string userId, [FromQuery] string language="en")
+        [HttpPut("UpdateBooking")]
+        public async Task<IActionResult> UpdateBooking([FromBody] UpdateBookingDto updateBookingDto, [FromQuery] string lan = "en")
         {
-            var bookingDetails = await _bookService.GetBookingDetailsForUserAsync(userId, language);
-            return Ok(ResponseHelper.Success("BookingRetrievedsuccess", language, bookingDetails));
+            await _bookService.UpdateBookingStatus(updateBookingDto);
+            return Ok(ResponseHelper.Success("BookingUpdatedSuccessfully", lan));
         }
 
         [HttpPut("UpdateBookingStatus")]
@@ -29,6 +29,13 @@
         {
             await _bookService.UpdateBookingStatus(bookingId, status);
             return Ok(ResponseHelper.Success("BookingStatusUpdatedSuccessfully", lan));
+        }
+
+        [HttpGet("GetBookingDetailsForUser")]
+        public async Task<IActionResult> GetBookingDetailsForUser([FromQuery]string userId, [FromQuery] string language="en")
+        {
+            var bookingDetails = await _bookService.GetBookingDetailsForUserAsync(userId, language);
+            return Ok(ResponseHelper.Success("BookingRetrievedsuccess", language, bookingDetails));
         }
     }
 }

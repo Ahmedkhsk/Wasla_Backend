@@ -15,6 +15,9 @@
         public double price { get; set; }
         public ServiceProviderType serviceProviderType { get; set; }
         public BookingStatus bookingStatus { get; set; } = BookingStatus.upcoming;
+        public WeekDayEnum newDayOfWeek { get; set; } = WeekDayEnum.None;
+        public string? newStart { get; set; }
+        public string? newEnd { get; set; }
         public DateOnly bookingDate { get; set; }
         public BookingType bookingType { get; set; }
         public string? imagesJson { get; set; }

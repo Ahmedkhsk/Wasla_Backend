@@ -2,6 +2,6 @@
 {
     public class ServiceDayDto
     {
-        public int dayOfWeek { get; set; }
+        public WeekDayEnum dayOfWeek { get; set; }
     }
 }

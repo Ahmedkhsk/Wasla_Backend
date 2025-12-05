@@ -3,7 +3,7 @@
     public enum BookingType
     {
         Examination = 1,  
-        Consultation = 2   
+        Consultation
     }
 
 }

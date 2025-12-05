@@ -3,7 +3,7 @@
     public class ServiceDay
     {
         public int id { get; set; }
-        public int dayOfWeek { get; set; }
+        public WeekDayEnum dayOfWeek { get; set; }
         public string start { get; set; }
         public string end { get; set; }
         public bool isBooking { get; set; } = false;

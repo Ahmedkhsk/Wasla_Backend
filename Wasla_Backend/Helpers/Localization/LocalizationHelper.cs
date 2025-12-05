@@ -410,6 +410,11 @@
                 ["en"] = "The booking is already completed and cannot be updated.",
                 ["ar"] = "هذا الحجز مكتمل بالفعل ولا يمكن تغيير حالته."
             },
+            ["CannotUpdateServiceWithExistingBookings"] = new()
+            {
+                ["en"] = "This service cannot be updated because it has existing bookings.",
+                ["ar"] = "لا يمكن تعديل هذه الخدمة لوجود حجوزات مرتبطة بها."
+            },
         };
 
         public static string GetLocalizedMessage(string key, string lan)

@@ -36,8 +36,16 @@ namespace Wasla_Backend.Repositories.Implementation
                 {
                     bookingId = b.Id,
                     date = b.bookingDate.ToString(),
-                    start = b.serviceDay.start,
-                    end = b.serviceDay.end,
+                    start = !string.IsNullOrWhiteSpace(b.newStart)
+                            ? b.newStart
+                            : b.serviceDay.start,
+                    end = !string.IsNullOrWhiteSpace(b.newEnd)
+                            ? b.newEnd
+                            : b.serviceDay.end,
+                    day = !(b.newDayOfWeek == WeekDayEnum.None)
+                            ? b.newDayOfWeek
+                            : b.serviceDay.dayOfWeek,
+                    status = b.bookingStatus,
                     serviceName = lan.ToLower() == "ar"
                         ? b.serviceDay.service.serviceName.Arabic
                         : b.serviceDay.service.serviceName.English,
@@ -45,7 +53,6 @@ namespace Wasla_Backend.Repositories.Implementation
                     userImage = b.user.ProfilePhoto,
                     bookingType = b.bookingType,
                     phone = b.user.Phone,
-                    day = b.serviceDay.dayOfWeek,
                     price = (decimal)b.price,
                     bookingImages = b.images
                 })
@@ -87,10 +94,17 @@ namespace Wasla_Backend.Repositories.Implementation
                 .Select(b => new ServiceBookingDetailsDto
                 {
                     id = b.Id,
-                    start = b.serviceDay.start,
-                    end = b.serviceDay.end,
-                    day = b.serviceDay.dayOfWeek.ToString(),
+                    start = !string.IsNullOrWhiteSpace(b.newStart)
+                            ? b.newStart
+                            : b.serviceDay.start,
+                    end = !string.IsNullOrWhiteSpace(b.newEnd)
+                            ? b.newEnd
+                            : b.serviceDay.end,
+                    day = !(b.newDayOfWeek == WeekDayEnum.None)
+                            ? b.newDayOfWeek
+                            : b.serviceDay.dayOfWeek,
                     date = b.bookingDate.ToString(),
+                    status = b.bookingStatus,
 
                     ServiceProviderName = b.serviceDay.service.doctor.FullName,
                     ServiceProviderProfilePhoto = b.serviceDay.service.doctor.ProfilePhoto,

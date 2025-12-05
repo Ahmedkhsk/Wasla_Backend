@@ -2,7 +2,7 @@
 {
     public class ServiceDayResponse
     {
-        public int dayOfWeek { get; set; }
+        public WeekDayEnum dayOfWeek { get; set; }
         public List<SlotsResonse> timeSlots { get; set; }
     }
 }
