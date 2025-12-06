@@ -20,7 +20,7 @@
         [HttpPut("UpdateBooking")]
         public async Task<IActionResult> UpdateBooking([FromBody] UpdateBookingDto updateBookingDto, [FromQuery] string lan = "en")
         {
-            await _bookService.UpdateBookingStatus(updateBookingDto);
+            await _bookService.UpdateBooking(updateBookingDto);
             return Ok(ResponseHelper.Success("BookingUpdatedSuccessfully", lan));
         }
 

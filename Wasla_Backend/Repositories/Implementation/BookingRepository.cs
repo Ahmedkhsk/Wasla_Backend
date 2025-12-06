@@ -78,7 +78,7 @@ namespace Wasla_Backend.Repositories.Implementation
                   .CountAsync();
         }
 
-        public async Task<Booking> GetByIdAsyncWithInclude(int id)
+        public async Task<Booking> GetByIdWithIncludeAsync(int id)
         {
             return await _context.Booking
                 .Include(b => b.user)

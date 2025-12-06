@@ -42,7 +42,7 @@ namespace Wasla_Backend.Services.Implementation
 
         public async Task UpdateBookingStatus(int bookingId , BookingStatus status)
         {
-            var booking = await _bookingRepository.GetByIdAsyncWithInclude(bookingId);
+            var booking = await _bookingRepository.GetByIdWithIncludeAsync(bookingId);
             
             if (booking == null)
                 throw new NotFoundException("BookingNotFound");
@@ -61,7 +61,7 @@ namespace Wasla_Backend.Services.Implementation
             await _bookingRepository.SaveChangesAsync();
         }
 
-        public async Task UpdateBookingStatus(UpdateBookingDto updateBookingDto)
+        public async Task UpdateBooking(UpdateBookingDto updateBookingDto)
         {
             var booking = await _bookingRepository.GetByIdAsync(updateBookingDto.BookingId);
             
