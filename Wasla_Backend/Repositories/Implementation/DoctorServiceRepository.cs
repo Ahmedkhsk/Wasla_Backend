@@ -22,7 +22,10 @@
             await _context.SaveChangesAsync();
         }
 
-
+        public async Task<Service> GetServiceIncludeDaysAsync(int id)
+            => await _context.Service
+                .Include(d => d.ServiceDays)
+                .FirstOrDefaultAsync(i => i.id == id);
         public async Task<IEnumerable<Service>> GetAllServicesAsync(string id)
             => await _context.Service
                 .Include(d => d.ServiceDays)

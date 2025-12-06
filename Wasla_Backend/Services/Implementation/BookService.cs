@@ -42,7 +42,7 @@ namespace Wasla_Backend.Services.Implementation
 
         public async Task UpdateBookingStatus(int bookingId , BookingStatus status)
         {
-            var booking = await _bookingRepository.GetByIdAsync(bookingId);
+            var booking = await _bookingRepository.GetByIdAsyncWithInclude(bookingId);
             
             if (booking == null)
                 throw new NotFoundException("BookingNotFound");
@@ -52,9 +52,12 @@ namespace Wasla_Backend.Services.Implementation
 
             if (status == BookingStatus.all||!Enum.IsDefined(typeof(BookingStatus), status))
                 throw new BadRequestException("InvalidBookingStatus");
-            
+
+            if (status == BookingStatus.canceled && booking.serviceDay != null)
+                booking.serviceDay.isBooking = false;
+
             booking.bookingStatus = status;
-            _bookingRepository.Update(booking);
+
             await _bookingRepository.SaveChangesAsync();
         }
 
@@ -67,6 +70,13 @@ namespace Wasla_Backend.Services.Implementation
             
             if (booking.bookingStatus == BookingStatus.completed)
                 throw new BadRequestException("BookingStatusIsAlreadyCompleted");
+            
+            if(updateBookingDto.newDayOfWeek == WeekDayEnum.none ||
+               string.IsNullOrWhiteSpace(updateBookingDto.newStart) ||
+               string.IsNullOrWhiteSpace(updateBookingDto.newEnd))
+            {
+                throw new BadRequestException("InvalidBookingUpdateDetails");
+            }
 
             booking = _mapper.Map(updateBookingDto, booking);
 

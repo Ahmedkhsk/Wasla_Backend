@@ -150,7 +150,7 @@ namespace Wasla_Backend.Services.Implementation
             if (updateDoctorDto.cv != null)
             {
                 FileOperation.DeleteFile(doctor.CV, _cvPath);
-                var cv = await FileOperation.SaveFile(updateDoctorDto.profilePhoto, _cvPath);
+                var cv = await FileOperation.SaveFile(updateDoctorDto.cv, _cvPath);
                 doctor.CV = cv;
             }
             _doctorRepository.Update(doctor);

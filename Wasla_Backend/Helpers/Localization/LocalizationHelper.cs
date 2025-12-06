@@ -420,6 +420,17 @@
                 ["en"] = "Doctor profile updated successfully.",
                 ["ar"] = "تم تحديث ملف الطبيب بنجاح."
             },
+            ["BookingUpdatedSuccessfully"] = new()
+            {
+                ["en"] = "Booking updated successfully.",
+                ["ar"] = "تم تحديث الحجز بنجاح."
+            },
+            ["InvalidBookingUpdateDetails"] = new()
+            {
+                ["en"] = "Invalid booking update details.",
+                ["ar"] = "بيانات تحديث الحجز غير صحيحة."
+            },
+
         };
 
         public static string GetLocalizedMessage(string key, string lan)

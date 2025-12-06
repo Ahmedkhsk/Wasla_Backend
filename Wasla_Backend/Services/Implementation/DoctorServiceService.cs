@@ -52,7 +52,7 @@
 
         public async Task UpdateServiceAsync(UpdateServiceDto dto)
         {
-            var service = await _doctorServiceRepository.GetByIdAsync(dto.serviceId);
+            var service = await _doctorServiceRepository.GetServiceIncludeDaysAsync(dto.serviceId);
             if (service == null)
                 throw new NotFoundException("ServiceNotFound");
 
@@ -128,7 +128,7 @@
 
         public async Task DeleteServiceAsync(int serviceId)
         {
-            var service =  await _doctorServiceRepository.GetByIdAsync(serviceId);
+            var service =  await _doctorServiceRepository.GetServiceIncludeDaysAsync(serviceId);
             
             if(service == null)
                 throw new NotFoundException("ServiceNotFound");
@@ -139,7 +139,5 @@
             await _doctorServiceRepository.DeleteByIdAsync(serviceId);
             await _doctorServiceRepository.SaveChangesAsync();
         }
-
-       
     }
 }

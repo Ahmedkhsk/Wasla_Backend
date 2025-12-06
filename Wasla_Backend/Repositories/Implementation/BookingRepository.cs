@@ -42,7 +42,7 @@ namespace Wasla_Backend.Repositories.Implementation
                     end = !string.IsNullOrWhiteSpace(b.newEnd)
                             ? b.newEnd
                             : b.serviceDay.end,
-                    day = !(b.newDayOfWeek == WeekDayEnum.None)
+                    day = !(b.newDayOfWeek == WeekDayEnum.none)
                             ? b.newDayOfWeek
                             : b.serviceDay.dayOfWeek,
                     status = b.bookingStatus,
@@ -78,6 +78,14 @@ namespace Wasla_Backend.Repositories.Implementation
                   .CountAsync();
         }
 
+        public async Task<Booking> GetByIdAsyncWithInclude(int id)
+        {
+            return await _context.Booking
+                .Include(b => b.user)
+                .Include(b => b.serviceDay)
+                    .ThenInclude(sd => sd.service)
+                .FirstOrDefaultAsync(b => b.Id == id);
+        }
         public async Task<Booking> GetBookingByServiceDayIdAsync(int serviceDayId)
         {
             return await _context.Booking
@@ -100,7 +108,7 @@ namespace Wasla_Backend.Repositories.Implementation
                     end = !string.IsNullOrWhiteSpace(b.newEnd)
                             ? b.newEnd
                             : b.serviceDay.end,
-                    day = !(b.newDayOfWeek == WeekDayEnum.None)
+                    day = !(b.newDayOfWeek == WeekDayEnum.none)
                             ? b.newDayOfWeek
                             : b.serviceDay.dayOfWeek,
                     date = b.bookingDate.ToString(),

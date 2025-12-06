@@ -4,7 +4,7 @@
     {
         upcoming = 1,
         completed,
-        canceld,
+        canceled,
         all
     }
 }

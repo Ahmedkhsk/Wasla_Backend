@@ -2,13 +2,13 @@
 {
     public enum WeekDayEnum
     {
-        none = 0,
         saturday,
         sunday,
         monday,
         tuesday,
         wednesday,
         thursday,
-        friday
+        friday,
+        none
     }
 }
