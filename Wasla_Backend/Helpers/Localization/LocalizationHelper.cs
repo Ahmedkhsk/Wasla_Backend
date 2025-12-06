@@ -430,7 +430,11 @@
                 ["en"] = "Invalid booking update details.",
                 ["ar"] = "بيانات تحديث الحجز غير صحيحة."
             },
-
+            ["CannotDeleteServiceWithExistingBookings"] = new()
+            {
+                ["en"] = "This service cannot be deleted as it has active bookings.",
+                ["ar"] = "لا يمكن حذف هذه الخدمة لوجود حجوزات نشطة."
+            },
         };
 
         public static string GetLocalizedMessage(string key, string lan)

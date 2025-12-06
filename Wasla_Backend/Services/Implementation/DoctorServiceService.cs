@@ -134,7 +134,7 @@
                 throw new NotFoundException("ServiceNotFound");
 
             if (service.ServiceDays.Any(s => s.isBooking))
-                throw new BadRequestException("CannotUpdateServiceWithExistingBookings");
+                throw new BadRequestException("CannotDeleteServiceWithExistingBookings");
 
             await _doctorServiceRepository.DeleteByIdAsync(serviceId);
             await _doctorServiceRepository.SaveChangesAsync();
