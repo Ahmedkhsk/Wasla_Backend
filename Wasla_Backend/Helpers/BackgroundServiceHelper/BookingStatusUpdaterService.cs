@@ -5,13 +5,16 @@
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly ILogger<BookingStatusUpdaterService> _logger;
         private readonly TimeSpan _interval = TimeSpan.FromMinutes(1);
+        private readonly IHubContext<BookingHub> _hub;
 
         public BookingStatusUpdaterService(
             IServiceScopeFactory scopeFactory,
-            ILogger<BookingStatusUpdaterService> logger)
+            ILogger<BookingStatusUpdaterService> logger,
+            IHubContext<BookingHub> hub)
         {
             _scopeFactory = scopeFactory;
             _logger = logger;
+            _hub = hub;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -51,6 +54,13 @@
 
                             if (booking.serviceDay != null)
                                 booking.serviceDay.isBooking = false;
+                            var bookhubdata = new BookHubData
+                            {
+                                serviceId = booking.serviceDayId,
+                                residentId = booking.userId,
+                                serviceProviderId = booking.serviceProviderId
+                            };
+                            await _hub.Clients.All.SendAsync("BookingCompleted", bookhubdata);
                         }
 
                         await db.SaveChangesAsync(stoppingToken);

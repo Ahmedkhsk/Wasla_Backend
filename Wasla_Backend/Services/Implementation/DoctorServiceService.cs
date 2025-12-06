@@ -5,16 +5,18 @@
         private readonly IDoctorServiceRepository _doctorServiceRepository;
         private readonly IDoctorRepository _doctorRepository;
         private readonly IGenericRepository<ServiceDay> _serviceDayRepo;
-
+        private readonly IHubContext<ServiceHub> _hub;
         public DoctorServiceService(IDoctorServiceRepository doctorServiceRepository
             ,IDoctorRepository doctorRepository
             ,IGenericRepository<ServiceDay> serviceDayRepo
+            , IHubContext<ServiceHub> hub
             )
         {
             _doctorServiceRepository = doctorServiceRepository;
             _doctorRepository = doctorRepository;
             _serviceDayRepo = serviceDayRepo;
-        
+            _hub = hub;
+
         }
         public async Task AddServiceAsync(ServiceDto dto)
         {
@@ -48,6 +50,13 @@
                 await _serviceDayRepo.AddRangeAsync(serviceDays);
                 await _serviceDayRepo.SaveChangesAsync();
             }
+
+            var serviceHubData = new ServiceHubData
+            {
+                serviceProviderId = dto.doctorId,
+                serviceId = service.id
+            };
+            await _hub.Clients.All.SendAsync("ServiceAdded", serviceHubData);
         }
 
         public async Task UpdateServiceAsync(UpdateServiceDto dto)
@@ -90,6 +99,12 @@
 
             _doctorServiceRepository.Update(service);
             await _doctorServiceRepository.SaveChangesAsync();
+            var serviceHubData = new ServiceHubData
+            {
+                serviceProviderId = service.doctorId,
+                serviceId = service.id
+            };
+            await _hub.Clients.All.SendAsync("ServiceUpdated", serviceHubData);
         }
 
         public async Task<IEnumerable<ServiceResponse>> GetServices(string doctorId, string lan)
@@ -138,6 +153,12 @@
 
             await _doctorServiceRepository.DeleteByIdAsync(serviceId);
             await _doctorServiceRepository.SaveChangesAsync();
+            var serviceHubData = new ServiceHubData
+            {
+                serviceProviderId = service.doctorId,
+                serviceId = service.id
+            };
+            await _hub.Clients.All.SendAsync("ServiceDeleted", serviceHubData);
         }
     }
 }

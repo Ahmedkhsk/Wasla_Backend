@@ -59,6 +59,13 @@ namespace Wasla_Backend.Services.Implementation
             booking.bookingStatus = status;
 
             await _bookingRepository.SaveChangesAsync();
+            var bookhubdata = new BookHubData
+            {
+                serviceId = booking.serviceDayId,
+                residentId = booking.userId,
+                serviceProviderId = booking.serviceProviderId
+            };
+            await _hub.Clients.All.SendAsync("Bookingcanceled", bookhubdata);
         }
 
         public async Task UpdateBooking(UpdateBookingDto updateBookingDto)
@@ -82,6 +89,13 @@ namespace Wasla_Backend.Services.Implementation
 
             _bookingRepository.Update(booking);
             await _bookingRepository.SaveChangesAsync();
+            var bookhubdata = new BookHubData
+            {
+                serviceId = booking.serviceDayId,
+                residentId = booking.userId,
+                serviceProviderId = booking.serviceProviderId
+            };
+            await _hub.Clients.All.SendAsync("BookingUpdated", bookhubdata);
         }
 
         public async Task<List<ServiceBookingDetailsDto>> GetBookingDetailsForUserAsync(string userId, string language)
@@ -165,8 +179,13 @@ namespace Wasla_Backend.Services.Implementation
             {
                 await _bookingRepository.SaveChangesAsync();
                 await _doctorRepository.SaveChangesAsync();
-                await _hub.Clients.All.SendAsync("ServiceDayBooked", new {dto.serviceDayId,dto.userId,dto.serviceProviderId});
-                _logger.LogInformation("Broadcasted ServiceDayBooked for ServiceDayId: {ServiceDayId}", dto.serviceDayId);
+                var bookhubdata = new BookHubData
+                {
+                    serviceId = dto.serviceDayId,
+                    residentId = dto.userId,
+                    serviceProviderId = dto.serviceProviderId
+                };
+                await _hub.Clients.All.SendAsync("ServiceDayBooked", bookhubdata);
 
             }
             catch (DbUpdateException ex)
