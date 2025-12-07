@@ -196,5 +196,11 @@ namespace Wasla_Backend.Repositories.Implementation
                 .ToListAsync();
         }
 
+        public Task<int> CountBookingBYUserAndServiceProvider(string userId, string serviceProviderId)
+        {
+            return _context.Booking
+                .Where(b => b.userId == userId && b.serviceProviderId == serviceProviderId)
+                .CountAsync();
+        }
     }
 }

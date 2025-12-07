@@ -54,9 +54,23 @@ namespace Wasla_Backend.Services.Implementation
                 throw new BadRequestException("InvalidBookingStatus");
 
             if (status == BookingStatus.canceled && booking.serviceDay != null)
+            {
                 booking.serviceDay.isBooking = false;
+                var countOfBookings =
+                        await _bookingRepository.CountBookingBYUserAndServiceProvider(booking.userId, booking.serviceProviderId);
+                if (countOfBookings == 1 && booking.serviceProviderType == ServiceProviderType.Doctor)
+                {
+                    var doctor = await _doctorRepository.GetByIdAsync(booking.serviceProviderId);
+                    if (doctor != null && doctor.numberOfpatients > 0)
+                    {
+                        doctor.numberOfpatients -= 1;
+                        _doctorRepository.Update(doctor);
+                        await _doctorRepository.SaveChangesAsync();
+                    }
+                }
+            }
 
-            booking.bookingStatus = status;
+                booking.bookingStatus = status;
 
             await _bookingRepository.SaveChangesAsync();
             var bookhubdata = new BookHubData
