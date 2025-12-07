@@ -16,6 +16,8 @@ namespace Wasla_Backend.Services.Implementation
         {
             builder.AddConsole();
         }).CreateLogger<BookService>();
+        private static readonly SemaphoreSlim _bookingLock = new SemaphoreSlim(1, 1);
+
 
         public BookService( IBookingRepository bookingRepository, 
                             IUserRepository userRepository, 
@@ -108,47 +110,37 @@ namespace Wasla_Backend.Services.Implementation
             return await _bookingRepository.GetBookingDetailsForUserAsync(userId, language);
         }
 
+
         public async Task Book(BookServiceDto dto)
         {
-
-            var user = await _residentRepository.GetByIdAsync(dto.userId);
-            if (user == null)
-                throw new NotFoundException("UserNotFound");
-
-            var serviceProvider = await _userRepository.GetUserByIdAsync(dto.serviceProviderId);
-            if (serviceProvider == null)
-                throw new NotFoundException("ServiceProviderNotFound");
-
-            var serviceDay = await _serviceDayRepository.GetByIdAsync(dto.serviceDayId);
-            if (serviceDay == null)
-                throw new NotFoundException("ServiceDayNotFound");
-
-            if (serviceDay.isBooking)
-                throw new BadRequestException("ServiceAlreadyBooked");
-
-
-            List<string> savedImages = new();
-            if (dto.images != null)
+            await _bookingLock.WaitAsync(); 
+            try
             {
-                foreach (var img in dto.images)
+                var user = await _residentRepository.GetByIdAsync(dto.userId);
+                if (user == null)
+                    throw new NotFoundException("UserNotFound");
+
+                var serviceProvider = await _userRepository.GetUserByIdAsync(dto.serviceProviderId);
+                if (serviceProvider == null)
+                    throw new NotFoundException("ServiceProviderNotFound");
+
+                var serviceDay = await _serviceDayRepository.GetByIdAsync(dto.serviceDayId);
+                if (serviceDay == null)
+                    throw new NotFoundException("ServiceDayNotFound");
+
+                if (serviceDay.isBooking)
+                    throw new BadRequestException("ServiceAlreadyBooked");
+
+                List<string> savedImages = new();
+                if (dto.images != null)
                 {
-                    var path = await FileOperation.SaveFile(img, _imagePath);
-                    savedImages.Add(path);
+                    foreach (var img in dto.images)
+                    {
+                        var path = await FileOperation.SaveFile(img, _imagePath);
+                        savedImages.Add(path);
+                    }
                 }
-            }
-            var Booking = await _bookingRepository.GetByServiceDayId(dto.serviceDayId);
-            if (Booking != null)
-            {
-                Booking.images = savedImages;
-                Booking.bookingDate = dto.bookingDate;
-                Booking.bookingStatus = BookingStatus.upcoming;
-                Booking.userId = dto.userId;
-                serviceDay.isBooking = true;
-                _bookingRepository.Update(Booking);
 
-            }
-            else
-            {
                 var booking = new Booking
                 {
                     userId = dto.userId,
@@ -165,20 +157,20 @@ namespace Wasla_Backend.Services.Implementation
                 _serviceDayRepository.Update(serviceDay);
 
                 await _bookingRepository.AddAsync(booking);
-            }
-            if (serviceProvider is Doctor doc)
-            {
-                var IsExistingBooking = await _bookingRepository.GetByUserIdAndDoctorID(dto.userId, doc.Id);
-                if (!IsExistingBooking)
+
+                if (serviceProvider is Doctor doc)
                 {
-                    doc.numberOfpatients += 1;
-                    _doctorRepository.Update(doc);
+                    var hasExistingBooking = await _bookingRepository.GetByUserIdAndDoctorID(dto.userId, doc.Id);
+                    if (!hasExistingBooking)
+                    {
+                        doc.numberOfpatients += 1;
+                        _doctorRepository.Update(doc);
+                    }
                 }
-            }
-            try
-            {
+
                 await _bookingRepository.SaveChangesAsync();
                 await _doctorRepository.SaveChangesAsync();
+
                 var bookhubdata = new BookHubData
                 {
                     serviceId = dto.serviceDayId,
@@ -186,15 +178,12 @@ namespace Wasla_Backend.Services.Implementation
                     serviceProviderId = dto.serviceProviderId
                 };
                 await _hub.Clients.All.SendAsync("ServiceDayBooked", bookhubdata);
-
             }
-            catch (DbUpdateException ex)
+            finally
             {
-                if (ex.InnerException?.Message.Contains("IX_Booking_serviceDayId") == true)
-                    throw new BadRequestException("ServiceAlreadyBooked");
-
-                throw;                                        
+                _bookingLock.Release(); 
             }
         }
+
     }
 }
