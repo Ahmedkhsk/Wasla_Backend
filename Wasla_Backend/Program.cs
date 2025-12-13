@@ -84,13 +84,16 @@ namespace Wasla_Backend
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowAll", policy =>
+                options.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader();
+                    policy
+                        .WithOrigins("https://wasla-sepia.vercel.app") 
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials(); 
                 });
             });
+
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
@@ -111,9 +114,15 @@ namespace Wasla_Backend
 
             var app = builder.Build();
 
-            app.MapHub<BookingHub>("/bookingHub");
-            app.MapHub<ServiceHub>("/serviceHub");
-            app.MapHub<ReviewHub>("/reviewHub");
+            app.MapHub<BookingHub>("/bookingHub")
+          .RequireCors("CorsPolicy");
+
+            app.MapHub<ServiceHub>("/serviceHub")
+               .RequireCors("CorsPolicy");
+
+            app.MapHub<ReviewHub>("/reviewHub")
+               .RequireCors("CorsPolicy");
+
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
@@ -124,7 +133,7 @@ namespace Wasla_Backend
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCors("AllowAll");
+            app.UseCors("CorsPolicy");
 
             app.UseRequestLocalization(
                 app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
