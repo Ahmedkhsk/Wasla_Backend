@@ -52,5 +52,8 @@ global using Wasla_Backend.DTOs.ReviewDtos;
 global using Wasla_Backend.DTOs.BookDTOS;
 global using Wasla_Backend.DTOs.HubsDto;
 global using Wasla_Backend.Helpers.BackgroundServiceHelper;
+
+
 global using Wasla_Backend.Hubs.BookingHubs;
-global using Wasla_Backend.Hubs.ServiceHubs;   
+global using Wasla_Backend.Hubs.ServiceHubs;
+global using Wasla_Backend.Hubs.ReviewHubs;

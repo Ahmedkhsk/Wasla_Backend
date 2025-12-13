@@ -113,6 +113,7 @@ namespace Wasla_Backend
 
             app.MapHub<BookingHub>("/bookingHub");
             app.MapHub<ServiceHub>("/serviceHub");
+            app.MapHub<ReviewHub>("/reviewHub");
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>

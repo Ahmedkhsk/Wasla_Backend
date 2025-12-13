@@ -25,5 +25,33 @@ namespace Wasla_Backend.Controllers
             var reviews = await _reviewService.GetReviewsByRating(rating);
             return Ok(ResponseHelper.Success("GetReviewsSuccess", lan, reviews));
         }
+        [HttpDelete("rating/{reviewid}")]
+        public async Task<IActionResult>DeleteReview(int reviewid,string lan="en")
+        {
+            await _reviewService.DeleteReviewAsync(reviewid);
+            return Ok(ResponseHelper.Success("ReviewDeletedSuccessfully", lan));
+        }
+        [HttpPost("AddReview")]
+
+        public async Task<IActionResult> AddReview(AddReviewDto addReviewDto, string lan = "en")
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ResponseHelper.Fail("InvalidData", lan, ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
+
+            await _reviewService.AddReviewAsync(addReviewDto);
+            return Ok(ResponseHelper.Success("ReviewAddedSuccessfully", lan));
+        }
+
+        [HttpPut("UpdateReview")]
+        public async Task<IActionResult> UpdateReview(UpdateReviewDto updateReviewDto, string lan = "en")
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ResponseHelper.Fail("InvalidData", lan, ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
+
+            await _reviewService.UpdateReview(updateReviewDto); 
+            return Ok(ResponseHelper.Success("ReviewUpdatedSuccessfully", lan));
+        }
+
+      
     }
 }

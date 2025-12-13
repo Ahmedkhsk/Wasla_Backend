@@ -8,6 +8,14 @@ namespace Wasla_Backend.Repositories.Implementation
         {
         }
 
+        public async Task<float> GetRatingAvgByServiceProvider(string serviceProviderId)
+        {
+
+            float? ratingAvg = await _context.Review.Where(r => r.ServiceProviderId == serviceProviderId)
+                      .AverageAsync(r => (float?)r.Rating);
+            return ratingAvg ?? 0;
+        }
+
         public async Task<IEnumerable<ReviewResponseDto>> GetReviewsByRating(int rating)
         {
             return await _context.Review.Include(r => r.User)

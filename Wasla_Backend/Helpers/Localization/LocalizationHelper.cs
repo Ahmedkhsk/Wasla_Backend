@@ -435,6 +435,26 @@
                 ["en"] = "This service cannot be deleted as it has active bookings.",
                 ["ar"] = "لا يمكن حذف هذه الخدمة لوجود حجوزات نشطة."
             },
+            ["ReviewNotFound"]=new()
+            {
+                ["en"]="ReviewNotFound.",
+                ["ar"] ="التقييم غير موجود"
+            },
+            ["ReviewDeletedSuccessfully"]=new ()
+            {
+                ["en"]= "Review Deleted Successfully",
+                ["ar"]="تم حذف التقييم بنجاح"
+            },
+            ["ReviewAddedSuccessfully"]=new ()
+            {
+                ["en"]= "Review Added Successfully",
+                ["ar"]="تم اضافة التقييم بنجاح"
+            },
+            ["ReviewUpdatedSuccessfully"]=new()
+            {
+                ["en"] = "Review updated Successfully",
+                ["ar"] = "تم تعديل التقييم بنجاح"
+            }
         };
 
         public static string GetLocalizedMessage(string key, string lan)

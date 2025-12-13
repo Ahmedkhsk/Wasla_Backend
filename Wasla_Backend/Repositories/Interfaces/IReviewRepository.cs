@@ -5,5 +5,6 @@ namespace Wasla_Backend.Repositories.Interfaces
     {
         Task<IEnumerable<ReviewResponseDto>> GetReviewsByServiceProviderIdAsync(string serviceProviderId);
         Task<IEnumerable<ReviewResponseDto>>GetReviewsByRating(int rating);
+       Task<float> GetRatingAvgByServiceProvider(string serviceProviderId);
     }
 }

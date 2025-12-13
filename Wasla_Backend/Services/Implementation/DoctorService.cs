@@ -121,6 +121,8 @@ namespace Wasla_Backend.Services.Implementation
         {
             var doctor = await _doctorRepository.GetById(id);
 
+            
+
             if (doctor == null)
                 throw new NotFoundException("DoctorNotFound");
 

@@ -17,5 +17,6 @@
         public string description { get; set; }
         public string image { get; set; }
         public string cv { get; set; }
+        public float rating { get; set; }
     }
 }
