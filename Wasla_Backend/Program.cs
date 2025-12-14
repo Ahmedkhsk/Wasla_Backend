@@ -81,18 +81,35 @@ namespace Wasla_Backend
                 options.AddSupportedUICultures(supportedCultures);
                 options.ApplyCurrentCultureToResponseHeaders = true;
             });
-
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy", policy =>
                 {
                     policy
-                        .WithOrigins("https://wasla-sepia.vercel.app") 
+                        .SetIsOriginAllowed(origin =>
+                        {
+                            if (string.IsNullOrWhiteSpace(origin))
+                                return false;
+
+                            if (origin.StartsWith("http://localhost") ||
+                                origin.StartsWith("http://127.0.0.1"))
+                                return true;
+
+                            var allowedHosts = new[]
+                            {
+                    ".vercel.app",
+                    ".netlify.app",
+                    ".firebaseapp.com"
+                            };
+
+                            return allowedHosts.Any(h => origin.Contains(h));
+                        })
                         .AllowAnyHeader()
                         .AllowAnyMethod()
-                        .AllowCredentials(); 
+                        .AllowCredentials();
                 });
             });
+
 
 
             builder.Services.AddControllers();
@@ -113,16 +130,11 @@ namespace Wasla_Backend
             builder.Logging.AddConsole();
 
             var app = builder.Build();
+            app.UseCors("CorsPolicy");
 
-            app.MapHub<BookingHub>("/bookingHub")
-          .RequireCors("CorsPolicy");
-
-            app.MapHub<ServiceHub>("/serviceHub")
-               .RequireCors("CorsPolicy");
-
-            app.MapHub<ReviewHub>("/reviewHub")
-               .RequireCors("CorsPolicy");
-
+            app.MapHub<BookingHub>("/bookingHub");
+            app.MapHub<ServiceHub>("/serviceHub");
+            app.MapHub<ReviewHub>("/reviewHub");
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
@@ -133,7 +145,6 @@ namespace Wasla_Backend
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCors("CorsPolicy");
 
             app.UseRequestLocalization(
                 app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
