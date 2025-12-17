@@ -23,7 +23,8 @@ namespace Wasla_Backend.Repositories.Implementation
                 .Where(r =>r.Rating == rating)
                 .Select(r => new ReviewResponseDto
                 {
-                    Id = r.Id,
+                    reviewId = r.Id,
+                    userId = r.UserId,  
                     ReviewerName = r.ReviewerName,
                     UserImageUrl = r.User.ProfilePhoto,
                     Rating = r.Rating,
@@ -40,7 +41,8 @@ namespace Wasla_Backend.Repositories.Implementation
                 .Where(r => r.ServiceProviderId == serviceProviderId)
                 .Select(r => new ReviewResponseDto
                 {
-                    Id = r.Id,
+                    reviewId = r.Id,
+                    userId = r.UserId,
                     ReviewerName = r.ReviewerName,
                     UserImageUrl = r.User.ProfilePhoto,
                     Rating = r.Rating,

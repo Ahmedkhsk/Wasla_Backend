@@ -2,7 +2,8 @@
 {
     public class ReviewResponseDto
     {
-        public int Id { get; set; }
+        public int reviewId { get; set; }
+        public string userId { get; set; }
         public string ReviewerName { get; set; }
         public string UserImageUrl { get; set; }
         public int Rating { get; set; }
