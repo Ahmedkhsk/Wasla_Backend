@@ -117,11 +117,10 @@ namespace Wasla_Backend.Services.Implementation
 
             return await  _bookingRepository.GetBookingsByDoctorIdAsync(docId, status, lan);
         }
+        
         public async Task<DoctorProfileResponse> GetDoctorProfile(string id, string lan)
         {
-            var doctor = await _doctorRepository.GetById(id);
-
-            
+            var doctor = await _doctorRepository.GetById(id);    
 
             if (doctor == null)
                 throw new NotFoundException("DoctorNotFound");
@@ -137,11 +136,20 @@ namespace Wasla_Backend.Services.Implementation
         public async Task UpdateDoctorProfile(UpdateDoctorDto updateDoctorDto)
         {
             var doctor = await _doctorRepository.GetById(updateDoctorDto.userId);
+            
             if (doctor == null)
                 throw new NotFoundException("DoctorNotFound");
             
             _mapper.Map(updateDoctorDto, doctor);
            
+            if (updateDoctorDto.specializationId != 0)
+            {
+                var specialization = await _doctorSpecializationRepository.GetByIdAsync(updateDoctorDto.specializationId);
+                if (specialization == null)
+                    throw new NotFoundException("SpecializationNotFound");
+                doctor.SpecializationId = updateDoctorDto.specializationId;
+            }
+
             if (updateDoctorDto.profilePhoto != null)
             {
                 FileOperation.DeleteFile(doctor.ProfilePhoto, _imagePath);
@@ -155,8 +163,10 @@ namespace Wasla_Backend.Services.Implementation
                 var cv = await FileOperation.SaveFile(updateDoctorDto.cv, _cvPath);
                 doctor.CV = cv;
             }
+
             _doctorRepository.Update(doctor);
             await _doctorRepository.SaveChangesAsync();
         }
+    
     }
 }
