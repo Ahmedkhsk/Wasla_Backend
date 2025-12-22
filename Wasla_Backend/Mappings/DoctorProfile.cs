@@ -57,9 +57,8 @@
                 .ForMember(dest => dest.ExperienceYears, opt => opt.MapFrom(src => src.experienceYears))
                 .ForMember(dest => dest.UniversityName, opt => opt.MapFrom(src => src.universityName))
                 .ForMember(dest => dest.GraduationYear, opt => opt.MapFrom(src => src.graduationYear))
-                .ForMember(dest => dest.hospitalname, opt => opt.MapFrom(src => src.hospitalName))
-                .ForMember(dest => dest.SpecializationId, opt => opt.MapFrom(src => src.specializationId));
-
+                .ForMember(dest => dest.hospitalname, opt => opt.MapFrom(src => src.hospitalName));
+            
         }
 
     }

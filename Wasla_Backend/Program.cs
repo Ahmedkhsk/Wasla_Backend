@@ -81,6 +81,7 @@ namespace Wasla_Backend
                 options.AddSupportedUICultures(supportedCultures);
                 options.ApplyCurrentCultureToResponseHeaders = true;
             });
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy", policy =>
@@ -97,9 +98,9 @@ namespace Wasla_Backend
 
                             var allowedHosts = new[]
                             {
-                    ".vercel.app",
-                    ".netlify.app",
-                    ".firebaseapp.com"
+                                ".vercel.app",
+                                ".netlify.app",
+                                ".firebaseapp.com"
                             };
 
                             return allowedHosts.Any(h => origin.Contains(h));

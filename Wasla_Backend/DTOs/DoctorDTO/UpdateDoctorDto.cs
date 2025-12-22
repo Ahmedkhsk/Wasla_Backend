@@ -12,7 +12,7 @@
         public string universityName { get; set; }
         public double graduationYear { get; set; }
         public string hospitalName { get; set; }
-        public int specializationId { get; set; }
+        public int specializationId { get; set; } = 0;
         public IFormFile? profilePhoto { get; set; }
         public IFormFile? cv { get; set; }
     }
