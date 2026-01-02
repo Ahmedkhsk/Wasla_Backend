@@ -31,6 +31,9 @@ namespace Wasla_Backend.Services.Implementation
             var serviceProvider=await _UserRepository.GetUserByIdAsync(review.serviceProviderId);
             if (serviceProvider == null)
                 throw new NotFoundException("ServiceProviderNotFound");
+            var numberOfReviews = await _reviewRepository.CountByServiceProviderAndUserId(review.serviceProviderId, review.userId);
+            if (numberOfReviews >=3)
+                throw new BadRequestException("CannotAddMoreThan3Reviews");
             var Review = ReviewFactory.createReview();
            _mapper.Map(review,Review);
             Review.ReviewerName = user.FullName;
@@ -44,8 +47,6 @@ namespace Wasla_Backend.Services.Implementation
             await _serviceProviderRepositpry.SaveChangesAsync();
             var AddReview = new ReviewHubData { residentId = user.Id, serviceProviderId = serviceProvider.Id, reviewId = Review.Id };
            await _hub.Clients.All.SendAsync("ReviewAdded", AddReview);
-
-
 
         }
 

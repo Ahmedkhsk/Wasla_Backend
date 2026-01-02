@@ -52,5 +52,12 @@ namespace Wasla_Backend.Repositories.Implementation
                 .ToListAsync();
 
         }
+
+        public Task<int>CountByServiceProviderAndUserId(string serviceProviderId, string userId)
+        {
+          return _context.Review.AsNoTracking()
+                .Where(r => r.ServiceProviderId == serviceProviderId && r.UserId == userId)
+                .CountAsync();
+        }
     }
 }

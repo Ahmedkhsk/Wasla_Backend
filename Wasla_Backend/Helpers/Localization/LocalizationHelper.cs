@@ -455,6 +455,14 @@
                 ["en"] = "Review updated Successfully",
                 ["ar"] = "تم تعديل التقييم بنجاح"
             }
+            ,
+            ["CannotAddMoreThan3Reviews"] = new()
+            {
+                ["en"] = "You cannot add more than three reviews for the same service provider.",
+                ["ar"] = "لا يمكن إضافة أكثر من 3 تقييمات لنفس مزود الخدمة."
+            }
+
+
         };
 
         public static string GetLocalizedMessage(string key, string lan)
