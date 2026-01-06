@@ -26,10 +26,12 @@ namespace Wasla_Backend.Repositories.Implementation
                 .Select(f => new ServiceProviderFavourite
                 {
                     id = f.Id,
+                    residentId = f.UserId,
+                    serviceProviderId = f.ServiceProviderId,
                     serviceProviderName = f.ServiceProvider.FullName,
                     serviceProviderProfilePhoto = f.ServiceProvider.ProfilePhoto,
                     serviceProviderPhone = f.ServiceProvider.Phone,
-                    ServiceProviderType = f.ServiceType
+                    ServiceProviderType = f.ServiceType.ToString()
                 })
                 .ToListAsync();
         }
@@ -45,10 +47,12 @@ namespace Wasla_Backend.Repositories.Implementation
                 .Select(f => new ServiceProviderFavourite
                 {
                     id = f.Id,
+                    residentId = f.UserId,
+                    serviceProviderId = f.ServiceProviderId,
                     serviceProviderName = f.ServiceProvider.FullName,
                     serviceProviderProfilePhoto = f.ServiceProvider.ProfilePhoto,
                     serviceProviderPhone = f.ServiceProvider.Phone,
-                    ServiceProviderType = f.ServiceType
+                    ServiceProviderType = f.ServiceType.ToString()
                 })
                 .ToListAsync();
         }
