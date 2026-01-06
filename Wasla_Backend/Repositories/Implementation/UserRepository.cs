@@ -3,10 +3,12 @@
     public class UserRepository :  IUserRepository
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly Context _context;
 
-        public UserRepository(UserManager<ApplicationUser> userManager) 
+        public UserRepository(UserManager<ApplicationUser> userManager,Context context) 
         {
             _userManager = userManager;
+            _context = context ;
         }
 
         public async Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password)
@@ -19,7 +21,12 @@
             => await _userManager.FindByIdAsync(id);
         public async Task<IEnumerable<ApplicationUser>>GetAll()
             => await _userManager.Users.ToListAsync();
-
+        public async Task<List<ApplicationUser>> GetUsersByIdsAsync(List<string> ids)
+        {
+            return await _context.Users
+                .Where(u => ids.Contains(u.Id))
+                .ToListAsync();
+        }
 
 
     }

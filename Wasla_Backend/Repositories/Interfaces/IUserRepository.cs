@@ -7,6 +7,8 @@
         public Task<IdentityResult> UpdateUserAsync(ApplicationUser user);
         Task<ApplicationUser> GetUserByIdAsync(string id);
         public  Task<IEnumerable<ApplicationUser>> GetAll();
+        Task<List<ApplicationUser>> GetUsersByIdsAsync(List<string> ids);
+
 
     }
 }

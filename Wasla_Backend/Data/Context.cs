@@ -13,7 +13,7 @@
         public DbSet<ResidentIdentity> residentIdentities { get; set; }
         public DbSet<Service> Service { get; set; }
         public DbSet<ServiceDay> ServiceDay { get; set; }
-        public DbSet<Favorites> Favorite { get; set; }
+        public DbSet<Favourites> Favorite { get; set; }
         public DbSet<Reviews> Review { get; set; }
         public DbSet<Booking> Booking { get; set; }
 

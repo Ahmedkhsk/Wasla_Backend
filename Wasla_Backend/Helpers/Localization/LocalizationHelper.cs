@@ -74,7 +74,7 @@
                 ["en"] = "Password is incorrect.",
                 ["ar"] = "كلمة المرور غير صحيحة."
             },
-  
+
             ["PassMismatch"] = new()
             {
                 ["en"] = "New password and confirm password do not match.",
@@ -250,12 +250,12 @@
                 ["en"] = "Profile fetched successfully",
                 ["ar"] = "تم جلب الملف الشخصي بنجاح"
             },
-            ["GetAllUsersSuccess"]=new()
+            ["GetAllUsersSuccess"] = new()
             {
                 ["en"] = "All users fetched successfully",
                 ["ar"] = "تم جلب جميع المستخدمين بنجاح"
             },
-            ["DeleteUserSuccess"]= new()
+            ["DeleteUserSuccess"] = new()
             {
                 ["en"] = "User deleted successfully",
                 ["ar"] = "تم حذف المستخدم بنجاح"
@@ -345,12 +345,12 @@
                 ["en"] = "The selected time slot was not found.",
                 ["ar"] = "لم يتم العثور على الوقت المحدد."
             },
-            ["BookingNotFound"]=new()
+            ["BookingNotFound"] = new()
             {
                 ["en"] = "Booking not found.",
                 ["ar"] = "لم يتم العثور على الحجز."
             },
-            ["ServiceDayNotFound"]= new()
+            ["ServiceDayNotFound"] = new()
             {
                 ["en"] = "Service day not found.",
                 ["ar"] = "لم يتم العثور على يوم الخدمة."
@@ -360,17 +360,17 @@
                 ["en"] = "Booking confirmed successfully.",
                 ["ar"] = "تم تأكيد الحجز بنجاح."
             },
-            ["DoctorNotFound"]=new()
+            ["DoctorNotFound"] = new()
             {
                 ["en"] = "Doctor not found.",
                 ["ar"] = "لم يتم العثور على الطبيب."
             },
-            ["RoleIdRequired"]=new()
+            ["RoleIdRequired"] = new()
             {
                 ["en"] = "Role ID is required.",
                 ["ar"] = "معرف الدور مطلوب."
             },
-            ["RoleDeletionFailed"]=new()
+            ["RoleDeletionFailed"] = new()
             {
                 ["en"] = "Failed to delete the role.",
                 ["ar"] = "فشل في حذف الدور."
@@ -435,22 +435,22 @@
                 ["en"] = "This service cannot be deleted as it has active bookings.",
                 ["ar"] = "لا يمكن حذف هذه الخدمة لوجود حجوزات نشطة."
             },
-            ["ReviewNotFound"]=new()
+            ["ReviewNotFound"] = new()
             {
-                ["en"]="ReviewNotFound.",
-                ["ar"] ="التقييم غير موجود"
+                ["en"] = "ReviewNotFound.",
+                ["ar"] = "التقييم غير موجود"
             },
-            ["ReviewDeletedSuccessfully"]=new ()
+            ["ReviewDeletedSuccessfully"] = new()
             {
-                ["en"]= "Review Deleted Successfully",
-                ["ar"]="تم حذف التقييم بنجاح"
+                ["en"] = "Review Deleted Successfully",
+                ["ar"] = "تم حذف التقييم بنجاح"
             },
-            ["ReviewAddedSuccessfully"]=new ()
+            ["ReviewAddedSuccessfully"] = new()
             {
-                ["en"]= "Review Added Successfully",
-                ["ar"]="تم اضافة التقييم بنجاح"
+                ["en"] = "Review Added Successfully",
+                ["ar"] = "تم اضافة التقييم بنجاح"
             },
-            ["ReviewUpdatedSuccessfully"]=new()
+            ["ReviewUpdatedSuccessfully"] = new()
             {
                 ["en"] = "Review updated Successfully",
                 ["ar"] = "تم تعديل التقييم بنجاح"
@@ -460,10 +460,37 @@
             {
                 ["en"] = "You cannot add more than three reviews for the same service provider.",
                 ["ar"] = "لا يمكن إضافة أكثر من 3 تقييمات لنفس مزود الخدمة."
+            },
+            ["InvalidServiceProviderType"] = new()
+            {
+                ["en"] = "Invalid Service Provider Type.",
+                ["ar"] = "نوع مزود الخدمة غير صالح."
+            },
+            ["FavouriteNotFound"] = new()
+            {
+                ["en"] = "Favourite not found.",
+                ["ar"] = "المفضل غير موجود."
+            },
+            ["FavouriteAddedSuccessfully"] = new()
+            {
+                ["en"] = "Favourite added successfully.",
+                ["ar"] = "تمت إضافة المفضل بنجاح."
+            },
+            ["FavouriteRemovedSuccessfully"] = new()
+            {
+                ["en"] = "Favourite removed successfully.",
+                ["ar"] = "تمت إزالة المفضل بنجاح."
+
+
+            },
+            ["FavouritesRetrievedSuccessfully"] = new()
+            {
+                ["en"] = "Favourites retrieved successfully.",
+                ["ar"] = "تم جلب المفضلات بنجاح."
             }
 
-
         };
+
 
         public static string GetLocalizedMessage(string key, string lan)
         {

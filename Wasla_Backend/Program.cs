@@ -30,6 +30,7 @@ namespace Wasla_Backend
             builder.Services.AddScoped<IDoctorServiceRepository, DoctorServiceRepository>();
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
             builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+            builder.Services.AddScoped<IFavouriteRepository, FavouriteRepository>();
 
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IRoleService, RoleService>();
@@ -38,6 +39,7 @@ namespace Wasla_Backend
             builder.Services.AddScoped<IDoctorServiceService, DoctorServiceService>();
             builder.Services.AddScoped<IReviewService, ReviewService>();
             builder.Services.AddScoped<IBookService, BookService>();
+            builder.Services.AddScoped<IFavouriteService, FavouriteService>();
 
             builder.Services.AddScoped<TokenHelper>();
             builder.Services.AddScoped<IUserFactory, UserFactory>();
