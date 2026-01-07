@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Wasla_Backend.Models;
 
 namespace Wasla_Backend.Services.Implementation
 {
@@ -129,6 +130,8 @@ namespace Wasla_Backend.Services.Implementation
             {
                 opt.Items["lan"] = lan;
             });
+
+            doctorProfileResponse.numberOfpatients = await _bookingRepository.GetNumberOfPatientByDoctorId(doctor.Id);
 
             return doctorProfileResponse;
         }

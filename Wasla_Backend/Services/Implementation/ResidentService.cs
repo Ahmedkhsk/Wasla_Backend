@@ -98,6 +98,8 @@ namespace Wasla_Backend.Services.Implementation
 
             var bookings = await _bookingRepository.GetBookingsForResidentAsync(residentId);
 
+            bookings = bookings.Where(b => b.bookingStatus == BookingStatus.completed).ToList();
+
             var dto = new ResidentChartDto
             {
                 numOfBookings = bookings.Count,
