@@ -19,10 +19,10 @@ namespace Wasla_Backend.Controllers
             var reviews = await _reviewService.GetReviewsByServiceProviderIdAsync(serviceProviderId);
             return Ok(ResponseHelper.Success("GetReviewsSuccess",lan,reviews));
         }
-        [HttpGet("rating/{rating}")]
-        public async Task<IActionResult> GetReviewsByRating(int rating, string lan = "en")
+        [HttpGet("ratings/{rating}/service-providers/{serviceProviderId}")]
+        public async Task<IActionResult> GetReviewsByRatingForServiceProvider(int rating,string serviceProviderId, string lan = "en")
         {
-            var reviews = await _reviewService.GetReviewsByRating(rating);
+            var reviews = await _reviewService.GetReviewsByRating(rating, serviceProviderId);
             return Ok(ResponseHelper.Success("GetReviewsSuccess", lan, reviews));
         }
         [HttpDelete("rating/{reviewid}")]

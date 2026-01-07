@@ -16,11 +16,11 @@ namespace Wasla_Backend.Repositories.Implementation
             return ratingAvg ?? 0;
         }
 
-        public async Task<IEnumerable<ReviewResponseDto>> GetReviewsByRating(int rating)
+        public async Task<IEnumerable<ReviewResponseDto>> GetReviewsByRating(int rating,string serviceProviderId)
         {
             return await _context.Review.Include(r => r.User)
                 .AsNoTracking()
-                .Where(r =>r.Rating == rating)
+                .Where(r =>r.Rating == rating&&r.ServiceProviderId==serviceProviderId)
                 .Select(r => new ReviewResponseDto
                 {
                     reviewId = r.Id,

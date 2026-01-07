@@ -63,9 +63,9 @@ namespace Wasla_Backend.Services.Implementation
 
         }
 
-        public async Task<IEnumerable<ReviewResponseDto>> GetReviewsByRating(int rating)
+        public async Task<IEnumerable<ReviewResponseDto>> GetReviewsByRating(int rating,string serviceProviderId)
         {
-            var reviews =await _reviewRepository.GetReviewsByRating(rating);
+            var reviews =await _reviewRepository.GetReviewsByRating(rating,serviceProviderId);
             return reviews;
         }
 
