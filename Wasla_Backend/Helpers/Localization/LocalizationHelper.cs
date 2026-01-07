@@ -487,7 +487,17 @@
             {
                 ["en"] = "Favourites retrieved successfully.",
                 ["ar"] = "تم جلب المفضلات بنجاح."
-            }
+            },
+            ["TimeZoneNotConfigured"] = new()
+            {
+                ["en"] = "Default time zone is not configured.",
+                ["ar"] = "لم يتم إعداد المنطقة الزمنية الافتراضية."
+            },
+            ["BookingStatusUpdaterIterationFailed"] = new()
+            {
+                ["en"] = "An error occurred while processing bookings.",
+                ["ar"] = "حدث خطأ أثناء معالجة الحجوزات."
+            },
 
         };
 
