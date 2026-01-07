@@ -498,6 +498,11 @@
                 ["en"] = "An error occurred while processing bookings.",
                 ["ar"] = "حدث خطأ أثناء معالجة الحجوزات."
             },
+            ["ServiceHasBookings"] = new()
+            {
+                ["en"] = "This service cannot be deleted or update because it has existing bookings.",
+                ["ar"] = "لا يمكن حذف او تعديل هذه الخدمة لوجود حجوزات مرتبطة بها."
+            }
 
         };
 

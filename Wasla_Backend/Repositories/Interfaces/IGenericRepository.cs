@@ -13,6 +13,7 @@ namespace Wasla_Backend.Repositories.Interfaces
         public Task<List<T>> FindAsync(Expression<Func<T, bool>> predicate);
         public void Update(T entity);
         public void Delete(T entity);
+        Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
         public Task SaveChangesAsync();
     }
 }

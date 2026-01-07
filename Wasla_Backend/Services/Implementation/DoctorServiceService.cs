@@ -1,19 +1,24 @@
-﻿namespace Wasla_Backend.Services.Implementation
+﻿using Wasla_Backend.Models;
+
+namespace Wasla_Backend.Services.Implementation
 {
     public class DoctorServiceService : IDoctorServiceService
     {
         private readonly IDoctorServiceRepository _doctorServiceRepository;
         private readonly IDoctorRepository _doctorRepository;
         private readonly IGenericRepository<ServiceDay> _serviceDayRepo;
+        private readonly IBookingRepository _bookingRepository;
         private readonly IHubContext<ServiceHub> _hub;
         public DoctorServiceService(IDoctorServiceRepository doctorServiceRepository
             ,IDoctorRepository doctorRepository
             ,IGenericRepository<ServiceDay> serviceDayRepo
+            ,IBookingRepository bookingRepository
             , IHubContext<ServiceHub> hub
             )
         {
             _doctorServiceRepository = doctorServiceRepository;
             _doctorRepository = doctorRepository;
+            _bookingRepository = bookingRepository;
             _serviceDayRepo = serviceDayRepo;
             _hub = hub;
 
@@ -65,8 +70,11 @@
             if (service == null)
                 throw new NotFoundException("ServiceNotFound");
 
-            if (service.ServiceDays.Any(s => s.isBooking))
-                throw new BadRequestException("CannotUpdateServiceWithExistingBookings");
+            var hasAnyBookings = await _bookingRepository
+                            .AnyAsync(b => b.serviceDay.serviceId == dto.serviceId);
+
+            if (hasAnyBookings)
+                throw new BadRequestException("ServiceHasBookings");
 
             service.serviceName = dto.serviceName;
             service.description = dto.description;
@@ -148,6 +156,12 @@
             if(service == null)
                 throw new NotFoundException("ServiceNotFound");
 
+            var hasAnyBookings = await _bookingRepository
+                                    .AnyAsync(b => b.serviceDay.serviceId == serviceId);
+
+            if (hasAnyBookings)
+                throw new BadRequestException("ServiceHasBookings");
+
             if (service.ServiceDays.Any(s => s.isBooking))
                 throw new BadRequestException("CannotDeleteServiceWithExistingBookings");
 
@@ -160,5 +174,6 @@
             };
             await _hub.Clients.All.SendAsync("ServiceDeleted", serviceHubData);
         }
+    
     }
 }
