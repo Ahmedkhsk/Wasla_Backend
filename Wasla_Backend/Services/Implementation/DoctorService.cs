@@ -139,7 +139,11 @@ namespace Wasla_Backend.Services.Implementation
             
             if (doctor == null)
                 throw new NotFoundException("DoctorNotFound");
-            
+
+            var image = doctor.ProfilePhoto;
+            var cv = doctor.CV;
+            var specializationId = doctor.SpecializationId;
+
             _mapper.Map(updateDoctorDto, doctor);
            
             if (updateDoctorDto.specializationId != 0)
@@ -149,18 +153,30 @@ namespace Wasla_Backend.Services.Implementation
                     throw new NotFoundException("SpecializationNotFound");
                 doctor.SpecializationId = updateDoctorDto.specializationId;
             }
+            else
+            {
+                doctor.SpecializationId = specializationId;
+            }
 
             if (updateDoctorDto.profilePhoto != null)
             {
                 FileOperation.DeleteFile(doctor.ProfilePhoto, _imagePath);
-                var image = await FileOperation.SaveFile(updateDoctorDto.profilePhoto, _imagePath);
+                image = await FileOperation.SaveFile(updateDoctorDto.profilePhoto, _imagePath);
+                doctor.ProfilePhoto = image;
+            }
+            else
+            {
                 doctor.ProfilePhoto = image;
             }
 
             if (updateDoctorDto.cv != null)
             {
                 FileOperation.DeleteFile(doctor.CV, _cvPath);
-                var cv = await FileOperation.SaveFile(updateDoctorDto.cv, _cvPath);
+                cv = await FileOperation.SaveFile(updateDoctorDto.cv, _cvPath);
+                doctor.CV = cv;
+            }
+            else
+            {
                 doctor.CV = cv;
             }
 
