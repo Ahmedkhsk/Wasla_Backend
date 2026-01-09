@@ -15,8 +15,8 @@ namespace Wasla_Backend.Controllers
         [HttpPost("AddFavourite")]
         public async Task<IActionResult> AddFavourite(string residentId, string serviceProviderId,  string lan = "en")
         {
-            await _favouriteService.AddFavourite(residentId, serviceProviderId);
-            return Ok(ResponseHelper.Success("FavouriteAddedSuccessfully", lan));
+           var favourite= await _favouriteService.AddFavourite(residentId, serviceProviderId);
+            return Ok(ResponseHelper.Success("FavouriteAddedSuccessfully", lan,favourite));
         }
         [HttpDelete("RemoveFavourite")]
         public async Task<IActionResult> RemoveFavourite(int favouriteId, string lan = "en")

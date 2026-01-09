@@ -11,7 +11,7 @@ namespace Wasla_Backend.Services.Implementation
             _favouriteRepository = favouriteRepository;
             _userRepository = userRepository;
         }
-        public async Task AddFavourite(string residentId, string serviceProviderId)
+        public async Task<ServiceProviderFavourite> AddFavourite(string residentId, string serviceProviderId)
         {
             var user = await _userRepository.GetUserByIdAsync(residentId);
             if(user == null) 
@@ -27,6 +27,16 @@ namespace Wasla_Backend.Services.Implementation
             };
             await _favouriteRepository.AddAsync(favourite);
            await _favouriteRepository.SaveChangesAsync();
+            return new ServiceProviderFavourite
+            {
+                id = favourite.Id,
+                residentId = residentId,
+                serviceProviderId = serviceProviderId,
+                serviceProviderName = serviceProvider.FullName,
+                serviceProviderProfilePhoto = serviceProvider.ProfilePhoto,
+                serviceProviderPhone = serviceProvider.Phone,
+                ServiceProviderType = favourite.ServiceType.ToString()
+            };
         }
 
         public async Task<List<ServiceProviderFavourite>> GetAll(string residentId)
