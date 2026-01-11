@@ -55,8 +55,16 @@ namespace Wasla_Backend.Services.Implementation
             var review = await _reviewRepository.GetByIdAsync(reviewId);
             if (review == null)
                 throw new NotFoundException("ReviewNotFound");
+            var serviceprovider = await _UserRepository.GetUserByIdAsync(review.ServiceProviderId);
+
             _reviewRepository.Delete(review);
             await _reviewRepository.SaveChangesAsync();
+            if (serviceprovider is ServiceProvider provider)
+            {
+                provider.Rating = await _reviewRepository.GetRatingAvgByServiceProvider(provider.Id);
+            }
+            await _serviceProviderRepositpry.SaveChangesAsync();
+
             var deleteReview = new ReviewHubData { residentId = review.UserId, serviceProviderId = review.ServiceProviderId,
                 reviewId = review.Id };
             await _hub.Clients.All.SendAsync("ReviewDeleted", deleteReview);
