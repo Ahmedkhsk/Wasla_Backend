@@ -1,8 +1,4 @@
-﻿
-using System.Text.RegularExpressions;
-using Wasla_Backend.DTOs.DoctorDTO;
-
-namespace Wasla_Backend.Services.Implementation
+﻿namespace Wasla_Backend.Services.Implementation
 {
     public class ResidentService : IResidentService
     {

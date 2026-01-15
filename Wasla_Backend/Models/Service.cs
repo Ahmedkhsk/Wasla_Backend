@@ -11,5 +11,7 @@
 
         [ForeignKey("doctor")]
         public string doctorId { get; set; }
+
+        public bool isDelete { get; set; } = false;
     }
 }

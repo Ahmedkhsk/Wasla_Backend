@@ -156,16 +156,11 @@ namespace Wasla_Backend.Services.Implementation
             if(service == null)
                 throw new NotFoundException("ServiceNotFound");
 
-            var hasAnyBookings = await _bookingRepository
-                                    .AnyAsync(b => b.serviceDay.serviceId == serviceId);
-
-            if (hasAnyBookings)
-                throw new BadRequestException("ServiceHasBookings");
-
             if (service.ServiceDays.Any(s => s.isBooking))
                 throw new BadRequestException("CannotDeleteServiceWithExistingBookings");
 
-            await _doctorServiceRepository.DeleteByIdAsync(serviceId);
+            service.isDelete = true;
+            _doctorServiceRepository.Update(service);
             await _doctorServiceRepository.SaveChangesAsync();
             var serviceHubData = new ServiceHubData
             {
