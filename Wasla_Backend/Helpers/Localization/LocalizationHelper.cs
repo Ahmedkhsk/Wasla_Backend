@@ -508,6 +508,29 @@
                 ["en"] = "Too many requests. Please try again later.",
                 ["ar"] = "طلبات كثيرة جدا. يرجى المحاولة لاحقًا."
             }
+            ,
+            ["FileIsRequired"] = new()
+            {
+                ["en"] = "File is required.",
+                ["ar"] = "الملف مطلوب."
+            }
+            ,
+            ["FileSizeExceeded"] = new()
+            {
+                ["en"] = "File size exceeded the maximum limit of 5 MB.",
+                ["ar"] = "تجاوز حجم الملف الحد الأقصى المسموح به وهو 5 ميجابايت."
+            },
+            ["InvalidFileType"] = new()
+            {
+                ["en"] = "Invalid file type. Allowed types are: .jpg, .jpeg, .png, .webp, .pdf.",
+                ["ar"] = "نوع الملف غير صالح. الأنواع المسموح بها هي: .jpg، .jpeg، .png، .webp، .pdf."
+            },
+            ["InvalidFileContentType"] = new()
+            {
+                ["en"] = "Invalid file content type.",
+                ["ar"] = "نوع محتوى الملف غير صالح."
+            }
+
 
         };
 
