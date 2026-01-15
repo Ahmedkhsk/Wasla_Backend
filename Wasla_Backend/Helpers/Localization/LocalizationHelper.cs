@@ -502,6 +502,11 @@
             {
                 ["en"] = "This service cannot be deleted or update because it has existing bookings.",
                 ["ar"] = "لا يمكن حذف او تعديل هذه الخدمة لوجود حجوزات مرتبطة بها."
+            },
+            ["TooManyRequests"]=new()
+            {
+                ["en"] = "Too many requests. Please try again later.",
+                ["ar"] = "طلبات كثيرة جدا. يرجى المحاولة لاحقًا."
             }
 
         };

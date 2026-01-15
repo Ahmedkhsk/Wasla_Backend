@@ -71,6 +71,9 @@ namespace Wasla_Backend
 
             builder.Services.Configure<EmailSettings>(
                 builder.Configuration.GetSection("Email"));
+            builder.Services.Configure<RateLimitSettings>(
+             builder.Configuration.GetSection("RateLimitSettings"));
+
 
             builder.Services.AddLocalization(options =>
                 options.ResourcesPath = "Resources");
@@ -153,6 +156,7 @@ namespace Wasla_Backend
                 app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
             app.UseMiddleware<ExceptionMiddleware>();
+            app.UseMiddleware<RateLimitingMiddleware>();
 
             app.UseAuthentication();
             app.UseAuthorization();
