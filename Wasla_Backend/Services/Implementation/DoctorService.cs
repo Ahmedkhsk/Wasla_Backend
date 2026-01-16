@@ -186,6 +186,21 @@ namespace Wasla_Backend.Services.Implementation
             _doctorRepository.Update(doctor);
             await _doctorRepository.SaveChangesAsync();
         }
-    
+
+        public async Task<AllDoctorDataDto> GetDoctorData(string doctorId, string lan)
+        {
+            var doc=await _doctorRepository.GetById(doctorId);
+            if (doc == null)
+                throw new NotFoundException("DoctorNotFound");
+            var doctor = await _doctorRepository.GetDoctorData(doctorId);
+
+            if (doctor == null)
+                return null;
+
+            doctor.specialtyName =
+                await _doctorRepository.GetDoctorSpecializationName(doctorId, lan);
+
+            return doctor;
+        }
     }
 }

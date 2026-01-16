@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Wasla_Backend.Repositories.Interfaces;
 
 namespace Wasla_Backend.Repositories.Implementation
 {
@@ -41,6 +42,35 @@ namespace Wasla_Backend.Repositories.Implementation
                 .OrderByDescending(d=>d.Rating)
                 .ToListAsync();
         }
+
+        public async Task<AllDoctorDataDto?> GetDoctorData(string doctorId)
+        {
+         var doctor = await _context.Doctors
+         .AsNoTracking()
+         .Where(d => d.Id == doctorId)
+         .Select(d => new AllDoctorDataDto
+         {
+             Id = d.Id,
+             FullName = d.FullName,
+             ExperienceYears = d.ExperienceYears,
+             Rating = d.Rating,
+             UniversityName = d.UniversityName,
+             GraduationYear = d.GraduationYear,
+             hospitalname = d.hospitalname,
+             numberOfpatients = d.numberOfpatients,
+             BirthDay = d.BirthDay,
+             Phone = d.Phone,
+             Latitude = d.Latitude,
+             Longitude = d.Longitude,
+             Description = d.Description,
+             ImageUrl = d.ProfilePhoto,
+             CVUrl = d.CV
+         })
+         .FirstOrDefaultAsync();
+
+            return doctor;
+        }
+
 
         public async Task<string?> GetDoctorSpecializationName(string doctorId, string language)
         {

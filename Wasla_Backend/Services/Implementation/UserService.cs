@@ -205,7 +205,10 @@
                 Token = token,
                 UserId = user.Id,
                 Role = roles.FirstOrDefault(),
-                RefreshToken = refreshToken.Token
+                RefreshToken = refreshToken.Token,
+                IsCompletedRegister = user.IsCompleteRegistration,
+                IsVerfied = user.IsVerified,
+                statue = user.Status
             };
         }
 

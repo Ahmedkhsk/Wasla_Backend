@@ -4,7 +4,7 @@
     {
         private static readonly string[] AllowedExtensions =
         {
-            ".jpg", ".jpeg", ".png", ".pdf"
+            ".jpg", ".jpeg", ".png", ".pdf",".docx"
         };
 
         private static readonly string[] AllowedContentTypes =

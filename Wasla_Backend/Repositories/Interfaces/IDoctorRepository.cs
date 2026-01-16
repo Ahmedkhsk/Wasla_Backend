@@ -7,6 +7,7 @@
         public Task<IEnumerable<Doctor>> GetBySpecialist(int specialistId);
         public  Task<string?> GetDoctorSpecializationName(string doctorId, string language);
         public Task<IEnumerable<Doctor>>GetAllSortedByRating();
+        public Task<AllDoctorDataDto> GetDoctorData(String doctorId);
 
     }
 }

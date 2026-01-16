@@ -522,13 +522,18 @@
             },
             ["InvalidFileType"] = new()
             {
-                ["en"] = "Invalid file type. Allowed types are: .jpg, .jpeg, .png, .webp, .pdf.",
-                ["ar"] = "نوع الملف غير صالح. الأنواع المسموح بها هي: .jpg، .jpeg، .png، .webp، .pdf."
+                ["en"] = "Invalid file type. Allowed types are: .jpg, .jpeg, .png, .docx, .pdf.",
+                ["ar"] = "نوع الملف غير صالح. الأنواع المسموح بها هي: .jpg، .jpeg، .png، .docx، .pdf."
             },
             ["InvalidFileContentType"] = new()
             {
                 ["en"] = "Invalid file content type.",
                 ["ar"] = "نوع محتوى الملف غير صالح."
+            },
+            ["FetchDoctorDataSuccess"]=new()
+            {
+                ["en"] = "Doctor data fetched successfully.",
+                ["ar"] = "تم جلب بيانات الطبيب بنجاح."
             }
 
 
