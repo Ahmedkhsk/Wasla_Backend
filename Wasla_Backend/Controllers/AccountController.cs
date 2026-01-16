@@ -108,12 +108,12 @@
         }
 
         [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken(RefreshTokenDto model, string lan = "en")
+        public async Task<IActionResult> RefreshToken( string lan = "en")
         {
             if (!ModelState.IsValid)
                 return BadRequest(ResponseHelper.Fail("InvalidData", lan, ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
 
-            var response = await _userService.RefreshTokenAsync(model);
+            var response = await _userService.RefreshTokenAsync();
 
             if (response == null)
                 return BadRequest(ResponseHelper.Fail("InvalidToken", lan));

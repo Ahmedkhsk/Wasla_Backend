@@ -12,6 +12,8 @@
         private readonly TokenHelper _TokenHelper;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly string _imagePath;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
 
         public UserService(
             IUserFactory userFactory,
@@ -23,7 +25,8 @@
             TokenHelper tokenHelper,
             UserManager<ApplicationUser> userManager,
             IRefreshTokenRepository refreshTokenRepository,
-            IWebHostEnvironment webHostEnvironment
+            IWebHostEnvironment webHostEnvironment,
+            IHttpContextAccessor httpContextAccessor
         )
         {
             _userFactory = userFactory;
@@ -38,6 +41,7 @@
 
             _imagePath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.ImagesPathUser.TrimStart('/'));
             _refreshTokenRepository = refreshTokenRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<IdentityResult> VerifyEmailAsync(VerificationEmailDto model)
@@ -133,7 +137,6 @@
                 Token = token,
                 UserId = user.Id,
                 Role = roles.FirstOrDefault(),
-                RefreshToken = refreshToken,
                 IsCompletedRegister=user.IsCompleteRegistration,
                 IsVerfied=user.IsVerified
                 ,statue=user.Status
@@ -149,6 +152,14 @@
 
             await _refreshTokenRepository.AddAsync(refreshtoken);
             await _refreshTokenRepository.SaveChangesAsync();
+            _httpContextAccessor.HttpContext.Response.Cookies.Append("RefreshToken", refreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddDays(7),
+                Secure = true,         
+                SameSite = SameSiteMode.None,
+            });
+
 
             return loginResponse;
         }
@@ -180,9 +191,12 @@
             return result;
         }
 
-        public async Task<LoginResponse> RefreshTokenAsync(RefreshTokenDto model)
+        public async Task<LoginResponse> RefreshTokenAsync()
         {
-            var refreshToken = await _refreshTokenRepository.GetByTokenAsync(model.RefreshToken);
+            var refreshTokenCookie = _httpContextAccessor.HttpContext.Request.Cookies["RefreshToken"];
+            var refreshToken = await _refreshTokenRepository.GetByTokenAsync(refreshTokenCookie);
+            if (string.IsNullOrEmpty(refreshTokenCookie))
+                throw new BadRequestException("RefreshTokenMissing");
             if (refreshToken == null)
                 throw new BadRequestException("InvalidRefreshToken");
 
@@ -205,7 +219,6 @@
                 Token = token,
                 UserId = user.Id,
                 Role = roles.FirstOrDefault(),
-                RefreshToken = refreshToken.Token,
                 IsCompletedRegister = user.IsCompleteRegistration,
                 IsVerfied = user.IsVerified,
                 statue = user.Status

@@ -534,6 +534,11 @@
             {
                 ["en"] = "Doctor data fetched successfully.",
                 ["ar"] = "تم جلب بيانات الطبيب بنجاح."
+            },
+            ["RefreshTokenMissing"]=new()
+            {
+                ["en"] = "Refresh token is missing.",
+                ["ar"] = "رمز التحديث مفقود."
             }
 
 
