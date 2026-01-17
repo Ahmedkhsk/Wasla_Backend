@@ -17,6 +17,7 @@
         public Task<bool>GetByUserIdAndDoctorID(string userId, string doctorId);
         public Task<List<Booking>> GetBookingsForResidentAsync(string residentId);
         public Task<int>CountBookingBYUserAndServiceProvider(string userId, string serviceProviderId);
+        public Task<bool>HasBookingSameDay(string userId,string serviceProviderId, DateOnly date);
 
     }
 }

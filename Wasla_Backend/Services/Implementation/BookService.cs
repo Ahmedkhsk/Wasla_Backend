@@ -137,6 +137,9 @@ namespace Wasla_Backend.Services.Implementation
                 var serviceProvider = await _userRepository.GetUserByIdAsync(dto.serviceProviderId);
                 if (serviceProvider == null)
                     throw new NotFoundException("ServiceProviderNotFound");
+                var hasanotherBooking = await _bookingRepository.HasBookingSameDay(dto.userId, dto.serviceProviderId, dto.bookingDate);
+                if (hasanotherBooking)
+                    throw new BadRequestException("UserHasAnotherBookingWithSameProviderOnThisDate");
 
                 var serviceDay = await _serviceDayRepository.GetByIdAsync(dto.serviceDayId);
                 if (serviceDay == null)

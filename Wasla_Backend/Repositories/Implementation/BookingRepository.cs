@@ -1,4 +1,5 @@
 ﻿
+
 namespace Wasla_Backend.Repositories.Implementation
 {
     public class BookingRepository:GenericRepository<Booking>, IBookingRepository
@@ -201,6 +202,12 @@ namespace Wasla_Backend.Repositories.Implementation
             return _context.Booking
                 .Where(b => b.userId == userId && b.serviceProviderId == serviceProviderId)
                 .CountAsync();
+        }
+
+        public async Task<bool> HasBookingSameDay(string userId,string ServiceProviderId, DateOnly date)
+        {
+            return await _context.Booking.AnyAsync(b => b.userId == userId && b.bookingDate==date
+            &&b.bookingStatus!=BookingStatus.canceled&&b.serviceProviderId==ServiceProviderId);
         }
     }
 }

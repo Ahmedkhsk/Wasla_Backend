@@ -110,6 +110,9 @@
 
             if (!user.IsApproved)
                 throw new BadRequestException("UserNotApproved");
+            var isSameAsOld = await _userManager.CheckPasswordAsync(user, model.NewPassword);
+            if (isSameAsOld)
+                throw new BadRequestException("Newpasswordthesameastheoldpassword");
 
             var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
             return result;
