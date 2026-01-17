@@ -555,12 +555,17 @@
             ["UserHasAnotherBookingWithSameProviderOnThisDate"]= new()
             {
                 ["en"] = "User has another booking with the same provider on this date.",
-                ["ar"] = "للمستخدم حجز آخر مع نفس المزود في هذا التاريخ."
+                ["ar"] = "للمستخدم حجز آخر مع نفس مقدم الخدمة في هذا التاريخ."
             },
             ["Newpasswordthesameastheoldpassword"]=new()
             {
                 ["en"] = "The new password cannot be the same as the old password.",
                 ["ar"] = "لا يمكن أن تكون كلمة المرور الجديدة هي نفسها كلمة المرور القديمة."
+            },
+            ["ServiceDeletedfromserviceprovider"] = new()
+            {
+                ["en"] = "The service has been deleted from the service provider.",
+                ["ar"] = "تم حذف الخدمة من مزود الخدمة."
             }
         };
 
