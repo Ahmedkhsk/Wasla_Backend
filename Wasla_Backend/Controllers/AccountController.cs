@@ -6,6 +6,7 @@
     {
         private readonly IUserService _userService;
 
+
         public AccountController(IUserService userService)
         {
             _userService = userService;
@@ -134,5 +135,12 @@
             await _userService.Delete(gmail);
             return Ok(ResponseHelper.Success("DeleteUserSuccess", lan));
         }
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout(string lan="en")
+        {
+           await _userService.Logout();
+            return Ok(ResponseHelper.Success("UserLoggedOutSuccess",lan));
+        }
+
     }
 }

@@ -541,7 +541,17 @@
                 ["ar"] = "رمز التحديث مفقود."
             }
 
-
+            ,
+            ["Usernotloggedin"]=new()
+            {
+                ["en"] = "User is not logged in.",
+                ["ar"] = "المستخدم غير مسجل الدخول."
+            },
+            ["UserLoggedOutSuccess"]=new()
+            {
+                ["en"] = "User logged out successfully.",
+                ["ar"] = "تم تسجيل خروج المستخدم بنجاح."
+            }
         };
 
 

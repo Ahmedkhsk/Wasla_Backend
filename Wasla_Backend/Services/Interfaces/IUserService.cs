@@ -14,6 +14,7 @@ namespace Wasla_Backend.Services.Interfaces
         public Task approveAndVerify(string gmail);
         public Task<object> AllUsers();
         public  Task Delete(string gmail);
+        public Task Logout();
 
 
 

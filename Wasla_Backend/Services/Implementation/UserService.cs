@@ -256,6 +256,14 @@
                 throw new Exception(errors);
             }
         }
+        public async Task Logout()
+        {
+            var userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                throw new UnauthorizedException("Usernotloggedin");
+         await _refreshTokenRepository.DeleteTokensByUserIdAsync(userId);
+            _httpContextAccessor.HttpContext.Response.Cookies.Delete("RefreshToken");
+        }
 
     }
 }
