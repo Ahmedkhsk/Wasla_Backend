@@ -70,8 +70,11 @@
                     sa.WithOwner();
                 });
             });
+            builder.Entity<ApplicationUser>().HasQueryFilter(d => d.IsApproved && d.IsCompleteRegistration && d.IsVerified);
 
-        
+
+
+
         }
     }
 }
