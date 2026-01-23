@@ -37,7 +37,7 @@ namespace Wasla_Backend.Services.Implementation
             var numberOfReviews = await _reviewRepository.CountByServiceProviderAndUserId(review.serviceProviderId, review.userId);
             if (numberOfReviews >=3)
                 throw new BadRequestException("CannotAddMoreThan3Reviews");
-            if(user.CountViolations >= 1)
+            if(user.CountViolations >= 5)
                 throw new BadRequestException("UserBlockedDueToViolations");
             var isToxic = _toxicityClassifier.IsBadWord(review.content);
             if (isToxic)
@@ -109,7 +109,7 @@ namespace Wasla_Backend.Services.Implementation
                 throw new NotFoundException("UserNotFound");
             if (serviceprovider==null)
             throw new NotFoundException("ServiceProviderNotFound");
-            if (user.CountViolations >= 1)
+            if (user.CountViolations >= 5)
                 throw new BadRequestException("UserBlockedDueToViolations");
             var isToxic = _toxicityClassifier.IsBadWord(updatereview.content);
             if (isToxic)

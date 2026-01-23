@@ -6,11 +6,14 @@
         private readonly MLContext _mlContext;
         private ITransformer _model;
         private PredictionEngine<ModelBinaryInput, ModelOutput> _predictionEngine;
+        private readonly BadWordsService _badWords;
 
-        public ToxicityClassifier(IConfiguration configuration)
+
+        public ToxicityClassifier(IConfiguration configuration,BadWordsService badWordsService)
         {
             _configuration = configuration;
             _mlContext = new MLContext();
+            _badWords = badWordsService;
         }
 
 
@@ -38,6 +41,9 @@
 
         public bool IsBadWord(string text)
         {
+            var predicate= _badWords.ContainsBadWord(text);
+            if(predicate)
+                return true;
             if (string.IsNullOrEmpty(text) || _predictionEngine == null) return false;
 
             var input = new ModelBinaryInput { Text = text };

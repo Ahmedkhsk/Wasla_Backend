@@ -40,8 +40,8 @@ namespace Wasla_Backend
                                                 FileSetting.MLModelsPath.TrimStart('/'),
                                                 modelName);
 
-                var classifier = new ToxicityClassifier(config);
-
+                var badWordsService = new BadWordsService(env); 
+                var classifier = new ToxicityClassifier(config, badWordsService);
                 classifier.LoadModel(modelPath);
 
                 return classifier;
@@ -72,6 +72,8 @@ namespace Wasla_Backend
             builder.Services.AddScoped<TokenHelper>();
             builder.Services.AddScoped<IUserFactory, UserFactory>();
             builder.Services.AddTransient<EmailSenderHelper>();
+            builder.Services.AddSingleton<BadWordsService>();
+
 
             builder.Services.AddHostedService<ExpiredEmailVerificationCleaner>();
             builder.Services.AddHostedService<BookingStatusUpdaterService>();
