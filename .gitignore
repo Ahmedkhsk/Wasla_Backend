@@ -3,3 +3,6 @@ Wasla_Backend/train.csv
 .vs/  
 bin/  
 obj/ 
+Wasla_Backend/wwwroot/assets/  
+Wasla_Backend/Properties/PublishProfiles/  
+Wasla_Backend/appsettings.json 
