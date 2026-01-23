@@ -1,11 +1,5 @@
-# Ignore Visual Studio files
-.vs/
-bin/
-obj/
-Wasla_Backend/appsettings*.json
-Wasla_Backend/Properties/
-Wasla_Backend/*.csproj.user
-Wasla_Backend/wwwroot/
-
-/Wasla_Backend/bad words.txt
-/.gitignore
+Wasla_Backend/bad words.txt  
+Wasla_Backend/train.csv  
+.vs/  
+bin/  
+obj/ 
