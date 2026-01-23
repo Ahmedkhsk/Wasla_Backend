@@ -12,6 +12,7 @@
         public bool IsApproved { get; set; }=false;
         public bool IsVerified { get; set; }=false;
         public bool IsCompleteRegistration { get; set; }=false;
+        public int CountViolations { get; set; } = 0;
         public UserStatus Status { get; set; } = UserStatus.Pending;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? LastLogin { get; set; }

@@ -566,6 +566,21 @@
             {
                 ["en"] = "The service has been deleted from the service provider.",
                 ["ar"] = "تم حذف الخدمة من مزود الخدمة."
+            },
+            ["ToxicityPredictionSuccess"]=new()
+            {
+                ["en"] = "Toxicity prediction completed successfully.",
+                ["ar"] = "تم إكمال التنبؤ بالسلبية بنجاح."
+            },
+            ["ReviewContainsToxicContent"]=new()
+            {
+                ["en"] = "The review contains toxic content.",
+                ["ar"] = "التقييم يحتوي على محتوى غير مناسب."
+            },
+            ["UserBlockedDueToViolations"]= new()
+            {
+                ["en"] = "User is blocked due to multiple violations.",
+                ["ar"] = "المستخدم محظور بسبب انتهاكات متعددة."
             }
         };
 

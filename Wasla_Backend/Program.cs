@@ -1,3 +1,12 @@
+using Wasla_Backend.Helpers.File; 
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
+using System.Reflection;
+using Wasla_Backend.Middlewares;
+using Wasla_Backend.Helpers.MlHelper;
+
 namespace Wasla_Backend
 {
     public class Program
@@ -16,8 +25,27 @@ namespace Wasla_Backend
                 .AddEntityFrameworkStores<Context>()
                 .AddDefaultTokenProviders();
 
-            builder.Services.Configure<JwtSettings>(
-                builder.Configuration.GetSection("Jwt"));
+            builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
+            builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Email"));
+            builder.Services.Configure<RateLimitSettings>(builder.Configuration.GetSection("RateLimitSettings"));
+
+            builder.Services.AddSingleton<ToxicityClassifier>(sp =>
+            {
+                var config = sp.GetRequiredService<IConfiguration>();
+                var env = sp.GetRequiredService<IWebHostEnvironment>();
+
+                string modelName = config["MLSettings:ModelOutputPath"] ?? "toxicity_model.zip";
+
+                string modelPath = Path.Combine(env.WebRootPath,
+                                                FileSetting.MLModelsPath.TrimStart('/'),
+                                                modelName);
+
+                var classifier = new ToxicityClassifier(config);
+
+                classifier.LoadModel(modelPath);
+
+                return classifier;
+            });
 
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -69,15 +97,7 @@ namespace Wasla_Backend
                 };
             });
 
-            builder.Services.Configure<EmailSettings>(
-                builder.Configuration.GetSection("Email"));
-            builder.Services.Configure<RateLimitSettings>(
-             builder.Configuration.GetSection("RateLimitSettings"));
-
-
-            builder.Services.AddLocalization(options =>
-                options.ResourcesPath = "Resources");
-
+            builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
             builder.Services.Configure<RequestLocalizationOptions>(options =>
             {
                 var supportedCultures = new[] { "en", "ar" };
@@ -91,43 +111,24 @@ namespace Wasla_Backend
             {
                 options.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy
-                        .SetIsOriginAllowed(origin =>
-                        {
-                            if (string.IsNullOrWhiteSpace(origin))
-                                return false;
-
-                            if (origin.StartsWith("http://localhost") ||
-                                origin.StartsWith("http://127.0.0.1"))
-                                return true;
-
-                            var allowedHosts = new[]
-                            {
-                                ".vercel.app",
-                                ".netlify.app",
-                                ".firebaseapp.com"
-                            };
-
-                            return allowedHosts.Any(h => origin.Contains(h));
-                        })
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials();
+                    policy.SetIsOriginAllowed(origin =>
+                    {
+                        if (string.IsNullOrWhiteSpace(origin)) return false;
+                        if (origin.StartsWith("http://localhost") || origin.StartsWith("http://127.0.0.1")) return true;
+                        var allowedHosts = new[] { ".vercel.app", ".netlify.app", ".firebaseapp.com" };
+                        return allowedHosts.Any(h => origin.Contains(h));
+                    })
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
                 });
             });
-
-
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
-                {
-                    Title = "Wasla API",
-                    Version = "v1"
-                });
-
+                c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Wasla API", Version = "v1" });
                 c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
                 {
                     Name = "Authorization",
@@ -135,23 +136,18 @@ namespace Wasla_Backend
                     Scheme = "Bearer",
                     BearerFormat = "JWT",
                     In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-                    Description = "Enter 'Bearer' [space] and then your valid token in the text input below.\nExample: \"Bearer abc123\""
+                    Description = "Enter 'Bearer' [space] and then your valid token."
                 });
-
                 c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
-    {
-        {
-            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-            {
-                Reference = new Microsoft.OpenApi.Models.OpenApiReference
                 {
-                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new string[]{}
-        }
-    });
+                    {
+                        new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                        {
+                            Reference = new Microsoft.OpenApi.Models.OpenApiReference { Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme, Id = "Bearer" }
+                        },
+                        new string[]{}
+                    }
+                });
             });
 
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
@@ -161,6 +157,7 @@ namespace Wasla_Backend
             builder.Logging.AddConsole();
 
             var app = builder.Build();
+
             app.UseCors("CorsPolicy");
 
             app.MapHub<BookingHub>("/bookingHub");
@@ -177,8 +174,7 @@ namespace Wasla_Backend
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.UseRequestLocalization(
-                app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
+            app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
             app.UseMiddleware<ExceptionMiddleware>();
             app.UseMiddleware<RateLimitingMiddleware>();

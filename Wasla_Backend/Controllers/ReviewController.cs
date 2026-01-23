@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Wasla_Backend.Helpers.MlHelper;
 
 namespace Wasla_Backend.Controllers
 {
@@ -8,9 +9,11 @@ namespace Wasla_Backend.Controllers
     public class ReviewController : ControllerBase
     {
         private readonly IReviewService _reviewService;
-        public ReviewController(IReviewService reviewService)
+        private readonly ToxicityClassifier _toxicityClassifier;
+        public ReviewController(IReviewService reviewService,ToxicityClassifier toxicityClassifier)
         {
             _reviewService = reviewService;
+            _toxicityClassifier = toxicityClassifier;
         }
 
         [HttpGet("service-provider/{serviceProviderId}")]
@@ -51,7 +54,18 @@ namespace Wasla_Backend.Controllers
             await _reviewService.UpdateReview(updateReviewDto); 
             return Ok(ResponseHelper.Success("ReviewUpdatedSuccessfully", lan));
         }
+        [HttpGet("PredictToxicity")]
+        public IActionResult PredictToxicity(string text)
+        {
+            var isBad = _toxicityClassifier.IsBadWord(text);
 
-      
+            return Ok(ResponseHelper.Success("ToxicityPredictionSuccess", "en", new
+            {
+                isToxic = isBad,
+                textProcessed = text
+            }));
+        }
+
+
     }
 }

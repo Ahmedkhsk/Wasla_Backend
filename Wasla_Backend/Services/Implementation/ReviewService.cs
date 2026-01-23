@@ -1,5 +1,6 @@
 ﻿
 
+using Wasla_Backend.Helpers.MlHelper;
 using ServiceProvider = Wasla_Backend.Models.ServiceProvider;
 
 namespace Wasla_Backend.Services.Implementation
@@ -12,8 +13,9 @@ namespace Wasla_Backend.Services.Implementation
         private readonly IMapper _mapper;
         private readonly IGenericRepository<ServiceProvider> _serviceProviderRepositpry;
         private readonly IHubContext<ReviewHub> _hub;
+        private readonly ToxicityClassifier _toxicityClassifier;
         public ReviewService(IMapper mapper,IReviewRepository reviewRepository, IResidentRepository residentRepository, IUserRepository userRepository,
-            IGenericRepository<ServiceProvider> serviceProviderRepositpry, IHubContext<ReviewHub> hub)
+            IGenericRepository<ServiceProvider> serviceProviderRepositpry, IHubContext<ReviewHub> hub,ToxicityClassifier toxicityClassifier)
         {
             _reviewRepository = reviewRepository;
             this._resididentRepository = residentRepository;
@@ -21,6 +23,7 @@ namespace Wasla_Backend.Services.Implementation
             this._mapper = mapper;
             _serviceProviderRepositpry = serviceProviderRepositpry;
             _hub = hub;
+            _toxicityClassifier = toxicityClassifier;
         }
 
         public async Task AddReviewAsync(AddReviewDto review)
@@ -34,6 +37,18 @@ namespace Wasla_Backend.Services.Implementation
             var numberOfReviews = await _reviewRepository.CountByServiceProviderAndUserId(review.serviceProviderId, review.userId);
             if (numberOfReviews >=3)
                 throw new BadRequestException("CannotAddMoreThan3Reviews");
+            if(user.CountViolations >= 1)
+                throw new BadRequestException("UserBlockedDueToViolations");
+            var isToxic = _toxicityClassifier.IsBadWord(review.content);
+            if (isToxic)
+            {
+                user.CountViolations += 1;
+                await _UserRepository.UpdateUserAsync(user);
+                await _resididentRepository.SaveChangesAsync();
+                throw new BadRequestException("ReviewContainsToxicContent");
+
+
+            }
             var Review = ReviewFactory.createReview();
            _mapper.Map(review,Review);
             Review.ReviewerName = user.FullName;
@@ -89,8 +104,22 @@ namespace Wasla_Backend.Services.Implementation
             if (review == null)
                 throw new NotFoundException("ReviewNotFound");
             var serviceprovider=await _UserRepository.GetUserByIdAsync(review.ServiceProviderId);
-            if(serviceprovider==null)
+            var user = await _resididentRepository.GetByIdAsync(review.UserId);
+            if (user == null)
+                throw new NotFoundException("UserNotFound");
+            if (serviceprovider==null)
             throw new NotFoundException("ServiceProviderNotFound");
+            if (user.CountViolations >= 1)
+                throw new BadRequestException("UserBlockedDueToViolations");
+            var isToxic = _toxicityClassifier.IsBadWord(updatereview.content);
+            if (isToxic)
+            {
+                throw new BadRequestException("ReviewContainsToxicContent");
+                user.CountViolations += 1;
+                await _UserRepository.UpdateUserAsync(user);
+                await _resididentRepository.SaveChangesAsync();
+
+            }
 
             review.Content = updatereview.content;
             review.Rating=updatereview.rating;

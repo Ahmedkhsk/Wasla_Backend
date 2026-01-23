@@ -25,6 +25,7 @@ global using MailKit.Security;
 global using MimeKit;
 global using MimeKit.Text;
 global using AutoMapper;
+global using System.IO;
 
 global using Wasla_Backend.Repositories.Interfaces;
 global using Wasla_Backend.Enums;
@@ -47,6 +48,7 @@ global using Wasla_Backend.Helpers.File;
 global using Wasla_Backend.DTOs.DoctorDTO;
 global using Wasla_Backend.DTOs.ResidentDTOS;
 global using Wasla_Backend.DTOs.RoleDTOS;
+global using Wasla_Backend.DTOs.MlDTOS;
 global using Wasla_Backend.DTOs.ServiceDTOS;
 global using Wasla_Backend.DTOs.ReviewDtos;
 global using Wasla_Backend.DTOs.BookDTOS;
@@ -59,3 +61,7 @@ global using Wasla_Backend.Helpers.Resolvers;
 global using Wasla_Backend.Hubs.BookingHubs;
 global using Wasla_Backend.Hubs.ServiceHubs;
 global using Wasla_Backend.Hubs.ReviewHubs;
+
+global using Microsoft.ML.Data;
+global using Microsoft.ML;
+
