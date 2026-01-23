@@ -7,3 +7,5 @@ Wasla_Backend/Properties/
 Wasla_Backend/*.csproj.user
 Wasla_Backend/wwwroot/
 
+/Wasla_Backend/bad words.txt
+/.gitignore
