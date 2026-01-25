@@ -28,7 +28,7 @@
         [HttpPost("AddContact")]
         public async Task<IActionResult> AddContact(ContactUsDto contactUsDto,string lan = "en")
         {
-            await _adminService.AddContut(contactUsDto);
+            await _adminService.AddContact(contactUsDto);
             return Ok(ResponseHelper.Success("SuccessToAddContact", lan));
         }
 

@@ -36,7 +36,7 @@
             }
         }
 
-        public async Task AddContut(ContactUsDto contactUsDto)
+        public async Task AddContact(ContactUsDto contactUsDto)
         {
             var contact = new ContactUs();
             contact.email = contactUsDto.email;

@@ -4,7 +4,7 @@
     {
         public Task<AdminChartResponse> GetCollectedCountBookingsPerYear(BookingStatus status);
         public Task ChangeUserStatus(ChangeUserStsatusDto changeUserStsatus);
-        public Task AddContut(ContactUsDto contactUsDto);
+        public Task AddContact(ContactUsDto contactUsDto);
         public Task<IEnumerable<ContactUs>> GetContacts();
     }
 }
