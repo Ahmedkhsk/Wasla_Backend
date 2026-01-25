@@ -138,7 +138,7 @@
         [HttpPost("logout")]
         public async Task<IActionResult> Logout(string lan="en")
         {
-           await _userService.Logout();
+            await _userService.Logout();
             return Ok(ResponseHelper.Success("UserLoggedOutSuccess",lan));
         }
 

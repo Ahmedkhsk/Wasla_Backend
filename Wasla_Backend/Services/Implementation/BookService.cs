@@ -140,7 +140,7 @@ namespace Wasla_Backend.Services.Implementation
                 var hasanotherBooking = await _bookingRepository.HasBookingSameDay(dto.userId, dto.serviceProviderId, dto.bookingDate);
                 if (hasanotherBooking)
                     throw new BadRequestException("UserHasAnotherBookingWithSameProviderOnThisDate");
-               
+
 
                 var serviceDay = await _serviceDayRepository.GetByIdAsync(dto.serviceDayId);
                 if (serviceDay == null)

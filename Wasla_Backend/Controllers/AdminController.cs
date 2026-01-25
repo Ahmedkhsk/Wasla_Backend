@@ -1,0 +1,20 @@
+﻿namespace Wasla_Backend.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AdminController : ControllerBase
+    {
+        private readonly IAdminService _adminService;
+        public AdminController(IAdminService adminService)
+        {
+            _adminService = adminService;
+        }
+        
+        [HttpGet("CollectedCountBookings/{status}")]
+        public async Task<IActionResult> GetCollectedCountBookingsPerYear(BookingStatus status,string lan = "en")
+        {
+            var result = await _adminService.GetCollectedCountBookingsPerYear(status);
+            return Ok(ResponseHelper.Success("CollectedCountBookingsSuccess", lan, result));
+        }
+    }
+}

@@ -581,7 +581,12 @@
             {
                 ["en"] = "User is blocked due to multiple violations.",
                 ["ar"] = "المستخدم محظور بسبب انتهاكات متعددة."
-            }
+            },
+            ["CollectedCountBookingsSuccess"] = new()
+            {
+                ["en"] = "Bookings count retrieved successfully.",
+                ["ar"] = "تم جلب عدد الحجوزات بنجاح."
+            },
         };
 
 

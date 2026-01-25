@@ -1,5 +1,4 @@
 ﻿
-
 namespace Wasla_Backend.Repositories.Implementation
 {
     public class BookingRepository:GenericRepository<Booking>, IBookingRepository
@@ -142,28 +141,49 @@ namespace Wasla_Backend.Repositories.Implementation
                 .ToListAsync();
         }
         
-
         public async Task<bool> GetByUserIdAndDoctorID(string userId, string doctorId)
         {
            return await _context.Booking
                 .AnyAsync(b => b.userId == userId && b.serviceProviderId == doctorId);
         }
 
-        public async Task<List<CollectedPricePerYearDto>> GetCollectedPriceByYear(string doctorId)
+        public async Task<List<CollectedPerYearDto>> GetCollectedPriceByYear(string doctorId)
         {
             return await _context.Booking
                 .Where(b => b.serviceProviderId == doctorId
                     && b.serviceProviderType == ServiceProviderType.Doctor && b.bookingStatus == BookingStatus.completed)
                 .GroupBy(b => b.bookingDate.Year)
-                .Select(yearGroup => new CollectedPricePerYearDto
+                .Select(yearGroup => new CollectedPerYearDto
                 {
                     year = yearGroup.Key,
                     months = yearGroup
                         .GroupBy(b => b.bookingDate.Month)
-                        .Select(monthGroup => new CollectedPricePerMonthDto
+                        .Select(monthGroup => new CollectedPerMonthDto
                         {
                             month = monthGroup.Key,
                             amount = monthGroup.Sum(b => (decimal)b.price)
+                        })
+                        .OrderBy(m => m.month)
+                        .ToList()
+                })
+                .OrderBy(y => y.year)
+                .ToListAsync();
+        }
+
+        public async Task<List<CollectedPerYearDto>> GetCollectedCountBookingsPerYear(BookingStatus status)
+        {
+            return await _context.Booking
+                .Where(b => b.bookingStatus == status)
+                .GroupBy(b => b.bookingDate.Year)
+                .Select(yearGroup => new CollectedPerYearDto
+                {
+                    year = yearGroup.Key,
+                    months = yearGroup
+                        .GroupBy(b => b.bookingDate.Month)
+                        .Select(monthGroup => new CollectedPerMonthDto
+                        {
+                            month = monthGroup.Key,
+                            amount = monthGroup.Count()
                         })
                         .OrderBy(m => m.month)
                         .ToList()
@@ -204,10 +224,10 @@ namespace Wasla_Backend.Repositories.Implementation
                 .CountAsync();
         }
 
-        public async Task<bool> HasBookingSameDay(string userId,string ServiceProviderId, DateOnly date)
+        public async Task<bool> HasBookingSameDay(string userId, string ServiceProviderId, DateOnly date)
         {
-            return await _context.Booking.AnyAsync(b => b.userId == userId && b.bookingDate==date
-            &&b.bookingStatus!=BookingStatus.canceled&&b.serviceProviderId==ServiceProviderId);
+            return await _context.Booking.AnyAsync(b => b.userId == userId && b.bookingDate == date
+            && b.bookingStatus != BookingStatus.canceled && b.serviceProviderId == ServiceProviderId);
         }
     }
 }

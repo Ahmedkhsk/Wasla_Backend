@@ -1,11 +1,3 @@
-using Wasla_Backend.Helpers.File; 
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using System.Text;
-using System.Reflection;
-using Wasla_Backend.Middlewares;
-using Wasla_Backend.Helpers.MlHelper;
 
 namespace Wasla_Backend
 {
@@ -68,6 +60,8 @@ namespace Wasla_Backend
             builder.Services.AddScoped<IReviewService, ReviewService>();
             builder.Services.AddScoped<IBookService, BookService>();
             builder.Services.AddScoped<IFavouriteService, FavouriteService>();
+            builder.Services.AddScoped<IAdminService, AdminService>();
+
 
             builder.Services.AddScoped<TokenHelper>();
             builder.Services.AddScoped<IUserFactory, UserFactory>();

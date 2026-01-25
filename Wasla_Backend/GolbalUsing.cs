@@ -7,7 +7,9 @@ global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.Extensions.Localization;
 global using Microsoft.AspNetCore.SignalR;
-global using Microsoft.OpenApi.Models;
+global using Microsoft.ML.Data;
+global using Microsoft.ML;
+global using Wasla_Backend.Helpers.MlHelper;
 
 global using System.Text.RegularExpressions;
 global using System.Reflection;
@@ -54,14 +56,11 @@ global using Wasla_Backend.DTOs.ReviewDtos;
 global using Wasla_Backend.DTOs.BookDTOS;
 global using Wasla_Backend.DTOs.HubsDto;
 global using Wasla_Backend.DTOs.FavouritsDTOS;
+global using Wasla_Backend.DTOs.ChartDTOS;
 global using Wasla_Backend.Helpers.BackgroundServiceHelper;
 global using Wasla_Backend.Helpers.Resolvers;
-
-
 global using Wasla_Backend.Hubs.BookingHubs;
 global using Wasla_Backend.Hubs.ServiceHubs;
 global using Wasla_Backend.Hubs.ReviewHubs;
-
-global using Microsoft.ML.Data;
-global using Microsoft.ML;
+global using Wasla_Backend.DTOs.AdminDTOS;
 

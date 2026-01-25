@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Wasla_Backend.Repositories.Interfaces;
-
-namespace Wasla_Backend.Repositories.Implementation
+﻿namespace Wasla_Backend.Repositories.Implementation
 {
     public class DoctorRepository : GenericRepository<Doctor> , IDoctorRepository
     {
