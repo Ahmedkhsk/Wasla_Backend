@@ -597,6 +597,16 @@
                 ["en"] = "User status changed successfully.",
                 ["ar"] = "تم تغيير حالة المستخدم بنجاح."
             },
+            ["SuccessToAddContact"] = new()
+            {
+                ["en"] = "Contact message sent successfully.",
+                ["ar"] = "تم إرسال رسالة التواصل بنجاح."
+            },
+            ["SuccessToGetContacts"] = new()
+            {
+                ["en"] = "Contacts retrieved successfully.",
+                ["ar"] = "تم جلب رسائل التواصل بنجاح."
+            },
         };
 
 

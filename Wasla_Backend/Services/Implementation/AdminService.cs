@@ -4,11 +4,13 @@
     {
         private readonly IBookingRepository _bookingRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IGenericRepository<ContactUs> _contatUsRepository;
 
-        public AdminService(IBookingRepository bookingRepository, IUserRepository userRepository)
+        public AdminService(IBookingRepository bookingRepository, IUserRepository userRepository, IGenericRepository<ContactUs> contatUsRepository)
         {
             _bookingRepository = bookingRepository;
             _userRepository = userRepository;
+            _contatUsRepository = contatUsRepository;
         }
 
         public async Task<AdminChartResponse> GetCollectedCountBookingsPerYear(BookingStatus status)
@@ -33,5 +35,27 @@
                 throw new BadRequestException("FailedToChangeUserStatus");
             }
         }
+
+        public async Task AddContut(ContactUsDto contactUsDto)
+        {
+            var contact = new ContactUs();
+            contact.email = contactUsDto.email;
+            contact.fullName = contactUsDto.fullName;
+            contact.message = contactUsDto.message;
+
+            await _contatUsRepository.AddAsync(contact);
+            await _contatUsRepository.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<ContactUs>> GetContacts()
+        {
+            var res =  await _contatUsRepository.GetAllAsync();
+            
+            if (res == null)
+                res = [];
+            
+            return res;
+        }
+    
     }
 }

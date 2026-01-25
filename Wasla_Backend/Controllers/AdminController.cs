@@ -25,6 +25,18 @@
             return Ok(ResponseHelper.Success("SuccessToChangeUserStatus", lan));
         }
 
+        [HttpPost("AddContact")]
+        public async Task<IActionResult> AddContact(ContactUsDto contactUsDto,string lan = "en")
+        {
+            await _adminService.AddContut(contactUsDto);
+            return Ok(ResponseHelper.Success("SuccessToAddContact", lan));
+        }
 
+        [HttpGet("GetContacts")]
+        public async Task<IActionResult> GetContacts(string lan = "en")
+        {
+            var result = await _adminService.GetContacts();
+            return Ok(ResponseHelper.Success("SuccessToGetContacts", lan));
+        }
     }
 }

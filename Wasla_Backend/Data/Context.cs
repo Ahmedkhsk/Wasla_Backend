@@ -16,6 +16,7 @@
         public DbSet<Favourites> Favorite { get; set; }
         public DbSet<Reviews> Review { get; set; }
         public DbSet<Booking> Booking { get; set; }
+        public DbSet<ContactUs> ContactUs { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options) { }
 
