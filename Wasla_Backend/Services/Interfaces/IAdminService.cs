@@ -3,7 +3,6 @@
     public interface IAdminService
     {
         public Task<AdminChartResponse> GetCollectedCountBookingsPerYear(BookingStatus status);
-
-
+        public Task ChangeUserStatus(ChangeUserStsatusDto changeUserStsatus);
     }
 }

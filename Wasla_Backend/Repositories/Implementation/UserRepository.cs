@@ -20,7 +20,7 @@
         public async Task<ApplicationUser> GetUserByIdAsync(string id)
             => await _userManager.FindByIdAsync(id);
         public async Task<IEnumerable<ApplicationUser>>GetAll()
-            => await _userManager.Users.ToListAsync();
+            => await _userManager.Users.Where(u => u.IsVerified && u.Status == UserStatus.Active).ToListAsync();
         public async Task<List<ApplicationUser>> GetUsersByIdsAsync(List<string> ids)
         {
             return await _context.Users

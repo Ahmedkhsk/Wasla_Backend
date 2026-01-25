@@ -587,6 +587,16 @@
                 ["en"] = "Bookings count retrieved successfully.",
                 ["ar"] = "تم جلب عدد الحجوزات بنجاح."
             },
+            ["FailedToChangeUserStatus"] = new()
+            {
+                ["en"] = "Failed to change user status.",
+                ["ar"] = "فشل تغيير حالة المستخدم."
+            },
+            ["SuccessToChangeUserStatus"] = new()
+            {
+                ["en"] = "User status changed successfully.",
+                ["ar"] = "تم تغيير حالة المستخدم بنجاح."
+            },
         };
 
 

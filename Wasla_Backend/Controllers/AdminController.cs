@@ -5,6 +5,7 @@
     public class AdminController : ControllerBase
     {
         private readonly IAdminService _adminService;
+        
         public AdminController(IAdminService adminService)
         {
             _adminService = adminService;
@@ -16,5 +17,14 @@
             var result = await _adminService.GetCollectedCountBookingsPerYear(status);
             return Ok(ResponseHelper.Success("CollectedCountBookingsSuccess", lan, result));
         }
+
+        [HttpPost("ChangeUserStatus")]
+        public async Task<IActionResult> ChangeUserStatus(ChangeUserStsatusDto changeUserStsatus, string lan = "en")
+        {
+            await _adminService.ChangeUserStatus(changeUserStsatus);
+            return Ok(ResponseHelper.Success("SuccessToChangeUserStatus", lan));
+        }
+
+
     }
 }
