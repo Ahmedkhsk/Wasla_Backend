@@ -9,7 +9,6 @@
         public double Longitude { get; set; }
         public char Gender { get; set; }
         public string? BirthDay { get; set; }
-        public bool IsApproved { get; set; }=false;
         public bool IsVerified { get; set; }=false;
         public bool IsCompleteRegistration { get; set; }=false;
         public int CountViolations { get; set; } = 0;

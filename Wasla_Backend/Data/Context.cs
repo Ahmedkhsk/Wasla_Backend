@@ -71,7 +71,7 @@
                     sa.WithOwner();
                 });
             });
-            builder.Entity<ApplicationUser>().HasQueryFilter(d => d.IsApproved && d.IsCompleteRegistration && d.IsVerified);
+            builder.Entity<ApplicationUser>().HasQueryFilter(d => d.Status == UserStatus.Active && d.IsCompleteRegistration && d.IsVerified);
 
 
 

@@ -79,7 +79,7 @@ namespace Wasla_Backend.Services.Implementation
         public async Task approveAndVerify(string gmail)
         {
             var user = await _userRepository.GetUserByEmailAsync(gmail);
-            user.IsApproved = true;
+            user.Status = UserStatus.Active;
             user.IsVerified = true;
             user.Status = 0;
             await _userManager.UpdateAsync(user);
@@ -111,7 +111,7 @@ namespace Wasla_Backend.Services.Implementation
             if (!user.IsVerified)
                 throw new BadRequestException("UserNotVerified");
 
-            if (!user.IsApproved)
+            if (user.Status!=UserStatus.Active)
                 throw new BadRequestException("UserNotApproved");
             var isSameAsOld = await _userManager.CheckPasswordAsync(user, model.NewPassword);
             if (isSameAsOld)
