@@ -41,10 +41,13 @@
 
         public bool IsBadWord(string text)
         {
+            if (string.IsNullOrEmpty(text) || _predictionEngine == null)
+                return false;
+
             var predicate= _badWords.ContainsBadWord(text);
             if(predicate)
                 return true;
-            if (string.IsNullOrEmpty(text) || _predictionEngine == null) return false;
+            
 
             var input = new ModelBinaryInput { Text = text };
             var result = _predictionEngine.Predict(input);
