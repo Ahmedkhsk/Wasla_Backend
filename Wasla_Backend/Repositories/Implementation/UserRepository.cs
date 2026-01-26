@@ -27,7 +27,11 @@
                 .Where(u => ids.Contains(u.Id))
                 .ToListAsync();
         }
-
+        
+        public async Task<IEnumerable<ApplicationUser>> GetUsersByRoleAsync(string roleName)
+        {
+            return await _userManager.GetUsersInRoleAsync(roleName);
+        }
 
     }
 

@@ -14,7 +14,12 @@ namespace Wasla_Backend.Repositories.Implementation
                    && b.serviceProviderType == ServiceProviderType.Doctor)
                 .CountAsync();
         }
-
+        public async Task<int> CountBookings(BookingStatus status)
+        {
+            return await _context.Booking
+                .Where(b => b.bookingStatus == status)
+                .CountAsync();
+        }
         public async Task<List<GetAllBookingResponse>> GetBookingsByDoctorIdAsync(
            string doctorId, BookingStatus status, string lan)
         {
@@ -170,10 +175,10 @@ namespace Wasla_Backend.Repositories.Implementation
                 .ToListAsync();
         }
 
-        public async Task<List<CollectedPerYearDto>> GetCollectedCountBookingsPerYear(BookingStatus status)
+        public async Task<List<CollectedPerYearDto>> GetCollectedPriceBookingsPerYear()
         {
             return await _context.Booking
-                .Where(b => b.bookingStatus == status)
+                .Where(b => b.bookingStatus == BookingStatus.completed)
                 .GroupBy(b => b.bookingDate.Year)
                 .Select(yearGroup => new CollectedPerYearDto
                 {
@@ -183,7 +188,7 @@ namespace Wasla_Backend.Repositories.Implementation
                         .Select(monthGroup => new CollectedPerMonthDto
                         {
                             month = monthGroup.Key,
-                            amount = monthGroup.Count()
+                            amount = monthGroup.Sum(b => (decimal)b.price)
                         })
                         .OrderBy(m => m.month)
                         .ToList()

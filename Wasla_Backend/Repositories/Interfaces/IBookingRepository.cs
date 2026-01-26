@@ -5,7 +5,8 @@
         public Task<List<ServiceBookingDetailsDto>> GetBookingDetailsForUserAsync(string userId, string language);
         public Task<Booking> GetBookingByServiceDayIdAsync(int serviceDayId);
         public Task<int>GetNumberOfPatientByDoctorId(string doctorId);
-        public Task<List<CollectedPerYearDto>> GetCollectedCountBookingsPerYear(BookingStatus status);
+        public Task<List<CollectedPerYearDto>> GetCollectedPriceBookingsPerYear();
+        public Task<int> CountBookings(BookingStatus status);
         public Task<Booking> GetByIdWithIncludeAsync(int id);
         public Task<int> CountPatients(string doctorId);
         public Task<int> CountBookings(string doctorId);

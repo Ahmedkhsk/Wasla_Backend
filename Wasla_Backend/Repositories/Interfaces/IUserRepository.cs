@@ -5,9 +5,10 @@
         public Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password);
         public Task<ApplicationUser> GetUserByEmailAsync(string email);
         public Task<IdentityResult> UpdateUserAsync(ApplicationUser user);
-        Task<ApplicationUser> GetUserByIdAsync(string id);
-        public  Task<IEnumerable<ApplicationUser>> GetAll();
-        Task<List<ApplicationUser>> GetUsersByIdsAsync(List<string> ids);
+        public Task<ApplicationUser> GetUserByIdAsync(string id);
+        public Task<IEnumerable<ApplicationUser>> GetAll();
+        public Task<IEnumerable<ApplicationUser>> GetUsersByRoleAsync(string roleName);
+        public Task<List<ApplicationUser>> GetUsersByIdsAsync(List<string> ids);
 
 
     }

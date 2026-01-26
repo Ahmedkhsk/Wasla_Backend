@@ -2,6 +2,8 @@
 {
     public class AdminChartResponse
     {
-        public List<CollectedPerYearDto> collectedBookings { get; set; }
+        public int completedBookingsCount { get; set; }
+        public int canceledBookingsCount { get; set; }
+        public List<CollectedPerYearDto> years { get; set; } = new List<CollectedPerYearDto>();
     }
 }

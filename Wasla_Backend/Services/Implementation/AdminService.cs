@@ -16,8 +16,10 @@
         public async Task<AdminChartResponse> GetCollectedCountBookingsPerYear(BookingStatus status)
         {
             return new AdminChartResponse 
-            {  
-                collectedBookings = await _bookingRepository.GetCollectedCountBookingsPerYear(status)
+            {
+                completedBookingsCount = await _bookingRepository.CountBookings(BookingStatus.completed),
+                canceledBookingsCount = await _bookingRepository.CountBookings(BookingStatus.canceled),
+                years = await _bookingRepository.GetCollectedPriceBookingsPerYear()
             };
         }
 
@@ -48,14 +50,37 @@
         }
 
         public async Task<IEnumerable<ContactUs>> GetContacts()
-        {
-            var res =  await _contatUsRepository.GetAllAsync();
-            
-            if (res == null)
-                res = [];
-            
-            return res;
+        { 
+            return  await _contatUsRepository.GetAllAsync();
         }
-    
+
+        public async Task<PagedResult<UserApproveResponse>> UserApproveResponses(string roleName,int pageNumber, int pageSize)
+        {
+            var users = await _userRepository.GetUsersByRoleAsync(roleName);
+
+            var totalCount = users.Count();
+
+            var pagedUsers = users
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(user => new UserApproveResponse
+                {
+                    id = user.Id,
+                    name = user.FullName,
+                    email = user.Email,
+                    status = user.Status,
+                    CreatedAt = user.CreatedAt
+                })
+                .ToList();
+
+            return new PagedResult<UserApproveResponse>
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = totalCount,
+                Data = pagedUsers
+            };
+        }
+
     }
 }

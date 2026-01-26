@@ -607,6 +607,11 @@
                 ["en"] = "Contacts retrieved successfully.",
                 ["ar"] = "تم جلب رسائل التواصل بنجاح."
             },
+            ["SuccessToGetUserApproveResponses"] = new()
+            {
+                ["en"] = "User approval responses retrieved successfully.",
+                ["ar"] = "تم جلب بيانات اعتماد المستخدمين بنجاح."
+            },
         };
 
 

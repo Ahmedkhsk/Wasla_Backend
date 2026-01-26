@@ -20,7 +20,8 @@ namespace Wasla_Backend
             builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
             builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Email"));
             builder.Services.Configure<RateLimitSettings>(builder.Configuration.GetSection("RateLimitSettings"));
-
+            builder.Services.Configure<TimeZoneSettings>(builder.Configuration.GetSection("TimeZones"));
+            
             builder.Services.AddSingleton<ToxicityClassifier>(sp =>
             {
                 var config = sp.GetRequiredService<IConfiguration>();
@@ -67,6 +68,7 @@ namespace Wasla_Backend
             builder.Services.AddScoped<IUserFactory, UserFactory>();
             builder.Services.AddTransient<EmailSenderHelper>();
             builder.Services.AddSingleton<BadWordsService>();
+            builder.Services.AddSingleton<DateTimeHelper>();
 
 
             builder.Services.AddHostedService<ExpiredEmailVerificationCleaner>();

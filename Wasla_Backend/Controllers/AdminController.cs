@@ -36,7 +36,14 @@
         public async Task<IActionResult> GetContacts(string lan = "en")
         {
             var result = await _adminService.GetContacts();
-            return Ok(ResponseHelper.Success("SuccessToGetContacts", lan));
+            return Ok(ResponseHelper.Success("SuccessToGetContacts", lan,result));
+        }
+
+        [HttpGet("UserApprove")]
+        public async Task<IActionResult> UserApproveResponses(string roleName, int pageNumber = 1,int pageSize = 10,string lan = "en")
+        {
+            var result = await _adminService.UserApproveResponses(roleName,pageNumber,pageSize);
+            return Ok(ResponseHelper.Success("SuccessToGetUserApproveResponses", lan, result));
         }
     }
 }

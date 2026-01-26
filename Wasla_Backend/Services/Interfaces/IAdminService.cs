@@ -6,5 +6,6 @@
         public Task ChangeUserStatus(ChangeUserStsatusDto changeUserStsatus);
         public Task AddContact(ContactUsDto contactUsDto);
         public Task<IEnumerable<ContactUs>> GetContacts();
+        public Task<PagedResult<UserApproveResponse>> UserApproveResponses(string roleName, int pageNumber, int pageSize);
     }
 }

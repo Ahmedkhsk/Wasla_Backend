@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Services.Implementation
+﻿using Wasla_Backend.Helpers.Time;
+
+namespace Wasla_Backend.Services.Implementation
 {
     public class UserService : IUserService
     {
@@ -13,7 +15,7 @@
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly string _imagePath;
         private readonly IHttpContextAccessor _httpContextAccessor;
-
+        private readonly DateTimeHelper _dateTimeHelper;
 
         public UserService(
             IUserFactory userFactory,
@@ -26,7 +28,8 @@
             UserManager<ApplicationUser> userManager,
             IRefreshTokenRepository refreshTokenRepository,
             IWebHostEnvironment webHostEnvironment,
-            IHttpContextAccessor httpContextAccessor
+            IHttpContextAccessor httpContextAccessor,
+            DateTimeHelper dateTimeHelper
         )
         {
             _userFactory = userFactory;
@@ -38,7 +41,7 @@
             _TokenHelper = tokenHelper;
             _userManager = userManager;
             Console.WriteLine("WWWROOT = " + webHostEnvironment.WebRootPath);
-
+            _dateTimeHelper = dateTimeHelper;
             _imagePath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.ImagesPathUser.TrimStart('/'));
             _refreshTokenRepository = refreshTokenRepository;
             _httpContextAccessor = httpContextAccessor;
@@ -179,7 +182,7 @@
 
             var user = _userFactory.CreateUser(role.Name);
             _mapper.Map(model, user);
-
+            user.CreatedAt = _dateTimeHelper.Now;
 
 
             var result = await _userRepository.CreateUserAsync(user, model.Password);

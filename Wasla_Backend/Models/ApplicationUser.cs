@@ -14,9 +14,8 @@
         public bool IsCompleteRegistration { get; set; }=false;
         public int CountViolations { get; set; } = 0;
         public UserStatus Status { get; set; } = UserStatus.Pending;
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; }
         public DateTime? LastLogin { get; set; }
-
         public override string? UserName
         {
             get => Email;
