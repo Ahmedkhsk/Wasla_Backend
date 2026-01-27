@@ -40,9 +40,9 @@
         }
 
         [HttpGet("UserApprove")]
-        public async Task<IActionResult> UserApproveResponses(string roleName, int pageNumber = 1,int pageSize = 10,string lan = "en")
+        public async Task<IActionResult> UserApproveResponses(string roleId, int pageNumber = 1,int pageSize = 10,string lan = "en")
         {
-            var result = await _adminService.UserApproveResponses(roleName,pageNumber,pageSize);
+            var result = await _adminService.UserApproveResponses(roleId,pageNumber,pageSize);
             return Ok(ResponseHelper.Success("SuccessToGetUserApproveResponses", lan, result));
         }
     }

@@ -5,12 +5,15 @@
         private readonly IBookingRepository _bookingRepository;
         private readonly IUserRepository _userRepository;
         private readonly IGenericRepository<ContactUs> _contatUsRepository;
+        private readonly IRoleRepository _roleRepository;
 
-        public AdminService(IBookingRepository bookingRepository, IUserRepository userRepository, IGenericRepository<ContactUs> contatUsRepository)
+        public AdminService(IBookingRepository bookingRepository, IUserRepository userRepository, 
+            IGenericRepository<ContactUs> contatUsRepository,IRoleRepository roleRepository)
         {
             _bookingRepository = bookingRepository;
             _userRepository = userRepository;
             _contatUsRepository = contatUsRepository;
+            _roleRepository = roleRepository;
         }
 
         public async Task<AdminChartResponse> GetCollectedCountBookingsPerYear(BookingStatus status)
@@ -54,9 +57,14 @@
             return  await _contatUsRepository.GetAllAsync();
         }
 
-        public async Task<PagedResult<UserApproveResponse>> UserApproveResponses(string roleName,int pageNumber, int pageSize)
+        public async Task<PagedResult<UserApproveResponse>> UserApproveResponses(string roleId, int pageNumber, int pageSize)
         {
-            var users = await _userRepository.GetUsersByRoleAsync(roleName);
+            var role = await _roleRepository.GetRoleByIdAsync(roleId);
+
+            if(role == null)
+                throw new NotFoundException("RoleNotFound");
+            
+            var users = await _userRepository.GetUsersByRoleAsync(role.Name);
 
             var totalCount = users.Count();
 
