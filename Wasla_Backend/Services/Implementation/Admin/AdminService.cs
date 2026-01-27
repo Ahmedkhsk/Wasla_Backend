@@ -22,6 +22,7 @@
             {
                 completedBookingsCount = await _bookingRepository.CountBookings(BookingStatus.completed),
                 canceledBookingsCount = await _bookingRepository.CountBookings(BookingStatus.canceled),
+                countOfUsers = await _userRepository.countUsers(),
                 years = await _bookingRepository.GetCollectedPriceBookingsPerYear()
             };
         }

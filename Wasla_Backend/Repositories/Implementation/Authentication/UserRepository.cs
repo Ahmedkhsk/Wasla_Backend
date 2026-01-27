@@ -15,6 +15,9 @@
             => await _userManager.CreateAsync(user, password);
         public async Task<ApplicationUser> GetUserByEmailAsync(string email)
             => await _userManager.FindByEmailAsync(email)!;
+
+        public async Task<int> countUsers() 
+             => await _userManager.Users.CountAsync();
         public async Task<IdentityResult> UpdateUserAsync(ApplicationUser user)
             => await _userManager.UpdateAsync(user);
         public async Task<ApplicationUser> GetUserByIdAsync(string id)
