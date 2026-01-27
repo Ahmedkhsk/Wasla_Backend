@@ -81,7 +81,6 @@ namespace Wasla_Backend.Services.Implementation
             var user = await _userRepository.GetUserByEmailAsync(gmail);
             user.Status = UserStatus.Active;
             user.IsVerified = true;
-            user.Status = 0;
             await _userManager.UpdateAsync(user);
         }
 
