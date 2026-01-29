@@ -45,5 +45,12 @@
             var result = await _adminService.UserApproveResponses(roleId,pageNumber,pageSize);
             return Ok(ResponseHelper.Success("SuccessToGetUserApproveResponses", lan, result));
         }
+
+        [HttpGet("GetUserDetails")]
+        public async Task<IActionResult> GetUserDetailsAsync(string userId, string lan = "en")
+        {
+            var result = await _adminService.GetUserDetailsAsync(userId);
+            return Ok(ResponseHelper.Success("SuccessToGetUserDetails", lan, result));
+        }
     }
 }

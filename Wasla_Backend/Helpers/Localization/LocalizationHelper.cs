@@ -612,6 +612,11 @@
                 ["en"] = "User approval responses retrieved successfully.",
                 ["ar"] = "تم جلب بيانات اعتماد المستخدمين بنجاح."
             },
+            ["SuccessToGetUserDetails"] = new()
+            {
+                ["en"] = "User details retrieved successfully.",
+                ["ar"] = "تم جلب بيانات المستخدم بنجاح."
+            },
         };
 
 

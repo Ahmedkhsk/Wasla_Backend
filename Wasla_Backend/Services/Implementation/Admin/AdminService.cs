@@ -91,5 +91,29 @@
             };
         }
 
+        public async Task<AdminUserDetailsResponseDto> GetUserDetailsAsync(string userId)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+
+            if (user == null)
+                throw new NotFoundException("UserNotFound");
+
+            var userBase = new AdminUserBaseDetailsDto(user);
+
+            return user switch
+            {
+                Doctor doctor => new AdminUserDetailsResponseDto
+                {
+                    Base = userBase,
+                    details = new AdminDoctorDetailsDto(doctor)
+                },
+                Resident resident => new AdminUserDetailsResponseDto
+                {
+                    Base = userBase,
+                    details = new AdminResidentDetailsDto(resident)
+                },
+            };
+        }
+
     }
 }
