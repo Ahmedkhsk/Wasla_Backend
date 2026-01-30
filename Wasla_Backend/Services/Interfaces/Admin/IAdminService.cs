@@ -2,7 +2,7 @@
 {
     public interface IAdminService
     {
-        public Task<AdminChartResponse> GetCollectedCountBookingsPerYear(BookingStatus status);
+        public Task<AdminChartResponse> GetCollectedCountBookingsPerYear();
         public Task ChangeUserStatus(ChangeUserStsatusDto changeUserStsatus);
         public Task AddContact(ContactUsDto contactUsDto);
         public Task<IEnumerable<ContactUs>> GetContacts();

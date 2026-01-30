@@ -12,9 +12,9 @@
         }
         
         [HttpGet("CollectedCountBookings/{status}")]
-        public async Task<IActionResult> GetCollectedCountBookingsPerYear(BookingStatus status,string lan = "en")
+        public async Task<IActionResult> GetCollectedCountBookingsPerYear(string lan = "en")
         {
-            var result = await _adminService.GetCollectedCountBookingsPerYear(status);
+            var result = await _adminService.GetCollectedCountBookingsPerYear();
             return Ok(ResponseHelper.Success("CollectedCountBookingsSuccess", lan, result));
         }
 

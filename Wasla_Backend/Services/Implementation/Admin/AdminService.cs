@@ -16,7 +16,7 @@
             _roleRepository = roleRepository;
         }
 
-        public async Task<AdminChartResponse> GetCollectedCountBookingsPerYear(BookingStatus status)
+        public async Task<AdminChartResponse> GetCollectedCountBookingsPerYear()
         {
             return new AdminChartResponse 
             {
@@ -98,18 +98,22 @@
             if (user == null)
                 throw new NotFoundException("UserNotFound");
 
+            var role = await _roleRepository.GetUserRolesAsync(user);
+
             var userBase = new AdminUserBaseDetailsDto(user);
 
             return user switch
             {
                 Doctor doctor => new AdminUserDetailsResponseDto
                 {
-                    Base = userBase,
+                    role = role.FirstOrDefault(),
+                    userBase = userBase,
                     details = new AdminDoctorDetailsDto(doctor)
                 },
                 Resident resident => new AdminUserDetailsResponseDto
                 {
-                    Base = userBase,
+                    role = role.FirstOrDefault(),
+                    userBase = userBase,
                     details = new AdminResidentDetailsDto(resident)
                 },
             };

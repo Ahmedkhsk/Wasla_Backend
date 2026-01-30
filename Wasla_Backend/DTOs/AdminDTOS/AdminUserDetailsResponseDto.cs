@@ -2,7 +2,8 @@
 {
     public class AdminUserDetailsResponseDto
     {
-        public AdminUserBaseDetailsDto Base { get; set; }
+        public string role { get; set; }
+        public AdminUserBaseDetailsDto userBase { get; set; }
         public object details { get; set; }
     }
 }
