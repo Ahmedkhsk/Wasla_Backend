@@ -52,7 +52,6 @@ namespace Wasla_Backend.Services.Implementation
 
             string cacheKey = $"verify:{user.Id}";
             var cachedCode = _cacheManager.Get<string>(cacheKey);
-            Console.WriteLine($"Cached Code: {cachedCode}, Provided Code: {model.VerificationCode}");
 
             if (string.IsNullOrEmpty(cachedCode) || cachedCode != model.VerificationCode)
                 throw new BadRequestException("InvalidOrExpiredCode");
@@ -77,7 +76,6 @@ namespace Wasla_Backend.Services.Implementation
             await _emailSender.SendEmailAsync(model.Email, "Verification Code", $"Your OTP is: <b>{verificationCode}</b>");
             string cacheKey = $"verify:{user.Id}";
            _cacheManager.Set(cacheKey, verificationCode, TimeSpan.FromMinutes(1));
-            Console.WriteLine("Verification code sent: " + verificationCode);
             return IdentityResult.Success;
         }
 
@@ -192,11 +190,9 @@ namespace Wasla_Backend.Services.Implementation
             var result = await _userRepository.CreateUserAsync(user, model.Password);
             if (!result.Succeeded)
                 return result;
-            Console.WriteLine("user created successfully"+user.Id);
 
             string verificationCode = new Random().Next(1000, 9999).ToString();
             await _emailSender.SendEmailAsync(model.Email, "Verification Code", $"Your OTP is: <b>{verificationCode}</b>");
-            Console.WriteLine("Verification code sent: " + verificationCode);
 
             string cacheKey = $"verify:{user.Id}";
             _cacheManager.Set(cacheKey, verificationCode, TimeSpan.FromMinutes(1));
