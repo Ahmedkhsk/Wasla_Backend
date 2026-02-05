@@ -11,7 +11,7 @@
             _adminService = adminService;
         }
         
-        [HttpGet("CollectedCountBookings/{status}")]
+        [HttpGet("CollectedCountBookings")]
         public async Task<IActionResult> GetCollectedCountBookingsPerYear(string lan = "en")
         {
             var result = await _adminService.GetCollectedCountBookingsPerYear();
