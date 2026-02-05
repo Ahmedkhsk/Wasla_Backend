@@ -197,6 +197,7 @@ namespace Wasla_Backend.Services.Implementation
             string cacheKey = $"verify:{user.Id}";
             _cacheManager.Set(cacheKey, verificationCode, TimeSpan.FromMinutes(1));
             await _roleRepository.AddUserToRoleAsync(user, role.Name);
+            
 
             return result;
         }
