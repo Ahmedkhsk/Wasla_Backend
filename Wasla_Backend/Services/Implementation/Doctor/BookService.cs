@@ -1,4 +1,5 @@
 ﻿
+
 namespace Wasla_Backend.Services.Implementation
 {
     public class BookService: IBookService
@@ -196,6 +197,19 @@ namespace Wasla_Backend.Services.Implementation
                     serviceProviderId = dto.serviceProviderId
                 };
                 await _hub.Clients.All.SendAsync("ServiceDayBooked", bookhubdata);
+                var endString = booking.newEnd ?? booking.serviceDay.end;
+
+                if (TimeOnly.TryParse(endString, out var endTime))
+                {
+                    var endDateTime = booking.bookingDate.ToDateTime(endTime);
+                    if (endTime <= TimeOnly.Parse(booking.serviceDay.start))
+                        endDateTime = endDateTime.AddDays(1);
+
+                    BackgroundJob.Schedule<HangfireFunctions>(
+                        f => f.CompleteBookingAsync(booking.Id),
+                        endDateTime
+                    );
+                }
             }
             finally
             {

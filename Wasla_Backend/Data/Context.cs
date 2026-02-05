@@ -8,7 +8,6 @@
         public DbSet<Resident> Residents { get; set; }
         public DbSet<Restaurant> Restaurants { get; set; }
         public DbSet<DoctorSpecialization> DoctorSpecializations { get; set; }
-        public DbSet<EmailVerification> EmailVerifications { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<ResidentIdentity> residentIdentities { get; set; }
         public DbSet<Service> Service { get; set; }

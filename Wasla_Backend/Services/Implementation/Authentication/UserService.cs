@@ -6,7 +6,6 @@ namespace Wasla_Backend.Services.Implementation
     {
         private readonly IUserFactory _userFactory;
         private readonly IUserRepository _userRepository;
-        private readonly IEmailVerificationRepository _emailVerificationRepository;
         private readonly IRoleRepository _roleRepository;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
         private readonly EmailSenderHelper _emailSender;
@@ -16,11 +15,11 @@ namespace Wasla_Backend.Services.Implementation
         private readonly string _imagePath;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly DateTimeHelper _dateTimeHelper;
+        private readonly CacheManager _cacheManager;
 
         public UserService(
             IUserFactory userFactory,
             IUserRepository userRepository,
-            IEmailVerificationRepository emailVerificationRepository,
             IRoleRepository roleRepository,
             EmailSenderHelper emailSender,
             IMapper mapper,
@@ -29,38 +28,42 @@ namespace Wasla_Backend.Services.Implementation
             IRefreshTokenRepository refreshTokenRepository,
             IWebHostEnvironment webHostEnvironment,
             IHttpContextAccessor httpContextAccessor,
-            DateTimeHelper dateTimeHelper
+            DateTimeHelper dateTimeHelper,
+            CacheManager cacheManager
         )
         {
             _userFactory = userFactory;
             _userRepository = userRepository;
-            _emailVerificationRepository = emailVerificationRepository;
             _roleRepository = roleRepository;
             _emailSender = emailSender;
             _mapper = mapper;
             _TokenHelper = tokenHelper;
             _userManager = userManager;
-            Console.WriteLine("WWWROOT = " + webHostEnvironment.WebRootPath);
             _dateTimeHelper = dateTimeHelper;
             _imagePath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.ImagesPathUser.TrimStart('/'));
             _refreshTokenRepository = refreshTokenRepository;
             _httpContextAccessor = httpContextAccessor;
+            _cacheManager = cacheManager;
         }
 
         public async Task<IdentityResult> VerifyEmailAsync(VerificationEmailDto model)
         {
             var user = await _userRepository.GetUserByEmailAsync(model.Email);
 
-            var verification = await _emailVerificationRepository.GetByEmailAndCodeAsync(model.Email, model.VerificationCode);
-            if (verification == null || verification.ExpiresAt < DateTime.UtcNow)
+            string cacheKey = $"verify:{user.Id}";
+            var cachedCode = _cacheManager.Get<string>(cacheKey);
+            Console.WriteLine($"Cached Code: {cachedCode}, Provided Code: {model.VerificationCode}");
+
+            if (string.IsNullOrEmpty(cachedCode) || cachedCode != model.VerificationCode)
                 throw new BadRequestException("InvalidOrExpiredCode");
+
+            _cacheManager.Remove(cacheKey);
 
             user.IsVerified = true;
             var result = await _userRepository.UpdateUserAsync(user);
             if (!result.Succeeded)
                 return result;
 
-            await _emailVerificationRepository.RemoveAsync(verification);
             return result;
         }
 
@@ -72,7 +75,9 @@ namespace Wasla_Backend.Services.Implementation
 
             string verificationCode = new Random().Next(1000, 9999).ToString();
             await _emailSender.SendEmailAsync(model.Email, "Verification Code", $"Your OTP is: <b>{verificationCode}</b>");
-            await _emailVerificationRepository.AddVerificationAsync(model.Email, verificationCode, TimeSpan.FromMinutes(1));
+            string cacheKey = $"verify:{user.Id}";
+           _cacheManager.Set(cacheKey, verificationCode, TimeSpan.FromMinutes(1));
+            Console.WriteLine("Verification code sent: " + verificationCode);
             return IdentityResult.Success;
         }
 
@@ -187,10 +192,14 @@ namespace Wasla_Backend.Services.Implementation
             var result = await _userRepository.CreateUserAsync(user, model.Password);
             if (!result.Succeeded)
                 return result;
+            Console.WriteLine("user created successfully"+user.Id);
 
             string verificationCode = new Random().Next(1000, 9999).ToString();
             await _emailSender.SendEmailAsync(model.Email, "Verification Code", $"Your OTP is: <b>{verificationCode}</b>");
-            await _emailVerificationRepository.AddVerificationAsync(model.Email, verificationCode, TimeSpan.FromMinutes(1));
+            Console.WriteLine("Verification code sent: " + verificationCode);
+
+            string cacheKey = $"verify:{user.Id}";
+            _cacheManager.Set(cacheKey, verificationCode, TimeSpan.FromMinutes(1));
             await _roleRepository.AddUserToRoleAsync(user, role.Name);
 
             return result;

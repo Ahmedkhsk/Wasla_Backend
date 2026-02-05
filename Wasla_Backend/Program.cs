@@ -1,3 +1,5 @@
+﻿
+using Hangfire;
 
 namespace Wasla_Backend
 {
@@ -12,6 +14,9 @@ namespace Wasla_Backend
                 options.UseSqlServer(
                     builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+            builder.Services.AddHangfire(config =>
+            config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddHangfireServer();
 
             builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<Context>()
@@ -21,6 +26,7 @@ namespace Wasla_Backend
             builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Email"));
             builder.Services.Configure<RateLimitSettings>(builder.Configuration.GetSection("RateLimitSettings"));
             builder.Services.Configure<TimeZoneSettings>(builder.Configuration.GetSection("TimeZones"));
+            builder.Services.AddMemoryCache();
             
             builder.Services.AddSingleton<ToxicityClassifier>(sp =>
             {
@@ -43,7 +49,6 @@ namespace Wasla_Backend
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-            builder.Services.AddScoped<IEmailVerificationRepository, EmailVerificationRepository>();
             builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
             builder.Services.AddScoped<IResidentRepository, ResidentRepository>();
@@ -69,10 +74,9 @@ namespace Wasla_Backend
             builder.Services.AddTransient<EmailSenderHelper>();
             builder.Services.AddSingleton<BadWordsService>();
             builder.Services.AddSingleton<DateTimeHelper>();
+            builder.Services.AddSingleton<CacheManager>();
 
 
-            builder.Services.AddHostedService<ExpiredEmailVerificationCleaner>();
-            builder.Services.AddHostedService<BookingStatusUpdaterService>();
 
             builder.Services.AddAuthentication(options =>
             {
@@ -161,6 +165,11 @@ namespace Wasla_Backend
             app.MapHub<BookingHub>("/bookingHub");
             app.MapHub<ServiceHub>("/serviceHub");
             app.MapHub<ReviewHub>("/reviewHub");
+            app.UseHangfireDashboard("/hangfire");
+          
+
+
+
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
@@ -168,6 +177,8 @@ namespace Wasla_Backend
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Wasla API v1");
                 c.RoutePrefix = string.Empty;
             });
+            
+
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

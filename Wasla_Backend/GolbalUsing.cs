@@ -10,6 +10,7 @@ global using Microsoft.AspNetCore.SignalR;
 global using Microsoft.ML.Data;
 global using Microsoft.ML;
 global using Wasla_Backend.Helpers.MlHelper;
+global using Hangfire;
 
 global using System.Text.RegularExpressions;
 global using System.Reflection;
@@ -22,6 +23,8 @@ global using System.IdentityModel.Tokens.Jwt;
 global using System.Security.Claims;
 global using System.Security.Cryptography;
 global using System.Data;
+global using Microsoft.Extensions.Caching.Memory;
+
 
 global using MailKit.Security;
 global using MimeKit;
@@ -57,10 +60,10 @@ global using Wasla_Backend.DTOs.BookDTOS;
 global using Wasla_Backend.DTOs.HubsDto;
 global using Wasla_Backend.DTOs.FavouritsDTOS;
 global using Wasla_Backend.DTOs.ChartDTOS;
-global using Wasla_Backend.Helpers.BackgroundServiceHelper;
 global using Wasla_Backend.Helpers.Resolvers;
 global using Wasla_Backend.Hubs.BookingHubs;
 global using Wasla_Backend.Hubs.ServiceHubs;
 global using Wasla_Backend.Hubs.ReviewHubs;
 global using Wasla_Backend.DTOs.AdminDTOS;
 global using Wasla_Backend.Helpers.Time;
+global using Wasla_Backend.Helpers.Cashing;
