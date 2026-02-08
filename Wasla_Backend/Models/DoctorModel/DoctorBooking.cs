@@ -1,5 +1,6 @@
 ﻿namespace Wasla_Backend.Models
 {
+    [Table("DoctorBookings")]
     public class Booking
     {
         public int Id { get; set; }

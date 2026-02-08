@@ -2,7 +2,7 @@
 
 namespace Wasla_Backend.Services.Implementation
 {
-    public class BookService: IBookService
+    public class BookService: IDoctorBookService
     {
         private readonly IBookingRepository _bookingRepository;
         private readonly IUserRepository _userRepository;

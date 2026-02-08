@@ -1,5 +1,6 @@
 ﻿namespace Wasla_Backend.Models
 {
+    [Table("DoctorServices")]
     public class Service
     {
         public int id { get; set; }
