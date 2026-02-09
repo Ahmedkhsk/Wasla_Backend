@@ -222,8 +222,8 @@
             },
             ["CompleteDataSuccess"] = new()
             {
-                ["en"] = "Doctor data completed successfully",
-                ["ar"] = "تم استكمال بيانات الطبيب بنجاح"
+                ["en"] = "data completed successfully",
+                ["ar"] = "تم استكمال البيانات بنجاح"
             },
             ["FetchDoctorSpecializationsSuccess"] = new()
             {
@@ -616,6 +616,11 @@
             {
                 ["en"] = "User details retrieved successfully.",
                 ["ar"] = "تم جلب بيانات المستخدم بنجاح."
+            },
+            ["GymNotFound"] = new()
+            {
+                ["en"] = "The requested gym was not found.",
+                ["ar"] = "الجيم المطلوب غير موجود."
             },
         };
 

@@ -2,11 +2,14 @@
 {
     public class Gym : ServiceProvider
     {
-        public string? MembershipPlansJson { get; set; } 
-        public string? Facilities { get; set; } 
-        public int TrainerCount { get; set; }
-        public string? ClassScheduleJson { get; set; }
-        public int MaxCapacity { get; set; }
-        public decimal? DayPassPrice { get; set; }
+        public List<string> phones { get; set; }
+        public string? imagesJson { get; set; }
+        
+        [NotMapped]
+        public List<string> images
+        {
+            get => imagesJson == null ? new List<string>() : JsonSerializer.Deserialize<List<string>>(imagesJson);
+            set => imagesJson = JsonSerializer.Serialize(value);
+        }
     }
 }
