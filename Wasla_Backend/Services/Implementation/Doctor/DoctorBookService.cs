@@ -2,7 +2,7 @@
 
 namespace Wasla_Backend.Services.Implementation
 {
-    public class BookService: IDoctorBookService
+    public class DoctorBookService: IDoctorBookService
     {
         private readonly IBookingRepository _bookingRepository;
         private readonly IUserRepository _userRepository;
@@ -13,14 +13,14 @@ namespace Wasla_Backend.Services.Implementation
         private readonly string _imagePath;
         private readonly IHubContext<BookingHub> _hub;
         private readonly IMapper _mapper;
-        private readonly ILogger<BookService> _logger = LoggerFactory.Create(builder =>
+        private readonly ILogger<DoctorBookService> _logger = LoggerFactory.Create(builder =>
         {
             builder.AddConsole();
-        }).CreateLogger<BookService>();
+        }).CreateLogger<DoctorBookService>();
         private static readonly SemaphoreSlim _bookingLock = new SemaphoreSlim(1, 1);
 
 
-        public BookService( IBookingRepository bookingRepository, 
+        public DoctorBookService( IBookingRepository bookingRepository, 
                             IUserRepository userRepository, 
                             IGenericRepository<ServiceDay> serviceDay,
                             IWebHostEnvironment webHostEnvironment, 

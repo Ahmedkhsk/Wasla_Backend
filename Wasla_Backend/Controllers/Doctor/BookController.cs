@@ -4,37 +4,37 @@
     [ApiController]
     public class BookController : ControllerBase
     {
-        private readonly IBookService _bookService;
-        public BookController(IBookService bookService)
+        private readonly IDoctorBookService _doctorBookService;
+        public BookController(IDoctorBookService doctorBookService)
         {
-            _bookService = bookService;
+            _doctorBookService = doctorBookService;
         }
 
         [HttpPost("BookService")]
         public async Task<IActionResult> BookService([FromForm] BookServiceDto bookServiceDto, string lan = "en")
         {
-                await _bookService.Book(bookServiceDto);
+                await _doctorBookService.Book(bookServiceDto);
                 return Ok(ResponseHelper.Success("ServiceBookedSuccessfully", lan));
         }
 
         [HttpPut("UpdateBooking")]
         public async Task<IActionResult> UpdateBooking([FromBody] UpdateBookingDto updateBookingDto, [FromQuery] string lan = "en")
         {
-            await _bookService.UpdateBooking(updateBookingDto);
+            await _doctorBookService.UpdateBooking(updateBookingDto);
             return Ok(ResponseHelper.Success("BookingUpdatedSuccessfully", lan));
         }
 
         [HttpPut("UpdateBookingStatus")]
         public async Task<IActionResult> UpdateBookingStatus([FromQuery] int bookingId, [FromQuery] BookingStatus status, [FromQuery] string lan = "en")
         {
-            await _bookService.UpdateBookingStatus(bookingId, status);
+            await _doctorBookService.UpdateBookingStatus(bookingId, status);
             return Ok(ResponseHelper.Success("BookingStatusUpdatedSuccessfully", lan));
         }
 
         [HttpGet("GetBookingDetailsForUser")]
         public async Task<IActionResult> GetBookingDetailsForUser([FromQuery]string userId, [FromQuery] string language="en")
         {
-            var bookingDetails = await _bookService.GetBookingDetailsForUserAsync(userId, language);
+            var bookingDetails = await _doctorBookService.GetBookingDetailsForUserAsync(userId, language);
             return Ok(ResponseHelper.Success("BookingRetrievedsuccess", language, bookingDetails));
         }
     }
