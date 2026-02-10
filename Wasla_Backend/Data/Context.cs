@@ -16,8 +16,8 @@
         public DbSet<Reviews> Review { get; set; }
         public DbSet<Booking> Booking { get; set; }
         public DbSet<ContactUs> ContactUs { get; set; }
-        public DbSet<BaseBooking> BaseBookings { get; set; }    
-        public DbSet<BaseService> BaseServices { get; set; }
+      //  public DbSet<BaseBooking> BaseBookings { get; set; }    
+      //  public DbSet<BaseService> BaseServices { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options) { }
 

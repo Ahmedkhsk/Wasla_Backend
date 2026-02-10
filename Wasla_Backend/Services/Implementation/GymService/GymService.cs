@@ -35,6 +35,7 @@
                     gym.images.Add(imagePath);
                 }
             }
+            gym.IsCompleteRegistration = true;   
 
             await _gymRepo.SaveChangesAsync();
         }

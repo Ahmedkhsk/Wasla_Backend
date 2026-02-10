@@ -2,7 +2,7 @@
 {
     public class Gym : ServiceProvider
     {
-        public List<string> phones { get; set; }
+        public List<string>? phones { get; set; }
         public string? imagesJson { get; set; }
         
         [NotMapped]

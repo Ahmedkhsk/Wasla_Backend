@@ -4,13 +4,14 @@
     {
         public ApplicationUser CreateUser(string role)
         {
+            Console.WriteLine($"Creating user with role: {role}");
             return role.ToLower() switch
             {
                 "doctor" => new Doctor(),
                 "driver" => new Driver(),
                 "resident" => new Resident(),
                 "restaurantOwner" => new Restaurant(),
-                "gymOwner" => new Gym(),
+                "gym" => new Gym(),
                 "technician" => new Technician(),
                 _ => throw new NotFoundException($"RoleNotFound")
             };
