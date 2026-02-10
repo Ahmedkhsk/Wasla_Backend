@@ -15,7 +15,7 @@
 
         public async Task CompleteRegister(GymCompleteRegisterDto service)
         {
-            var gym = await _gymRepo.GetByIdAsync(service.email);
+            var gym = await _gymRepo.GetByIdAsync(service.id);
 
             if (gym == null)
                 throw new NotFoundException("GymNotFound");
