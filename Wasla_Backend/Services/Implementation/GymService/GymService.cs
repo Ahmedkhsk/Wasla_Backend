@@ -17,26 +17,25 @@
         {
             var gym = await _gymRepo.GetByIdAsync(service.email);
 
-            if(gym == null)
+            if (gym == null)
                 throw new NotFoundException("GymNotFound");
 
-            _mapper.Map<Gym>(service);
+            _mapper.Map(service, gym);
 
-            gym.ProfilePhoto = await FileOperation.SaveFile(service.photo, _imagePath);
-            
-            var images = new List<string>();
-            
-            if (service.photos != null)
+            if (service.photo != null)
+                gym.ProfilePhoto = await FileOperation.SaveFile(service.photo, _imagePath);
+
+            if (service.photos != null && service.photos.Any())
             {
+                gym.images ??= new List<string>();
+
                 foreach (var photo in service.photos)
                 {
                     var imagePath = await FileOperation.SaveFile(photo, _imagePath);
-                    images.Add(imagePath);
+                    gym.images.Add(imagePath);
                 }
             }
-            
-            gym.images = images;
-            await _gymRepo.AddAsync(gym);
+
             await _gymRepo.SaveChangesAsync();
         }
     }
