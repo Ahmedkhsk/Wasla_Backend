@@ -35,6 +35,7 @@ global using System.IO;
 global using Wasla_Backend.Repositories.Interfaces;
 global using Wasla_Backend.Enums;
 global using Wasla_Backend.Models;
+global using Wasla_Backend.Models.BaseModel;
 global using Wasla_Backend.Data;
 global using Wasla_Backend.Factories.Interfaces;
 global using Wasla_Backend.Services.Interfaces;
