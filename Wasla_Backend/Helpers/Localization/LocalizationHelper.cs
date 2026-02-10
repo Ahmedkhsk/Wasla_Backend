@@ -132,7 +132,7 @@
             },
             ["RoleNotFound"] = new()
             {
-                ["en"] = "role no found.",
+                ["en"] = "role not found.",
                 ["ar"] = "لم يتم العثور على أدوار."
             },
             ["InvalidOrExpiredCode"] = new()
