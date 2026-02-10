@@ -1,7 +1,4 @@
-﻿
-using Hangfire;
-
-namespace Wasla_Backend
+﻿namespace Wasla_Backend
 {
     public class Program
     {
@@ -67,7 +64,7 @@ namespace Wasla_Backend
             builder.Services.AddScoped<IDoctorBookService, DoctorBookService>();
             builder.Services.AddScoped<IFavouriteService, FavouriteService>();
             builder.Services.AddScoped<IAdminService, AdminService>();
-
+            builder.Services.AddScoped<IGymService, GymService>();
 
             builder.Services.AddScoped<TokenHelper>();
             builder.Services.AddScoped<IUserFactory, UserFactory>();

@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using Wasla_Backend.Models;
-
-namespace Wasla_Backend.Services.Implementation
+﻿namespace Wasla_Backend.Services.Implementation
 {
     public class DoctorService : IDoctorService
     {

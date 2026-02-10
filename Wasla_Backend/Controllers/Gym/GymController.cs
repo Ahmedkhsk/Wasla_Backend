@@ -1,0 +1,21 @@
+﻿namespace Wasla_Backend.Controllers.Gym
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class GymController : ControllerBase
+    {
+        private readonly IGymService _gymService;
+
+        public GymController(IGymService gymService)
+        {
+            _gymService = gymService;
+        }
+
+        [HttpPost("CompleteRegister")]
+        public async Task<IActionResult> CompleteRegister(GymCompleteRegisterDto service,string lan = "en")
+        {
+            await _gymService.CompleteRegister(service);
+            return Ok(ResponseHelper.Success("CompleteDataSuccess", lan));
+        }
+    }
+}

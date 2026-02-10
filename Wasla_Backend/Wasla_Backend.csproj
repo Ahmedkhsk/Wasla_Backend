@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Helpers\BackgroundServiceHelper\**" />
+    <Content Remove="Helpers\BackgroundServiceHelper\**" />
+    <EmbeddedResource Remove="Helpers\BackgroundServiceHelper\**" />
+    <None Remove="Helpers\BackgroundServiceHelper\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="Hangfire" Version="1.8.22" />
     <PackageReference Include="Hangfire.SqlServer" Version="1.8.22" />
@@ -27,7 +34,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Helpers\BackgroundServiceHelper\" />
     <Folder Include="wwwroot\assets\cv\doctor\" />
     <Folder Include="wwwroot\assets\images\user\" />
     <Folder Include="wwwroot\assets\ai\models\" />
