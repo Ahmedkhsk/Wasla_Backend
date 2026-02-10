@@ -16,7 +16,7 @@
         public async Task CompleteRegister(GymCompleteRegisterDto service)
         {
             var gym = await _gymRepo.GetByIdAsync(service.id);
-
+            
             if (gym == null)
                 throw new NotFoundException("GymNotFound");
 
@@ -35,6 +35,8 @@
                     gym.images.Add(imagePath);
                 }
             }
+
+            gym.IsCompleteRegistration = true;
 
             await _gymRepo.SaveChangesAsync();
         }

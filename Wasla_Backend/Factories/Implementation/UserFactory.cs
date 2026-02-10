@@ -10,7 +10,7 @@
                 "driver" => new Driver(),
                 "resident" => new Resident(),
                 "restaurantOwner" => new Restaurant(),
-                "gymOwner" => new Gym(),
+                "gym" => new Gym(),
                 "technician" => new Technician(),
                 _ => throw new NotFoundException($"RoleNotFound")
             };
