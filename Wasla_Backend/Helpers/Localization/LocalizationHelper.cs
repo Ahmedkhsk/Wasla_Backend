@@ -636,6 +636,36 @@
             {
                 ["en"] = "Gym profile data fetched successfully.",
                 ["ar"] = "تم جلب بيانات ملف الجيم بنجاح."
+            },
+            ["servicehandlernotfound"]=new()
+            {
+                ["en"] = "Service handler not found.",
+                ["ar"] = "لم يتم العثور على معالج الخدمة."
+            },
+            ["PackageNotFound"]= new()
+            {
+                ["en"] = "The requested package was not found.",
+                ["ar"] = "الباقة المطلوبة غير موجودة."
+            },
+            ["PackageAddedSuccessfully"] = new()
+            {
+                ["en"] = "Package added successfully.",
+                ["ar"] = "تمت إضافة الباقة بنجاح."
+            },
+            ["PackageUpdatedSuccessfully"] = new()
+            {
+                ["en"] = "Package updated successfully.",
+                ["ar"] = "تم تحديث الباقة بنجاح."
+            },
+            ["PackageDeletedSuccessfully"] = new()
+            {
+                ["en"] = "Package deleted successfully.",
+                ["ar"] = "تم حذف الباقة بنجاح."
+            },
+            ["PackagesRetrievedSuccessfully"]=new()
+            {
+                ["en"] = "Packages retrieved successfully.",
+                ["ar"] = "تم جلب الباقات بنجاح."
             }
         };
 

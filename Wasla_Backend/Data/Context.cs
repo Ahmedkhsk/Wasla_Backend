@@ -18,7 +18,8 @@ namespace Wasla_Backend.Data
         public DbSet<Booking> Booking { get; set; }
         public DbSet<ContactUs> ContactUs { get; set; }
       //  public DbSet<BaseBooking> BaseBookings { get; set; }    
-      //  public DbSet<BaseService> BaseServices { get; set; }
+        public DbSet<BaseService> BaseServices { get; set; }
+        public DbSet<Package> Packages { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options) { }
 
@@ -31,6 +32,8 @@ namespace Wasla_Backend.Data
             builder.Entity<Gym>().ToTable("Gym");
             builder.Entity<Resident>().ToTable("Resident");
             builder.Entity<Restaurant>().ToTable("Restaurant");
+            builder.Entity<BaseService>().ToTable("BaseServices");
+            builder.Entity<Package>().ToTable("Packages");
 
             builder.Entity<DoctorSpecialization>(entity =>
             {
@@ -73,7 +76,8 @@ namespace Wasla_Backend.Data
                     sa.WithOwner();
                 });
             });
-           // builder.Entity<ApplicationUser>().HasQueryFilter(d => d.Status == UserStatus.Active && d.IsCompleteRegistration && d.IsVerified);
+            builder.Entity<BaseService>().HasQueryFilter(s=>!s.IsDeleted &&!s.IsHidden);
+            // builder.Entity<ApplicationUser>().HasQueryFilter(d => d.Status == UserStatus.Active && d.IsCompleteRegistration && d.IsVerified);
 
 
 

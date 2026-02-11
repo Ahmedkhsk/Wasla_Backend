@@ -69,7 +69,6 @@ global using Wasla_Backend.DTOs.AdminDTOS;
 global using Wasla_Backend.Helpers.Time;
 global using Wasla_Backend.Helpers.Cashing;
 global using Wasla_Backend.Services.Interfaces.General;
-global using Wasla_Backend.Services.Implementation.General;
 global using Wasla_Backend.DTOs.GymDTOS;
 global using Wasla_Backend.Services.Interfaces.GymService;
 global using Wasla_Backend.Services.Implementation.GymService;

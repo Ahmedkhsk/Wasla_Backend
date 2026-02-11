@@ -55,6 +55,7 @@
             builder.Services.AddScoped<IBookingRepository, BookingRepository>();
             builder.Services.AddScoped<IFavouriteRepository, FavouriteRepository>();
             builder.Services.AddScoped<IGymRepository, GymRepository>();
+            builder.Services.AddScoped<IPackageRepository, PackageRepository>();
 
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IRoleService, RoleService>();
@@ -66,6 +67,7 @@
             builder.Services.AddScoped<IFavouriteService, FavouriteService>();
             builder.Services.AddScoped<IAdminService, AdminService>();
             builder.Services.AddScoped<IGymService, GymService>();
+            builder.Services.AddScoped<IPackageService, PackageService>();
 
             builder.Services.AddScoped<TokenHelper>();
             builder.Services.AddScoped<IUserFactory, UserFactory>();
