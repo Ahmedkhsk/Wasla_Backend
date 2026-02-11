@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Mappings
+﻿using Wasla_Backend.Models.GymModel;
+
+namespace Wasla_Backend.Mappings
 {
     public class GymProfile : Profile
     {

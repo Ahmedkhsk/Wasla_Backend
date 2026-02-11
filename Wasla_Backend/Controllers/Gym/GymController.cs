@@ -12,10 +12,22 @@
         }
 
         [HttpPost("CompleteRegister")]
-        public async Task<IActionResult> CompleteRegister(GymCompleteRegisterDto service,string lan = "en")
+        public async Task<IActionResult> CompleteRegister(GymCompleteRegisterDto service, string lan = "en")
         {
             await _gymService.CompleteRegister(service);
             return Ok(ResponseHelper.Success("CompleteDataSuccess", lan));
+        }
+        [HttpGet("AllGyms")]
+        public async Task<IActionResult> AllGyms(string lan = "en")
+        {
+            var data = await _gymService.AllGyms();
+            return Ok(ResponseHelper.Success("AllGymsData", lan, data));
+        }
+        [HttpGet("GymProfile")]
+        public async Task<IActionResult> GymProfile(string id, string lan = "en")
+        {
+            var data = await _gymService.GymProfile(id);
+            return Ok(ResponseHelper.Success("GymProfileData", lan, data));
         }
     }
 }

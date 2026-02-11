@@ -9,6 +9,6 @@
         public string? Description { get; set; } 
         public string? OpeningHours { get; set; } 
         public float Rating { get; set; }
-        public ICollection<Reviews>? Reviews { get; set; }
+        public ICollection<Reviews> Reviews { get; set; }= new List<Reviews>();
     }
 }

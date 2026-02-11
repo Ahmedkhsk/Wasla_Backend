@@ -622,6 +622,21 @@
                 ["en"] = "The requested gym was not found.",
                 ["ar"] = "الجيم المطلوب غير موجود."
             },
+            ["AllGymsData"] = new()
+            {
+                ["en"] = "All gyms data fetched successfully.",
+                ["ar"] = "تم جلب بيانات جميع الجيمات بنجاح."
+            },
+            ["GymNotFound"]=new()
+            {
+                ["en"] = "The requested gym was not found.",
+                ["ar"] = "الجيم المطلوب غير موجود."
+            },
+            ["GymProfileData"]=new()
+            {
+                ["en"] = "Gym profile data fetched successfully.",
+                ["ar"] = "تم جلب بيانات ملف الجيم بنجاح."
+            }
         };
 
 

@@ -2,7 +2,7 @@
 {
     public class GymCompleteRegisterDto
     {
-        public string id { get; set; }
+        public string gmail { get; set; }
         public string businessName { get; set; }
         public string ownerName { get; set; }
         public string description { get; set; }

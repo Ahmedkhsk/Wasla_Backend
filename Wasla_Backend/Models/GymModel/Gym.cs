@@ -1,10 +1,10 @@
-﻿namespace Wasla_Backend.Models
+﻿namespace Wasla_Backend.Models.GymModel
 {
     public class Gym : ServiceProvider
     {
         public List<string>? phones { get; set; }
         public string? imagesJson { get; set; }
-        
+
         [NotMapped]
         public List<string> images
         {

@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Helpers.Resolvers
+﻿using Wasla_Backend.Models.GymModel;
+
+namespace Wasla_Backend.Helpers.Resolvers
 {
     public static class ServiceProviderTypeResolver
     {

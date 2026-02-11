@@ -1,22 +1,30 @@
-﻿namespace Wasla_Backend.Services.Implementation.GymService
+﻿using Wasla_Backend.Models.GymModel;
+
+namespace Wasla_Backend.Services.Implementation.GymService
 {
     public class GymService : IGymService
     {
-        private readonly IGenericRepository<Gym> _gymRepo;
+        private readonly IGymRepository _gymRepo;
         private readonly IMapper _mapper;
         private readonly string _imagePath;
 
-        public GymService(IGenericRepository<Gym> gymRepo , IMapper mapper, IWebHostEnvironment webHostEnvironment) 
+        public GymService(IGymRepository gymRepo , IMapper mapper, IWebHostEnvironment webHostEnvironment) 
         {
             _gymRepo = gymRepo;
             _mapper = mapper;
             _imagePath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.ImagesPathGym.TrimStart('/'));
         }
 
+        public async Task<List<AllGymsDataDto>> AllGyms()
+        {
+            return await _gymRepo.AllGyms();
+        }
+
+
         public async Task CompleteRegister(GymCompleteRegisterDto service)
         {
-            var gym = await _gymRepo.GetByIdAsync(service.id);
-            
+            var gym = await _gymRepo.GetByGmailAsync(service.gmail);
+
             if (gym == null)
                 throw new NotFoundException("GymNotFound");
 
@@ -27,19 +35,29 @@
 
             if (service.photos != null && service.photos.Any())
             {
-                gym.images ??= new List<string>();
+                var images = gym.images ?? new List<string>();
 
                 foreach (var photo in service.photos)
                 {
                     var imagePath = await FileOperation.SaveFile(photo, _imagePath);
-                    gym.images.Add(imagePath);
+                    images.Add(imagePath);
                 }
+
+                gym.images = images;  
             }
-            gym.IsCompleteRegistration = true;   
 
             gym.IsCompleteRegistration = true;
 
             await _gymRepo.SaveChangesAsync();
+        }
+
+
+        public Task<GymProfileDto> GymProfile(string id)
+        {
+            var gym = _gymRepo.GetByIdAsync(id);
+            if (gym == null)
+                throw new NotFoundException("GymNotFound");
+            return _gymRepo.GymProfile(id);
         }
     }
 }
