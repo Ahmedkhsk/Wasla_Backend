@@ -52,12 +52,12 @@ namespace Wasla_Backend.Services.Implementation.GymService
         }
 
 
-        public Task<GymProfileDto> GymProfile(string id)
+        public async Task<GymProfileDto> GymProfile(string id)
         {
-            var gym = _gymRepo.GetByIdAsync(id);
+            var gym =await _gymRepo.GetByIdAsync(id);
             if (gym == null)
                 throw new NotFoundException("GymNotFound");
-            return _gymRepo.GymProfile(id);
+            return await _gymRepo.GymProfile(id);
         }
     }
 }
