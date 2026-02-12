@@ -503,7 +503,7 @@
                 ["en"] = "This service cannot be deleted or update because it has existing bookings.",
                 ["ar"] = "لا يمكن حذف او تعديل هذه الخدمة لوجود حجوزات مرتبطة بها."
             },
-            ["TooManyRequests"]=new()
+            ["TooManyRequests"] = new()
             {
                 ["en"] = "Too many requests. Please try again later.",
                 ["ar"] = "طلبات كثيرة جدا. يرجى المحاولة لاحقًا."
@@ -530,34 +530,34 @@
                 ["en"] = "Invalid file content type.",
                 ["ar"] = "نوع محتوى الملف غير صالح."
             },
-            ["FetchDoctorDataSuccess"]=new()
+            ["FetchDoctorDataSuccess"] = new()
             {
                 ["en"] = "Doctor data fetched successfully.",
                 ["ar"] = "تم جلب بيانات الطبيب بنجاح."
             },
-            ["RefreshTokenMissing"]=new()
+            ["RefreshTokenMissing"] = new()
             {
                 ["en"] = "Refresh token is missing.",
                 ["ar"] = "رمز التحديث مفقود."
             }
 
             ,
-            ["Usernotloggedin"]=new()
+            ["Usernotloggedin"] = new()
             {
                 ["en"] = "User is not logged in.",
                 ["ar"] = "المستخدم غير مسجل الدخول."
             },
-            ["UserLoggedOutSuccess"]=new()
+            ["UserLoggedOutSuccess"] = new()
             {
                 ["en"] = "User logged out successfully.",
                 ["ar"] = "تم تسجيل خروج المستخدم بنجاح."
             },
-            ["UserHasAnotherBookingWithSameProviderOnThisDate"]= new()
+            ["UserHasAnotherBookingWithSameProviderOnThisDate"] = new()
             {
                 ["en"] = "User has another booking with the same provider on this date.",
                 ["ar"] = "للمستخدم حجز آخر مع نفس مقدم الخدمة في هذا التاريخ."
             },
-            ["Newpasswordthesameastheoldpassword"]=new()
+            ["Newpasswordthesameastheoldpassword"] = new()
             {
                 ["en"] = "The new password cannot be the same as the old password.",
                 ["ar"] = "لا يمكن أن تكون كلمة المرور الجديدة هي نفسها كلمة المرور القديمة."
@@ -567,17 +567,17 @@
                 ["en"] = "The service has been deleted from the service provider.",
                 ["ar"] = "تم حذف الخدمة من مزود الخدمة."
             },
-            ["ToxicityPredictionSuccess"]=new()
+            ["ToxicityPredictionSuccess"] = new()
             {
                 ["en"] = "Toxicity prediction completed successfully.",
                 ["ar"] = "تم إكمال التنبؤ بالسلبية بنجاح."
             },
-            ["ReviewContainsToxicContent"]=new()
+            ["ReviewContainsToxicContent"] = new()
             {
                 ["en"] = "The review contains toxic content.",
                 ["ar"] = "التقييم يحتوي على محتوى غير مناسب."
             },
-            ["UserBlockedDueToViolations"]= new()
+            ["UserBlockedDueToViolations"] = new()
             {
                 ["en"] = "User is blocked due to multiple violations.",
                 ["ar"] = "المستخدم محظور بسبب انتهاكات متعددة."
@@ -627,22 +627,22 @@
                 ["en"] = "All gyms data fetched successfully.",
                 ["ar"] = "تم جلب بيانات جميع الجيمات بنجاح."
             },
-            ["GymNotFound"]=new()
+            ["GymNotFound"] = new()
             {
                 ["en"] = "The requested gym was not found.",
                 ["ar"] = "الجيم المطلوب غير موجود."
             },
-            ["GymProfileData"]=new()
+            ["GymProfileData"] = new()
             {
                 ["en"] = "Gym profile data fetched successfully.",
                 ["ar"] = "تم جلب بيانات ملف الجيم بنجاح."
             },
-            ["servicehandlernotfound"]=new()
+            ["servicehandlernotfound"] = new()
             {
                 ["en"] = "Service handler not found.",
                 ["ar"] = "لم يتم العثور على معالج الخدمة."
             },
-            ["PackageNotFound"]= new()
+            ["PackageNotFound"] = new()
             {
                 ["en"] = "The requested package was not found.",
                 ["ar"] = "الباقة المطلوبة غير موجودة."
@@ -662,10 +662,35 @@
                 ["en"] = "Package deleted successfully.",
                 ["ar"] = "تم حذف الباقة بنجاح."
             },
-            ["PackagesRetrievedSuccessfully"]=new()
+            ["PackagesRetrievedSuccessfully"] = new()
             {
                 ["en"] = "Packages retrieved successfully.",
                 ["ar"] = "تم جلب الباقات بنجاح."
+            },
+            ["Gymnotfound"] = new()
+            {
+                ["en"] = "The requested gym was not found.",
+                ["ar"] = "الجيم المطلوب غير موجود."
+            },
+            ["Residentnotfound"] = new()
+            {
+                ["en"] = "The requested resident was not found.",
+                ["ar"] = "المقيم المطلوب غير موجود."
+            },
+            ["BookingAddedSuccessfully"]=new()
+            {
+                ["en"] = "Booking added successfully.",
+                ["ar"] = "تمت إضافة الحجز بنجاح."
+            },
+            ["BookingCancelled"]=new()
+            {
+                ["en"] = "Booking cancelled successfully.",
+                ["ar"] = "تم إلغاء الحجز بنجاح."
+            },
+            ["BookingsRetrievedSuccessfully"] = new()
+            {
+                ["en"] = "Bookings retrieved successfully.",
+                ["ar"] = "تم جلب الحجوزات بنجاح."
             }
         };
 

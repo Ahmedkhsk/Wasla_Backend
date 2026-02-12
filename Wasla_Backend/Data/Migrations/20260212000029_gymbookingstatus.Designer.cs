@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wasla_Backend.Data;
 
@@ -11,9 +12,11 @@ using Wasla_Backend.Data;
 namespace Wasla_Backend.data
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20260212000029_gymbookingstatus")]
+    partial class gymbookingstatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -270,16 +273,25 @@ namespace Wasla_Backend.data
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("GymServiceType")
+                        .HasColumnType("int");
+
                     b.Property<string>("ResidentId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("ServiceProviderType")
+                    b.Property<string>("ServiceProviderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Type")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ResidentId");
+
+                    b.HasIndex("ServiceProviderId");
 
                     b.ToTable("BaseBookings");
 
@@ -793,17 +805,11 @@ namespace Wasla_Backend.data
                     b.Property<int>("BookingStatus")
                         .HasColumnType("int");
 
-                    b.Property<string>("GymId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("GymServiceType")
-                        .HasColumnType("int");
-
                     b.Property<int>("ServiceId")
                         .HasColumnType("int");
 
-                    b.HasIndex("GymId");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasIndex("ServiceId");
 
@@ -923,7 +929,15 @@ namespace Wasla_Backend.data
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Wasla_Backend.Models.ApplicationUser", "ServiceProvider")
+                        .WithMany()
+                        .HasForeignKey("ServiceProviderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Resident");
+
+                    b.Navigation("ServiceProvider");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.BaseModel.BaseService", b =>
@@ -1156,12 +1170,6 @@ namespace Wasla_Backend.data
 
             modelBuilder.Entity("Wasla_Backend.Models.GymModel.GymBooking", b =>
                 {
-                    b.HasOne("Wasla_Backend.Models.GymModel.Gym", "Gym")
-                        .WithMany()
-                        .HasForeignKey("GymId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("Wasla_Backend.Models.BaseModel.BaseBooking", null)
                         .WithOne()
                         .HasForeignKey("Wasla_Backend.Models.GymModel.GymBooking", "Id")
@@ -1171,10 +1179,8 @@ namespace Wasla_Backend.data
                     b.HasOne("Wasla_Backend.Models.BaseModel.BaseService", "Service")
                         .WithMany()
                         .HasForeignKey("ServiceId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Gym");
 
                     b.Navigation("Service");
                 });

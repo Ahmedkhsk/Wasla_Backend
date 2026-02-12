@@ -20,6 +20,11 @@ namespace Wasla_Backend.Mappings
             CreateMap<UpdatePackageDto, Package>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.name))
                 .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.price));
+            CreateMap<GymBookDto,GymBooking>()
+                .ForMember(dest => dest.GymId, opt => opt.MapFrom(src => src.gymId))
+                .ForMember(dest => dest.ResidentId, opt => opt.MapFrom(src => src.residentId))
+                .ForMember(dest => dest.ServiceId, opt => opt.MapFrom(src => src.serviceId))
+                .ForMember(dest => dest.GymServiceType, opt => opt.MapFrom(src => src.gymServiceType));
         }
     }
 }

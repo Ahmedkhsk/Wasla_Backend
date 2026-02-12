@@ -1,4 +1,7 @@
 ﻿
+using System.Reflection.Emit;
+using Microsoft.EntityFrameworkCore;
+
 namespace Wasla_Backend.Data
 {
     public class Context : IdentityDbContext<ApplicationUser, ApplicationRole, string>
@@ -17,9 +20,10 @@ namespace Wasla_Backend.Data
         public DbSet<Reviews> Review { get; set; }
         public DbSet<Booking> Booking { get; set; }
         public DbSet<ContactUs> ContactUs { get; set; }
-      //  public DbSet<BaseBooking> BaseBookings { get; set; }    
+        public DbSet<BaseBooking> BaseBookings { get; set; }    
         public DbSet<BaseService> BaseServices { get; set; }
         public DbSet<Package> Packages { get; set; }
+        public DbSet<GymBooking> GymBooking { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options) { }
 
@@ -34,6 +38,35 @@ namespace Wasla_Backend.Data
             builder.Entity<Restaurant>().ToTable("Restaurant");
             builder.Entity<BaseService>().ToTable("BaseServices");
             builder.Entity<Package>().ToTable("Packages");
+            builder.Entity<GymBooking>().ToTable("GymBookings");
+
+
+           
+
+            builder.Entity<BaseBooking>()
+                .HasOne(b => b.Resident)
+                .WithMany()
+                .HasForeignKey(b => b.ResidentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<GymBooking>()
+         .HasOne(b => b.Gym)
+         .WithMany() 
+         .HasForeignKey(b => b.GymId)
+         .OnDelete(DeleteBehavior.Restrict); 
+
+            builder.Entity<GymBooking>()
+                .HasOne(b => b.Service)
+                .WithMany()
+                .HasForeignKey(b => b.ServiceId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<GymBooking>()
+                .HasOne(b => b.Resident)
+                .WithMany()
+                .HasForeignKey(b => b.ResidentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
 
             builder.Entity<DoctorSpecialization>(entity =>
             {
