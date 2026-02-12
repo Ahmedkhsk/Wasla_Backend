@@ -682,7 +682,7 @@
                 ["en"] = "Booking added successfully.",
                 ["ar"] = "تمت إضافة الحجز بنجاح."
             },
-            ["BookingCancelled"]=new()
+            ["BookingCancelledSuccessfully"] =new()
             {
                 ["en"] = "Booking cancelled successfully.",
                 ["ar"] = "تم إلغاء الحجز بنجاح."
