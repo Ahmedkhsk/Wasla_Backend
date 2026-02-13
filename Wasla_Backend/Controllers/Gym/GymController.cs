@@ -17,12 +17,21 @@
             await _gymService.CompleteRegister(service);
             return Ok(ResponseHelper.Success("CompleteDataSuccess", lan));
         }
+
         [HttpGet("AllGyms")]
         public async Task<IActionResult> AllGyms(int pageNumber = 1, int pageSize = 10,string lan = "en")
         {
             var data = await _gymService.AllGyms(pageNumber, pageSize);
             return Ok(ResponseHelper.Success("AllGymsData", lan, data));
         }
+
+        [HttpPut("UpdateProfile")]
+        public async Task<IActionResult> UpdateProfile(UpdateProfileGym dto, string lan = "en")
+        {
+            await _gymService.UpdateProfile(dto);
+            return Ok(ResponseHelper.Success("UpdateProfileSuccess", lan));
+        }
+
         [HttpGet("GymProfile")]
         public async Task<IActionResult> GymProfile(string id, string lan = "en")
         {

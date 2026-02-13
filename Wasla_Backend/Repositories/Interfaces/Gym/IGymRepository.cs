@@ -4,6 +4,7 @@
     {
         public Task<List<AllGymsDataDto>> AllGyms(int pageNumber, int pageSize);
         public Task<GymProfileDto> GymProfile(string id);
+        public Task<int> CountAsync();
         public Task<Gym> GetByGmailAsync(string gmail);
     }
 }

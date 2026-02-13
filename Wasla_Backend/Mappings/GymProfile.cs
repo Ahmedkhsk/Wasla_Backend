@@ -31,6 +31,13 @@ namespace Wasla_Backend.Mappings
                 .ForMember(dest => dest.ResidentId, opt => opt.MapFrom(src => src.residentId))
                 .ForMember(dest => dest.ServiceId, opt => opt.MapFrom(src => src.serviceId));
 
+            CreateMap<UpdateProfileGym, Gym>()
+                .ForMember(dest => dest.BusinessName, opt => opt.MapFrom(src => src.businessName))
+                .ForMember(dest => dest.OwnerName, opt => opt.MapFrom(src => src.ownerName))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.description))
+                .ForMember(dest => dest.Latitude, opt => opt.MapFrom(src => src.latitude))
+                .ForMember(dest => dest.Longitude, opt => opt.MapFrom(src => src.longitude));
+
         }
     }
 }

@@ -691,7 +691,12 @@
             {
                 ["en"] = "Bookings retrieved successfully.",
                 ["ar"] = "تم جلب الحجوزات بنجاح."
-            }
+            },
+            ["UpdateProfileSuccess"] = new()
+            {
+                ["en"] = "Profile updated successfully.",
+                ["ar"] = "تم تحديث الملف الشخصي بنجاح."
+            },
         };
 
 

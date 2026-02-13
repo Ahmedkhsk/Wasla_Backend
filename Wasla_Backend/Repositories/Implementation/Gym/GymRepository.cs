@@ -31,6 +31,11 @@ namespace Wasla_Backend.Repositories.Implementation.Gyms
            return _context.Gyms.FirstOrDefaultAsync(g => g.Email == gmail);
         }
 
+        public async Task<int> CountAsync()
+        {
+            return await _context.Gyms.CountAsync();
+        }
+
         public Task<GymProfileDto> GymProfile(string id)
         {
             return _context.Gyms.Where(g => g.Id == id).Select(g => new GymProfileDto
