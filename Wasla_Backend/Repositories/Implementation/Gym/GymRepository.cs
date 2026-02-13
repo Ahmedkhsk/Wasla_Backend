@@ -38,6 +38,8 @@ namespace Wasla_Backend.Repositories.Implementation.Gyms
 
         public Task<GymProfileDto> GymProfile(string id)
         {
+    
+            Console.WriteLine($"count of review second is {_context.Review.Where(r=>r.ServiceProviderId==id).Count()}"); 
             return _context.Gyms.Where(g => g.Id == id).Select(g => new GymProfileDto
             {
                 id = g.Id,
@@ -48,7 +50,8 @@ namespace Wasla_Backend.Repositories.Implementation.Gyms
                 phones = g.phones,
                 profilePhoto = g.ProfilePhoto,
                 photos = g.images,
-                ReviewsCount = g.Reviews.Count(),
+
+                ReviewsCount = _context.Review.Where(r => r.ServiceProviderId == id).Count(),
                 rating = g.Rating
             }).FirstOrDefaultAsync();
         }

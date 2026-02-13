@@ -10,7 +10,7 @@ namespace Wasla_Backend.Repositories.Implementation.Gyms
 
         public async Task<List<BookingOfGym>> PackagebookingOfGym(string gymId)
         {
-            return await _context.GymBooking.Where(b => b.GymId == gymId).Include(b=>b.Resident).Include(b=>b.Service)
+            return await _context.GymBooking.AsNoTracking().Where(b => b.GymId == gymId).Include(b=>b.Resident).Include(b=>b.Service)
                 .Select(b => new BookingOfGym
                 {
                   bookingId=b.Id,
@@ -27,7 +27,7 @@ namespace Wasla_Backend.Repositories.Implementation.Gyms
 
         public async Task<List<BookingOfGym>> PackagebookingOfGymAndStatus(string gymId, GymBookingStatus status)
         {
-            return await _context.GymBooking.Where(b => b.GymId == gymId&&b.BookingStatus==status)
+            return await _context.GymBooking.AsNoTracking().Where(b => b.GymId == gymId&&b.BookingStatus==status)
                 .Include(b => b.Resident)
                 .Include(b => b.Service)
                 .Select(b => new BookingOfGym
@@ -46,7 +46,7 @@ namespace Wasla_Backend.Repositories.Implementation.Gyms
 
         public Task<List<BookingOfUser>> PackagebookingOfResident(string residentId)
         {
-            return _context.GymBooking.Where(b => b.ResidentId == residentId).Include(b => b.Gym).Include(b => b.Service)
+            return _context.GymBooking.AsNoTracking().Where(b => b.ResidentId == residentId).Include(b => b.Gym).Include(b => b.Service)
                 .Select(b => new BookingOfUser
                 {
                     bookingId = b.Id,
@@ -61,7 +61,7 @@ namespace Wasla_Backend.Repositories.Implementation.Gyms
 
         public async Task<List<BookingOfUser>> PackagebookingOfResidentAndStatus(string residentId, GymBookingStatus status)
         {
-            await _context.GymBooking.Where(b => b.ResidentId == residentId && b.BookingStatus == status).Include(b => b.Gym)
+            await _context.GymBooking.AsNoTracking().Where(b => b.ResidentId == residentId && b.BookingStatus == status).Include(b => b.Gym)
                 .Include(b => b.Service)
                 .Select(b => new BookingOfUser
                 {
