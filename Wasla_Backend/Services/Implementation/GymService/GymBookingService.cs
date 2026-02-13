@@ -37,6 +37,8 @@
 
             var gymBooking = _mapper.Map<GymBooking>(gymBookDto);
 
+            durationInMonths = service.DurationInMonths;
+            gymBooking.price = service.Price;
             if (service.type == GymServiceType.Package)
             {
                 durationInMonths = service.DurationInMonths;

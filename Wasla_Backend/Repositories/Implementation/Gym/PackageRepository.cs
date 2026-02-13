@@ -17,9 +17,12 @@ namespace Wasla_Backend.Repositories.Implementation.Gyms
                     Name = p.Name,
                     Description = p.Description,
                     Price = p.Price,
+                    Precentage = p.Precentage,
+                    newPrice = p.Price - (p.Price * p.Precentage / 100),
                     DurationInMonths = p.DurationInMonths,
-                    PhotoUrl = p.PhotoUrl
-                }).ToListAsync()
+                    PhotoUrl = p.PhotoUrl,
+                    Type = p.type
+                }).AsNoTracking().ToListAsync()
                 ;
         }
     }

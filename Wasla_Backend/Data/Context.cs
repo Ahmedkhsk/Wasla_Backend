@@ -66,6 +66,23 @@ namespace Wasla_Backend.Data
                 .WithMany()
                 .HasForeignKey(b => b.ResidentId)
                 .OnDelete(DeleteBehavior.Restrict);
+            
+            builder.Entity<Package>(entity =>
+            {
+                entity.OwnsOne(p => p.Name, sa =>
+                {
+                    sa.Property(p => p.English).HasColumnName("Name_English");
+                    sa.Property(p => p.Arabic).HasColumnName("Name_Arabic");
+                    sa.WithOwner();
+                });
+
+                entity.OwnsOne(p => p.Description, sa =>
+                {
+                    sa.Property(p => p.English).HasColumnName("Description_English");
+                    sa.Property(p => p.Arabic).HasColumnName("Description_Arabic");
+                    sa.WithOwner();
+                });
+            });
 
 
             builder.Entity<DoctorSpecialization>(entity =>

@@ -4,8 +4,8 @@
     {
         public string serviceProviderId { get; set; }
         
-        public string name { get; set; }
-        public string description { get; set; }
+        public MultilingualText name { get; set; }
+        public MultilingualText description { get; set; }
         public decimal price { get; set; }
         public int durationInMonths { get; set; }
         public decimal precentage { get; set; }

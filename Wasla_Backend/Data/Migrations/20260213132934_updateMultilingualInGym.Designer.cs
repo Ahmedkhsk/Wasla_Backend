@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wasla_Backend.Data;
 
@@ -11,9 +12,11 @@ using Wasla_Backend.Data;
 namespace Wasla_Backend.data
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20260213132934_updateMultilingualInGym")]
+    partial class updateMultilingualInGym
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1186,58 +1189,6 @@ namespace Wasla_Backend.data
                         .WithOne()
                         .HasForeignKey("Wasla_Backend.Models.GymModel.Package", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.OwnsOne("Wasla_Backend.Helpers.Localization.MultilingualText", "Description", b1 =>
-                        {
-                            b1.Property<int>("PackageId")
-                                .HasColumnType("int");
-
-                            b1.Property<string>("Arabic")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Description_Arabic");
-
-                            b1.Property<string>("English")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Description_English");
-
-                            b1.HasKey("PackageId");
-
-                            b1.ToTable("Packages");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PackageId");
-                        });
-
-                    b.OwnsOne("Wasla_Backend.Helpers.Localization.MultilingualText", "Name", b1 =>
-                        {
-                            b1.Property<int>("PackageId")
-                                .HasColumnType("int");
-
-                            b1.Property<string>("Arabic")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Name_Arabic");
-
-                            b1.Property<string>("English")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Name_English");
-
-                            b1.HasKey("PackageId");
-
-                            b1.ToTable("Packages");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PackageId");
-                        });
-
-                    b.Navigation("Description")
-                        .IsRequired();
-
-                    b.Navigation("Name")
                         .IsRequired();
                 });
 

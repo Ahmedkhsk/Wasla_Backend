@@ -7,7 +7,10 @@
         private readonly string _imagePath;
         private readonly IMapper _mapper;
         private readonly IGymRepository _gymRepository;
-        public PackageService(IWebHostEnvironment webHostEnvironment, IPackageRepository packageRepository, IMapper mapper,IGymRepository gymRepository)
+        public PackageService(IWebHostEnvironment webHostEnvironment, 
+                              IPackageRepository packageRepository,
+                              IMapper mapper,
+                              IGymRepository gymRepository)
         {
             _packageRepository = packageRepository;
             _imagePath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.ImagesPathGym.TrimStart('/'));
@@ -58,7 +61,7 @@
                 throw new NotFoundException("PackageNotFound");
 
             _mapper.Map(updatePackageDto, package);
-
+            
             if (updatePackageDto.photo != null)
             {
                 string newPhotoPath = await FileOperation.SaveFile(updatePackageDto.photo, _imagePath);
