@@ -8,17 +8,23 @@ namespace Wasla_Backend.Repositories.Implementation.Gyms
         {
         }
 
-        public Task<List<AllGymsDataDto>> AllGyms()
+        public async Task<List<AllGymsDataDto>> AllGyms(int pageNumber, int pageSize)
         {
-            return _context.Gyms.Select(g => new AllGymsDataDto
-            {
-                Id = g.Id,
-                Name = g.BusinessName,
-                Description = g.Description,
-                Rating = g.Rating,
-                ImageUrl = g.ProfilePhoto
-            }).ToListAsync();
+            return await _context.Gyms
+                .OrderBy(g => g.Id) 
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(g => new AllGymsDataDto
+                {
+                    Id = g.Id,
+                    Name = g.BusinessName,
+                    Description = g.Description,
+                    Rating = g.Rating,
+                    ImageUrl = g.ProfilePhoto
+                })
+                .ToListAsync();
         }
+
 
         public Task<Gym> GetByGmailAsync(string gmail)
         {

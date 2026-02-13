@@ -18,9 +18,9 @@
             return Ok(ResponseHelper.Success("CompleteDataSuccess", lan));
         }
         [HttpGet("AllGyms")]
-        public async Task<IActionResult> AllGyms(string lan = "en")
+        public async Task<IActionResult> AllGyms(int pageNumber = 1, int pageSize = 10,string lan = "en")
         {
-            var data = await _gymService.AllGyms();
+            var data = await _gymService.AllGyms(pageNumber, pageSize);
             return Ok(ResponseHelper.Success("AllGymsData", lan, data));
         }
         [HttpGet("GymProfile")]
