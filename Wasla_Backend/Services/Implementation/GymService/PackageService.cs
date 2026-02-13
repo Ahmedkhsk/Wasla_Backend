@@ -1,5 +1,4 @@
-﻿
-namespace Wasla_Backend.Services.Implementation.GymService
+﻿namespace Wasla_Backend.Services.Implementation.GymService
 {
     public class PackageService : IPackageService
     {

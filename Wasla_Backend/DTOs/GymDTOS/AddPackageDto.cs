@@ -8,6 +8,8 @@
         public string description { get; set; }
         public decimal price { get; set; }
         public int durationInMonths { get; set; }
+        public decimal precentage { get; set; }
+        public GymServiceType type { get; set; }
         public IFormFile photo { get; set; }
         
     }

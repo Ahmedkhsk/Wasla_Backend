@@ -1,6 +1,4 @@
-﻿
-
-namespace Wasla_Backend.Services.Implementation.GymService
+﻿namespace Wasla_Backend.Services.Implementation.GymService
 {
     public class GymBookingService : IGymBookingService
     {
@@ -9,6 +7,7 @@ namespace Wasla_Backend.Services.Implementation.GymService
         private readonly IGymRepository _gymRepository;
         private readonly IResidentRepository _residentRepository;
         private readonly IMapper _mapper;
+      
         public GymBookingService(IGymBookingRepository gymBookingRepository, IPackageRepository packageRepository,
             IGymRepository gymRepository, IResidentRepository residentRepository,IMapper mapper)
         {
@@ -22,46 +21,57 @@ namespace Wasla_Backend.Services.Implementation.GymService
 
         public async Task<BookHubData> Book(GymBookDto gymBookDto)
         {
-           var gym =await _gymRepository.GetByIdAsync(gymBookDto.gymId);
+            var gym = await _gymRepository.GetByIdAsync(gymBookDto.gymId);
             if (gym == null)
                 throw new NotFoundException("Gymnotfound");
-            var resident =await _residentRepository.GetByIdAsync(gymBookDto.residentId);
+
+            var resident = await _residentRepository.GetByIdAsync(gymBookDto.residentId);
             if (resident == null)
                 throw new NotFoundException("Residentnotfound");
-            BaseService service=null;
-            int DurationInMonths = 0;
-            if (gymBookDto.gymServiceType==GymServiceType.Package)
-            {
-                service =await _packageRepository.GetByIdAsync(gymBookDto.serviceId);
-                if (service == null)
-                    throw new NotFoundException("Packagenotfound");
-                DurationInMonths = ((Package)service).DurationInMonths;
-            }
-            else
-            {
-               
-            }
+
+            var service = await _packageRepository.GetByIdAsync(gymBookDto.serviceId);
+            if (service == null)
+                throw new NotFoundException("Packagenotfound");
+
+            int durationInMonths = 0;
+
             var gymBooking = _mapper.Map<GymBooking>(gymBookDto);
-            gymBooking.ServiceProviderType=ServiceProviderType.Gym;
+
+            if (service.type == GymServiceType.Package)
+            {
+                durationInMonths = service.DurationInMonths;
+                gymBooking.price = service.Price;
+            }
+            else 
+            {
+                var discountValue = service.Price * (service.Precentage / 100m);
+                gymBooking.price = service.Price - discountValue;
+            }
+
+            gymBooking.ServiceProviderType = ServiceProviderType.Gym;
             gymBooking.Service = service;
-            var result =  _gymBookingRepository.AddAsync(gymBooking);
+
+            await _gymBookingRepository.AddAsync(gymBooking);
             await _gymBookingRepository.SaveChangesAsync();
-            var expiryDate = gymBooking.BookingDate.AddMonths(DurationInMonths);
-            var delay = expiryDate-DateTime.UtcNow;
+
+            var expiryDate = gymBooking.BookingDate.AddMonths(durationInMonths);
+            var delay = expiryDate - DateTime.UtcNow;
+            if (delay < TimeSpan.Zero)
+                delay = TimeSpan.Zero;
+
             BackgroundJob.Schedule<GymBookingService>(
-            x => x.ExpireBooking(gymBooking.Id),
-            delay
-        );
-            var bookHubData = new BookHubData
+                x => x.ExpireBooking(gymBooking.Id),
+                delay
+            );
+
+            return new BookHubData
             {
                 serviceId = gymBookDto.serviceId,
                 serviceProviderId = gymBookDto.gymId,
                 residentId = gymBookDto.residentId
             };
-            return bookHubData;
-
-
         }
+
         public async Task ExpireBooking(int gymBookingId)
         {
             var booking = await _gymBookingRepository.GetByIdAsync(gymBookingId);

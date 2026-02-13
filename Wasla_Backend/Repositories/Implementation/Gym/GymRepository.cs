@@ -30,6 +30,7 @@ namespace Wasla_Backend.Repositories.Implementation.Gyms
             return _context.Gyms.Where(g => g.Id == id).Select(g => new GymProfileDto
             {
                 id = g.Id,
+                email = g.Email,
                 businessName = g.BusinessName,
                 ownerName = g.OwnerName,
                 description = g.Description,

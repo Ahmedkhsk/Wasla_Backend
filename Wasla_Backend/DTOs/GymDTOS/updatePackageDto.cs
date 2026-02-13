@@ -6,7 +6,7 @@
         public string name { get; set; }
         public decimal price { get; set; }
         public IFormFile? photo { get; set; }
-
+        public decimal precentage { get; set; }
 
     }
 }

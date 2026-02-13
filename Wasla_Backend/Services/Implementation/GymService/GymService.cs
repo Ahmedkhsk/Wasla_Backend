@@ -1,6 +1,4 @@
-﻿using Wasla_Backend.Models.GymModel;
-
-namespace Wasla_Backend.Services.Implementation.GymService
+﻿namespace Wasla_Backend.Services.Implementation.GymService
 {
     public class GymService : IGymService
     {

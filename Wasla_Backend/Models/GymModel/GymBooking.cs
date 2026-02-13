@@ -4,7 +4,9 @@
     {
         public int ServiceId { get; set; }
         public BaseService Service { get; set; }
+        public decimal price { get; set; }
         public string GymId { get; set; }
+        
         [ForeignKey("GymId")]
         public Gym Gym { get; set; }
         public GymBookingStatus BookingStatus { get; set; } = GymBookingStatus.Active;

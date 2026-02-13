@@ -17,10 +17,10 @@ namespace Wasla_Backend.Repositories.Implementation.Gyms
                   name=b.Resident.FullName,
                   imageUrl=b.Resident.ProfilePhoto,
                   bookingTime = b.BookingDate,
+                  price = b.price,
                   serviceName=((Package)b.Service).Name,
                   DurationInMonths=((Package)b.Service).DurationInMonths,
                   bookingStatus=b.BookingStatus
-
                 }).ToListAsync();
                 ;
         }

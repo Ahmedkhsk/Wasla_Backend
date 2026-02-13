@@ -8,6 +8,7 @@
         public DateTime bookingTime { get; set; }
         public int DurationInMonths { get; set; }
         public string serviceName { get; set; }
+        public decimal price { get; set; }
         public GymBookingStatus bookingStatus { get; set; }
 
     }

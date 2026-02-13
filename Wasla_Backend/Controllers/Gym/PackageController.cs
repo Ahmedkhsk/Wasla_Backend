@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
-
-namespace Wasla_Backend.Controllers.Gym
+﻿namespace Wasla_Backend.Controllers.Gym
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -40,6 +36,7 @@ namespace Wasla_Backend.Controllers.Gym
             await _hub.Clients.All.SendAsync("PackageDeleted", data);
             return Ok(ResponseHelper.Success("PackageDeletedSuccessfully", lan));
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] string serviceProviderId, string lan = "en")
         {

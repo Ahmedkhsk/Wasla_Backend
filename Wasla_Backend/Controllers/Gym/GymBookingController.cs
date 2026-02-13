@@ -1,11 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
-using Wasla_Backend.DTOs.GymDTOS;
-using Wasla_Backend.Models.GymModel;
-using Wasla_Backend.Services.Implementation.GymService;
-
-namespace Wasla_Backend.Controllers.Gym
+﻿namespace Wasla_Backend.Controllers.Gym
 {
     [Route("api/[controller]")]
     [ApiController]
