@@ -385,6 +385,11 @@
                 ["en"] = "Doctor chart fetched successfully.",
                 ["ar"] = "تم جلب مخطط الطبيب بنجاح."
             },
+            ["FetchChartSuccess"] = new()
+            {
+                ["en"] = "Chart fetched successfully.",
+                ["ar"] = "تم جلب مخطط بنجاح."
+            },
             ["InvalidBookingStatus"] = new()
             {
                 ["en"] = "Invalid booking status.",

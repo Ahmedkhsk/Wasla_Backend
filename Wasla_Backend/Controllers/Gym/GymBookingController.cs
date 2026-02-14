@@ -56,5 +56,12 @@
             var data = await _gymBookingService.PackagebookingOfResidentAndStatus(residentId, status);
             return Ok(ResponseHelper.Success("BookingsRetrievedSuccessfully", lan, data));
         }
+
+        [HttpGet("Charts/{gymId}")]
+        public async Task<IActionResult> GymCharts(string gymId , string lan = "en")
+        {
+            var charts = await _gymBookingService.chartsResponse(gymId);
+            return Ok(ResponseHelper.Success("FetchChartSuccess", lan, charts));
+        }
     }
 }

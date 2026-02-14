@@ -1,6 +1,4 @@
-﻿
-
-namespace Wasla_Backend.Repositories.Implementation.Gyms
+﻿namespace Wasla_Backend.Repositories.Implementation.Gyms
 {
     public class GymBookingRepository: GenericRepository<GymBooking>, IGymBookingRepository
     {
@@ -75,5 +73,37 @@ namespace Wasla_Backend.Repositories.Implementation.Gyms
                 }).ToListAsync();
             return null;
         }
+
+        public async Task<int> GetNumOfTrainee(string id)
+            => await _context.GymBooking.Where(i => i.GymId == id)
+                .Select(u => u.ResidentId)
+                .Distinct()
+                .CountAsync();
+        
+        public async Task<decimal> GetTotalAmount(string id)
+            => await _context.GymBooking.Where(i => i.GymId == id)
+                .SumAsync(d => d.price);
+
+        public async Task<int> GetNumberOfBookings(string id)
+            =>  await _context.GymBooking.CountAsync(i => i.GymId == id);
+
+        public async Task<List<CollectedPerYearDto>> GetCollectedPriceByYear(string id)
+            => await _context.GymBooking.Where(i => i.GymId == id)
+                .GroupBy(b => b.BookingDate.Year)
+                .Select
+                (
+                    yearGroub => new CollectedPerYearDto
+                    {
+                        year = yearGroub.Key,
+                        months = yearGroub.GroupBy(b => b.BookingDate.Month)
+                                 .Select(
+                                    monthGroub => new CollectedPerMonthDto
+                                    {
+                                        month = monthGroub.Key,
+                                        amount = monthGroub.Sum(d => d.price)
+                                    }).OrderBy(m => m.month).ToList()
+
+                    }
+                ).OrderBy(y => y.year).ToListAsync();
     }
 }
