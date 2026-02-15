@@ -35,6 +35,7 @@
                     imageUrl = b.Resident.ProfilePhoto,
                     bookingTime = b.BookingDate,
                     serviceName = b.Service.Name,
+                    price = b.price,
                     DurationInMonths = b.Service.DurationInMonths,
                     bookingStatus = b.BookingStatus
 
@@ -42,19 +43,26 @@
             
         }
 
-        public Task<List<BookingOfUser>> PackagebookingOfResident(string residentId)
+        public async Task<List<BookingOfUser>> PackagebookingOfResident(string residentId)
         {
-            return _context.GymBooking.AsNoTracking().Where(b => b.ResidentId == residentId).Include(b => b.Gym).Include(b => b.Service)
-                .Select(b => new BookingOfUser
-                {
-                    bookingId = b.Id,
-                    GymName = b.Gym.FullName,
-                    imageUrl = b.Gym.ProfilePhoto,
-                    bookingTime = b.BookingDate,
-                    serviceName = b.Service.Name,
-                    DurationInMonths = b.Service.DurationInMonths,
-                    bookingStatus = b.BookingStatus
-                }).ToListAsync();
+            return await _context.GymBooking
+     .AsNoTracking()
+     .Where(b => b.ResidentId == residentId)
+     .Include(b => b.Gym)
+     .Include(b => b.Service)
+     .Select(b => new BookingOfUser
+     {
+         bookingId = b.Id,
+         GymName = b.Gym.BusinessName,
+         imageUrl = b.Gym.ProfilePhoto,
+         bookingTime = b.BookingDate,
+         serviceName = b.Service.Name,
+         DurationInMonths = b.Service.DurationInMonths,
+         bookingStatus = b.BookingStatus
+     })
+     .ToListAsync();
+
+
         }
 
         public async Task<List<BookingOfUser>> PackagebookingOfResidentAndStatus(string residentId, GymBookingStatus status)
@@ -116,5 +124,13 @@
                                     }).OrderBy(m => m.month).ToList()
                     }
                 ).OrderBy(y => y.year).ToListAsync();
+
+     
+
+        public Task<bool> IsBookingExist(string residentId, int serviceId)
+        {
+            return _context.GymBooking.
+                AnyAsync(b => b.ResidentId == residentId && b.ServiceId == serviceId && b.BookingStatus == GymBookingStatus.Active);
+        }
     }
 }

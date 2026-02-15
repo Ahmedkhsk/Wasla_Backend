@@ -705,6 +705,12 @@
                 ["en"] = "Profile updated successfully.",
                 ["ar"] = "تم تحديث الملف الشخصي بنجاح."
             },
+            ["PackageAlreadyBooked"]=new()
+            {
+                ["en"] = "This package is already booked.",
+                ["ar"] = "هذه الباقة محجوزة بالفعل."
+            }
+            
         };
 
 

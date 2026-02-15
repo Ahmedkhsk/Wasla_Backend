@@ -75,3 +75,8 @@ global using Wasla_Backend.Services.Implementation.GymService;
 global using Wasla_Backend.Repositories.Interfaces.Gyms;
 global using Wasla_Backend.Repositories.Implementation.Gyms;
 global using Wasla_Backend.Models.GymModel;
+global using QRCoder;
+global using System.Drawing;
+global using System.IO;
+global using System.Drawing.Imaging;
+

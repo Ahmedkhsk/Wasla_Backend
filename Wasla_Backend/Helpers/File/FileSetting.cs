@@ -7,6 +7,7 @@
         public const string PathCVDoctor = "/assets/cv/doctor";
         public const string ImagesPathBooking = "/assets/images/booking";
         public const string MLModelsPath = "/assets/ai/models";
+        public const string QrCodePath = "/assets/qrcodes";
 
     }
 }

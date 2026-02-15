@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Services.Implementation.GymService
+﻿using Microsoft.AspNetCore.Hosting;
+
+namespace Wasla_Backend.Services.Implementation.GymService
 {
     public class GymBookingService : IGymBookingService
     {
@@ -7,19 +9,21 @@
         private readonly IGymRepository _gymRepository;
         private readonly IResidentRepository _residentRepository;
         private readonly IMapper _mapper;
-      
+        private readonly string _qrPath;
+
+
         public GymBookingService(IGymBookingRepository gymBookingRepository, IPackageRepository packageRepository,
-            IGymRepository gymRepository, IResidentRepository residentRepository,IMapper mapper)
+            IGymRepository gymRepository, IResidentRepository residentRepository,IMapper mapper, IWebHostEnvironment webHostEnvironment)
         {
             _gymBookingRepository = gymBookingRepository;
             _packageRepository = packageRepository;
             _gymRepository = gymRepository;
             _residentRepository = residentRepository;
             _mapper = mapper;
-
+            _qrPath= Path.Combine(webHostEnvironment.WebRootPath, FileSetting.QrCodePath.TrimStart('/'));
         }
 
-        public async Task<BookHubData> Book(GymBookDto gymBookDto)
+        public async Task<BookResponse> Book(GymBookDto gymBookDto)
         {
             var gym = await _gymRepository.GetByIdAsync(gymBookDto.gymId);
             if (gym == null)
@@ -32,6 +36,9 @@
             var service = await _packageRepository.GetByIdAsync(gymBookDto.serviceId);
             if (service == null)
                 throw new NotFoundException("Packagenotfound");
+            var IsexistingBooking = await _gymBookingRepository.IsBookingExist(gymBookDto.residentId, gymBookDto.serviceId);
+            if (IsexistingBooking)
+                throw new BadRequestException("PackageAlreadyBooked");
 
             int durationInMonths = 0;
 
@@ -52,6 +59,17 @@
 
             gymBooking.ServiceProviderType = ServiceProviderType.Gym;
             gymBooking.Service = service;
+            var QrData = new QrCodeDto
+            {
+                residentName = resident.FullName,
+                residentPhoto = resident.ProfilePhoto,
+                gymName = gym.BusinessName,
+                serviceName = service.Name,
+                bookingTime = gymBooking.BookingDate,
+                expiryDate = gymBooking.BookingDate.AddMonths(durationInMonths)
+            };
+            var qrcode=QRHelper.GenerateQRFile(QrData);
+            var filePath=await FileOperation.SaveFile(qrcode, _qrPath);
 
             await _gymBookingRepository.AddAsync(gymBooking);
             await _gymBookingRepository.SaveChangesAsync();
@@ -66,11 +84,13 @@
                 delay
             );
 
-            return new BookHubData
+            return new BookResponse
             {
+                qrCodeUrl = filePath,
                 serviceId = gymBookDto.serviceId,
                 serviceProviderId = gymBookDto.gymId,
                 residentId = gymBookDto.residentId
+
             };
         }
 
