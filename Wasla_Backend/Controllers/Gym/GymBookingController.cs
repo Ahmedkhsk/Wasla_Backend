@@ -16,7 +16,7 @@
         [HttpPost("book")]
         public async Task<IActionResult> Book([FromBody] GymBookDto gymBookDto, string lan = "en")
         {
-            var data = await _gymBookingService.Book(gymBookDto,lan);
+            var data = await _gymBookingService.Book(gymBookDto, lan);
             await _hub.Clients.All.SendAsync("PackageBooked", data);
             return Ok(ResponseHelper.Success("BookingAddedSuccessfully", lan, data.qrCodeUrl));
         }
@@ -58,17 +58,32 @@
         }
 
         [HttpGet("Charts/{gymId}")]
-        public async Task<IActionResult> GymCharts(string gymId , string lan = "en")
+        public async Task<IActionResult> GymCharts(string gymId, string lan = "en")
         {
             var charts = await _gymBookingService.chartsResponse(gymId);
             return Ok(ResponseHelper.Success("FetchChartSuccess", lan, charts));
         }
 
         [HttpGet("GetMembers/{typePackage}")]
-        public async Task<IActionResult> GetMembeers(GymServiceType typePackage,string lan = "en")
+        public async Task<IActionResult> GetMembeers(GymServiceType typePackage, string lan = "en")
         {
             var data = await _gymBookingService.UserPackageResponses(typePackage);
             return Ok(ResponseHelper.Success("FetchMembersSuccess", lan, data));
+        }
+
+        [HttpGet("ValidateQr/{bookingId}")]
+        public async Task<IActionResult> ValidateQr(int bookingId, string lan = "en")
+        {
+            var result = await _gymBookingService.ValidateQrAsync(bookingId);
+            
+            if (result.IsValid)
+            {
+                return Ok(ResponseHelper.Success("QrCodeValid", lan, result));
+            }
+            else
+            {
+                return BadRequest(ResponseHelper.Fail("QrCodeInvalid", lan));
+            }
         }
     }
 }

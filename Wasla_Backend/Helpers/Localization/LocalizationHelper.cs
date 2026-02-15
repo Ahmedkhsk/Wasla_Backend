@@ -350,6 +350,29 @@
                 ["en"] = "Booking not found.",
                 ["ar"] = "لم يتم العثور على الحجز."
             },
+            ["BookingExpired"] = new()
+            {
+                ["en"] = "Booking has expired.",
+                ["ar"] = "انتهت صلاحية الحجز."
+            },
+
+            ["BookingCancelled"] = new()
+            {
+                ["en"] = "Booking has been cancelled.",
+                ["ar"] = "تم إلغاء الحجز."
+            },
+
+            ["QrAlreadyUsed"] = new()
+            {
+                ["en"] = "QR code has already been used.",
+                ["ar"] = "تم استخدام رمز الاستجابة السريعة من قبل."
+            },
+
+            ["InvalidQr"] = new()
+            {
+                ["en"] = "Invalid QR code.",
+                ["ar"] = "رمز QR غير صالح."
+            },
             ["ServiceDayNotFound"] = new()
             {
                 ["en"] = "Service day not found.",

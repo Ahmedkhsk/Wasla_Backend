@@ -8,7 +8,9 @@
         public Package Service { get; set; }
         public decimal price { get; set; }
         public string GymId { get; set; }
-        
+        public bool IsQrUsed { get; set; } = false;
+        public DateTime QrUsedAt { get; set; }
+
         [ForeignKey("GymId")]
         public Gym Gym { get; set; }
         public GymBookingStatus BookingStatus { get; set; } = GymBookingStatus.Active;

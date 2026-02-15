@@ -10,5 +10,6 @@
         public Task<List<BookingOfUser>> PackagebookingOfResidentAndStatus(string residentId, GymBookingStatus status);
         public Task<ChartsResponse> chartsResponse(string gymId);
         public Task<List<UserPackageResponse>> UserPackageResponses(GymServiceType type);
+        public Task<QrValidationResult> ValidateQrAsync(int bookingId);
     }
 }

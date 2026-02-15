@@ -68,6 +68,7 @@
             gymBooking.Service = service;
             var QrData = new QrCodeDto
             {
+                bookingId = gymBooking.Id,
                 residentName = resident.FullName,
                 residentPhoto = resident.ProfilePhoto,
                 gymName = gym.BusinessName,
@@ -179,5 +180,37 @@
         {
             return await _gymBookingRepository.UserPackageResponses(type);
         }
+
+        public async Task<QrValidationResult> ValidateQrAsync(int bookingId)
+        {
+            var booking = await _gymBookingRepository.GetByIdAsync(bookingId);
+
+            if (booking == null)
+                return QrValidationResult.Invalid("BookingNotFound");
+
+            if (booking.BookingStatus == GymBookingStatus.Cancelled)
+                return QrValidationResult.Invalid("BookingCancelled");
+
+            if (booking.BookingStatus == GymBookingStatus.Completed)
+                return QrValidationResult.Invalid("BookingExpired");
+
+            var now = _dateTimeHelper.Now;
+            var expiryDate = booking.BookingDate.AddMonths(booking.Service.DurationInMonths);
+
+            if (now > expiryDate)
+                return QrValidationResult.Invalid("QrExpired");
+
+            if (booking.IsQrUsed)
+                return QrValidationResult.Invalid("QrAlreadyUsed");
+
+            booking.IsQrUsed = true;
+            booking.QrUsedAt = now;
+
+            _gymBookingRepository.Update(booking);
+            await _gymBookingRepository.SaveChangesAsync();
+
+            return QrValidationResult.Valid();
+        }
+
     }
 }

@@ -2,6 +2,7 @@
 {
     public class QrCodeDto
     {
+        public int bookingId { get; set; }
         public string residentPhoto { get; set; }
         public string residentName { get; set; }
         public string gymName { get; set; }
