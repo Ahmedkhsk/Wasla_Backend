@@ -125,12 +125,32 @@
             return await _gymBookingRepository.PackagebookingOfResident(residentId);
         }
 
-        public Task<List<BookingOfUser>> PackagebookingOfResidentAndStatus(string residentId, GymBookingStatus status)
+        public async Task<List<BookingOfUser>> PackagebookingOfResidentAndStatus(string residentId, GymBookingStatus status)
         {
-           var resident = _residentRepository.GetByIdAsync(residentId);
+           var resident = await _residentRepository.GetByIdAsync(residentId);
             if (resident == null)
                 throw new NotFoundException("Residentnotfound");
-            return _gymBookingRepository.PackagebookingOfResidentAndStatus(residentId, status);
+            return await _gymBookingRepository.PackagebookingOfResidentAndStatus(residentId, status);
+        }
+
+        public async Task<ChartsResponse> chartsResponse(string gymId)
+        {
+            var gym = await _gymRepository.GetByIdAsync(gymId);
+            
+            if (gym == null)
+                throw new NotFoundException("Gymnotfound");
+            return new ChartsResponse
+            {
+                numberOfBookings = await _gymBookingRepository.GetNumberOfBookings(gymId),
+                numberOfTrainees = await _gymBookingRepository.GetNumOfTrainee(gymId),
+                totalAmount = await _gymBookingRepository.GetTotalAmount(gymId),
+                years = await _gymBookingRepository.GetCollectedPriceByYear(gymId),
+            };
+        }
+
+        public async Task<List<UserPackageResponse>> UserPackageResponses(GymServiceType type)
+        {
+            return await _gymBookingRepository.UserPackageResponses(type);
         }
     }
 }

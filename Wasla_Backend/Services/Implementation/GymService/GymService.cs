@@ -13,6 +13,7 @@
             _imagePath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.ImagesPathGym.TrimStart('/'));
         }
 
+
         public async Task<PagedResult<AllGymsDataDto>> AllGyms(int pageNumber, int pageSize)
         {
             var data =  await _gymRepo.AllGyms(pageNumber,pageSize);

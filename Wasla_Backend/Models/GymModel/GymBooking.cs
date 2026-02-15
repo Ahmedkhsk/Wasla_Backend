@@ -3,7 +3,9 @@
     public class GymBooking:BaseBooking
     {
         public int ServiceId { get; set; }
-        public BaseService Service { get; set; }
+
+        [ForeignKey("ServiceId")]
+        public Package Service { get; set; }
         public decimal price { get; set; }
         public string GymId { get; set; }
         

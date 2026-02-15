@@ -56,5 +56,19 @@
             var data = await _gymBookingService.PackagebookingOfResidentAndStatus(residentId, status);
             return Ok(ResponseHelper.Success("BookingsRetrievedSuccessfully", lan, data));
         }
+
+        [HttpGet("Charts/{gymId}")]
+        public async Task<IActionResult> GymCharts(string gymId , string lan = "en")
+        {
+            var charts = await _gymBookingService.chartsResponse(gymId);
+            return Ok(ResponseHelper.Success("FetchChartSuccess", lan, charts));
+        }
+
+        [HttpGet("GetMembers/{typePackage}")]
+        public async Task<IActionResult> GetMembeers(GymServiceType typePackage,string lan = "en")
+        {
+            var data = await _gymBookingService.UserPackageResponses(typePackage);
+            return Ok(ResponseHelper.Success("FetchMembersSuccess", lan, data));
+        }
     }
 }

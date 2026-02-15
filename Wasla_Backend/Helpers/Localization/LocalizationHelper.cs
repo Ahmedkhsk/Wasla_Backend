@@ -385,6 +385,11 @@
                 ["en"] = "Doctor chart fetched successfully.",
                 ["ar"] = "تم جلب مخطط الطبيب بنجاح."
             },
+            ["FetchChartSuccess"] = new()
+            {
+                ["en"] = "Chart fetched successfully.",
+                ["ar"] = "تم جلب مخطط بنجاح."
+            },
             ["InvalidBookingStatus"] = new()
             {
                 ["en"] = "Invalid booking status.",
@@ -539,9 +544,12 @@
             {
                 ["en"] = "Refresh token is missing.",
                 ["ar"] = "رمز التحديث مفقود."
-            }
-
-            ,
+            },
+            ["FetchMembersSuccess"] = new()
+            {
+                ["en"] = "Members fetched successfully.",
+                ["ar"] = "تم جلب الأعضاء بنجاح."
+            },
             ["Usernotloggedin"] = new()
             {
                 ["en"] = "User is not logged in.",
