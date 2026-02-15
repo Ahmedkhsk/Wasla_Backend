@@ -9,5 +9,6 @@
         public Task<List<BookingOfUser>> PackagebookingOfResident(string residentId);
         public Task<List<BookingOfUser>> PackagebookingOfResidentAndStatus(string residentId, GymBookingStatus status);
         public Task<ChartsResponse> chartsResponse(string gymId);
+        public Task<List<UserPackageResponse>> UserPackageResponses(GymServiceType type);
     }
 }

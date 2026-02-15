@@ -544,9 +544,12 @@
             {
                 ["en"] = "Refresh token is missing.",
                 ["ar"] = "رمز التحديث مفقود."
-            }
-
-            ,
+            },
+            ["FetchMembersSuccess"] = new()
+            {
+                ["en"] = "Members fetched successfully.",
+                ["ar"] = "تم جلب الأعضاء بنجاح."
+            },
             ["Usernotloggedin"] = new()
             {
                 ["en"] = "User is not logged in.",

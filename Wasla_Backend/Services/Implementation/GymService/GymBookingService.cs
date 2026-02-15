@@ -147,5 +147,10 @@
                 years = await _gymBookingRepository.GetCollectedPriceByYear(gymId),
             };
         }
+
+        public async Task<List<UserPackageResponse>> UserPackageResponses(GymServiceType type)
+        {
+            return await _gymBookingRepository.UserPackageResponses(type);
+        }
     }
 }
