@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-
-namespace Wasla_Backend.Services.Implementation.GymService
+﻿namespace Wasla_Backend.Services.Implementation.GymService
 {
     public class GymBookingService : IGymBookingService
     {
@@ -8,22 +6,29 @@ namespace Wasla_Backend.Services.Implementation.GymService
         private readonly IPackageRepository _packageRepository;
         private readonly IGymRepository _gymRepository;
         private readonly IResidentRepository _residentRepository;
+        private readonly DateTimeHelper _dateTimeHelper;
         private readonly IMapper _mapper;
         private readonly string _qrPath;
 
 
-        public GymBookingService(IGymBookingRepository gymBookingRepository, IPackageRepository packageRepository,
-            IGymRepository gymRepository, IResidentRepository residentRepository,IMapper mapper, IWebHostEnvironment webHostEnvironment)
+        public GymBookingService(IGymBookingRepository gymBookingRepository, 
+                                 IPackageRepository packageRepository,
+                                 IGymRepository gymRepository,
+                                 IResidentRepository residentRepository,
+                                 IMapper mapper,
+                                 IWebHostEnvironment webHostEnvironment, 
+                                 DateTimeHelper dateTimeHelper)
         {
             _gymBookingRepository = gymBookingRepository;
             _packageRepository = packageRepository;
             _gymRepository = gymRepository;
             _residentRepository = residentRepository;
             _mapper = mapper;
-            _qrPath= Path.Combine(webHostEnvironment.WebRootPath, FileSetting.QrCodePath.TrimStart('/'));
+            _qrPath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.QrCodePath.TrimStart('/'));
+            _dateTimeHelper = dateTimeHelper;
         }
 
-        public async Task<BookResponse> Book(GymBookDto gymBookDto)
+        public async Task<BookResponse> Book(GymBookDto gymBookDto,string lan)
         {
             var gym = await _gymRepository.GetByIdAsync(gymBookDto.gymId);
             if (gym == null)
@@ -43,6 +48,8 @@ namespace Wasla_Backend.Services.Implementation.GymService
             int durationInMonths = 0;
 
             var gymBooking = _mapper.Map<GymBooking>(gymBookDto);
+
+            gymBooking.BookingDate = _dateTimeHelper.Now;
 
             durationInMonths = service.DurationInMonths;
             gymBooking.price = service.Price;
@@ -64,7 +71,7 @@ namespace Wasla_Backend.Services.Implementation.GymService
                 residentName = resident.FullName,
                 residentPhoto = resident.ProfilePhoto,
                 gymName = gym.BusinessName,
-                serviceName = service.Name,
+                serviceName = service.Name.GetText(lan),
                 bookingTime = gymBooking.BookingDate,
                 expiryDate = gymBooking.BookingDate.AddMonths(durationInMonths)
             };
@@ -75,7 +82,7 @@ namespace Wasla_Backend.Services.Implementation.GymService
             await _gymBookingRepository.SaveChangesAsync();
 
             var expiryDate = gymBooking.BookingDate.AddMonths(durationInMonths);
-            var delay = expiryDate - DateTime.UtcNow;
+            var delay = expiryDate - _dateTimeHelper.Now;
             if (delay < TimeSpan.Zero)
                 delay = TimeSpan.Zero;
 

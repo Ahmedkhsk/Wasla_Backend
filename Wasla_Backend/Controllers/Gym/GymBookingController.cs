@@ -16,7 +16,7 @@
         [HttpPost("book")]
         public async Task<IActionResult> Book([FromBody] GymBookDto gymBookDto, string lan = "en")
         {
-            var data = await _gymBookingService.Book(gymBookDto);
+            var data = await _gymBookingService.Book(gymBookDto,lan);
             await _hub.Clients.All.SendAsync("PackageBooked", data);
             return Ok(ResponseHelper.Success("BookingAddedSuccessfully", lan, data.qrCodeUrl));
         }
