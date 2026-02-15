@@ -81,19 +81,22 @@
                 }).ToListAsync();
         }
 
-        public async Task<List<UserPackageResponse>> UserPackageResponses(GymServiceType type)
+        public async Task<List<UserPackageResponse>> UserPackageResponses(int serviceId)
         {
-            return await _context.GymBooking.Where(t => t.Service.type == type).Include(s => s.Service).Include(r => r.Resident)
-                .Select(
-                  b => new UserPackageResponse
-                  {
-                      name = b.Resident.FullName,
-                      email = b.Resident.Email,
-                      phone = b.Resident.Phone,
-                      image = b.Resident.ProfilePhoto
-
-                  }).ToListAsync();
+            return await _context.GymBooking
+                .Where(b => b.Service.Id == serviceId && b.BookingStatus != GymBookingStatus.Cancelled)
+                .Select(b => b.Resident)
+                .Distinct()
+                .Select(r => new UserPackageResponse
+                {
+                    name = r.FullName,
+                    email = r.Email,
+                    phone = r.Phone,
+                    image = r.ProfilePhoto
+                })
+                .ToListAsync();
         }
+
         public async Task<int> GetNumOfTrainee(string id)
             => await _context.GymBooking.Where(i => i.GymId == id)
                 .Select(u => u.ResidentId)
@@ -124,8 +127,6 @@
                                     }).OrderBy(m => m.month).ToList()
                     }
                 ).OrderBy(y => y.year).ToListAsync();
-
-     
 
         public Task<bool> IsBookingExist(string residentId, int serviceId)
         {

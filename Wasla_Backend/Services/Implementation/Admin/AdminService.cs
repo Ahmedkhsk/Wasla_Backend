@@ -116,6 +116,12 @@
                     userBase = userBase,
                     details = new AdminResidentDetailsDto(resident)
                 },
+                Gym gym => new AdminUserDetailsResponseDto
+                {
+                    role = role.FirstOrDefault(),
+                    userBase = userBase,
+                    details = new AdminGymDetailsDto(gym)
+                },
             };
         }
 

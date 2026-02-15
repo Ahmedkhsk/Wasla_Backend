@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Controllers.Gym
+﻿using Wasla_Backend.Models;
+
+namespace Wasla_Backend.Controllers.Gym
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -64,10 +66,10 @@
             return Ok(ResponseHelper.Success("FetchChartSuccess", lan, charts));
         }
 
-        [HttpGet("GetMembers/{typePackage}")]
-        public async Task<IActionResult> GetMembeers(GymServiceType typePackage, string lan = "en")
+        [HttpGet("GetMembers/{serviceId}")]
+        public async Task<IActionResult> GetMembeers(int serviceId, string lan = "en")
         {
-            var data = await _gymBookingService.UserPackageResponses(typePackage);
+            var data = await _gymBookingService.UserPackageResponses(serviceId);
             return Ok(ResponseHelper.Success("FetchMembersSuccess", lan, data));
         }
 

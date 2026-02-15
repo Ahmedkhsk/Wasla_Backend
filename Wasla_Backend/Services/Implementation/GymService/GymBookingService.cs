@@ -176,9 +176,9 @@
             };
         }
 
-        public async Task<List<UserPackageResponse>> UserPackageResponses(GymServiceType type)
+        public async Task<List<UserPackageResponse>> UserPackageResponses(int id)
         {
-            return await _gymBookingRepository.UserPackageResponses(type);
+            return await _gymBookingRepository.UserPackageResponses(id);
         }
 
         public async Task<QrValidationResult> ValidateQrAsync(int bookingId)

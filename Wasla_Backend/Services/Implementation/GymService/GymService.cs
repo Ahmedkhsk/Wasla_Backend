@@ -38,6 +38,8 @@
 
             _mapper.Map(service, gym);
 
+            gym.FullName = service.ownerName;
+            
             if (service.photo != null)
                 gym.ProfilePhoto = await FileOperation.SaveFile(service.photo, _imagePath);
 

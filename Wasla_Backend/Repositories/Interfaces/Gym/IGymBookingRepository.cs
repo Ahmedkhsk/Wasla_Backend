@@ -12,7 +12,7 @@ namespace Wasla_Backend.Repositories.Interfaces.Gyms
         Task<int> GetNumOfTrainee(string gymId);
         Task<decimal> GetTotalAmount(string gymId);
         Task<List<CollectedPerYearDto>> GetCollectedPriceByYear(string gymId);
-        public Task<List<UserPackageResponse>> UserPackageResponses(GymServiceType type);
+        public Task<List<UserPackageResponse>> UserPackageResponses(int serviceId);
 
     }
 }
