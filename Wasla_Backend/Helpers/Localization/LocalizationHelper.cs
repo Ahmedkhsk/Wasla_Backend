@@ -367,7 +367,17 @@
                 ["en"] = "QR code has already been used.",
                 ["ar"] = "تم استخدام رمز الاستجابة السريعة من قبل."
             },
+            ["QrCodeValid"] = new()
+            {
+                ["en"] = "QR code is valid.",
+                ["ar"] = "رمز QR صالح."
+            },
 
+            ["QrCodeInvalid"] = new()
+            {
+                ["en"] = "QR code is invalid.",
+                ["ar"] = "رمز QR غير صالح."
+            },
             ["InvalidQr"] = new()
             {
                 ["en"] = "Invalid QR code.",
