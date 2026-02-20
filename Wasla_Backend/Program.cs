@@ -1,4 +1,7 @@
-﻿namespace Wasla_Backend
+﻿
+using Wasla_Backend.Services.Implementation.General;
+
+namespace Wasla_Backend
 {
     public class Program
     {
@@ -70,6 +73,7 @@
             builder.Services.AddScoped<IGymService, GymService>();
             builder.Services.AddScoped<IPackageService, PackageService>();
             builder.Services.AddScoped<IGymBookingService, GymBookingService>();
+            builder.Services.AddScoped<IPaymentService, PaymobService>();
 
             builder.Services.AddScoped<TokenHelper>();
             builder.Services.AddScoped<IUserFactory, UserFactory>();

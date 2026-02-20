@@ -1,6 +1,7 @@
 ﻿
 using System.Reflection.Emit;
 using Microsoft.EntityFrameworkCore;
+using Wasla_Backend.Models.GeneralModel;
 
 namespace Wasla_Backend.Data
 {
@@ -24,6 +25,7 @@ namespace Wasla_Backend.Data
         public DbSet<BaseService> BaseServices { get; set; }
         public DbSet<Package> Packages { get; set; }
         public DbSet<GymBooking> GymBooking { get; set; }
+        public DbSet<Payment> Payment { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options) { }
 
@@ -39,9 +41,11 @@ namespace Wasla_Backend.Data
             builder.Entity<BaseService>().ToTable("BaseServices");
             builder.Entity<Package>().ToTable("Packages");
             builder.Entity<GymBooking>().ToTable("GymBookings");
+            builder.Entity<Payment>().ToTable("Payments");
+      
 
 
-           
+
 
             builder.Entity<BaseBooking>()
                 .HasOne(b => b.Resident)
@@ -127,7 +131,23 @@ namespace Wasla_Backend.Data
                 });
             });
             builder.Entity<BaseService>().HasQueryFilter(s=>!s.IsDeleted &&!s.IsHidden);
-            // builder.Entity<ApplicationUser>().HasQueryFilter(d => d.Status == UserStatus.Active && d.IsCompleteRegistration && d.IsVerified);
+            builder.Entity<Payment>()
+     .HasOne(p => p.Resident)
+     .WithMany()
+     .HasForeignKey(p => p.ResidentId)
+     .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Payment>()
+                .HasOne(p => p.ServiceProvider)
+                .WithMany()
+                .HasForeignKey(p => p.ServiceProviderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Payment>()
+                .HasOne(p => p.Service)
+                .WithMany()
+                .HasForeignKey(p => p.ServiceId)
+                .OnDelete(DeleteBehavior.Restrict);
 
 
 

@@ -79,4 +79,8 @@ global using QRCoder;
 global using System.Drawing;
 global using System.IO;
 global using System.Drawing.Imaging;
+global using Wasla_Backend.Models.GeneralModel;
+global using System.Net.Http.Headers;
+
+
 

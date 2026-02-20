@@ -718,12 +718,12 @@
                 ["en"] = "The requested resident was not found.",
                 ["ar"] = "المقيم المطلوب غير موجود."
             },
-            ["BookingAddedSuccessfully"]=new()
+            ["BookingAddedSuccessfully"] = new()
             {
                 ["en"] = "Booking added successfully.",
                 ["ar"] = "تمت إضافة الحجز بنجاح."
             },
-            ["BookingCancelledSuccessfully"] =new()
+            ["BookingCancelledSuccessfully"] = new()
             {
                 ["en"] = "Booking cancelled successfully.",
                 ["ar"] = "تم إلغاء الحجز بنجاح."
@@ -738,12 +738,51 @@
                 ["en"] = "Profile updated successfully.",
                 ["ar"] = "تم تحديث الملف الشخصي بنجاح."
             },
-            ["PackageAlreadyBooked"]=new()
+            ["PackageAlreadyBooked"] = new()
             {
                 ["en"] = "This package is already booked.",
                 ["ar"] = "هذه الباقة محجوزة بالفعل."
-            }
-            
+            },
+            ["PaymentInitializedSuccessfully"] = new()
+            {
+                ["en"] = "Payment initialized successfully.",
+                ["ar"] = "تم تهيئة الدفع بنجاح."
+            },
+            ["PaymentInitializationFailed"] = new()
+            {
+                ["en"] = "Failed to initialize payment.",
+                ["ar"] = "فشل في تهيئة الدفع."
+            },
+            ["Invalidwebhooksignature"] = new()
+            {
+                ["en"] = "Invalid webhook signature.",
+                ["ar"] = "توقيع الويب هوك غير صالح."
+            },
+            ["PaymentProcessedSuccessfully"] = new()
+            {
+                ["en"] = "Payment processed successfully.",
+                ["ar"] = "تمت معالجة الدفع بنجاح."
+            },
+            ["PaymentProcessingFailed"] = new()
+            {
+                ["en"] = "Failed to process payment.",
+                ["ar"] = "فشل في معالجة الدفع."
+            },
+            ["paymobApiFailed"] = new()
+            {
+                ["en"] = "Failed to communicate with Paymob API.",
+                ["ar"] = "فشل في التواصل مع واجهة برمجة تطبيقات Paymob."
+            },
+            ["InvalidPaymentMethod"] = new()
+            {
+                ["en"] = "Invalid payment method.",
+                ["ar"] = "طريقة الدفع غير صالحة."
+            },
+            ["PaymentMethodNotFound"] = new()
+            {
+                ["en"] = "Payment method not found.",
+                ["ar"] = "طريقة الدفع غير موجودة."
+            },
         };
 
 

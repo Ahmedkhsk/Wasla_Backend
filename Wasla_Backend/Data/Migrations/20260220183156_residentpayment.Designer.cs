@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wasla_Backend.Data;
 
@@ -11,9 +12,11 @@ using Wasla_Backend.Data;
 namespace Wasla_Backend.data
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20260220183156_residentpayment")]
+    partial class residentpayment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -440,7 +443,7 @@ namespace Wasla_Backend.data
                     b.ToTable("Favorite");
                 });
 
-            modelBuilder.Entity("Wasla_Backend.Models.GeneralModel.Payment", b =>
+            modelBuilder.Entity("Wasla_Backend.Models.GeneralModel.Residentpayment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -489,7 +492,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("ServiceProviderId");
 
-                    b.ToTable("Payments", (string)null);
+                    b.ToTable("ResidentPayments", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.RefreshToken", b =>
@@ -1063,7 +1066,7 @@ namespace Wasla_Backend.data
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Wasla_Backend.Models.GeneralModel.Payment", b =>
+            modelBuilder.Entity("Wasla_Backend.Models.GeneralModel.Residentpayment", b =>
                 {
                     b.HasOne("Wasla_Backend.Models.ApplicationUser", "Resident")
                         .WithMany()
