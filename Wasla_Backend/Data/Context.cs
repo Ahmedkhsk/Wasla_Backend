@@ -1,9 +1,4 @@
-﻿
-using System.Reflection.Emit;
-using Microsoft.EntityFrameworkCore;
-using Wasla_Backend.Models.GeneralModel;
-
-namespace Wasla_Backend.Data
+﻿namespace Wasla_Backend.Data
 {
     public class Context : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {

@@ -783,6 +783,11 @@
                 ["en"] = "Payment method not found.",
                 ["ar"] = "طريقة الدفع غير موجودة."
             },
+            ["SuccessToCreateUserEvent"] = new()
+            {
+                ["en"] = "User event created successfully.",
+                ["ar"] = "تم إنشاء حدث المستخدم بنجاح."
+            },
         };
 
 

@@ -2,5 +2,6 @@
 {
     public interface IUserEventService
     {
+        public Task CreateUserEventAsync(UserEventDto userEventDto);
     }
 }
