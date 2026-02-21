@@ -4,7 +4,7 @@
     {
         private readonly IRoleRepository _roleRepository;
         private readonly UserManager<ApplicationUser> _userManager;
-        
+
         public RoleService
             (
             IRoleRepository roleRepository,
@@ -18,9 +18,9 @@
         public async Task<IdentityResult> AddRoleAsync(AddRoleDto roleDto)
         {
             if (await _roleRepository.RoleExistsAsync(roleDto.Value))
-                throw new BadRequestException("RoleAlreadyExists");
+                throw new BadRequestException(LocalizationKey.RoleAlreadyExists);
 
-            
+
             var role = new ApplicationRole
             {
                 RoleName = roleDto.RoleName,
@@ -33,17 +33,17 @@
         public async Task<IList<string>> GetUserRolesAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId)
-                       ?? throw new NotFoundException("UserNotFound");
+                       ?? throw new NotFoundException(LocalizationKey.UserNotFound);
 
             return await _roleRepository.GetUserRolesAsync(user);
         }
-        
+
 
         public async Task<IList<RolesResponse>> GetAllRolesAsync(string lan)
         {
             var roles = await _roleRepository.GetAllRolesAsync();
             if (roles == null || !roles.Any())
-                throw new NotFoundException("NoRolesFound");
+                throw new NotFoundException(LocalizationKey.NoRolesFound);
 
             var rolesResult = roles.Select(rs => new RolesResponse
             {
@@ -57,9 +57,10 @@
 
         public async Task<IdentityResult> DeleteRole(string roleId)
         {
-           var role=await _roleRepository.GetRoleByIdAsync(roleId);
+            var role = await _roleRepository.GetRoleByIdAsync(roleId);
             if (role == null)
-                throw new NotFoundException("RoleNotFound");
+                throw new NotFoundException(LocalizationKey.RoleNotFound);
+
             var result = await _roleRepository.DeleteRoleAsync(role);
             return result;
         }

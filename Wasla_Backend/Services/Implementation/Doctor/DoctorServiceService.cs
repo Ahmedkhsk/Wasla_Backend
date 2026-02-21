@@ -1,6 +1,4 @@
-﻿using Wasla_Backend.Models;
-
-namespace Wasla_Backend.Services.Implementation
+﻿namespace Wasla_Backend.Services.Implementation
 {
     public class DoctorServiceService : IDoctorServiceService
     {
@@ -9,25 +7,27 @@ namespace Wasla_Backend.Services.Implementation
         private readonly IGenericRepository<ServiceDay> _serviceDayRepo;
         private readonly IBookingRepository _bookingRepository;
         private readonly IHubContext<ServiceHub> _hub;
-        public DoctorServiceService(IDoctorServiceRepository doctorServiceRepository
-            ,IDoctorRepository doctorRepository
-            ,IGenericRepository<ServiceDay> serviceDayRepo
-            ,IBookingRepository bookingRepository
-            , IHubContext<ServiceHub> hub
-            )
+
+        public DoctorServiceService(
+            IDoctorServiceRepository doctorServiceRepository,
+            IDoctorRepository doctorRepository,
+            IGenericRepository<ServiceDay> serviceDayRepo,
+            IBookingRepository bookingRepository,
+            IHubContext<ServiceHub> hub
+        )
         {
             _doctorServiceRepository = doctorServiceRepository;
             _doctorRepository = doctorRepository;
             _bookingRepository = bookingRepository;
             _serviceDayRepo = serviceDayRepo;
             _hub = hub;
-
         }
+
         public async Task AddServiceAsync(ServiceDto dto)
         {
             var doctor = await _doctorRepository.GetByIdAsync(dto.doctorId);
             if (doctor == null)
-                throw new NotFoundException("DoctorNotFound");
+                throw new NotFoundException(LocalizationKey.DoctorNotFound);
 
             var service = new Service
             {
@@ -68,13 +68,13 @@ namespace Wasla_Backend.Services.Implementation
         {
             var service = await _doctorServiceRepository.GetServiceIncludeDaysAsync(dto.serviceId);
             if (service == null)
-                throw new NotFoundException("ServiceNotFound");
+                throw new NotFoundException(LocalizationKey.ServiceNotFound);
 
             var hasAnyBookings = await _bookingRepository
                             .AnyAsync(b => b.serviceDay.serviceId == dto.serviceId);
 
             if (hasAnyBookings)
-                throw new BadRequestException("ServiceHasBookings");
+                throw new BadRequestException(LocalizationKey.ServiceHasBookings);
 
             service.serviceName = dto.serviceName;
             service.description = dto.description;
@@ -107,6 +107,7 @@ namespace Wasla_Backend.Services.Implementation
 
             _doctorServiceRepository.Update(service);
             await _doctorServiceRepository.SaveChangesAsync();
+
             var serviceHubData = new ServiceHubData
             {
                 serviceProviderId = service.doctorId,
@@ -119,7 +120,7 @@ namespace Wasla_Backend.Services.Implementation
         {
             var doctor = await _doctorRepository.GetByIdAsync(doctorId);
             if (doctor == null)
-                throw new NotFoundException("DoctorNotFound");
+                throw new NotFoundException(LocalizationKey.DoctorNotFound);
 
             var services = await _doctorServiceRepository.GetAllServicesAsync(doctorId);
 
@@ -151,17 +152,18 @@ namespace Wasla_Backend.Services.Implementation
 
         public async Task DeleteServiceAsync(int serviceId)
         {
-            var service =  await _doctorServiceRepository.GetServiceIncludeDaysAsync(serviceId);
-            
-            if(service == null)
-                throw new NotFoundException("ServiceNotFound");
+            var service = await _doctorServiceRepository.GetServiceIncludeDaysAsync(serviceId);
+
+            if (service == null)
+                throw new NotFoundException(LocalizationKey.ServiceNotFound);
 
             if (service.ServiceDays.Any(s => s.isBooking))
-                throw new BadRequestException("CannotDeleteServiceWithExistingBookings");
+                throw new BadRequestException(LocalizationKey.CannotDeleteServiceWithExistingBookings);
 
             service.isDelete = true;
             _doctorServiceRepository.Update(service);
             await _doctorServiceRepository.SaveChangesAsync();
+
             var serviceHubData = new ServiceHubData
             {
                 serviceProviderId = service.doctorId,
@@ -169,6 +171,5 @@ namespace Wasla_Backend.Services.Implementation
             };
             await _hub.Clients.All.SendAsync("ServiceDeleted", serviceHubData);
         }
-    
     }
 }

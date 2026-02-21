@@ -18,7 +18,7 @@
         {
             var data = await _packageService.AddPackage(addPackageDto);
             await _hub.Clients.All.SendAsync("PackageAdded", data);
-            return Ok(ResponseHelper.Success("PackageAddedSuccessfully", lan));
+            return Ok(ResponseHelper.Success(LocalizationKey.PackageAddedSuccessfully, lan));
         }
 
         [HttpPut]
@@ -26,7 +26,7 @@
         {
             var data = await _packageService.UpdatePackage(updatePackageDto);
             await _hub.Clients.All.SendAsync("PackageUpdated", data);
-            return Ok(ResponseHelper.Success("PackageUpdatedSuccessfully", lan));
+            return Ok(ResponseHelper.Success(LocalizationKey.PackageUpdatedSuccessfully, lan));
         }
 
         [HttpDelete]
@@ -34,17 +34,14 @@
         {
             var data = await _packageService.RemovePackage(ServiceID);
             await _hub.Clients.All.SendAsync("PackageDeleted", data);
-            return Ok(ResponseHelper.Success("PackageDeletedSuccessfully", lan));
+            return Ok(ResponseHelper.Success(LocalizationKey.PackageDeletedSuccessfully, lan));
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] string serviceProviderId, string lan = "en")
         {
             var data = await _packageService.GetAllPackages(serviceProviderId);
-            return Ok(ResponseHelper.Success("PackagesRetrievedSuccessfully", lan, data));
-
+            return Ok(ResponseHelper.Success(LocalizationKey.PackagesRetrievedSuccessfully, lan, data));
         }
-
-     
     }
 }

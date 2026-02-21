@@ -1,6 +1,4 @@
-﻿using Wasla_Backend.Helpers.Time;
-
-namespace Wasla_Backend.Services.Implementation
+﻿namespace Wasla_Backend.Services.Implementation
 {
     public class UserService : IUserService
     {
@@ -54,7 +52,7 @@ namespace Wasla_Backend.Services.Implementation
             var cachedCode = _cacheManager.Get<string>(cacheKey);
 
             if (string.IsNullOrEmpty(cachedCode) || cachedCode != model.VerificationCode)
-                throw new BadRequestException("InvalidOrExpiredCode");
+                throw new BadRequestException(LocalizationKey.InvalidOrExpiredCode);
 
             _cacheManager.Remove(cacheKey);
 
@@ -70,12 +68,12 @@ namespace Wasla_Backend.Services.Implementation
         {
             var user = await _userRepository.GetUserByEmailAsync(model.Email);
             if (user == null)
-                throw new NotFoundException("UserNotFound");
+                throw new NotFoundException(LocalizationKey.UserNotFound);
 
             string verificationCode = new Random().Next(1000, 9999).ToString();
             await _emailSender.SendEmailAsync(model.Email, "Verification Code", $"Your OTP is: <b>{verificationCode}</b>");
             string cacheKey = $"verify:{user.Id}";
-           _cacheManager.Set(cacheKey, verificationCode, TimeSpan.FromMinutes(1));
+            _cacheManager.Set(cacheKey, verificationCode, TimeSpan.FromMinutes(1));
             return IdentityResult.Success;
         }
 
@@ -91,9 +89,7 @@ namespace Wasla_Backend.Services.Implementation
         {
             var user = await _userRepository.GetUserByEmailAsync(model.Email);
             if (user == null)
-                throw new NotFoundException("UserNotFound");
-
-           
+                throw new NotFoundException(LocalizationKey.UserNotFound);
 
             var result = await _userManager.RemovePasswordAsync(user);
             if (!result.Succeeded)
@@ -108,16 +104,17 @@ namespace Wasla_Backend.Services.Implementation
         {
             var user = await _userRepository.GetUserByEmailAsync(model.Email);
             if (user == null)
-                throw new NotFoundException("UserNotFound");
+                throw new NotFoundException(LocalizationKey.UserNotFound);
 
             if (!user.IsVerified)
-                throw new BadRequestException("UserNotVerified");
+                throw new BadRequestException(LocalizationKey.UserNotVerified);
 
-            if (user.Status!=UserStatus.Active)
-                throw new BadRequestException("UserNotApproved");
+            if (user.Status != UserStatus.Active)
+                throw new BadRequestException(LocalizationKey.UserNotApproved);
+
             var isSameAsOld = await _userManager.CheckPasswordAsync(user, model.NewPassword);
             if (isSameAsOld)
-                throw new BadRequestException("Newpasswordthesameastheoldpassword");
+                throw new BadRequestException(LocalizationKey.NewPasswordSameAsOld);
 
             var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
             return result;
@@ -127,14 +124,12 @@ namespace Wasla_Backend.Services.Implementation
         {
             var user = await _userRepository.GetUserByEmailAsync(model.Email);
             if (user == null)
-                throw new NotFoundException("EmailNotFound");
-
+                throw new NotFoundException(LocalizationKey.EmailNotFound);
 
             var isPasswordValid = await _userManager.CheckPasswordAsync(user, model.Password);
-        
 
             if (!isPasswordValid)
-                throw new BadRequestException("IncorrectPassword");
+                throw new BadRequestException(LocalizationKey.IncorrectPassword);
 
             var roles = await _roleRepository.GetUserRolesAsync(user);
             var token = _TokenHelper.GenerateToken(user, roles);
@@ -145,10 +140,9 @@ namespace Wasla_Backend.Services.Implementation
                 Token = token,
                 UserId = user.Id,
                 Role = roles.FirstOrDefault(),
-                IsCompletedRegister=user.IsCompleteRegistration,
-                IsVerfied=user.IsVerified
-                ,statue=user.Status
-
+                IsCompletedRegister = user.IsCompleteRegistration,
+                IsVerfied = user.IsVerified,
+                statue = user.Status
             };
 
             var refreshtoken = new RefreshToken
@@ -164,10 +158,9 @@ namespace Wasla_Backend.Services.Implementation
             {
                 HttpOnly = true,
                 Expires = DateTime.UtcNow.AddDays(7),
-                Secure = true,         
+                Secure = true,
                 SameSite = SameSiteMode.None,
             });
-
 
             return loginResponse;
         }
@@ -176,16 +169,15 @@ namespace Wasla_Backend.Services.Implementation
         {
             var existingUser = await _userRepository.GetUserByEmailAsync(model.Email);
             if (existingUser != null)
-                throw new BadRequestException("EmailExists");
+                throw new BadRequestException(LocalizationKey.EmailExists);
 
             var role = await _roleRepository.GetRoleByIdAsync(model.roleId);
             if (role == null)
-                throw new NotFoundException("RoleNotFound");
+                throw new NotFoundException(LocalizationKey.RoleNotFound);
 
             var user = _userFactory.CreateUser(role.Name);
             _mapper.Map(model, user);
             user.CreatedAt = _dateTimeHelper.Now;
-
 
             var result = await _userRepository.CreateUserAsync(user, model.Password);
             if (!result.Succeeded)
@@ -197,7 +189,6 @@ namespace Wasla_Backend.Services.Implementation
             string cacheKey = $"verify:{user.Id}";
             _cacheManager.Set(cacheKey, verificationCode, TimeSpan.FromMinutes(1));
             await _roleRepository.AddUserToRoleAsync(user, role.Name);
-            
 
             return result;
         }
@@ -206,21 +197,23 @@ namespace Wasla_Backend.Services.Implementation
         {
             var refreshTokenCookie = _httpContextAccessor.HttpContext.Request.Cookies["RefreshToken"];
             var refreshToken = await _refreshTokenRepository.GetByTokenAsync(refreshTokenCookie);
+
             if (string.IsNullOrEmpty(refreshTokenCookie))
-                throw new BadRequestException("RefreshTokenMissing");
+                throw new BadRequestException(LocalizationKey.RefreshTokenMissing);
+
             if (refreshToken == null)
-                throw new BadRequestException("InvalidRefreshToken");
+                throw new BadRequestException(LocalizationKey.InvalidRefreshToken);
 
             if (refreshToken.ExpiresAt < DateTime.UtcNow)
             {
                 _refreshTokenRepository.Delete(refreshToken);
                 await _refreshTokenRepository.SaveChangesAsync();
-                throw new BadRequestException("ExpiredRefreshToken");
+                throw new BadRequestException(LocalizationKey.ExpiredRefreshToken);
             }
 
             var user = await _userRepository.GetUserByIdAsync(refreshToken.UserId);
             if (user == null)
-                throw new NotFoundException("UserNotFound");
+                throw new NotFoundException(LocalizationKey.UserNotFound);
 
             var roles = await _roleRepository.GetUserRolesAsync(user);
             var token = _TokenHelper.GenerateToken(user, roles);
@@ -236,23 +229,21 @@ namespace Wasla_Backend.Services.Implementation
             };
         }
 
-
-
         public async Task<object> AllUsers()
         {
-           var users= await _userRepository.GetAll();
+            var users = await _userRepository.GetAll();
             return users.Select(u => new
             {
                 u.Id,
                 u.Email,
-
             });
         }
+
         public async Task Delete(string gmail)
         {
             var user = await _userRepository.GetUserByEmailAsync(gmail);
             if (user == null)
-                throw new NotFoundException("UserNotFound");
+                throw new NotFoundException(LocalizationKey.UserNotFound);
 
             var roles = await _userManager.GetRolesAsync(user);
             if (roles.Any())
@@ -267,14 +258,15 @@ namespace Wasla_Backend.Services.Implementation
                 throw new Exception(errors);
             }
         }
+
         public async Task Logout()
         {
             var userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId))
-                throw new UnauthorizedException("Usernotloggedin");
-         await _refreshTokenRepository.DeleteTokensByUserIdAsync(userId);
+                throw new UnauthorizedException(LocalizationKey.UserNotLoggedIn);
+
+            await _refreshTokenRepository.DeleteTokensByUserIdAsync(userId);
             _httpContextAccessor.HttpContext.Response.Cookies.Delete("RefreshToken");
         }
-
     }
 }

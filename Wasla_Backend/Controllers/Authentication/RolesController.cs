@@ -1,6 +1,4 @@
-﻿using Wasla_Backend.DTOs.RoleDTOS;
-
-namespace Wasla_Backend.Controllers
+﻿namespace Wasla_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -17,28 +15,28 @@ namespace Wasla_Backend.Controllers
         public async Task<IActionResult> AddRole(AddRoleDto addRoleDto, string lan = "en")
         {
             if (string.IsNullOrWhiteSpace(addRoleDto.Value))
-                return BadRequest(ResponseHelper.Fail("RoleNameRequired", lan));
+                return BadRequest(ResponseHelper.Fail(LocalizationKey.RoleNameRequired, lan));
 
             var result = await _roleService.AddRoleAsync(addRoleDto);
 
             if (!result.Succeeded)
-                return BadRequest(ResponseHelper.Fail("RoleAddFailed", lan, result.Errors));
+                return BadRequest(ResponseHelper.Fail(LocalizationKey.RoleAddFailed, lan, result.Errors));
 
-            return Ok(ResponseHelper.Success("RoleAddedSuccessfully", lan, addRoleDto));
+            return Ok(ResponseHelper.Success(LocalizationKey.RoleAddedSuccessfully, lan, addRoleDto));
         }
 
         [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetUserRoles(string userId, string lan = "en")
         {
             if (string.IsNullOrEmpty(userId))
-                return BadRequest(ResponseHelper.Fail("UserIdRequired", lan));
+                return BadRequest(ResponseHelper.Fail(LocalizationKey.UserIdRequired, lan));
 
             var roles = await _roleService.GetUserRolesAsync(userId);
 
             if (roles == null || !roles.Any())
-                return BadRequest(ResponseHelper.Fail("NoRolesFoundForUser", lan));
+                return BadRequest(ResponseHelper.Fail(LocalizationKey.NoRolesFoundForUser, lan));
 
-            return Ok(ResponseHelper.Success("UserRolesRetrieved", lan, roles));
+            return Ok(ResponseHelper.Success(LocalizationKey.UserRolesRetrieved, lan, roles));
         }
 
         [HttpGet]
@@ -47,20 +45,23 @@ namespace Wasla_Backend.Controllers
             var roles = await _roleService.GetAllRolesAsync(lan);
 
             if (roles == null || !roles.Any())
-                return BadRequest(ResponseHelper.Fail("NoRolesFound", lan));
+                return BadRequest(ResponseHelper.Fail(LocalizationKey.NoRolesFound, lan));
 
-            return Ok(ResponseHelper.Success("AllRolesRetrieved", lan, roles));
+            return Ok(ResponseHelper.Success(LocalizationKey.AllRolesRetrieved, lan, roles));
         }
+
         [HttpDelete("{roleId}")]
         public async Task<IActionResult> DeleteRole(string roleId, string lan = "en")
         {
             if (string.IsNullOrEmpty(roleId))
-                return BadRequest(ResponseHelper.Fail("RoleIdRequired", lan));
+                return BadRequest(ResponseHelper.Fail(LocalizationKey.RoleIdRequired, lan));
+
             var result = await _roleService.DeleteRole(roleId);
+
             if (!result.Succeeded)
-                return BadRequest(ResponseHelper.Fail("RoleDeletionFailed", lan, result.Errors));
-            return Ok(ResponseHelper.Success("RoleDeletedSuccessfully", lan));
+                return BadRequest(ResponseHelper.Fail(LocalizationKey.RoleDeletionFailed, lan, result.Errors));
+
+            return Ok(ResponseHelper.Success(LocalizationKey.RoleDeletedSuccessfully, lan));
         }
     }
 }
-

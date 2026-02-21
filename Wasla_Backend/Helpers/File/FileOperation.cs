@@ -4,7 +4,7 @@
     {
         private static readonly string[] AllowedExtensions =
         {
-            ".jpg", ".jpeg", ".png", ".pdf",".docx"
+            ".jpg", ".jpeg", ".png", ".pdf", ".docx"
         };
 
         private static readonly string[] AllowedContentTypes =
@@ -20,17 +20,17 @@
         public static async Task<string> SaveFile(IFormFile file, string filePath)
         {
             if (file == null || file.Length == 0)
-                throw new BadRequestException("FileIsRequired");
+                throw new BadRequestException(LocalizationKey.FileIsRequired);
 
             if (file.Length > MaxFileSize)
-                throw new BadRequestException("FileSizeExceeded");
+                throw new BadRequestException(LocalizationKey.FileSizeExceeded);
 
             var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
             if (!AllowedExtensions.Contains(extension))
-                throw new BadRequestException("InvalidFileType");
+                throw new BadRequestException(LocalizationKey.InvalidFileType);
 
             if (!AllowedContentTypes.Contains(file.ContentType))
-                throw new BadRequestException("InvalidFileContentType");
+                throw new BadRequestException(LocalizationKey.InvalidFileContentType);
 
             var fileName = $"{Guid.NewGuid()}{extension}";
             var path = Path.Combine(filePath, fileName);

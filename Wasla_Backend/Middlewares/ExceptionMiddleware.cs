@@ -35,30 +35,34 @@
                 lan = "en";
 
             HttpStatusCode statusCode;
+            LocalizationKey key;
 
             switch (ex)
             {
-                case BadRequestException:
-                case ArgumentException:
+                case BadRequestException bre:
                     statusCode = HttpStatusCode.BadRequest;
+                    key = bre.Key;
                     break;
 
-                case NotFoundException:
+                case NotFoundException nfe:
                     statusCode = HttpStatusCode.NotFound;
+                    key = nfe.Key;
                     break;
 
-                case UnauthorizedException:
+                case UnauthorizedException ue:
                     statusCode = HttpStatusCode.Unauthorized;
+                    key = ue.Key;
                     break;
 
                 default:
                     statusCode = HttpStatusCode.InternalServerError;
+                    key = LocalizationKey.ServerError;
                     break;
             }
 
-            var response = ResponseHelper.Fail(ex.Message, lan, null);
-
             context.Response.StatusCode = (int)statusCode;
+
+            var response = ResponseHelper.Fail(key, lan);
 
             var json = JsonSerializer.Serialize(response, new JsonSerializerOptions
             {
@@ -67,6 +71,5 @@
 
             await context.Response.WriteAsync(json);
         }
-
     }
 }

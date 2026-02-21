@@ -1,7 +1,4 @@
-﻿
-
-
-namespace Paymob_Integration_DotNet.Controllers
+﻿namespace Paymob_Integration_DotNet.Controllers
 {
     [ApiController]
     public class PaymentController : ControllerBase
@@ -17,12 +14,9 @@ namespace Paymob_Integration_DotNet.Controllers
 
         [HttpPost("create-payment-token")]
         public async Task<IActionResult> CreatePaymentToken(CreatePaymentDto createPaymentDto,string lan="en")
-        {
-                 
+        {  
                var (paymentResult, redirectUrl) = await _paymentService.ProcessPaymentAsync(createPaymentDto);
-                return Ok(ResponseHelper.Success("Created succes",lan,redirectUrl ));
-
-
+               return Ok(ResponseHelper.Success(LocalizationKey.PaymentProcessedSuccessfully, lan,redirectUrl ));
 
         }
 

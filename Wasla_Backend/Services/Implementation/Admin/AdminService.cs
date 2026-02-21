@@ -7,8 +7,11 @@
         private readonly IGenericRepository<ContactUs> _contatUsRepository;
         private readonly IRoleRepository _roleRepository;
 
-        public AdminService(IBookingRepository bookingRepository, IUserRepository userRepository, 
-            IGenericRepository<ContactUs> contatUsRepository,IRoleRepository roleRepository)
+        public AdminService(
+            IBookingRepository bookingRepository,
+            IUserRepository userRepository,
+            IGenericRepository<ContactUs> contatUsRepository,
+            IRoleRepository roleRepository)
         {
             _bookingRepository = bookingRepository;
             _userRepository = userRepository;
@@ -18,7 +21,7 @@
 
         public async Task<AdminChartResponse> GetCollectedCountBookingsPerYear()
         {
-            return new AdminChartResponse 
+            return new AdminChartResponse
             {
                 completedBookingsCount = await _bookingRepository.CountBookings(BookingStatus.completed),
                 canceledBookingsCount = await _bookingRepository.CountBookings(BookingStatus.canceled),
@@ -30,41 +33,43 @@
         public async Task ChangeUserStatus(ChangeUserStsatusDto changeUserStsatus)
         {
             var user = await _userRepository.GetUserByIdAsync(changeUserStsatus.userId);
+
             if (user == null)
-            {
-                throw new NotFoundException("UserNotFound");
-            }
+                throw new NotFoundException(LocalizationKey.UserNotFound);
+
             user.Status = changeUserStsatus.status;
+
             var result = await _userRepository.UpdateUserAsync(user);
+
             if (!result.Succeeded)
-            {
-                throw new BadRequestException("FailedToChangeUserStatus");
-            }
+                throw new BadRequestException(LocalizationKey.FailedToChangeUserStatus);
         }
 
         public async Task AddContact(ContactUsDto contactUsDto)
         {
-            var contact = new ContactUs();
-            contact.email = contactUsDto.email;
-            contact.fullName = contactUsDto.fullName;
-            contact.message = contactUsDto.message;
+            var contact = new ContactUs
+            {
+                email = contactUsDto.email,
+                fullName = contactUsDto.fullName,
+                message = contactUsDto.message
+            };
 
             await _contatUsRepository.AddAsync(contact);
             await _contatUsRepository.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<ContactUs>> GetContacts()
-        { 
-            return  await _contatUsRepository.GetAllAsync();
+        {
+            return await _contatUsRepository.GetAllAsync();
         }
 
         public async Task<PagedResult<UserApproveResponse>> UserApproveResponses(string roleId, int pageNumber, int pageSize)
         {
             var role = await _roleRepository.GetRoleByIdAsync(roleId);
 
-            if(role == null)
-                throw new NotFoundException("RoleNotFound");
-            
+            if (role == null)
+                throw new NotFoundException(LocalizationKey.RoleNotFound);
+
             var users = await _userRepository.GetUsersByRoleAsync(role.Name);
 
             var totalCount = users.Count();
@@ -96,7 +101,7 @@
             var user = await _userRepository.GetUserByIdAsync(userId);
 
             if (user == null)
-                throw new NotFoundException("UserNotFound");
+                throw new NotFoundException(LocalizationKey.UserNotFound);
 
             var role = await _roleRepository.GetUserRolesAsync(user);
 
@@ -124,6 +129,5 @@
                 },
             };
         }
-
     }
 }

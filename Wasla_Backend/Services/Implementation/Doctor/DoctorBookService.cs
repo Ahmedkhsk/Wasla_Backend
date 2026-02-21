@@ -1,15 +1,13 @@
-﻿
-
-namespace Wasla_Backend.Services.Implementation
+﻿namespace Wasla_Backend.Services.Implementation
 {
-    public class DoctorBookService: IDoctorBookService
+    public class DoctorBookService : IDoctorBookService
     {
         private readonly IBookingRepository _bookingRepository;
         private readonly IUserRepository _userRepository;
         private readonly IGenericRepository<ServiceDay> _serviceDayRepository;
         private readonly IDoctorServiceRepository _doctorServiceRepository;
         private readonly IDoctorRepository _doctorRepository;
-        private readonly  IResidentRepository _residentRepository;
+        private readonly IResidentRepository _residentRepository;
         private readonly string _imagePath;
         private readonly IHubContext<BookingHub> _hub;
         private readonly IMapper _mapper;
@@ -20,10 +18,10 @@ namespace Wasla_Backend.Services.Implementation
         private static readonly SemaphoreSlim _bookingLock = new SemaphoreSlim(1, 1);
 
 
-        public DoctorBookService( IBookingRepository bookingRepository, 
-                            IUserRepository userRepository, 
+        public DoctorBookService(IBookingRepository bookingRepository,
+                            IUserRepository userRepository,
                             IGenericRepository<ServiceDay> serviceDay,
-                            IWebHostEnvironment webHostEnvironment, 
+                            IWebHostEnvironment webHostEnvironment,
                             IDoctorServiceRepository doctorServiceRepository,
                             IDoctorRepository doctorRepository,
                             IResidentRepository residentRepository,
@@ -43,18 +41,18 @@ namespace Wasla_Backend.Services.Implementation
             _mapper = mapper;
         }
 
-        public async Task UpdateBookingStatus(int bookingId , BookingStatus status)
+        public async Task UpdateBookingStatus(int bookingId, BookingStatus status)
         {
             var booking = await _bookingRepository.GetByIdWithIncludeAsync(bookingId);
-            
+
             if (booking == null)
-                throw new NotFoundException("BookingNotFound");
+                throw new NotFoundException(LocalizationKey.BookingNotFound);
 
             if (booking.bookingStatus == BookingStatus.completed)
-                throw new BadRequestException("BookingStatusIsAlreadyCompleted");
+                throw new BadRequestException(LocalizationKey.BookingStatusIsAlreadyCompleted);
 
-            if (status == BookingStatus.all||!Enum.IsDefined(typeof(BookingStatus), status))
-                throw new BadRequestException("InvalidBookingStatus");
+            if (status == BookingStatus.all || !Enum.IsDefined(typeof(BookingStatus), status))
+                throw new BadRequestException(LocalizationKey.InvalidBookingStatus);
 
             if (status == BookingStatus.canceled && booking.serviceDay != null)
             {
@@ -73,7 +71,7 @@ namespace Wasla_Backend.Services.Implementation
                 }
             }
 
-                booking.bookingStatus = status;
+            booking.bookingStatus = status;
 
             await _bookingRepository.SaveChangesAsync();
             var bookhubdata = new BookHubData
@@ -88,18 +86,18 @@ namespace Wasla_Backend.Services.Implementation
         public async Task UpdateBooking(UpdateBookingDto updateBookingDto)
         {
             var booking = await _bookingRepository.GetByIdAsync(updateBookingDto.BookingId);
-            
+
             if (booking == null)
-                throw new NotFoundException("BookingNotFound");
-            
+                throw new NotFoundException(LocalizationKey.BookingNotFound);
+
             if (booking.bookingStatus == BookingStatus.completed)
-                throw new BadRequestException("BookingStatusIsAlreadyCompleted");
-            
-            if(updateBookingDto.newDayOfWeek == WeekDayEnum.none ||
+                throw new BadRequestException(LocalizationKey.BookingStatusIsAlreadyCompleted);
+
+            if (updateBookingDto.newDayOfWeek == WeekDayEnum.none ||
                string.IsNullOrWhiteSpace(updateBookingDto.newStart) ||
                string.IsNullOrWhiteSpace(updateBookingDto.newEnd))
             {
-                throw new BadRequestException("InvalidBookingUpdateDetails");
+                throw new BadRequestException(LocalizationKey.InvalidBookingUpdateDetails);
             }
 
             booking = _mapper.Map(updateBookingDto, booking);
@@ -120,35 +118,34 @@ namespace Wasla_Backend.Services.Implementation
             var user = await _userRepository.GetUserByIdAsync(userId);
             if (user == null)
             {
-                throw new NotFoundException("UserNotFound");
+                throw new NotFoundException(LocalizationKey.UserNotFound);
             }
             return await _bookingRepository.GetBookingDetailsForUserAsync(userId, language);
         }
 
-
         public async Task Book(BookServiceDto dto)
         {
-            await _bookingLock.WaitAsync(); 
+            await _bookingLock.WaitAsync();
             try
             {
                 var user = await _residentRepository.GetByIdAsync(dto.userId);
                 if (user == null)
-                    throw new NotFoundException("UserNotFound");
+                    throw new NotFoundException(LocalizationKey.UserNotFound);
 
                 var serviceProvider = await _userRepository.GetUserByIdAsync(dto.serviceProviderId);
                 if (serviceProvider == null)
-                    throw new NotFoundException("ServiceProviderNotFound");
+                    throw new NotFoundException(LocalizationKey.ServiceProviderNotFound);
+
                 var hasanotherBooking = await _bookingRepository.HasBookingSameDay(dto.userId, dto.serviceProviderId, dto.bookingDate);
                 if (hasanotherBooking)
-                    throw new BadRequestException("UserHasAnotherBookingWithSameProviderOnThisDate");
-
+                    throw new BadRequestException(LocalizationKey.UserHasAnotherBookingWithSameProviderOnThisDate);
 
                 var serviceDay = await _serviceDayRepository.GetByIdAsync(dto.serviceDayId);
                 if (serviceDay == null)
-                    throw new NotFoundException("ServiceDayNotFound");
+                    throw new NotFoundException(LocalizationKey.ServiceDayNotFound);
 
                 if (serviceDay.isBooking)
-                    throw new BadRequestException("ServiceAlreadyBooked");
+                    throw new BadRequestException(LocalizationKey.ServiceAlreadyBooked);
 
                 List<string> savedImages = new();
                 if (dto.images != null)
@@ -197,6 +194,7 @@ namespace Wasla_Backend.Services.Implementation
                     serviceProviderId = dto.serviceProviderId
                 };
                 await _hub.Clients.All.SendAsync("ServiceDayBooked", bookhubdata);
+
                 var endString = booking.newEnd ?? booking.serviceDay.end;
 
                 if (TimeOnly.TryParse(endString, out var endTime))
@@ -213,9 +211,8 @@ namespace Wasla_Backend.Services.Implementation
             }
             finally
             {
-                _bookingLock.Release(); 
+                _bookingLock.Release();
             }
         }
-
     }
 }

@@ -1,9 +1,4 @@
-﻿
-
-
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
-
-namespace Wasla_Backend.Services.Implementation.General
+﻿namespace Wasla_Backend.Services.Implementation.General
 {
     public class PaymobService : IPaymentService
     {
@@ -21,28 +16,34 @@ namespace Wasla_Backend.Services.Implementation.General
         public async Task<(Payment Payment, string RedirectUrl)> ProcessPaymentAsync(CreatePaymentDto createPaymentDto)
         {
             if (string.IsNullOrEmpty(createPaymentDto.UserId))
-                throw new BadRequestException("Resident ID is required.");
+                throw new BadRequestException(LocalizationKey.ResidentIdRequired);
 
             var resident = await _context.Users
                 .FirstOrDefaultAsync(u => u.Id == createPaymentDto.UserId);
-            
 
             if (resident == null)
-                throw new NotFoundException("Residentnotfound");
-            if(string.IsNullOrEmpty(createPaymentDto.ServiceProviderId))
-                throw new BadRequestException("ServiceProvider ID is required.");
+                throw new NotFoundException(LocalizationKey.ResidentNotFound);
+
+            if (string.IsNullOrEmpty(createPaymentDto.ServiceProviderId))
+                throw new BadRequestException(LocalizationKey.ServiceProviderIdRequired);
+
             var serviceProvider = await _context.Users
                .FirstOrDefaultAsync(u => u.Id == createPaymentDto.ServiceProviderId);
+
             if (serviceProvider == null)
-                throw new NotFoundException("ServiceProvidernotfound");
-            if(createPaymentDto.Amount <= 0)
-                throw new BadRequestException("Amount must be greater than zero.");
-            if(createPaymentDto.ServiceId <= 0)
-                throw new BadRequestException("Service ID is required.");
+                throw new NotFoundException(LocalizationKey.ServiceProviderNotFound);
+
+            if (createPaymentDto.Amount <= 0)
+                throw new BadRequestException(LocalizationKey.AmountMustBeGreaterThanZero);
+
+            if (createPaymentDto.ServiceId <= 0)
+                throw new BadRequestException(LocalizationKey.ServiceIdRequired);
+
             var service = await _context.BaseServices
               .FirstOrDefaultAsync(s => s.Id == createPaymentDto.ServiceId);
+
             if (service == null)
-                throw new NotFoundException("Servicenotfound");
+                throw new NotFoundException(LocalizationKey.ServiceNotFound);
 
             using var httpClient = new HttpClient();
 
@@ -81,7 +82,7 @@ namespace Wasla_Backend.Services.Implementation.General
                 special_reference = specialReference,
                 expiration = 3600,
                 merchant_order_id = specialReference.ToString(),
-                 callback = "https://your-domain.com/api/payment/callback",
+                callback = "https://your-domain.com/api/payment/callback",
                 post_url = "https://your-domain.com/api/payment/server-callback"
             };
 
@@ -95,9 +96,7 @@ namespace Wasla_Backend.Services.Implementation.General
             if (!response.IsSuccessStatusCode)
             {
                 Console.WriteLine(responseContent);
-                throw new Exception("PaymobAPIfailed");
-
-
+                throw new BadRequestException(LocalizationKey.PaymobApiFailed);
             }
 
             var resultJson = JsonDocument.Parse(responseContent);
@@ -107,8 +106,8 @@ namespace Wasla_Backend.Services.Implementation.General
             {
                 ResidentId = createPaymentDto.UserId,
                 Resident = resident,
-                ServiceProviderId=createPaymentDto.ServiceProviderId,
-                ServiceId=createPaymentDto.ServiceId,
+                ServiceProviderId = createPaymentDto.ServiceProviderId,
+                ServiceId = createPaymentDto.ServiceId,
                 Amount = createPaymentDto.Amount,
                 PaymentMethod = createPaymentDto.PaymentMethod,
                 Status = PaymentStatus.Pending,
@@ -116,7 +115,6 @@ namespace Wasla_Backend.Services.Implementation.General
                 PaymentDate = _dateTimeHelper.Now,
                 ServiceType = createPaymentDto.ServiceProviderType
             };
-
 
             _context.Payment.Add(payment);
             await _context.SaveChangesAsync();
@@ -133,7 +131,7 @@ namespace Wasla_Backend.Services.Implementation.General
                 PaymentMethodType.Card => _configuration["Paymob:CardIntegrationId"],
                 PaymentMethodType.Wallet => _configuration["Paymob:WalletIntegrationId"],
                 PaymentMethodType.CashCollection => _configuration["Paymob:CashCollectionIntegrationId"],
-                _ => throw new ArgumentException("Invalidpaymentmethod")
+                _ => throw new BadRequestException(LocalizationKey.InvalidPaymentMethod)
             };
         }
 
@@ -144,7 +142,7 @@ namespace Wasla_Backend.Services.Implementation.General
                 .FirstOrDefaultAsync(p => p.TransactionId == transactionId);
 
             if (payment == null)
-                throw new NotFoundException("PaymentMethodNotFound");
+                throw new NotFoundException(LocalizationKey.PaymentMethodNotFound);
 
             payment.Status = PaymentStatus.Completed;
             await _context.SaveChangesAsync();
@@ -159,7 +157,7 @@ namespace Wasla_Backend.Services.Implementation.General
                 .FirstOrDefaultAsync(p => p.TransactionId == transactionId);
 
             if (payment == null)
-                throw new NotFoundException("PaymentMethodNotFound");
+                throw new NotFoundException(LocalizationKey.PaymentMethodNotFound);
 
             payment.Status = PaymentStatus.Failed;
             await _context.SaveChangesAsync();

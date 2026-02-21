@@ -32,7 +32,7 @@
             var doctor = await _doctorRepository.GetByEmail(doctorCompleteDto.Email);
 
             if (doctor == null)
-                throw new NotFoundException("UserNotFound");
+                throw new NotFoundException(LocalizationKey.UserNotFound);
 
             _mapper.Map(doctorCompleteDto, doctor);
 
@@ -89,9 +89,9 @@
         public async Task<DoctorChartDto> GetDoctorChart(string doctorId)
         {
             var doctor = await _doctorRepository.GetById(doctorId);
-            
+
             if (doctor == null)
-                throw new NotFoundException("DoctorNotFound");
+                throw new NotFoundException(LocalizationKey.DoctorNotFound);
 
             return new DoctorChartDto
             {
@@ -106,22 +106,22 @@
         public async Task<List<GetAllBookingResponse>> GetAllBookingOfDoctors(string docId, BookingStatus status, string lan)
         {
             var doctor = await _doctorRepository.GetById(docId);
-            
+
             if (doctor == null)
-                throw new BadRequestException("DoctorNotFound");
+                throw new BadRequestException(LocalizationKey.DoctorNotFound);
 
             if (!Enum.IsDefined(typeof(BookingStatus), status))
-                throw new BadRequestException("InvalidBookingStatus");
+                throw new BadRequestException(LocalizationKey.InvalidBookingStatus);
 
-            return await  _bookingRepository.GetBookingsByDoctorIdAsync(docId, status, lan);
+            return await _bookingRepository.GetBookingsByDoctorIdAsync(docId, status, lan);
         }
-        
+
         public async Task<DoctorProfileResponse> GetDoctorProfile(string id, string lan)
         {
-            var doctor = await _doctorRepository.GetById(id);    
+            var doctor = await _doctorRepository.GetById(id);
 
             if (doctor == null)
-                throw new NotFoundException("DoctorNotFound");
+                throw new NotFoundException(LocalizationKey.DoctorNotFound);
 
             var doctorProfileResponse = _mapper.Map<DoctorProfileResponse>(doctor, opt =>
             {
@@ -136,21 +136,22 @@
         public async Task UpdateDoctorProfile(UpdateDoctorDto updateDoctorDto)
         {
             var doctor = await _doctorRepository.GetById(updateDoctorDto.userId);
-            
+
             if (doctor == null)
-                throw new NotFoundException("DoctorNotFound");
+                throw new NotFoundException(LocalizationKey.DoctorNotFound);
 
             var image = doctor.ProfilePhoto;
             var cv = doctor.CV;
             var specializationId = doctor.SpecializationId;
 
             _mapper.Map(updateDoctorDto, doctor);
-           
+
             if (updateDoctorDto.specializationId != 0)
             {
                 var specialization = await _doctorSpecializationRepository.GetByIdAsync(updateDoctorDto.specializationId);
                 if (specialization == null)
-                    throw new NotFoundException("SpecializationNotFound");
+                    throw new NotFoundException(LocalizationKey.SpecializationNotFound);
+
                 doctor.SpecializationId = updateDoctorDto.specializationId;
             }
             else
@@ -186,9 +187,10 @@
 
         public async Task<AllDoctorDataDto> GetDoctorData(string doctorId, string lan)
         {
-            var doc=await _doctorRepository.GetById(doctorId);
+            var doc = await _doctorRepository.GetById(doctorId);
             if (doc == null)
-                throw new NotFoundException("DoctorNotFound");
+                throw new NotFoundException(LocalizationKey.DoctorNotFound);
+
             var doctor = await _doctorRepository.GetDoctorData(doctorId);
 
             if (doctor == null)

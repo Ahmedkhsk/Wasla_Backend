@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-
-namespace Wasla_Backend.Controllers
+﻿namespace Wasla_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -16,25 +13,25 @@ namespace Wasla_Backend.Controllers
         public async Task<IActionResult> AddFavourite(string residentId, string serviceProviderId,  string lan = "en")
         {
            var favourite= await _favouriteService.AddFavourite(residentId, serviceProviderId);
-            return Ok(ResponseHelper.Success("FavouriteAddedSuccessfully", lan,favourite));
+            return Ok(ResponseHelper.Success(LocalizationKey.FavouriteAddedSuccessfully, lan,favourite));
         }
         [HttpDelete("RemoveFavourite")]
         public async Task<IActionResult> RemoveFavourite(int favouriteId, string lan = "en")
         {
             await _favouriteService.RemoveFavourite(favouriteId);
-            return Ok(ResponseHelper.Success("FavouriteRemovedSuccessfully", lan));
+            return Ok(ResponseHelper.Success(LocalizationKey.FavouriteRemovedSuccessfully, lan));
         }
         [HttpGet("GetAllFavourites")]
         public async Task<IActionResult> GetAllFavourites(string residentId, string lan = "en")
         {
             var favourites = await _favouriteService.GetAll(residentId);
-            return Ok(ResponseHelper.Success("FavouritesRetrievedSuccessfully", lan, favourites));
+            return Ok(ResponseHelper.Success(LocalizationKey.FavouritesRetrievedSuccessfully, lan, favourites));
         }
         [HttpGet("GetFavouritesByType")]
         public async Task<IActionResult> GetFavouritesByType(string residentId, [Required]ServiceProviderType serviceType, string lan = "en")
         {
             var favourites = await _favouriteService.GetByType(residentId, serviceType);
-            return Ok(ResponseHelper.Success("FavouritesRetrievedSuccessfully", lan, favourites));
+            return Ok(ResponseHelper.Success(LocalizationKey.FavouritesRetrievedSuccessfully, lan, favourites));
         }
     }
 }

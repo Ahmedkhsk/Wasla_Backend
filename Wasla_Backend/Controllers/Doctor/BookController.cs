@@ -14,28 +14,28 @@
         public async Task<IActionResult> BookService([FromForm] BookServiceDto bookServiceDto, string lan = "en")
         {
                 await _doctorBookService.Book(bookServiceDto);
-                return Ok(ResponseHelper.Success("ServiceBookedSuccessfully", lan));
+                return Ok(ResponseHelper.Success(LocalizationKey.ServiceBookedSuccessfully, lan));
         }
 
         [HttpPut("UpdateBooking")]
         public async Task<IActionResult> UpdateBooking([FromBody] UpdateBookingDto updateBookingDto, [FromQuery] string lan = "en")
         {
             await _doctorBookService.UpdateBooking(updateBookingDto);
-            return Ok(ResponseHelper.Success("BookingUpdatedSuccessfully", lan));
+            return Ok(ResponseHelper.Success(LocalizationKey.BookingUpdatedSuccessfully, lan));
         }
 
         [HttpPut("UpdateBookingStatus")]
         public async Task<IActionResult> UpdateBookingStatus([FromQuery] int bookingId, [FromQuery] BookingStatus status, [FromQuery] string lan = "en")
         {
             await _doctorBookService.UpdateBookingStatus(bookingId, status);
-            return Ok(ResponseHelper.Success("BookingStatusUpdatedSuccessfully", lan));
+            return Ok(ResponseHelper.Success(LocalizationKey.BookingStatusUpdatedSuccessfully, lan));
         }
 
         [HttpGet("GetBookingDetailsForUser")]
         public async Task<IActionResult> GetBookingDetailsForUser([FromQuery]string userId, [FromQuery] string language="en")
         {
             var bookingDetails = await _doctorBookService.GetBookingDetailsForUserAsync(userId, language);
-            return Ok(ResponseHelper.Success("BookingRetrievedsuccess", language, bookingDetails));
+            return Ok(ResponseHelper.Success(LocalizationKey.BookingRetrievedsuccess, language, bookingDetails));
         }
     }
 }

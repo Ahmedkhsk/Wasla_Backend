@@ -34,7 +34,7 @@
             var gym = await _gymRepo.GetByGmailAsync(service.gmail);
 
             if (gym == null)
-                throw new NotFoundException("GymNotFound");
+                throw new NotFoundException(LocalizationKey.GymNotFound);
 
             _mapper.Map(service, gym);
 
@@ -66,7 +66,7 @@
             var gym = await _gymRepo.GetByGmailAsync(dto.gmail);
 
             if (gym == null)
-                throw new NotFoundException("GymNotFound");
+                throw new NotFoundException(LocalizationKey.GymNotFound);
 
             _mapper.Map(dto, gym);
 
@@ -106,7 +106,7 @@
         {
             var gym =await _gymRepo.GetByIdAsync(id);
             if (gym == null)
-                throw new NotFoundException("GymNotFound");
+                throw new NotFoundException(LocalizationKey.GymNotFound);
             return await _gymRepo.GymProfile(id);
         }
     }

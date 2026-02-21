@@ -1,17 +1,34 @@
-﻿namespace Wasla_Backend.Exceptions
+﻿using Wasla_Backend.Enums;
+
+namespace Wasla_Backend.Exceptions
 {
     public class BadRequestException : Exception
     {
-        public BadRequestException(string message) : base(message) { }
+        public LocalizationKey Key { get; }
+
+        public BadRequestException(LocalizationKey key) : base(key.ToString())
+        {
+            Key = key;
+        }
     }
 
     public class NotFoundException : Exception
     {
-        public NotFoundException(string message) : base(message) { }
+        public LocalizationKey Key { get; }
+
+        public NotFoundException(LocalizationKey key) : base(key.ToString())
+        {
+            Key = key;
+        }
     }
 
     public class UnauthorizedException : Exception
     {
-        public UnauthorizedException(string message) : base(message) { }
+        public LocalizationKey Key { get; }
+
+        public UnauthorizedException(LocalizationKey key) : base(key.ToString())
+        {
+            Key = key;
+        }
     }
 }

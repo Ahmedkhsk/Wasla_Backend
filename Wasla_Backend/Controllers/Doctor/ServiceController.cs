@@ -15,28 +15,28 @@
         public async Task<IActionResult> AddService(ServiceDto addServiceDto,string lan = "en")
         {
             await _doctorServiceService.AddServiceAsync(addServiceDto);
-            return Ok(ResponseHelper.Success("ServiceAddedSuccessfully", lan));
+            return Ok(ResponseHelper.Success(LocalizationKey.ServiceAddedSuccessfully, lan));
         }
 
         [HttpPut("UpdateService")]
         public async Task<IActionResult> UpdateService(UpdateServiceDto updateServiceDto, string lan = "en")
         {
             await _doctorServiceService.UpdateServiceAsync(updateServiceDto);
-            return Ok(ResponseHelper.Success("ServiceUpdatedSuccessfully", lan));
+            return Ok(ResponseHelper.Success(LocalizationKey.ServiceUpdatedSuccessfully, lan));
         }
 
         [HttpGet("GetServices/{doctorId}")]
         public async Task<IActionResult> GetServices(string doctorId, string lan = "en")
         {
             var services = await _doctorServiceService.GetServices(doctorId, lan);
-            return Ok(ResponseHelper.Success("FetchServicesSuccess", lan, services));
+            return Ok(ResponseHelper.Success(LocalizationKey.FetchServicesSuccess, lan, services));
         }
 
         [HttpDelete("DeleteService/{serviceId}")]
         public async Task<IActionResult> DeleteService(int serviceId, string lan = "en")
         {
             await _doctorServiceService.DeleteServiceAsync(serviceId);
-            return Ok(ResponseHelper.Success("ServiceDeletedSuccessfully", lan));
+            return Ok(ResponseHelper.Success(LocalizationKey.ServiceDeletedSuccessfully, lan));
         }
     }
 }

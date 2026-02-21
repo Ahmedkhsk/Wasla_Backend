@@ -15,7 +15,7 @@
         public async Task<IActionResult> CreateUserEvent(UserEventDto userEventDto, string lan = "en")
         {
             await _userEventService.CreateUserEventAsync(userEventDto);
-            return Ok(ResponseHelper.Success("SuccessToCreateUserEvent", lan));
+            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToCreateUserEvent, lan));
         }
     }
 }

@@ -4,19 +4,19 @@
     {
         private readonly IResidentRepository _ResidentRepository;
         private readonly IResidentIdentityRepository _ResidentIdentityRepository;
-
         private readonly IMapper _mapper;
         private readonly IStringLocalizer<ResidentService> _localizer;
         private readonly string _imagePath;
         private readonly IBookingRepository _bookingRepository;
 
-        public ResidentService(IResidentRepository ResidentRepository,
+        public ResidentService(
+            IResidentRepository ResidentRepository,
             IResidentIdentityRepository ResidentIdentityRepository,
             IWebHostEnvironment webHostEnvironment,
             IMapper mapper,
-            IStringLocalizer<ResidentService> localizer
-            , IBookingRepository bookingRepository
-            )
+            IStringLocalizer<ResidentService> localizer,
+            IBookingRepository bookingRepository
+        )
         {
             _ResidentRepository = ResidentRepository;
             _ResidentIdentityRepository = ResidentIdentityRepository;
@@ -25,29 +25,27 @@
             _imagePath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.ImagesPathUser.TrimStart('/'));
             _bookingRepository = bookingRepository;
         }
-        
+
         public async Task CompleteResidentRegister(ResidentCompleteRegisterDto model)
         {
             var regex = new Regex(@"^\d{14}$");
             if (!regex.IsMatch(model.NationalId))
-                throw new BadRequestException(_localizer["InvalidNationalId"]);
+                throw new BadRequestException(LocalizationKey.InvalidNationalId);
 
-            var existingIdentity = await _ResidentIdentityRepository.GetByNationalIDAndGmail(model.NationalId,model.Email);
+            var existingIdentity = await _ResidentIdentityRepository.GetByNationalIDAndGmail(model.NationalId, model.Email);
             if (existingIdentity == null)
-                throw new BadRequestException(_localizer["NoUnitFound"]);
+                throw new BadRequestException(LocalizationKey.NoUnitFound);
 
             var resident = await _ResidentRepository.GetByEmail(model.Email);
             if (resident == null)
-                throw new NotFoundException(_localizer["UserNotFound"]);
+                throw new NotFoundException(LocalizationKey.UserNotFound);
 
             _mapper.Map(model, resident);
             resident.ProfilePhoto = await FileOperation.SaveFile(model.Image, _imagePath);
             resident.IsCompleteRegistration = true;
+
             _ResidentRepository.Update(resident);
             await _ResidentRepository.SaveChangesAsync();
-
-
-
         }
 
         public async Task EditProfile(EditProfileDto editProfileDto)
@@ -55,7 +53,7 @@
             var user = await _ResidentRepository.GetByIdAsync(editProfileDto.id);
 
             if (user == null)
-                throw new NotFoundException("UserNotFound");
+                throw new NotFoundException(LocalizationKey.UserNotFound);
 
             _mapper.Map(editProfileDto, user);
 
@@ -72,7 +70,7 @@
                 user.ProfilePhoto = image;
             }
 
-             _ResidentRepository.Update(user);
+            _ResidentRepository.Update(user);
             await _ResidentRepository.SaveChangesAsync();
         }
 
@@ -80,20 +78,19 @@
         {
             var user = await _ResidentRepository.GetByIdAsync(userId);
             if (user == null)
-                throw new NotFoundException("UserNotFound");
+                throw new NotFoundException(LocalizationKey.UserNotFound);
+
             var response = _mapper.Map<ResponseProfileDto>(user);
             return response;
-
-
         }
+
         public async Task<ResidentChartDto> GetResidentChartAsync(string residentId)
         {
             var resident = await _ResidentRepository.GetByIdAsync(residentId);
             if (resident == null)
-                throw new NotFoundException(_localizer["UserNotFound"]);
+                throw new NotFoundException(LocalizationKey.UserNotFound);
 
             var bookings = await _bookingRepository.GetBookingsForResidentAsync(residentId);
-
             bookings = bookings.Where(b => b.bookingStatus == BookingStatus.completed).ToList();
 
             var dto = new ResidentChartDto
@@ -123,7 +120,5 @@
 
             return dto;
         }
-
-
     }
 }

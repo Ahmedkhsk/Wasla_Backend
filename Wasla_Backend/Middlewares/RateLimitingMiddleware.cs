@@ -109,7 +109,7 @@ namespace Wasla_Backend.Middlewares
 
             var lan = context.Request.Headers["Accept-Language"].FirstOrDefault() ?? "en";
 
-            var response = ResponseHelper.Fail("TooManyRequests", lan, new
+            var response = ResponseHelper.Fail(LocalizationKey.TooManyRequests, lan, new
             {
                 retryAfterSeconds = _settings.TimeWindowInSeconds
             });

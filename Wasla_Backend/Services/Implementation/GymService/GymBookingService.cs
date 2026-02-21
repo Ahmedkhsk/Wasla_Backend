@@ -10,13 +10,12 @@
         private readonly IMapper _mapper;
         private readonly string _qrPath;
 
-
-        public GymBookingService(IGymBookingRepository gymBookingRepository, 
+        public GymBookingService(IGymBookingRepository gymBookingRepository,
                                  IPackageRepository packageRepository,
                                  IGymRepository gymRepository,
                                  IResidentRepository residentRepository,
                                  IMapper mapper,
-                                 IWebHostEnvironment webHostEnvironment, 
+                                 IWebHostEnvironment webHostEnvironment,
                                  DateTimeHelper dateTimeHelper)
         {
             _gymBookingRepository = gymBookingRepository;
@@ -28,22 +27,23 @@
             _dateTimeHelper = dateTimeHelper;
         }
 
-        public async Task<BookResponse> Book(GymBookDto gymBookDto,string lan)
+        public async Task<BookResponse> Book(GymBookDto gymBookDto, string lan)
         {
             var gym = await _gymRepository.GetByIdAsync(gymBookDto.gymId);
             if (gym == null)
-                throw new NotFoundException("Gymnotfound");
+                throw new NotFoundException(LocalizationKey.GymNotFound);
 
             var resident = await _residentRepository.GetByIdAsync(gymBookDto.residentId);
             if (resident == null)
-                throw new NotFoundException("Residentnotfound");
+                throw new NotFoundException(LocalizationKey.ResidentNotFound);
 
             var service = await _packageRepository.GetByIdAsync(gymBookDto.serviceId);
             if (service == null)
-                throw new NotFoundException("Packagenotfound");
+                throw new NotFoundException(LocalizationKey.PackageNotFound);
+
             var IsexistingBooking = await _gymBookingRepository.IsBookingExist(gymBookDto.residentId, gymBookDto.serviceId);
             if (IsexistingBooking)
-                throw new BadRequestException("PackageAlreadyBooked");
+                throw new BadRequestException(LocalizationKey.PackageAlreadyBooked);
 
             int durationInMonths = 0;
 
@@ -53,12 +53,13 @@
 
             durationInMonths = service.DurationInMonths;
             gymBooking.price = service.Price;
+
             if (service.type == GymServiceType.Package)
             {
                 durationInMonths = service.DurationInMonths;
                 gymBooking.price = service.Price;
             }
-            else 
+            else
             {
                 var discountValue = service.Price * (service.Precentage / 100m);
                 gymBooking.price = service.Price - discountValue;
@@ -66,6 +67,7 @@
 
             gymBooking.ServiceProviderType = ServiceProviderType.Gym;
             gymBooking.Service = service;
+
             var QrData = new QrCodeDto
             {
                 bookingId = gymBooking.Id,
@@ -76,8 +78,9 @@
                 bookingTime = gymBooking.BookingDate,
                 expiryDate = gymBooking.BookingDate.AddMonths(durationInMonths)
             };
-            var qrcode=QRHelper.GenerateQRFile(QrData);
-            var filePath=await FileOperation.SaveFile(qrcode, _qrPath);
+
+            var qrcode = QRHelper.GenerateQRFile(QrData);
+            var filePath = await FileOperation.SaveFile(qrcode, _qrPath);
 
             await _gymBookingRepository.AddAsync(gymBooking);
             await _gymBookingRepository.SaveChangesAsync();
@@ -98,7 +101,6 @@
                 serviceId = gymBookDto.serviceId,
                 serviceProviderId = gymBookDto.gymId,
                 residentId = gymBookDto.residentId
-
             };
         }
 
@@ -113,12 +115,14 @@
 
         public async Task<BookHubData> Cancel(int bookingId)
         {
-            var booking =await _gymBookingRepository.GetByIdAsync(bookingId);
+            var booking = await _gymBookingRepository.GetByIdAsync(bookingId);
             if (booking == null)
-                throw new NotFoundException("Bookingnotfound");
+                throw new NotFoundException(LocalizationKey.BookingNotFound);
+
             booking.BookingStatus = GymBookingStatus.Cancelled;
             _gymBookingRepository.Update(booking);
             await _gymBookingRepository.SaveChangesAsync();
+
             var bookHubData = new BookHubData
             {
                 serviceId = booking.ServiceId,
@@ -131,42 +135,46 @@
         public async Task<List<BookingOfGym>> PackageBookingOFGym(string gymId)
         {
             var gym = await _gymRepository.GetByIdAsync(gymId);
-            if(gym==null)
-                throw new NotFoundException("Gymnotfound");
-            return await _gymBookingRepository.PackagebookingOfGym(gymId);
+            if (gym == null)
+                throw new NotFoundException(LocalizationKey.GymNotFound);
 
+            return await _gymBookingRepository.PackagebookingOfGym(gymId);
         }
 
         public async Task<List<BookingOfGym>> PackagebookingOfGymAndStatus(string gymId, GymBookingStatus status)
         {
             var gym = await _gymRepository.GetByIdAsync(gymId);
             if (gym == null)
-                throw new NotFoundException("Gymnotfound");
-            return await _gymBookingRepository.PackagebookingOfGymAndStatus(gymId,status);
+                throw new NotFoundException(LocalizationKey.GymNotFound);
+
+            return await _gymBookingRepository.PackagebookingOfGymAndStatus(gymId, status);
         }
 
         public async Task<List<BookingOfUser>> PackagebookingOfResident(string residentId)
         {
-           var resident =await _residentRepository.GetByIdAsync(residentId);
+            var resident = await _residentRepository.GetByIdAsync(residentId);
             if (resident == null)
-                throw new NotFoundException("Residentnotfound");
+                throw new NotFoundException(LocalizationKey.ResidentNotFound);
+
             return await _gymBookingRepository.PackagebookingOfResident(residentId);
         }
 
         public async Task<List<BookingOfUser>> PackagebookingOfResidentAndStatus(string residentId, GymBookingStatus status)
         {
-           var resident = await _residentRepository.GetByIdAsync(residentId);
+            var resident = await _residentRepository.GetByIdAsync(residentId);
             if (resident == null)
-                throw new NotFoundException("Residentnotfound");
+                throw new NotFoundException(LocalizationKey.ResidentNotFound);
+
             return await _gymBookingRepository.PackagebookingOfResidentAndStatus(residentId, status);
         }
 
         public async Task<ChartsResponse> chartsResponse(string gymId)
         {
             var gym = await _gymRepository.GetByIdAsync(gymId);
-            
+
             if (gym == null)
-                throw new NotFoundException("Gymnotfound");
+                throw new NotFoundException(LocalizationKey.GymNotFound);
+
             return new ChartsResponse
             {
                 numberOfBookings = await _gymBookingRepository.GetNumberOfBookings(gymId),
@@ -211,6 +219,5 @@
 
             return QrValidationResult.Valid();
         }
-
     }
 }

@@ -23,7 +23,7 @@
         {
             var ServiceProvider=await _gymRepository.GetByIdAsync(addPackageDto.serviceProviderId);
             if (ServiceProvider == null)
-                throw new NotFoundException("ServiceProviderNotFound");
+                throw new NotFoundException(LocalizationKey.ServiceProviderNotFound);
             string photoPath = await FileOperation.SaveFile(addPackageDto.photo, _imagePath);
             var package = _mapper.Map<Package>(addPackageDto);
             package.PhotoUrl = photoPath;
@@ -42,7 +42,7 @@
         {
             var service =await _packageRepository.GetByIdAsync(PackageId);
             if (service == null)
-                throw new NotFoundException("PackageNotFound");
+                throw new NotFoundException(LocalizationKey.PackageNotFound);
             service.IsDeleted = true;
             _packageRepository.Update(service);
             await _packageRepository.SaveChangesAsync();
@@ -58,7 +58,7 @@
         {
             var package = await _packageRepository.GetByIdAsync(updatePackageDto.id);
             if (package == null)
-                throw new NotFoundException("PackageNotFound");
+                throw new NotFoundException(LocalizationKey.PackageNotFound);
 
             _mapper.Map(updatePackageDto, package);
             

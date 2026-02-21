@@ -13,7 +13,7 @@
                 "restaurantOwner" => new Restaurant(),
                 "gym" => new Gym(),
                 "technician" => new Technician(),
-                _ => throw new NotFoundException($"RoleNotFound")
+                _ => throw new NotFoundException(LocalizationKey.RoleNotFound)
             };
         }
     }

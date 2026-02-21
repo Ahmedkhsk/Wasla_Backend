@@ -18,7 +18,7 @@
             var user = await _userRepository.GetUserByIdAsync(userEventDto.userId);
             
             if (user == null)
-                throw new NotFoundException("UserNotFound");
+                throw new NotFoundException(LocalizationKey.UserNotFound);
 
             var userEvent = new UserEvent
             {
