@@ -1,6 +1,4 @@
-﻿using Wasla_Backend.Models;
-using Wasla_Backend.Repositories.Interfaces;
-public class ResturantRepository : GenericRepository<Restaurant>, IRestaurantRepository
+﻿public class ResturantRepository : GenericRepository<Restaurant>, IRestaurantRepository
 {
     public ResturantRepository(Context context) : base(context)
     {

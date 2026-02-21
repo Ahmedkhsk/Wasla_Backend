@@ -26,6 +26,7 @@ namespace Wasla_Backend.Data
         public DbSet<Package> Packages { get; set; }
         public DbSet<GymBooking> GymBooking { get; set; }
         public DbSet<Payment> Payment { get; set; }
+        public DbSet<UserEvent> UserEvents { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options) { }
 

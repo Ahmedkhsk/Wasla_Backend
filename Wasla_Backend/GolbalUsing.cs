@@ -81,6 +81,13 @@ global using System.IO;
 global using System.Drawing.Imaging;
 global using Wasla_Backend.Models.GeneralModel;
 global using System.Net.Http.Headers;
+global using Wasla_Backend.Helpers.ProgramHelper.Configurations;
+global using Microsoft.OpenApi.Models;
+global using Wasla_Backend.Services.Implementation.General;
+global using Wasla_Backend.Helpers.ProgramHelper.DependencyInjection;
+global using Wasla_Backend.Helpers.ProgramHelper.Middleware;
+global using Wasla_Backend.Helpers.ProgramHelper.Pipeline;
+
 
 
 
