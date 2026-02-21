@@ -1,56 +1,79 @@
-﻿global using Microsoft.AspNetCore.Identity;
+﻿global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.AspNetCore.Identity;
 global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-global using Microsoft.EntityFrameworkCore;
-global using Microsoft.AspNetCore.Mvc;
-global using Microsoft.Extensions.Options;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
-global using Microsoft.IdentityModel.Tokens;
-global using Microsoft.Extensions.Localization;
 global using Microsoft.AspNetCore.SignalR;
-global using Microsoft.ML.Data;
+global using Microsoft.IdentityModel.Tokens;
+global using Microsoft.OpenApi.Models;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Options;
+global using Microsoft.Extensions.Localization;
+global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.ML;
-global using Wasla_Backend.Helpers.MlHelper;
-global using Hangfire;
+global using Microsoft.ML.Data;
 
+global using System;
+global using System.IO;
+global using System.Text;
+global using System.Text.Json;
 global using System.Text.RegularExpressions;
 global using System.Reflection;
 global using System.ComponentModel.DataAnnotations;
 global using System.ComponentModel.DataAnnotations.Schema;
-global using System.Net;
-global using System.Text.Json;
-global using System.Text;
 global using System.IdentityModel.Tokens.Jwt;
 global using System.Security.Claims;
 global using System.Security.Cryptography;
+global using System.Net;
+global using System.Net.Http.Headers;
 global using System.Data;
-global using Microsoft.Extensions.Caching.Memory;
+global using System.Drawing;
+global using System.Drawing.Imaging;
 
-
+global using AutoMapper;
 global using MailKit.Security;
 global using MimeKit;
 global using MimeKit.Text;
-global using AutoMapper;
-global using System.IO;
+global using QRCoder;
+global using Hangfire;
 
-global using Wasla_Backend.Repositories.Interfaces;
-global using Wasla_Backend.Enums;
+
 global using Wasla_Backend.Models;
 global using Wasla_Backend.Models.BaseModel;
-global using Wasla_Backend.Data;
-global using Wasla_Backend.Factories.Interfaces;
-global using Wasla_Backend.Services.Interfaces;
-global using Wasla_Backend.Factories.Implementation;
+global using Wasla_Backend.Models.GeneralModel;
+
+
+global using Wasla_Backend.Repositories.Interfaces;
+global using Wasla_Backend.Repositories.Interfaces.Gyms;
 global using Wasla_Backend.Repositories.Implementation;
+
+global using Wasla_Backend.Services.Interfaces;
+global using Wasla_Backend.Services.Interfaces.General;
+global using Wasla_Backend.Services.Interfaces.GymService;
 global using Wasla_Backend.Services.Implementation;
+
+global using Wasla_Backend.Factories.Interfaces;
+global using Wasla_Backend.Factories.Implementation;
+
+global using Wasla_Backend.Helpers;
 global using Wasla_Backend.Helpers.Response;
+global using Wasla_Backend.Helpers.Localization;
+global using Wasla_Backend.Helpers.EmailSender;
+global using Wasla_Backend.Helpers.File;
+global using Wasla_Backend.Helpers.MlHelper;
+global using Wasla_Backend.Helpers.Resolvers;
+global using Wasla_Backend.Helpers.Time;
+global using Wasla_Backend.Helpers.Cashing;
+global using Wasla_Backend.Helpers.ProgramHelper.Configurations;
+global using Wasla_Backend.Helpers.ProgramHelper.DependencyInjection;
+global using Wasla_Backend.Helpers.ProgramHelper.Pipeline;
+
+global using Wasla_Backend.Hubs.BookingHubs;
+global using Wasla_Backend.Hubs.ServiceHubs;
+global using Wasla_Backend.Hubs.ReviewHubs;
+
 global using Wasla_Backend.DTOs;
 global using Wasla_Backend.DTOs.Authentication;
-global using Wasla_Backend.Helpers.Localization;
-global using Wasla_Backend.Helpers;
-global using Wasla_Backend.Exceptions;
-global using Wasla_Backend.Helpers.EmailSender;
-global using Wasla_Backend.Middlewares;
-global using Wasla_Backend.Helpers.File;
+global using Wasla_Backend.DTOs.AdminDTOS;
 global using Wasla_Backend.DTOs.DoctorDTO;
 global using Wasla_Backend.DTOs.ResidentDTOS;
 global using Wasla_Backend.DTOs.RoleDTOS;
@@ -61,33 +84,12 @@ global using Wasla_Backend.DTOs.BookDTOS;
 global using Wasla_Backend.DTOs.HubsDto;
 global using Wasla_Backend.DTOs.FavouritsDTOS;
 global using Wasla_Backend.DTOs.ChartDTOS;
-global using Wasla_Backend.Helpers.Resolvers;
-global using Wasla_Backend.Hubs.BookingHubs;
-global using Wasla_Backend.Hubs.ServiceHubs;
-global using Wasla_Backend.Hubs.ReviewHubs;
-global using Wasla_Backend.DTOs.AdminDTOS;
-global using Wasla_Backend.Helpers.Time;
-global using Wasla_Backend.Helpers.Cashing;
-global using Wasla_Backend.Services.Interfaces.General;
 global using Wasla_Backend.DTOs.GymDTOS;
-global using Wasla_Backend.Services.Interfaces.GymService;
-global using Wasla_Backend.Services.Implementation.GymService;
-global using Wasla_Backend.Repositories.Interfaces.Gyms;
-global using Wasla_Backend.Repositories.Implementation.Gyms;
-global using Wasla_Backend.Models.GymModel;
-global using QRCoder;
-global using System.Drawing;
-global using System.IO;
-global using System.Drawing.Imaging;
-global using Wasla_Backend.Models.GeneralModel;
-global using System.Net.Http.Headers;
-global using Wasla_Backend.Helpers.ProgramHelper.Configurations;
-global using Microsoft.OpenApi.Models;
-global using Wasla_Backend.Services.Implementation.General;
-global using Wasla_Backend.Helpers.ProgramHelper.DependencyInjection;
-global using Wasla_Backend.Helpers.ProgramHelper.Middleware;
-global using Wasla_Backend.Helpers.ProgramHelper.Pipeline;
 
+global using Wasla_Backend.Data;
 
+global using Wasla_Backend.Middlewares;
 
+global using Wasla_Backend.Enums;
 
+global using Wasla_Backend.Exceptions;
