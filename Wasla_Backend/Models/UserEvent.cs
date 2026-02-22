@@ -6,9 +6,9 @@
 
         public string userId { get; set; } 
 
-        public int serviceId { get; set; }
+        public string serviceProviderId { get; set; }
 
-        public string eventType { get; set; }
+        public UserEventEnum eventType { get; set; }
 
         public DateTime timestamp { get; set; }
     }
