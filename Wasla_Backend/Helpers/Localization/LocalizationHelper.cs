@@ -901,34 +901,6 @@
             },
             #endregion
 
-
-            #region Notifications
-           [LocalizationKey.NotificationNotFound] = new()
-           {
-               ["en"] = "Notification not found.",
-               ["ar"] = "الإشعار غير موجود."
-           } ,
-            [LocalizationKey.NotificationMarkedAsSeen]=new()
-            {
-                ["en"] = "Notification marked as seen successfully.",
-                ["ar"] = "تم وضع علامة تم رؤيته على الإشعار بنجاح."
-            },
-            [LocalizationKey.NotificationsFetched] = new()
-            {
-                ["en"] = "Notifications fetched successfully.",
-                ["ar"] = "تم جلب الإشعارات بنجاح."
-            },
-            [LocalizationKey.AllNotificationsMarkedAsSeen] = new()
-            {
-                ["en"] = "All notifications marked as seen successfully.",
-                ["ar"] = "تم وضع علامة تم رؤيته على جميع الإشعارات بنجاح."
-            },
-            [LocalizationKey.NotificationDeleted]=new()
-            {
-                ["en"] = "Notification deleted successfully.",
-                ["ar"] = "تم حذف الإشعار بنجاح."
-            },
-            #endregion
         };
 
         public static string GetLocalizedMessage(LocalizationKey key, string lan)
