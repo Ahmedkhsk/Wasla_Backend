@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Services.Implementation.General
+﻿using Notification = FirebaseAdmin.Messaging.Notification;
+
+namespace Wasla_Backend.Services.Implementation.General
 {
     public class FirebaseService : IFirebaseService
     {

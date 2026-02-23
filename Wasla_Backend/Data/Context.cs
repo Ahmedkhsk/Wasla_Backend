@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Notification = Wasla_Backend.Models.GeneralModel.Notification;
 
 namespace Wasla_Backend.Data
 {
@@ -24,6 +25,7 @@ namespace Wasla_Backend.Data
         public DbSet<GymBooking> GymBooking { get; set; }
         public DbSet<Payment> Payment { get; set; }
         public DbSet<UserEvent> UserEvents { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options) { }
 
@@ -152,6 +154,7 @@ namespace Wasla_Backend.Data
                 .WithMany(sp => sp.Reviews)
                 .HasForeignKey(r => r.ServiceProviderId)
                 .OnDelete(DeleteBehavior.Restrict); 
+            builder.Entity<Notification>().HasQueryFilter(n => !n.IsDeleted);
 
 
 

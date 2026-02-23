@@ -170,7 +170,13 @@
         UserSubscriptionSuccess,
         UserUnsubscriptionSuccess,
         NotificationSentToTopicSuccess,
-        NotificationSentToDeviceSuccess
+        NotificationSentToDeviceSuccess,
+        NotificationNotFound,
+        NotificationsFetched,
+        NotificationMarkedAsSeen,
+        AllNotificationsMarkedAsSeen,
+        NotificationDeleted
+
 
 
     }

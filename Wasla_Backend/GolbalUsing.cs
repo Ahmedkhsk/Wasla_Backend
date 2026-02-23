@@ -65,6 +65,7 @@ global using Wasla_Backend.DTOs.FavouritsDTOS;
 global using Wasla_Backend.DTOs.ChartDTOS;
 global using Wasla_Backend.DTOs.GymDTOS;
 global using Wasla_Backend.DTOs.UserEventDTOS;
+global using Wasla_Backend.DTOs.NotificationDTOS;
 #endregion
 
 #region Project - Models
@@ -72,6 +73,8 @@ global using Wasla_Backend.Models;
 global using Wasla_Backend.Models.BaseModel;
 global using Wasla_Backend.Models.GeneralModel;
 global using Wasla_Backend.Models.GymModel;
+
+
 #endregion
 
 #region Project - Repositories
@@ -86,6 +89,8 @@ global using Wasla_Backend.Services.Interfaces.General;
 global using Wasla_Backend.Services.Interfaces.GymService;
 global using Wasla_Backend.Services.Implementation;
 global using Wasla_Backend.Services.Implementation.General;
+global using Wasla_Backend.Repositories.Interfaces.General;
+
 #endregion
 
 #region Project - Factories
