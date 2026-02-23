@@ -876,6 +876,30 @@
                 ["ar"] = "لم يتم إعداد المنطقة الزمنية الافتراضية."
             },
             #endregion
+
+            #region FireBase
+            [LocalizationKey.UserSubscriptionSuccess] = new()
+            {
+                ["en"] = "User subscribed to notifications successfully.",
+                ["ar"] = "تم اشتراك المستخدم في الإشعارات بنجاح."
+
+            },
+            [LocalizationKey.UserUnsubscriptionSuccess] = new()
+            {
+                ["en"] = "User unsubscribed from notifications successfully.",
+                ["ar"] = "تم إلغاء اشتراك المستخدم في الإشعارات بنجاح."
+            },
+            [LocalizationKey.NotificationSentToDeviceSuccess] = new()
+            {
+                ["en"] = "Notification sent to device successfully.",
+                ["ar"] = "تم إرسال الإشعار إلى الجهاز بنجاح."
+            },
+            [LocalizationKey.NotificationSentToTopicSuccess] = new()
+            {
+                ["en"] = "Notification sent to topic successfully.",
+                ["ar"] = "تم إرسال الإشعار إلى الموضوع بنجاح."
+            } 
+            #endregion
         };
 
         public static string GetLocalizedMessage(LocalizationKey key, string lan)

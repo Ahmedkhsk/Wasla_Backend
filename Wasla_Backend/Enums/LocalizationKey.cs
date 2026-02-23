@@ -165,5 +165,11 @@
         AmountMustBeGreaterThanZero,
         ServiceIdRequired,
         PaymobApiFailed,
+        UserSubscriptionSuccess,
+        UserUnsubscriptionSuccess,
+        NotificationSentToTopicSuccess,
+        NotificationSentToDeviceSuccess
+
+
     }
 }

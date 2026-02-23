@@ -43,6 +43,10 @@ global using MimeKit;
 global using MimeKit.Text;
 global using QRCoder;
 global using Hangfire;
+global using FirebaseAdmin;
+global using Google.Apis.Auth.OAuth2;
+global using FirebaseAdmin.Messaging;
+
 #endregion
 
 #region Project - DTOs
@@ -81,6 +85,7 @@ global using Wasla_Backend.Services.Interfaces;
 global using Wasla_Backend.Services.Interfaces.General;
 global using Wasla_Backend.Services.Interfaces.GymService;
 global using Wasla_Backend.Services.Implementation;
+global using Wasla_Backend.Services.Implementation.General;
 #endregion
 
 #region Project - Factories

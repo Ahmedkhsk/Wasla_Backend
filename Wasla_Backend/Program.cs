@@ -1,4 +1,5 @@
-﻿namespace Wasla_Backend
+﻿
+namespace Wasla_Backend
 {
     public class Program
     {
@@ -21,7 +22,8 @@
                             .AddDatabase(builder.Configuration)
                             .AddHangfireServices(builder.Configuration)
                             .AddAppOptions(builder.Configuration)
-                            .AddControllers(); 
+                            .AddControllers();
+       
 
             builder.Services.AddSignalR();
             builder.Logging.AddDebug();
