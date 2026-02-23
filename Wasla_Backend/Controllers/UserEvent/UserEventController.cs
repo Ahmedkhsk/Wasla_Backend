@@ -17,5 +17,12 @@
             await _userEventService.CreateUserEventAsync(userEventDto);
             return Ok(ResponseHelper.Success(LocalizationKey.SuccessToCreateUserEvent, lan));
         }
+
+        [HttpGet("GetTopServiceProviders")]
+        public async Task<IActionResult> GetTopServiceProviders(string userId, int top = 5, string lan = "en")
+        {
+            var result = await _userEventService.GetTopServiceProvidersAsync(userId, top);
+            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToGetTopServiceProviders, lan, result));
+        }
     }
 }
