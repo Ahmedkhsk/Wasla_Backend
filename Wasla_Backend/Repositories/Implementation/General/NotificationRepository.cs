@@ -12,14 +12,10 @@ namespace Wasla_Backend.Repositories.Implementation.General
 
         public async Task DeleteNotificationByNotificationIdAsync(int notificationId)
         {
-            var notification = await _context.Notifications
-                .FirstOrDefaultAsync(n => n.Id == notificationId);
-            if (notification == null)
-                return;
-            notification.IsDeleted = true;
-
-
-            await _context.SaveChangesAsync();
+            await _context.Notifications
+                .Where(n => n.Id == notificationId).ExecuteUpdateAsync(n=>n.
+                SetProperty(p=>p.IsDeleted,true));
+           
         }
 
         public async Task<IEnumerable<NotificationResponseDto>> GetNotificationByUserIdAfterLastSeenAsync(string userId, int pageNumber, int pageSize)
@@ -70,30 +66,21 @@ namespace Wasla_Backend.Repositories.Implementation.General
 
         public async Task MarkAsSeenAsync(int notificationId)
         {
-            var notification = await _context.Notifications
-                .FirstOrDefaultAsync(n => n.Id == notificationId && !n.IsSeen);
+             await _context.Notifications
+                .Where(n => n.Id == notificationId && !n.IsSeen).ExecuteUpdateAsync(n=>n
+                .SetProperty(p => p.IsSeen, true)
+                .SetProperty(p => p.LastSeenAt, _dateTimeHelper.Now)
+                );
 
-            if (notification == null) return;
-
-            notification.IsSeen = true;
-            notification.LastSeenAt = _dateTimeHelper.Now;
-
-            await _context.SaveChangesAsync();
+           
         }
 
         public async Task MarkAllAsSeenByUserIdAsync(string userId)
         {
-            var notifications = await _context.Notifications
-                .Where(n => n.UserId == userId && !n.IsSeen)
-                .ToListAsync();
-
-            foreach (var n in notifications)
-            {
-                n.IsSeen = true;
-                n.LastSeenAt = _dateTimeHelper.Now;
-            }
-
-            await _context.SaveChangesAsync();
+             await _context.Notifications
+                .Where(n => n.UserId == userId && !n.IsSeen).ExecuteUpdateAsync(n=>n
+                .SetProperty(p=>p.IsSeen, true)
+                .SetProperty(p => p.LastSeenAt, _dateTimeHelper.Now));
         }
 
         public async Task<int> CountNotificationByuserId(string userId)
