@@ -170,8 +170,14 @@
         UserSubscriptionSuccess,
         UserUnsubscriptionSuccess,
         NotificationSentToTopicSuccess,
-        NotificationSentToDeviceSuccess
-
-
+        NotificationSentToDeviceSuccess,
+        FailedToCreateUserEvent,
+        NoUserEventsFound,
+        SuccessToGetUserDashboard,
+        SuccessToGetAdminDashboard,
+        FailedToGetDashboardData,
+        SuccessToGetMostUsedServices,
+        SuccessToGetConversionRates,
+        SuccessToGetMostActiveUsers,
     }
 }
