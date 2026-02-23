@@ -171,6 +171,7 @@
         UserUnsubscriptionSuccess,
         NotificationSentToTopicSuccess,
         NotificationSentToDeviceSuccess,
+
         FailedToCreateUserEvent,
         NoUserEventsFound,
         SuccessToGetUserDashboard,
@@ -179,5 +180,11 @@
         SuccessToGetMostUsedServices,
         SuccessToGetConversionRates,
         SuccessToGetMostActiveUsers,
-    }
+
+        NotificationNotFound,
+        NotificationsFetched,
+        NotificationMarkedAsSeen,
+        AllNotificationsMarkedAsSeen,
+        NotificationDeleted  
+  }
 }
