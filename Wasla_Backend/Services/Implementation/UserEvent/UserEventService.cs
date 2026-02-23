@@ -36,5 +36,14 @@
             await _userEventRepository.SaveChangesAsync();
         }
 
+        public async Task<List<ServiceProviderEventResponse>> GetTopServiceProvidersAsync(string userId, int top)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null)
+                throw new NotFoundException(LocalizationKey.UserNotFound);
+
+            return  await _userEventRepository.GetTopServiceProvidersAsync(userId, top);
+        }
+
     }
 }

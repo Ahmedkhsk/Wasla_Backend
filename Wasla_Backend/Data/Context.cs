@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Data
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Wasla_Backend.Data
 {
     public class Context : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
@@ -143,8 +145,13 @@
                 .HasOne(p => p.Service)
                 .WithMany()
                 .HasForeignKey(p => p.ServiceId)
-                .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<Reviews>()
+                .HasOne(r => r.ServiceProvider)
+                .WithMany(sp => sp.Reviews)
+                .HasForeignKey(r => r.ServiceProviderId)
+                .OnDelete(DeleteBehavior.Restrict); 
 
 
 

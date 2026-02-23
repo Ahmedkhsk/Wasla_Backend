@@ -3,5 +3,6 @@
     public interface IUserEventService
     {
         public Task CreateUserEventAsync(UserEventDto userEventDto);
+        public Task<List<ServiceProviderEventResponse>> GetTopServiceProvidersAsync(string userId, int top);
     }
 }

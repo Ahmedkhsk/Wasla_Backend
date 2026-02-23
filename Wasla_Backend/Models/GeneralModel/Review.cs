@@ -11,9 +11,10 @@
         [ForeignKey("UserId")]
         public ApplicationUser User { get; set; }
 
+        [ForeignKey("ServiceProvider")]
         public string ServiceProviderId { get; set; }
 
-  
+        public ServiceProvider ServiceProvider { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

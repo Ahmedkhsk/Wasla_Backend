@@ -10,14 +10,21 @@
             _context = context;
         }
 
-        public async Task<List<string>> GetTopServiceProvidersAsync(string userId, int top)
+        public async Task<List<ServiceProviderEventResponse>>  GetTopServiceProvidersAsync(string userId, int top)
         {
             return await _context.UserEvents
-                .Where(e => e.userId == userId)
-                .GroupBy(e => e.serviceProviderId)
+                .Where(x => x.userId == userId)
+                .GroupBy(x => x.serviceProviderId)
                 .OrderByDescending(g => g.Count())
                 .Take(top)
-                .Select(g => g.Key)
+                .Select(g => new ServiceProviderEventResponse
+                {
+                    id = g.Key,
+                    name = g.First().serviceProvider.FullName,
+                    description = g.First().serviceProvider.Description,
+                    image = g.First().serviceProvider.ProfilePhoto,
+                    rating = g.First().serviceProvider.Rating
+                })
                 .ToListAsync();
         }
 

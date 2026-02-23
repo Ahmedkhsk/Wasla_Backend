@@ -876,6 +876,19 @@
                 ["ar"] = "لم يتم إعداد المنطقة الزمنية الافتراضية."
             },
             #endregion
+
+            #region User Events
+            [LocalizationKey.SuccessToGetUserEvents] = new()
+            {
+                ["en"] = "User events retrieved successfully.",
+                ["ar"] = "تم جلب أحداث المستخدمين بنجاح."
+            },
+            [LocalizationKey.SuccessToGetTopServiceProviders] = new()
+            {
+                ["en"] = "Top service providers retrieved successfully.",
+                ["ar"] = "تم جلب أفضل مقدمي الخدمات بنجاح."
+            }
+            #endregion
         };
 
         public static string GetLocalizedMessage(LocalizationKey key, string lan)
