@@ -877,57 +877,125 @@
             },
             #endregion
 
-          #region FireBase
-          [LocalizationKey.UserSubscriptionSuccess] = new()
-          {
-              ["en"] = "User subscribed to notifications successfully.",
-              ["ar"] = "تم اشتراك المستخدم في الإشعارات بنجاح."
-          },
-          [LocalizationKey.UserUnsubscriptionSuccess] = new()
-          {
-              ["en"] = "User unsubscribed from notifications successfully.",
-              ["ar"] = "تم إلغاء اشتراك المستخدم في الإشعارات بنجاح."
-          },
-          [LocalizationKey.NotificationSentToDeviceSuccess] = new()
-          {
-              ["en"] = "Notification sent to device successfully.",
-              ["ar"] = "تم إرسال الإشعار إلى الجهاز بنجاح."
-          },
-          [LocalizationKey.NotificationSentToTopicSuccess] = new()
-          {
-              ["en"] = "Notification sent to topic successfully.",
-              ["ar"] = "تم إرسال الإشعار إلى الموضوع بنجاح."
-          },
-          #endregion
+            #region FireBase
+            [LocalizationKey.UserSubscriptionSuccess] = new()
+            {
+                ["en"] = "User subscribed to notifications successfully.",
+                ["ar"] = "تم اشتراك المستخدم في الإشعارات بنجاح."
+            },
+            [LocalizationKey.UserUnsubscriptionSuccess] = new()
+            {
+                ["en"] = "User unsubscribed from notifications successfully.",
+                ["ar"] = "تم إلغاء اشتراك المستخدم في الإشعارات بنجاح."
+            },
+            [LocalizationKey.NotificationSentToDeviceSuccess] = new()
+            {
+                ["en"] = "Notification sent to device successfully.",
+                ["ar"] = "تم إرسال الإشعار إلى الجهاز بنجاح."
+            },
+            [LocalizationKey.NotificationSentToTopicSuccess] = new()
+            {
+                ["en"] = "Notification sent to topic successfully.",
+                ["ar"] = "تم إرسال الإشعار إلى الموضوع بنجاح."
+            },
+            #endregion
 
-          #region Notifications
-          [LocalizationKey.NotificationNotFound] = new()
-          {
-              ["en"] = "Notification not found.",
-              ["ar"] = "الإشعار غير موجود."
-          },
-          [LocalizationKey.NotificationMarkedAsSeen] = new()
-          {
-              ["en"] = "Notification marked as seen successfully.",
-              ["ar"] = "تم وضع علامة تم رؤيته على الإشعار بنجاح."
-          },
-          [LocalizationKey.NotificationsFetched] = new()
-          {
-              ["en"] = "Notifications fetched successfully.",
-              ["ar"] = "تم جلب الإشعارات بنجاح."
-          },
-          [LocalizationKey.AllNotificationsMarkedAsSeen] = new()
-          {
-              ["en"] = "All notifications marked as seen successfully.",
-              ["ar"] = "تم وضع علامة تم رؤيته على جميع الإشعارات بنجاح."
-          },
-          [LocalizationKey.NotificationDeleted] = new()
-          {
-              ["en"] = "Notification deleted successfully.",
-              ["ar"] = "تم حذف الإشعار بنجاح."
-          },
-          #endregion
+            #region Notifications
+            [LocalizationKey.NotificationNotFound] = new()
+            {
+                ["en"] = "Notification not found.",
+                ["ar"] = "الإشعار غير موجود."
+            },
+            [LocalizationKey.NotificationMarkedAsSeen] = new()
+            {
+                ["en"] = "Notification marked as seen successfully.",
+                ["ar"] = "تم وضع علامة تم رؤيته على الإشعار بنجاح."
+            },
+            [LocalizationKey.NotificationsFetched] = new()
+            {
+                ["en"] = "Notifications fetched successfully.",
+                ["ar"] = "تم جلب الإشعارات بنجاح."
+            },
+            [LocalizationKey.AllNotificationsMarkedAsSeen] = new()
+            {
+                ["en"] = "All notifications marked as seen successfully.",
+                ["ar"] = "تم وضع علامة تم رؤيته على جميع الإشعارات بنجاح."
+            },
+            [LocalizationKey.NotificationDeleted] = new()
+            {
+                ["en"] = "Notification deleted successfully.",
+                ["ar"] = "تم حذف الإشعار بنجاح."
+            },
+            #endregion
 
+            #region UserEvents
+
+            [LocalizationKey.SuccessToCreateUserEvent] = new()
+            {
+                ["en"] = "User event created successfully.",
+                ["ar"] = "تم تسجيل نشاط المستخدم بنجاح."
+            },
+
+            [LocalizationKey.FailedToCreateUserEvent] = new()
+            {
+                ["en"] = "Failed to create user event.",
+                ["ar"] = "فشل في تسجيل نشاط المستخدم."
+            },
+
+            [LocalizationKey.SuccessToGetUserEvents] = new()
+            {
+                ["en"] = "User events retrieved successfully.",
+                ["ar"] = "تم جلب أنشطة المستخدم بنجاح."
+            },
+
+            [LocalizationKey.NoUserEventsFound] = new()
+            {
+                ["en"] = "No user events found.",
+                ["ar"] = "لا توجد أنشطة مسجلة للمستخدم."
+            },
+
+            [LocalizationKey.SuccessToGetTopServiceProviders] = new()
+            {
+                ["en"] = "Top service providers retrieved successfully.",
+                ["ar"] = "تم جلب أكثر مقدمي الخدمات تفاعلاً بنجاح."
+            },
+
+            [LocalizationKey.SuccessToGetUserDashboard] = new()
+            {
+                ["en"] = "User dashboard data retrieved successfully.",
+                ["ar"] = "تم جلب بيانات لوحة المستخدم بنجاح."
+            },
+
+            [LocalizationKey.SuccessToGetAdminDashboard] = new()
+            {
+                ["en"] = "Admin dashboard data retrieved successfully.",
+                ["ar"] = "تم جلب بيانات لوحة التحكم بنجاح."
+            },
+
+            [LocalizationKey.FailedToGetDashboardData] = new()
+            {
+                ["en"] = "Failed to retrieve dashboard data.",
+                ["ar"] = "فشل في جلب بيانات لوحة التحكم."
+            },
+
+            [LocalizationKey.SuccessToGetMostUsedServices] = new()
+            {
+                ["en"] = "Most used services retrieved successfully.",
+                ["ar"] = "تم جلب أكثر الخدمات استخدامًا بنجاح."
+            },
+
+            [LocalizationKey.SuccessToGetConversionRates] = new()
+            {
+                ["en"] = "Service conversion rates retrieved successfully.",
+                ["ar"] = "تم جلب نسب التحويل للخدمات بنجاح."
+            },
+
+            [LocalizationKey.SuccessToGetMostActiveUsers] = new()
+            {
+                ["en"] = "Most active users retrieved successfully.",
+                ["ar"] = "تم جلب أكثر المستخدمين نشاطًا بنجاح."
+            }
+            #endregion
         };
 
         public static string GetLocalizedMessage(LocalizationKey key, string lan)
