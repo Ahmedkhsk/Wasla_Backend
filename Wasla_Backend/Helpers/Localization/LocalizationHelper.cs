@@ -901,74 +901,33 @@
             },
             #endregion
 
-            #region UserEvents
 
-            [LocalizationKey.SuccessToCreateUserEvent] = new()
+            #region Notifications
+           [LocalizationKey.NotificationNotFound] = new()
+           {
+               ["en"] = "Notification not found.",
+               ["ar"] = "الإشعار غير موجود."
+           } ,
+            [LocalizationKey.NotificationMarkedAsSeen]=new()
             {
-                ["en"] = "User event created successfully.",
-                ["ar"] = "تم تسجيل نشاط المستخدم بنجاح."
+                ["en"] = "Notification marked as seen successfully.",
+                ["ar"] = "تم وضع علامة تم رؤيته على الإشعار بنجاح."
             },
-
-            [LocalizationKey.FailedToCreateUserEvent] = new()
+            [LocalizationKey.NotificationsFetched] = new()
             {
-                ["en"] = "Failed to create user event.",
-                ["ar"] = "فشل في تسجيل نشاط المستخدم."
+                ["en"] = "Notifications fetched successfully.",
+                ["ar"] = "تم جلب الإشعارات بنجاح."
             },
-
-            [LocalizationKey.SuccessToGetUserEvents] = new()
+            [LocalizationKey.AllNotificationsMarkedAsSeen] = new()
             {
-                ["en"] = "User events retrieved successfully.",
-                ["ar"] = "تم جلب أنشطة المستخدم بنجاح."
+                ["en"] = "All notifications marked as seen successfully.",
+                ["ar"] = "تم وضع علامة تم رؤيته على جميع الإشعارات بنجاح."
             },
-
-            [LocalizationKey.NoUserEventsFound] = new()
+            [LocalizationKey.NotificationDeleted]=new()
             {
-                ["en"] = "No user events found.",
-                ["ar"] = "لا توجد أنشطة مسجلة للمستخدم."
+                ["en"] = "Notification deleted successfully.",
+                ["ar"] = "تم حذف الإشعار بنجاح."
             },
-
-            [LocalizationKey.SuccessToGetTopServiceProviders] = new()
-            {
-                ["en"] = "Top service providers retrieved successfully.",
-                ["ar"] = "تم جلب أكثر مقدمي الخدمات تفاعلاً بنجاح."
-            },
-
-            [LocalizationKey.SuccessToGetUserDashboard] = new()
-            {
-                ["en"] = "User dashboard data retrieved successfully.",
-                ["ar"] = "تم جلب بيانات لوحة المستخدم بنجاح."
-            },
-
-            [LocalizationKey.SuccessToGetAdminDashboard] = new()
-            {
-                ["en"] = "Admin dashboard data retrieved successfully.",
-                ["ar"] = "تم جلب بيانات لوحة التحكم بنجاح."
-            },
-
-            [LocalizationKey.FailedToGetDashboardData] = new()
-            {
-                ["en"] = "Failed to retrieve dashboard data.",
-                ["ar"] = "فشل في جلب بيانات لوحة التحكم."
-            },
-
-            [LocalizationKey.SuccessToGetMostUsedServices] = new()
-            {
-                ["en"] = "Most used services retrieved successfully.",
-                ["ar"] = "تم جلب أكثر الخدمات استخدامًا بنجاح."
-            },
-
-            [LocalizationKey.SuccessToGetConversionRates] = new()
-            {
-                ["en"] = "Service conversion rates retrieved successfully.",
-                ["ar"] = "تم جلب نسب التحويل للخدمات بنجاح."
-            },
-
-            [LocalizationKey.SuccessToGetMostActiveUsers] = new()
-            {
-                ["en"] = "Most active users retrieved successfully.",
-                ["ar"] = "تم جلب أكثر المستخدمين نشاطًا بنجاح."
-            }
-
             #endregion
         };
 
