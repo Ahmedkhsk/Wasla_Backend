@@ -7,5 +7,8 @@
         Task<int> CountEventsForProviderAsync(string serviceProviderId);
 
         Task<List<UserEvent>> GetUserEventsAsync(string userId);
+        public Task<List<ServiceProviderEventResponse>> GetMostUsedServicesGloballyAsync(int top);
+        public Task<List<ServiceProviderEventResponse>> GetTopServicesByStatusAsync(UserEventEnum status, int top);
+        public Task<List<ServiceProviderConversionResponse>> GetConversionRatesByRoleAsync();
     }
 }

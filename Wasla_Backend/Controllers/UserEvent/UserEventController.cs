@@ -24,5 +24,19 @@
             var result = await _userEventService.GetTopServiceProvidersAsync(userId, top);
             return Ok(ResponseHelper.Success(LocalizationKey.SuccessToGetTopServiceProviders, lan, result));
         }
+
+        [HttpGet("GetMostUsedServicesGlobally")]
+        public async Task<IActionResult> GetMostUsedServicesGlobally(int top = 5, string lan = "en")
+        {
+            var result = await _userEventService.GetMostUsedServicesGloballyAsync(top);
+            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToGetMostUsedServices, lan, result));
+        }
+
+        [HttpGet("GetServiceProviderResponse")]
+        public async Task<IActionResult> GetServiceProviderResponse(int top = 5, string lan = "en")
+        {
+            var result = await _userEventService.ServiceProviderRsponse(top);
+            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToGetUserDashboard, lan, result));
+        }
     }
 }

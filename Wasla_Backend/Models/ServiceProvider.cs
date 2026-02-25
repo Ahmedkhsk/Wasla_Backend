@@ -5,7 +5,6 @@
         public string? BusinessName { get; set; }
         public string? OwnerName { get; set; }
         public string? CV { get; set; }
-      
         public string? Description { get; set; } 
         public string? OpeningHours { get; set; } 
         public float Rating { get; set; }

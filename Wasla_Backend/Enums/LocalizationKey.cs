@@ -171,12 +171,21 @@
         UserUnsubscriptionSuccess,
         NotificationSentToTopicSuccess,
         NotificationSentToDeviceSuccess,
+
+        FailedToCreateUserEvent,
+        NoUserEventsFound,
+        SuccessToGetUserDashboard,
+        SuccessToGetAdminDashboard,
+        FailedToGetDashboardData,
+        SuccessToGetMostUsedServices,
+        SuccessToGetConversionRates,
+        SuccessToGetMostActiveUsers,
+
         NotificationNotFound,
         NotificationsFetched,
         NotificationMarkedAsSeen,
         AllNotificationsMarkedAsSeen,
-        NotificationDeleted,
-        NotificationAdded
+        NotificationDeleted
 
 
 
