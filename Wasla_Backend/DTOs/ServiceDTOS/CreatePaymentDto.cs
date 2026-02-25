@@ -8,5 +8,6 @@
         public decimal Amount { get; set; }
         public PaymentMethodType PaymentMethod { get; set; }
         public ServiceProviderType ServiceProviderType { get; set; }
+        public int BookingId { get; set; }
     }
 }

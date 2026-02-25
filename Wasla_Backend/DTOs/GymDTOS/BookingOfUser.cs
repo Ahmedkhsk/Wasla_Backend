@@ -9,5 +9,6 @@
         public int DurationInMonths { get; set; }
         public MultilingualText serviceName { get; set; }
         public GymBookingStatus bookingStatus { get; set; }
+        public bool IsPaid { get; set; }
     }
 }

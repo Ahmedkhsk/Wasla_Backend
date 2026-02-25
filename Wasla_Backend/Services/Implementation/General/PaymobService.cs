@@ -28,7 +28,7 @@
                 throw new BadRequestException(LocalizationKey.ServiceProviderIdRequired);
 
             var serviceProvider = await _context.Users
-               .FirstOrDefaultAsync(u => u.Id == createPaymentDto.ServiceProviderId);
+                .FirstOrDefaultAsync(u => u.Id == createPaymentDto.ServiceProviderId);
 
             if (serviceProvider == null)
                 throw new NotFoundException(LocalizationKey.ServiceProviderNotFound);
@@ -40,10 +40,16 @@
                 throw new BadRequestException(LocalizationKey.ServiceIdRequired);
 
             var service = await _context.BaseServices
-              .FirstOrDefaultAsync(s => s.Id == createPaymentDto.ServiceId);
+                .FirstOrDefaultAsync(s => s.Id == createPaymentDto.ServiceId);
 
             if (service == null)
                 throw new NotFoundException(LocalizationKey.ServiceNotFound);
+
+            var booking = await _context.BaseBookings
+               .FirstOrDefaultAsync(b => b.Id == createPaymentDto.BookingId);
+
+            if (booking == null)
+                throw new NotFoundException(LocalizationKey.BookingNotFound);
 
             using var httpClient = new HttpClient();
 
@@ -72,6 +78,8 @@
                 country = "N/A"
             };
 
+          string baseUrl = _configuration["Paymob:BaseUrl"];
+
             var payload = new
             {
                 amount = amountCents,
@@ -82,8 +90,8 @@
                 special_reference = specialReference,
                 expiration = 3600,
                 merchant_order_id = specialReference.ToString(),
-                callback = "https://your-domain.com/api/payment/callback",
-                post_url = "https://your-domain.com/api/payment/server-callback"
+                callback = $"{baseUrl}/api/payment/callback",       
+                post_url = $"{baseUrl}/api/payment/server-callback"  
             };
 
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, "https://accept.paymob.com/v1/intention/");
@@ -94,10 +102,7 @@
             var responseContent = await response.Content.ReadAsStringAsync();
 
             if (!response.IsSuccessStatusCode)
-            {
-                Console.WriteLine(responseContent);
                 throw new BadRequestException(LocalizationKey.PaymobApiFailed);
-            }
 
             var resultJson = JsonDocument.Parse(responseContent);
             var clientSecret = resultJson.RootElement.GetProperty("client_secret").GetString();
@@ -113,7 +118,8 @@
                 Status = PaymentStatus.Pending,
                 TransactionId = specialReference.ToString(),
                 PaymentDate = _dateTimeHelper.Now,
-                ServiceType = createPaymentDto.ServiceProviderType
+                ServiceType = createPaymentDto.ServiceProviderType,
+                BookingId = createPaymentDto.BookingId 
             };
 
             _context.Payment.Add(payment);
@@ -122,17 +128,6 @@
             string redirectUrl = $"https://accept.paymob.com/unifiedcheckout/?publicKey={publicKey}&clientSecret={clientSecret}";
 
             return (payment, redirectUrl);
-        }
-
-        private string DetermineIntegrationId(PaymentMethodType paymentMethod)
-        {
-            return paymentMethod switch
-            {
-                PaymentMethodType.Card => _configuration["Paymob:CardIntegrationId"],
-                PaymentMethodType.Wallet => _configuration["Paymob:WalletIntegrationId"],
-                PaymentMethodType.CashCollection => _configuration["Paymob:CashCollectionIntegrationId"],
-                _ => throw new BadRequestException(LocalizationKey.InvalidPaymentMethod)
-            };
         }
 
         public async Task<Payment> UpdateOrderSuccess(string transactionId)
@@ -145,6 +140,13 @@
                 throw new NotFoundException(LocalizationKey.PaymentMethodNotFound);
 
             payment.Status = PaymentStatus.Completed;
+
+            var booking = await _context.BaseBookings
+                .FirstOrDefaultAsync(b => b.Id == payment.BookingId);
+
+            if (booking != null)
+                booking.IsPaid = true;
+
             await _context.SaveChangesAsync();
 
             return payment;
@@ -160,9 +162,22 @@
                 throw new NotFoundException(LocalizationKey.PaymentMethodNotFound);
 
             payment.Status = PaymentStatus.Failed;
+            // IsPaid يفضل false تلقائياً
+
             await _context.SaveChangesAsync();
 
             return payment;
+        }
+
+        private string DetermineIntegrationId(PaymentMethodType paymentMethod)
+        {
+            return paymentMethod switch
+            {
+                PaymentMethodType.Card => _configuration["Paymob:CardIntegrationId"],
+                PaymentMethodType.Wallet => _configuration["Paymob:WalletIntegrationId"],
+                PaymentMethodType.CashCollection => _configuration["Paymob:CashCollectionIntegrationId"],
+                _ => throw new BadRequestException(LocalizationKey.InvalidPaymentMethod)
+            };
         }
 
         public string ComputeHmacSHA512(string data, string secret)

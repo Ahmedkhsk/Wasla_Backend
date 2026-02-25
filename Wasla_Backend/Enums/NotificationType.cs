@@ -9,5 +9,6 @@
         NewMessage = 4,
         FriendRequest = 5,
         FriendRequestAccepted = 6,
+    
     }
 }

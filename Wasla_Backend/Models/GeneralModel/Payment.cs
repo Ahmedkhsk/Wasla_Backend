@@ -14,7 +14,7 @@
         public int ServiceId { get; set; }
 
         public decimal Amount { get; set; }
-
+        public int BookingId { get; set; }
         public DateTime PaymentDate { get; set; } 
         public PaymentMethodType PaymentMethod { get; set; }
 

@@ -58,7 +58,8 @@
          bookingTime = b.BookingDate,
          serviceName = b.Service.Name,
          DurationInMonths = b.Service.DurationInMonths,
-         bookingStatus = b.BookingStatus
+         bookingStatus = b.BookingStatus,
+         IsPaid = b.IsPaid
      })
      .ToListAsync();
 
@@ -77,7 +78,8 @@
                     bookingTime = b.BookingDate,
                     serviceName = b.Service.Name,
                     DurationInMonths = b.Service.DurationInMonths,
-                    bookingStatus = b.BookingStatus
+                    bookingStatus = b.BookingStatus,
+                    IsPaid = b.IsPaid
                 }).ToListAsync();
         }
 
