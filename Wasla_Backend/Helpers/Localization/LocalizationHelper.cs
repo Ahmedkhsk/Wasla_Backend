@@ -927,6 +927,11 @@
                 ["en"] = "Notification deleted successfully.",
                 ["ar"] = "تم حذف الإشعار بنجاح."
             },
+            [LocalizationKey.NotificationAdded]=new()
+            {
+                ["en"] = "Notification added successfully.",
+                ["ar"] = "تم إضافة الإشعار بنجاح."
+            },
             #endregion
         };
 

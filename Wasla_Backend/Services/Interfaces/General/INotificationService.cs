@@ -8,6 +8,7 @@
         public Task MarkAllAsSeenByUserIdAsync(string userId);
         public Task<PagedResult<NotificationResponseDto>> GetNotificationByUserIdAfterLastSeenAsync(string userId, int pageNumber, int pageSize);
         public Task DeleteNotificationByNotificationIdAsync(int notificationId);
+        public Task AddNotificationAsync(CreateNotificationDto createNotificationDto);
 
     }
 }

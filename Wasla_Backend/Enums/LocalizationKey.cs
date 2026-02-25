@@ -175,7 +175,8 @@
         NotificationsFetched,
         NotificationMarkedAsSeen,
         AllNotificationsMarkedAsSeen,
-        NotificationDeleted
+        NotificationDeleted,
+        NotificationAdded
 
 
 

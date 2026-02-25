@@ -51,5 +51,11 @@ namespace Wasla_Backend.Controllers.General
             await _notificationService.DeleteNotificationByNotificationIdAsync(notificationId);
             return Ok(ResponseHelper.Success(LocalizationKey.NotificationDeleted, lan));
         }
+        [HttpPost]
+        public async Task<IActionResult> AddNotification(CreateNotificationDto createNotificationDto, string lan = "en")
+        {
+            await _notificationService.AddNotificationAsync(createNotificationDto);
+            return Ok(ResponseHelper.Success(LocalizationKey.NotificationAdded, lan));
+        }
     }
 }
