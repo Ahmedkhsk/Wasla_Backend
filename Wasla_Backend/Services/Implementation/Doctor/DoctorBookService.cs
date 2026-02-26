@@ -123,7 +123,7 @@
             return await _bookingRepository.GetBookingDetailsForUserAsync(userId, language);
         }
 
-        public async Task Book(BookServiceDto dto)
+        public async Task<int> Book(BookServiceDto dto)
         {
             await _bookingLock.WaitAsync();
             try
@@ -208,11 +208,14 @@
                         endDateTime
                     );
                 }
+                return booking.Id;
             }
             finally
             {
                 _bookingLock.Release();
+                
             }
+            
         }
     }
 }

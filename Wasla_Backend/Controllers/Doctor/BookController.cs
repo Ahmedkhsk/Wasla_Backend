@@ -13,8 +13,8 @@
         [HttpPost("BookService")]
         public async Task<IActionResult> BookService([FromForm] BookServiceDto bookServiceDto, string lan = "en")
         {
-                await _doctorBookService.Book(bookServiceDto);
-                return Ok(ResponseHelper.Success(LocalizationKey.ServiceBookedSuccessfully, lan));
+                var id=await _doctorBookService.Book(bookServiceDto);
+                return Ok(ResponseHelper.Success(LocalizationKey.ServiceBookedSuccessfully, lan,id));
         }
 
         [HttpPut("UpdateBooking")]
