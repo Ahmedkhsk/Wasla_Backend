@@ -999,7 +999,84 @@
             {
                 ["en"] = "Most active users retrieved successfully.",
                 ["ar"] = "تم جلب أكثر المستخدمين نشاطًا بنجاح."
-            }
+            },
+            #endregion
+            
+            #region Social
+
+            [LocalizationKey.SuccessToCreatePost] = new()
+            {
+                ["en"] = "Post created successfully.",
+                ["ar"] = "تم إنشاء المنشور بنجاح."
+            },
+
+            [LocalizationKey.FailedToCreatePost] = new()
+            {
+                ["en"] = "Failed to create post.",
+                ["ar"] = "فشل في إنشاء المنشور."
+            },
+
+            [LocalizationKey.SuccessToGetPosts] = new()
+            {
+                ["en"] = "Posts retrieved successfully.",
+                ["ar"] = "تم جلب المنشورات بنجاح."
+            },
+
+            [LocalizationKey.NoPostsFound] = new()
+            {
+                ["en"] = "No posts found.",
+                ["ar"] = "لا توجد منشورات."
+            },
+
+            [LocalizationKey.SuccessToDeletePost] = new()
+            {
+                ["en"] = "Post deleted successfully.",
+                ["ar"] = "تم حذف المنشور بنجاح."
+            },
+
+            [LocalizationKey.FailedToDeletePost] = new()
+            {
+                ["en"] = "Failed to delete post.",
+                ["ar"] = "فشل في حذف المنشور."
+            },
+
+
+            [LocalizationKey.SuccessToCreateComment] = new()
+            {
+                ["en"] = "Comment added successfully.",
+                ["ar"] = "تمت إضافة التعليق بنجاح."
+            },
+
+            [LocalizationKey.FailedToCreateComment] = new()
+            {
+                ["en"] = "Failed to add comment.",
+                ["ar"] = "فشل في إضافة التعليق."
+            },
+
+            [LocalizationKey.SuccessToGetComments] = new()
+            {
+                ["en"] = "Comments retrieved successfully.",
+                ["ar"] = "تم جلب التعليقات بنجاح."
+            },
+
+            [LocalizationKey.NoCommentsFound] = new()
+            {
+                ["en"] = "No comments found.",
+                ["ar"] = "لا توجد تعليقات."
+            },
+
+            [LocalizationKey.SuccessToDeleteComment] = new()
+            {
+                ["en"] = "Comment deleted successfully.",
+                ["ar"] = "تم حذف التعليق بنجاح."
+            },
+
+            [LocalizationKey.FailedToDeleteComment] = new()
+            {
+                ["en"] = "Failed to delete comment.",
+                ["ar"] = "فشل في حذف التعليق."
+            },
+
             #endregion
         };
 

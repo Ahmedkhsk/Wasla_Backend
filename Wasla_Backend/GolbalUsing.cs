@@ -66,6 +66,7 @@ global using Wasla_Backend.DTOs.ChartDTOS;
 global using Wasla_Backend.DTOs.GymDTOS;
 global using Wasla_Backend.DTOs.UserEventDTOS;
 global using Wasla_Backend.DTOs.NotificationDTOS;
+global using Wasla_Backend.DTOs.SoicalDTOS;
 #endregion
 
 #region Project - Models
@@ -73,6 +74,7 @@ global using Wasla_Backend.Models;
 global using Wasla_Backend.Models.BaseModel;
 global using Wasla_Backend.Models.GeneralModel;
 global using Wasla_Backend.Models.GymModel;
+global using Wasla_Backend.Models.Social;
 
 
 #endregion

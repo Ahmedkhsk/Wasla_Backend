@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Notification = Wasla_Backend.Models.GeneralModel.Notification;
+﻿using Notification = Wasla_Backend.Models.GeneralModel.Notification;
 
 namespace Wasla_Backend.Data
 {
@@ -26,6 +25,9 @@ namespace Wasla_Backend.Data
         public DbSet<Payment> Payment { get; set; }
         public DbSet<UserEvent> UserEvents { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Post> Posts { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+
 
         public Context(DbContextOptions<Context> options) : base(options) { }
 
