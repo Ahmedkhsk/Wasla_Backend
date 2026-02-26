@@ -12,3 +12,4 @@ Wasla_Backend/Properties/PublishProfiles/launchSettings.json
 Wasla_Backend/*.csproj.user
 Wasla_Backend/*.csproj
 Wasla_Backend/appsettings.Development.json
+Wasla_Backend/.config/
