@@ -5,4 +5,9 @@ bin/
 obj/ 
 Wasla_Backend/wwwroot/assets/  
 Wasla_Backend/Properties/PublishProfiles/  
-Wasla_Backend/appsettings.json 
+Wasla_Backend/appsettings.json
+Wasla_Backend/*.pubxml
+Wasla_Backend/*.user 
+Wasla_Backend/Properties/PublishProfiles/launchSettings.json 
+*.csproj.user
+*.csproj
