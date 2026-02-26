@@ -18,7 +18,12 @@
         {
             var data = await _gymBookingService.Book(gymBookDto, lan);
             await _hub.Clients.All.SendAsync("PackageBooked", data);
-            return Ok(ResponseHelper.Success(LocalizationKey.BookingAddedSuccessfully, lan, data.qrCodeUrl));
+            var responseData = new BookingResponseDto
+            {
+                bookingId = data.bookingId,
+                qrCodeUrl = data.qrCodeUrl
+            };
+            return Ok(ResponseHelper.Success(LocalizationKey.BookingAddedSuccessfully, lan, responseData));
         }
 
         [HttpPut("cancel/{bookingId}")]

@@ -187,7 +187,8 @@
         NotificationMarkedAsSeen,
         AllNotificationsMarkedAsSeen,
         NotificationDeleted,
-        NotificationAdded
+        NotificationAdded,
+        TemplateNotFound
 
 
 
