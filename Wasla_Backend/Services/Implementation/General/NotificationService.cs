@@ -67,7 +67,7 @@ namespace Wasla_Backend.Services.Implementation.General
             return new PagedResult<NotificationResponseDto>
             {
                 Data = notifications.ToList(),
-                TotalCount = await _notificationRepository.CountNotificationByuserId(userId),
+                TotalCount =notifications.Count(),
                 PageNumber = pageNumber,
                 PageSize = pageSize
             };

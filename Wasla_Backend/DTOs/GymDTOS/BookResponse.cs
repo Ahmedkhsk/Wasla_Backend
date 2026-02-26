@@ -3,5 +3,7 @@
     public class BookResponse:BookHubData
     {
         public string qrCodeUrl { get; set; }
+        public int bookingId { get; set; }  
+
     }
 }

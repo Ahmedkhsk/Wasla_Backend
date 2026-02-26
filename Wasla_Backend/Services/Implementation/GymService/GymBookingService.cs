@@ -100,7 +100,8 @@
                 qrCodeUrl = filePath,
                 serviceId = gymBookDto.serviceId,
                 serviceProviderId = gymBookDto.gymId,
-                residentId = gymBookDto.residentId
+                residentId = gymBookDto.residentId,
+                bookingId = gymBooking.Id
             };
         }
 
