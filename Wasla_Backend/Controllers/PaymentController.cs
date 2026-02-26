@@ -51,9 +51,9 @@ public class PaymentController : ControllerBase
         bool.TryParse(query["success"], out bool isSuccess);
 
         if (isSuccess)
-            return Redirect($"{frontendUrl}/payment/success");
+            return Redirect($"{frontendUrl}/resident/payment-success");
 
-        return Redirect($"{frontendUrl}/payment/failed");
+        return Redirect($"{frontendUrl}/resident/payment-failed");
     }
 
     [HttpPost("server-callback")]
