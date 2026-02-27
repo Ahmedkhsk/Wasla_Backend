@@ -1,8 +1,8 @@
 ﻿namespace Wasla_Backend.DTOs.SoicalDTOS
 {
-    public class AddPostDto
+    public class UpdatePostDto
     {
-        public string userId { get; set; }
+        public int id { get; set; }
         public string? content { get; set; }
         public List<FormFile>? files { get; set; }
     }

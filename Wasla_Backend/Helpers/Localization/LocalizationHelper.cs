@@ -1009,6 +1009,11 @@
                 ["en"] = "Post created successfully.",
                 ["ar"] = "تم إنشاء المنشور بنجاح."
             },
+            [LocalizationKey.SuccessToUpdatePost] = new()
+            {
+                ["en"] = "Post updated successfully.",
+                ["ar"] = "تم تحديث المنشور بنجاح."
+            },
 
             [LocalizationKey.FailedToCreatePost] = new()
             {
