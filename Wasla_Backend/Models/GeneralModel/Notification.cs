@@ -19,5 +19,7 @@
 
         public DateTime? LastSeenAt { get; set; }
         public bool IsDeleted { get; set; } = false;
+        public string ImageUrl { get; set; }    
+
     }
 }

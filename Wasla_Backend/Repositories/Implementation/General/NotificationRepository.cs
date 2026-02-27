@@ -36,7 +36,8 @@ namespace Wasla_Backend.Repositories.Implementation.General
                      Body = n.Body,
                      IsSeen = n.IsSeen,
                      CreatedAt = n.CreatedAt,
-                     LastSeenAt = n.LastSeenAt
+                     LastSeenAt = n.LastSeenAt,
+                     ImageUrl = n.ImageUrl
                  })
                  .ToListAsync();
         }
@@ -59,7 +60,8 @@ namespace Wasla_Backend.Repositories.Implementation.General
                      Body = n.Body,
                      IsSeen = n.IsSeen,
                      CreatedAt = n.CreatedAt,
-                     LastSeenAt = n.LastSeenAt
+                     LastSeenAt = n.LastSeenAt,
+                     ImageUrl = n.ImageUrl
                  })
                  .ToListAsync();
         }
@@ -79,7 +81,6 @@ namespace Wasla_Backend.Repositories.Implementation.General
         {
              await _context.Notifications
                 .Where(n => n.UserId == userId && !n.IsSeen).ExecuteUpdateAsync(n=>n
-                .SetProperty(p=>p.IsSeen, true)
                 .SetProperty(p => p.LastSeenAt, _dateTimeHelper.Now));
         }
 

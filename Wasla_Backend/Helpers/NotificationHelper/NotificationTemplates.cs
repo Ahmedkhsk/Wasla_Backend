@@ -18,7 +18,7 @@
         {
             Type = NotificationType.EventUpdate,
             TitleAr = "اكتمل الحجز",
-            BodyAr = "حجزك مع {DoctorName} اكتمل",
+            BodyAr = "{DoctorName}حجزك مع  اكتمل",
 
             TitleEn = "Booking Completed",
             BodyEn = "Your booking with {DoctorName} is completed"
