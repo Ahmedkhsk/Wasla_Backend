@@ -46,7 +46,7 @@ namespace Wasla_Backend.Services.Implementation.General
         {
             var data = new Dictionary<string, string>();
             data["refrenceId"] = refrenceId;
-            data["type"] = type.ToString();
+            data["type"] = ((int)type).ToString();
             
             var message = new Message { Topic = topic, Notification = new Notification { Title = title, Body = body },Data=data };
             return await FirebaseMessaging.DefaultInstance.SendAsync(message);

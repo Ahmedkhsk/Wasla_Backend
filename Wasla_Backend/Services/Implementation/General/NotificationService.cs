@@ -10,7 +10,7 @@ namespace Wasla_Backend.Services.Implementation.General
         private readonly DateTimeHelper _dateTimeHelper ;
         private readonly IFirebaseService _firebaseService;
         public NotificationService(INotificationRepository notificationRepository, IGenericRepository<ApplicationUser> userRepository,
-            DateTimeHelper dateTimeHelper ,FirebaseService firebaseService)
+            DateTimeHelper dateTimeHelper ,IFirebaseService firebaseService)
         {
             _notificationRepository = notificationRepository;
             _userRepository = userRepository;
@@ -23,7 +23,7 @@ namespace Wasla_Backend.Services.Implementation.General
         { 
            var (title, body) = NotificationTemplateEngine.Generate(type, language, metadata);
             var userTopic = $"User_{userId}";
-            await _firebaseService.SendToTopicAsync(userTopic, title, body);
+            await _firebaseService.SendToTopicAsync(userTopic, title, body, referenceId, type);
             var notification = new Notification
             {
                 UserId = userId,
