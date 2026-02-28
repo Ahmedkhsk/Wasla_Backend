@@ -5,6 +5,8 @@
         public SocialProfile()
         {
             CreateMap<AddPostDto, Post>();
+
+            CreateMap<UpdatePostDto, Post>();
         }
     }
 }

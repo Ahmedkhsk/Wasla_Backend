@@ -1009,6 +1009,11 @@
                 ["en"] = "Post created successfully.",
                 ["ar"] = "تم إنشاء المنشور بنجاح."
             },
+            [LocalizationKey.SuccessToUpdatePost] = new()
+            {
+                ["en"] = "Post updated successfully.",
+                ["ar"] = "تم تحديث المنشور بنجاح."
+            },
 
             [LocalizationKey.FailedToCreatePost] = new()
             {
@@ -1076,7 +1081,11 @@
                 ["en"] = "Failed to delete comment.",
                 ["ar"] = "فشل في حذف التعليق."
             },
-
+            [LocalizationKey.SuccessToToggleReaction] = new()
+            {
+                ["en"] = "Reaction toggled successfully.",
+                ["ar"] = "تم تحديث التفاعل بنجاح."
+            },
             #endregion
         };
 

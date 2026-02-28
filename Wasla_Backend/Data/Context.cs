@@ -27,6 +27,7 @@ namespace Wasla_Backend.Data
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Reaction> Reactions { get; set; }
 
 
         public Context(DbContextOptions<Context> options) : base(options) { }

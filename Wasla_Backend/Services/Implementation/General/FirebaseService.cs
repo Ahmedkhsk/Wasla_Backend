@@ -42,15 +42,22 @@ namespace Wasla_Backend.Services.Implementation.General
             await FirebaseMessaging.DefaultInstance.UnsubscribeFromTopicAsync(new List<string> { deviceToken }, allTopic);
         }
 
-        public async Task<string> SendToTopicAsync(string topic, string title, string body)
+        public async Task<string> SendToTopicAsync(string topic, string title, string body,string refrenceId,NotificationType type)
         {
-            var message = new Message { Topic = topic, Notification = new Notification { Title = title, Body = body } };
+            var data = new Dictionary<string, string>();
+            data["refrenceId"] = refrenceId;
+            data["type"] = type.ToString();
+            
+            var message = new Message { Topic = topic, Notification = new Notification { Title = title, Body = body },Data=data };
             return await FirebaseMessaging.DefaultInstance.SendAsync(message);
         }
 
-        public async Task<string> SendToDeviceAsync(string deviceToken, string title, string body)
+        public async Task<string> SendToDeviceAsync(string deviceToken, string title, string body, string refrenceId, NotificationType type)
         {
-            var message = new Message { Token = deviceToken, Notification = new Notification { Title = title, Body = body } };
+            var data = new Dictionary<string, string>();
+            data["refrenceId"] = refrenceId;
+            data["type"] = type.ToString();
+            var message = new Message { Token = deviceToken, Notification = new Notification { Title = title, Body = body },Data=data };
             return await FirebaseMessaging.DefaultInstance.SendAsync(message);
         }
     }

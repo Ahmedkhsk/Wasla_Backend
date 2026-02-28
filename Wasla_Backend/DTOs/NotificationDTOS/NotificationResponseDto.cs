@@ -11,5 +11,7 @@
         public bool IsSeen { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? LastSeenAt { get; set; }
+        public string ImageUrl { get; set; }
+
     }
 }

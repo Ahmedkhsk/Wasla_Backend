@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wasla_Backend.Data;
 
@@ -11,9 +12,11 @@ using Wasla_Backend.Data;
 namespace Wasla_Backend.data
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20260227213216_ContentInPostIsNull")]
+    partial class ContentInPostIsNull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -458,10 +461,6 @@ namespace Wasla_Backend.data
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -709,6 +708,9 @@ namespace Wasla_Backend.data
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("numberOfReacts")
+                        .HasColumnType("int");
+
                     b.Property<int>("postId")
                         .HasColumnType("int");
 
@@ -745,6 +747,9 @@ namespace Wasla_Backend.data
                     b.PrimitiveCollection<string>("files")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("numberOfReacts")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("updatedAt")
                         .HasColumnType("datetime2");
 
@@ -757,34 +762,6 @@ namespace Wasla_Backend.data
                     b.HasIndex("userId");
 
                     b.ToTable("Posts");
-                });
-
-            modelBuilder.Entity("Wasla_Backend.Models.Social.Reaction", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<DateTime>("createdAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("targetId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("targetType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("userId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("userId");
-
-                    b.ToTable("Reactions");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.UserEvent", b =>
@@ -1316,17 +1293,6 @@ namespace Wasla_Backend.data
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Social.Post", b =>
-                {
-                    b.HasOne("Wasla_Backend.Models.ApplicationUser", "user")
-                        .WithMany()
-                        .HasForeignKey("userId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("user");
-                });
-
-            modelBuilder.Entity("Wasla_Backend.Models.Social.Reaction", b =>
                 {
                     b.HasOne("Wasla_Backend.Models.ApplicationUser", "user")
                         .WithMany()

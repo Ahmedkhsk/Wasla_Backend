@@ -16,7 +16,6 @@
         public string content { get; set; }
         public DateTime createdAt { get; set; }
         public DateTime updatedAt { get; set; }
-        public int numberOfReacts { get; set; }
         public string file { get; set; }
     }
 }

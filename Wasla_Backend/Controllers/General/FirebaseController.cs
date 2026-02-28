@@ -30,14 +30,14 @@ namespace Wasla_Backend.Controllers.General
         [HttpPost("SendToTopic")]
         public async Task<IActionResult> SendToTopic(string topic, string title, string body, string lan = "en")
         {
-            var messageId = await _firebaseService.SendToTopicAsync(topic, title, body);
+            var messageId = await _firebaseService.SendToTopicAsync(topic, title, body,"testref",NotificationType.NewMessage);
             return Ok(ResponseHelper.Success(LocalizationKey.NotificationSentToTopicSuccess, lan, messageId));
         }
 
         [HttpPost("SendToDevice")]
         public async Task<IActionResult> SendToDevice(string deviceToken, string title, string body, string lan = "en")
         {
-            var messageId = await _firebaseService.SendToDeviceAsync(deviceToken, title, body);
+            var messageId = await _firebaseService.SendToDeviceAsync(deviceToken, title, body, "testref", NotificationType.NewMessage);
             return Ok(ResponseHelper.Success(LocalizationKey.NotificationSentToDeviceSuccess, lan, messageId));
         }
     }
