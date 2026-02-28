@@ -1,6 +1,4 @@
 ﻿
-using System.Drawing.Printing;
-using Wasla_Backend.Helpers.NotificationHelper;
 using Notification = Wasla_Backend.Models.GeneralModel.Notification;
 
 namespace Wasla_Backend.Services.Implementation.General
@@ -20,30 +18,24 @@ namespace Wasla_Backend.Services.Implementation.General
             _firebaseService = firebaseService;
         }
 
-        public async Task SendAndSaveNotificationAsync(
-       string userId,
-       NotificationType type,
-       string referenceId,
-       string language = "en",
-       Dictionary<string, string>? metadata = null)
-        {
-            var (title, body) = NotificationTemplateEngine.Generate(type, language, metadata);
-
+        public async Task SendAndSaveNotificationAsync(string userId,NotificationType type, string referenceId, string imageUrl,
+            string language = "en", Dictionary<string, string>? metadata = null)
+        { 
+           var (title, body) = NotificationTemplateEngine.Generate(type, language, metadata);
             var userTopic = $"User_{userId}";
             await _firebaseService.SendToTopicAsync(userTopic, title, body);
-            
-
-           var notification = new Notification
-           {
-               UserId = userId,
-               Title = title,
-               Body = body,
-               Type = type,
-               ReferenceId = referenceId,
-               CreatedAt = _dateTimeHelper.Now
-           };
-
-             
+            var notification = new Notification
+            {
+                UserId = userId,
+                Title = title,
+                Body = body,
+                Type = type,
+                ReferenceId = referenceId,
+                CreatedAt = _dateTimeHelper.Now,
+                ImageUrl = imageUrl
+             };
+            await _notificationRepository.AddAsync(notification);
+            await _notificationRepository.SaveChangesAsync();
         }
 
         public async Task DeleteNotificationByNotificationIdAsync(int notificationId)
@@ -100,6 +92,22 @@ namespace Wasla_Backend.Services.Implementation.General
             if (notification == null)
                 throw new NotFoundException(LocalizationKey.NotificationNotFound);
             await _notificationRepository.MarkAsSeenAsync(notificationId);
+        }
+
+        public async Task AddNotificationAsync(CreateNotificationDto createNotificationDto)
+        {
+            var notification = new Notification
+            {
+                UserId = createNotificationDto.UserId,
+                Title = createNotificationDto.Title,
+                Body = createNotificationDto.Body,
+                Type = createNotificationDto.Type,
+                ReferenceId = createNotificationDto.ReferenceId,
+                ImageUrl = createNotificationDto.ImageUrl,
+                CreatedAt = _dateTimeHelper.Now
+            };
+            await _notificationRepository.AddAsync(notification);
+            await _notificationRepository.SaveChangesAsync();
         }
     }
 }
