@@ -26,8 +26,10 @@ namespace Wasla_Backend.Services.Implementation.General
                 ReferenceId = createNotificationDto.ReferenceId,
                 Title = createNotificationDto.Title,
                 Body = createNotificationDto.Body,
-                CreatedAt =_dateTimeHelper.Now 
-               
+                CreatedAt =_dateTimeHelper.Now ,
+                ImageUrl = createNotificationDto.ImageUrl
+
+
             };
             await _notificationRepository.AddAsync(notification);
             await _notificationRepository.SaveChangesAsync();
