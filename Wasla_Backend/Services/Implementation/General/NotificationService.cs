@@ -1,5 +1,6 @@
 ﻿
 using System.Drawing.Printing;
+using Wasla_Backend.Helpers.NotificationHelper;
 using Notification = Wasla_Backend.Models.GeneralModel.Notification;
 
 namespace Wasla_Backend.Services.Implementation.General
@@ -9,28 +10,40 @@ namespace Wasla_Backend.Services.Implementation.General
         private readonly INotificationRepository _notificationRepository;
         private readonly  IGenericRepository<ApplicationUser> _userRepository;
         private readonly DateTimeHelper _dateTimeHelper ;
+        private readonly IFirebaseService _firebaseService;
         public NotificationService(INotificationRepository notificationRepository, IGenericRepository<ApplicationUser> userRepository,
-            DateTimeHelper dateTimeHelper )
+            DateTimeHelper dateTimeHelper ,FirebaseService firebaseService)
         {
             _notificationRepository = notificationRepository;
             _userRepository = userRepository;
             _dateTimeHelper = dateTimeHelper;
+            _firebaseService = firebaseService;
         }
 
-        public async Task AddNotificationAsync(CreateNotificationDto createNotificationDto)
+        public async Task SendAndSaveNotificationAsync(
+       string userId,
+       NotificationType type,
+       string referenceId,
+       string language = "en",
+       Dictionary<string, string>? metadata = null)
         {
-            var notification = new Notification
-            {
-                UserId = createNotificationDto.UserId,
-                Type = createNotificationDto.Type,
-                ReferenceId = createNotificationDto.ReferenceId,
-                Title = createNotificationDto.Title,
-                Body = createNotificationDto.Body,
-                CreatedAt =_dateTimeHelper.Now 
-               
-            };
-            await _notificationRepository.AddAsync(notification);
-            await _notificationRepository.SaveChangesAsync();
+            var (title, body) = NotificationTemplateEngine.Generate(type, language, metadata);
+
+            var userTopic = $"User_{userId}";
+            await _firebaseService.SendToTopicAsync(userTopic, title, body);
+            
+
+           var notification = new Notification
+           {
+               UserId = userId,
+               Title = title,
+               Body = body,
+               Type = type,
+               ReferenceId = referenceId,
+               CreatedAt = _dateTimeHelper.Now
+           };
+
+             
         }
 
         public async Task DeleteNotificationByNotificationIdAsync(int notificationId)
