@@ -5,10 +5,12 @@
     public class SocialController : ControllerBase
     {
         private readonly IPostService _postService;
+        private readonly IReactionService _reactionService;
 
-        public SocialController(IPostService postService)
+        public SocialController(IPostService postService, IReactionService reactionService)
         {
             _postService = postService;
+            _reactionService = reactionService;
         }
 
         [HttpPost("Post")]
@@ -32,5 +34,14 @@
             await _postService.DeletePost(postId);
             return Ok(ResponseHelper.Success(LocalizationKey.SuccessToDeletePost, lan));
         }
+
+        [HttpPost("ToggleReaction")]
+        public async Task<IActionResult> ToggleReaction(ToggleReactionDto dto, string lan = "en")
+        {
+            await _reactionService.ToggleReaction(dto);
+            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToToggleReaction, lan));
+        }
+
+
     }
 }

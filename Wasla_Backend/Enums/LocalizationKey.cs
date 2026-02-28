@@ -263,6 +263,7 @@
         FailedToRemoveReaction,
         ReactionAlreadyExists,
         ReactionNotFound,
+        SuccessToToggleReaction,
         #endregion
 
         #region Files

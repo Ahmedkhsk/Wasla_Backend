@@ -1081,7 +1081,11 @@
                 ["en"] = "Failed to delete comment.",
                 ["ar"] = "فشل في حذف التعليق."
             },
-
+            [LocalizationKey.SuccessToToggleReaction] = new()
+            {
+                ["en"] = "Reaction toggled successfully.",
+                ["ar"] = "تم تحديث التفاعل بنجاح."
+            },
             #endregion
         };
 

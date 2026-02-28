@@ -78,13 +78,20 @@
             var post = await _postRepository.GetByIdAsync(postId);
             if (post == null)
                 throw new NotFoundException(LocalizationKey.PostNotFound);
-            
+
             if (post.files != null && post.files.Count > 0)
                 foreach (var oldFile in post.files)
                     FileOperation.DeleteFile(oldFile, _filePath);
-            
+
             _postRepository.Delete(post);
             await _postRepository.SaveChangesAsync();
         }
+
+        //public async Task<List<PostGeneralResponse>> GetPostsGeneral()
+        //{
+        //    var posts = await _postRepository.GetPostsByUserIdAsync(userId);
+        //    return _mapper.Map<List<PostGeneralResponse>>(posts);
+
+        //}
     }
 }
