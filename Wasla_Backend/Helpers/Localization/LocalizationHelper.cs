@@ -1003,6 +1003,11 @@
             #endregion
 
             #region Social
+            [LocalizationKey.PostNotFound] = new()
+            {
+                ["en"] = "Post not found.",
+                ["ar"] = "المنشور غير موجود."
+            },
             [LocalizationKey.SuccessToCheckReaction] = new()
             {
                 ["en"] = "Reaction checked successfully.",

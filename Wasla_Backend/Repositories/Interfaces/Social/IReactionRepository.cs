@@ -2,8 +2,9 @@
 {
     public interface IReactionRepository : IGenericRepository<Reaction>
     {
-        public Task<Reaction?> GetReaction(int targetId, ReactionTargetType type, string userId);
-        public Task<Dictionary<int, int>> GetReactionCountsForPosts(List<int> postIds, ReactionTargetType targetType);
-        public Task<int> GetReactionCount(int targetId, ReactionTargetType type);
+        public Task<Reaction?> GetReaction(ToggleReactionDto dto);
+        public Task<Dictionary<int, int>> GetReactionCountsForPosts(List<int> postIds, ReactionTargetType targetType, ReactionType reactionType);
+        public Task<HashSet<int>> GetUserReactedPostIds(string userId, List<int> postIds, ReactionTargetType type, ReactionType reactionType);
+        public Task<int> GetReactionCount(int targetId, ReactionTargetType type, ReactionType reactionType);
     }
 }

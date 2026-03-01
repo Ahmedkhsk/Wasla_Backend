@@ -93,16 +93,23 @@
             await _postRepository.SaveChangesAsync();
         }
 
-        public async Task<PagedResult<PostGeneralResponse>> GetPostsGeneral(int pageNumber, int pageSize)
+        public async Task<PagedResult<PostGeneralResponse>> GetPostsGeneral(string userId ,int pageNumber, int pageSize)
         {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null)
+                throw new NotFoundException(LocalizationKey.UserNotFound);
+
             var pagedPosts = await _postRepository.GetPostsGeneral(pageNumber, pageSize);
 
             var postIds = pagedPosts.Data.Select(p => p.id).ToList();
 
-            var reactionsDictionary =
-                await _reactionRepository.GetReactionCountsForPosts(
-                    postIds,
-                    ReactionTargetType.post);
+            var reactionsDictionary = await _reactionRepository.GetReactionCountsForPosts(postIds,ReactionTargetType.post,ReactionType.love);
+
+            var userReactedPosts = await _reactionRepository.GetUserReactedPostIds(userId,postIds,ReactionTargetType.post, ReactionType.love);
+            
+            var savesDictionary = await _reactionRepository.GetReactionCountsForPosts(postIds,ReactionTargetType.post, ReactionType.save);
+            
+            var userSavedPosts = await _reactionRepository.GetUserReactedPostIds(userId, postIds, ReactionTargetType.post, ReactionType.save);
 
             var mappedPosts = pagedPosts.Data.Select(post => new PostGeneralResponse
             {
@@ -114,11 +121,12 @@
                     .Select(file => FileSetting.GetMediaUrl(file, MediaType.postFile))
                     .ToList(),
 
-                numberofReactss =
-                    reactionsDictionary.TryGetValue(post.id, out var count)
-                        ? count
-                        : 0,
+                numberofReacts = reactionsDictionary.TryGetValue(post.id, out var count) ? count: 0,
+                numberofSaves = savesDictionary.TryGetValue(post.id, out var c) ? c : 0,
 
+
+                isLoved = userReactedPosts.Contains(post.id),
+                isSaved  = userSavedPosts.Contains(post.id),
                 createdAt = post.createdAt,
                 updatedAt = post.updatedAt,
                 profilePhoto = FileSetting.GetMediaUrl(post.user.ProfilePhoto, MediaType.userImage),
@@ -135,5 +143,67 @@
             };
         }
 
+        public async Task<PostByUserIdResponse> GetPostsByUserId(string userId, string currentUserId,int pageNumber,int pageSize)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+
+            if (user == null)
+                throw new NotFoundException(LocalizationKey.UserNotFound);
+
+            var currentUser = await _userRepository.GetUserByIdAsync(currentUserId);
+
+            if (currentUser == null)
+                throw new NotFoundException(LocalizationKey.UserNotFound);
+
+            var pagedPosts =
+                await _postRepository.GetPostsByUserId(userId, pageNumber, pageSize);
+
+
+            var postIds = pagedPosts.Data.Select(p => p.id).ToList();
+
+            var reactionsDictionary = await _reactionRepository.GetReactionCountsForPosts(postIds, ReactionTargetType.post, ReactionType.love);
+
+            var userReactedPosts = await _reactionRepository.GetUserReactedPostIds(userId, postIds, ReactionTargetType.post, ReactionType.love);
+
+            var savesDictionary = await _reactionRepository.GetReactionCountsForPosts(postIds, ReactionTargetType.post, ReactionType.save);
+
+            var userSavedPosts = await _reactionRepository.GetUserReactedPostIds(userId, postIds, ReactionTargetType.post, ReactionType.save);
+
+
+            var mappedPosts = pagedPosts.Data.Select(post => new PostRespnse
+            {
+                postId = post.id,
+                content = post.content,
+                files = post.files?
+                    .Select(file => FileSetting.GetMediaUrl(file, MediaType.postFile))
+                    .ToList(),
+
+                numberofReacts = reactionsDictionary.TryGetValue(post.id, out var count) ? count : 0,
+                numberofSaves = savesDictionary.TryGetValue(post.id, out var c) ? c : 0,
+
+
+                isLoved = userReactedPosts.Contains(post.id),
+                isSaved = userSavedPosts.Contains(post.id),
+
+                createdAt = post.createdAt,
+                updatedAt = post.updatedAt
+            }).ToList();
+
+            return new PostByUserIdResponse
+            {
+                userId = user.Id,
+                userName = user.FullName,
+                profilePhoto =
+                    FileSetting.GetMediaUrl(user.ProfilePhoto, MediaType.userImage),
+
+                posts = new PagedResult<PostRespnse>
+                {
+                    PageNumber = pagedPosts.PageNumber,
+                    PageSize = pagedPosts.PageSize,
+                    TotalCount = pagedPosts.TotalCount,
+                    Data = mappedPosts
+                }
+            };
+        }
     }
 }

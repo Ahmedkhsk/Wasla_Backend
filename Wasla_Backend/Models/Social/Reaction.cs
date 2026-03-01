@@ -12,6 +12,7 @@
         public int targetId { get; set; }
 
         public ReactionTargetType targetType { get; set; }
+        public ReactionType reactionType { get; set; }
 
         public DateTime createdAt { get; set; }
     }

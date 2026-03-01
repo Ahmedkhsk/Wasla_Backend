@@ -19,7 +19,7 @@
             if (user == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
 
-            var existingReaction = await _reactionReepository.GetReaction(dto.targetId, dto.type, dto.userId);
+            var existingReaction = await _reactionReepository.GetReaction(dto);
             
             if (existingReaction != null)
                  _reactionReepository.Delete(existingReaction);
@@ -28,7 +28,8 @@
                 var newReaction = new Reaction
                 {
                     targetId = dto.targetId,
-                    targetType = dto.type,
+                    targetType = dto.targetType,
+                    reactionType = dto.reactionType,
                     userId = dto.userId,
                     createdAt = _dateTimeHelper.Now
                 };
@@ -44,7 +45,7 @@
             var user = await _userRepository.GetUserByIdAsync(dto.userId);
             if (user == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
-            var existingReaction = await _reactionReepository.GetReaction(dto.targetId, dto.type, dto.userId);
+            var existingReaction = await _reactionReepository.GetReaction(dto);
 
             return existingReaction != null;
         }
