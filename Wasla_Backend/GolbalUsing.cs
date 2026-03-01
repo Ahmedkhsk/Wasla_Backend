@@ -110,6 +110,8 @@ global using Wasla_Backend.Helpers.MlHelper;
 global using Wasla_Backend.Helpers.Resolvers;
 global using Wasla_Backend.Helpers.Time;
 global using Wasla_Backend.Helpers.Cashing;
+global using Wasla_Backend.Helpers.NotificationHelper;
+
 #endregion
 
 #region Project - Program Helpers

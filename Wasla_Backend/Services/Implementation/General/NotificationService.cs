@@ -1,5 +1,4 @@
 ﻿
-using System.Drawing.Printing;
 using Notification = Wasla_Backend.Models.GeneralModel.Notification;
 
 namespace Wasla_Backend.Services.Implementation.General
@@ -9,28 +8,32 @@ namespace Wasla_Backend.Services.Implementation.General
         private readonly INotificationRepository _notificationRepository;
         private readonly  IGenericRepository<ApplicationUser> _userRepository;
         private readonly DateTimeHelper _dateTimeHelper ;
+        private readonly IFirebaseService _firebaseService;
         public NotificationService(INotificationRepository notificationRepository, IGenericRepository<ApplicationUser> userRepository,
-            DateTimeHelper dateTimeHelper )
+            DateTimeHelper dateTimeHelper ,IFirebaseService firebaseService)
         {
             _notificationRepository = notificationRepository;
             _userRepository = userRepository;
             _dateTimeHelper = dateTimeHelper;
+            _firebaseService = firebaseService;
         }
 
-        public async Task AddNotificationAsync(CreateNotificationDto createNotificationDto)
-        {
+        public async Task SendAndSaveNotificationAsync(string userId,NotificationType type, string referenceId, string imageUrl,
+            string language = "en", Dictionary<string, string>? metadata = null)
+        { 
+           var (title, body) = NotificationTemplateEngine.Generate(type, language, metadata);
+            var userTopic = $"User_{userId}";
+            await _firebaseService.SendToTopicAsync(userTopic, title, body, referenceId, type);
             var notification = new Notification
             {
-                UserId = createNotificationDto.UserId,
-                Type = createNotificationDto.Type,
-                ReferenceId = createNotificationDto.ReferenceId,
-                Title = createNotificationDto.Title,
-                Body = createNotificationDto.Body,
-                CreatedAt =_dateTimeHelper.Now ,
-                ImageUrl = createNotificationDto.ImageUrl
-
-
-            };
+                UserId = userId,
+                Title = title,
+                Body = body,
+                Type = type,
+                ReferenceId = referenceId,
+                CreatedAt = _dateTimeHelper.Now,
+                ImageUrl = imageUrl
+             };
             await _notificationRepository.AddAsync(notification);
             await _notificationRepository.SaveChangesAsync();
         }
@@ -89,6 +92,22 @@ namespace Wasla_Backend.Services.Implementation.General
             if (notification == null)
                 throw new NotFoundException(LocalizationKey.NotificationNotFound);
             await _notificationRepository.MarkAsSeenAsync(notificationId);
+        }
+
+        public async Task AddNotificationAsync(CreateNotificationDto createNotificationDto)
+        {
+            var notification = new Notification
+            {
+                UserId = createNotificationDto.UserId,
+                Title = createNotificationDto.Title,
+                Body = createNotificationDto.Body,
+                Type = createNotificationDto.Type,
+                ReferenceId = createNotificationDto.ReferenceId,
+                ImageUrl = createNotificationDto.ImageUrl,
+                CreatedAt = _dateTimeHelper.Now
+            };
+            await _notificationRepository.AddAsync(notification);
+            await _notificationRepository.SaveChangesAsync();
         }
     }
 }
