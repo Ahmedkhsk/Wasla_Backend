@@ -8,8 +8,6 @@ Wasla_Backend/Properties/PublishProfiles/
 Wasla_Backend/appsettings.json
 Wasla_Backend/*.pubxml
 Wasla_Backend/*.user 
-Wasla_Backend/Properties/PublishProfiles/launchSettings.json 
-Wasla_Backend/*.csproj.user
-Wasla_Backend/*.csproj
+Wasla_Backend/Properties/PublishProfiles/launchSettings.json
 Wasla_Backend/appsettings.Development.json
 Wasla_Backend/.config/

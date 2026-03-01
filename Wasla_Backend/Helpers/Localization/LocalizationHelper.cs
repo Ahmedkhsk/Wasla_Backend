@@ -1001,9 +1001,13 @@
                 ["ar"] = "تم جلب أكثر المستخدمين نشاطًا بنجاح."
             },
             #endregion
-            
-            #region Social
 
+            #region Social
+            [LocalizationKey.SuccessToCheckReaction] = new()
+            {
+                ["en"] = "Reaction checked successfully.",
+                ["ar"] = "تم التحقق من التفاعل بنجاح."
+            },
             [LocalizationKey.SuccessToCreatePost] = new()
             {
                 ["en"] = "Post created successfully.",

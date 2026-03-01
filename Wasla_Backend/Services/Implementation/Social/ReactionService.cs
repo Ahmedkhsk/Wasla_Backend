@@ -35,6 +35,18 @@
 
                 await _reactionReepository.AddAsync(newReaction);
             }
+
+            await _reactionReepository.SaveChangesAsync();
+        }
+        
+        public async Task<bool> CheckReact(ToggleReactionDto dto)
+        {
+            var user = await _userRepository.GetUserByIdAsync(dto.userId);
+            if (user == null)
+                throw new NotFoundException(LocalizationKey.UserNotFound);
+            var existingReaction = await _reactionReepository.GetReaction(dto.targetId, dto.type, dto.userId);
+
+            return existingReaction != null;
         }
     }
 }

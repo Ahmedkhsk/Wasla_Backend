@@ -6,6 +6,30 @@
         {
         }
 
+        public async Task<PagedResult<Post>> GetPostsGeneral(int pageNumber, int pageSize)
+        {
+            var query = _dbSet
+                .AsNoTracking()
+                .Include(p => p.user);
+
+            var totalCount = await query.CountAsync();
+
+            var posts = await query
+                .OrderByDescending(p => p.id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PagedResult<Post>
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = totalCount,
+                Data = posts
+            };
+        }
+
+
 
     }
 }

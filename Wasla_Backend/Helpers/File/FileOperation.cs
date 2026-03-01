@@ -35,8 +35,16 @@
             var fileName = $"{Guid.NewGuid()}{extension}";
             var path = Path.Combine(filePath, fileName);
 
-            using var stream = System.IO.File.Create(path);
+            await using var stream = new FileStream(
+                path,
+                FileMode.Create,
+                FileAccess.Write,
+                FileShare.None,
+                81920,
+                useAsync: true);
+
             await file.CopyToAsync(stream);
+            await stream.FlushAsync();
 
             return fileName;
         }

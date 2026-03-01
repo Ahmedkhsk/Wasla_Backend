@@ -5,5 +5,7 @@
         public Task AddPost(AddPostDto dto);
         public Task UpdatePost(UpdatePostDto dto);
         public Task DeletePost(int postId);
+        public Task<PagedResult<PostGeneralResponse>> GetPostsGeneral(int pageNumber, int pageSize);
+
     }
 }

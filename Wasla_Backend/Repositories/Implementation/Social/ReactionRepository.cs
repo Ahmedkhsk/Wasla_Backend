@@ -6,8 +6,8 @@
         {
         }
 
-        public async Task<Reaction> GetReaction(int targetId, ReactionTargetType type, string userId)
-          => await _context.Reactions.FirstOrDefaultAsync(r => r.targetId == targetId && r.targetType == type && r.userId == userId);
+        public async Task<Reaction?> GetReaction(int targetId, ReactionTargetType type, string userId)
+          => await _context.Reactions.AsNoTracking().FirstOrDefaultAsync(r => r.targetId == targetId && r.targetType == type && r.userId == userId);
 
         public async Task<int> GetReactionCount(int targetId, ReactionTargetType type)
             => await _context.Reactions.CountAsync(r => r.targetId == targetId && r.targetType == type);
@@ -30,5 +30,20 @@
                 }).ToList()
             };
         }
+
+        public async Task<Dictionary<int, int>> GetReactionCountsForPosts(List<int> postIds,ReactionTargetType targetType)
+        {
+            return await _context.Reactions
+                .Where(r => postIds.Contains(r.targetId)
+                         && r.targetType == targetType)
+                .GroupBy(r => r.targetId)
+                .Select(g => new
+                {
+                    PostId = g.Key,
+                    Count = g.Count()
+                })
+                .ToDictionaryAsync(x => x.PostId, x => x.Count);
+        }
+
     }
 }

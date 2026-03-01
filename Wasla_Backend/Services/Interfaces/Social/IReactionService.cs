@@ -3,5 +3,6 @@
     public interface IReactionService
     {
        public Task ToggleReaction(ToggleReactionDto dto);
+       public Task<bool> CheckReact(ToggleReactionDto dto);
     }
 }

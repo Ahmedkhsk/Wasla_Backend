@@ -257,6 +257,7 @@
         #endregion
 
         #region Reactions
+        SuccessToCheckReaction,
         SuccessToAddReaction,
         FailedToAddReaction,
         SuccessToRemoveReaction,

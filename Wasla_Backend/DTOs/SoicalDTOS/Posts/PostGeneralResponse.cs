@@ -8,7 +8,7 @@
         public int postId { get; set; }
         public string? content { get; set; }
         public List<string>? files { get; set; }
-        public List<GetReactionsResponse> reactions { get; set; }
+        public int numberofReactss { get; set; }
         public DateTime createdAt { get; set; }
         public DateTime? updatedAt { get; set; }
     }

@@ -42,6 +42,17 @@
             return Ok(ResponseHelper.Success(LocalizationKey.SuccessToToggleReaction, lan));
         }
 
-
+        [HttpGet("Posts")]
+        public async Task<IActionResult> GetPostsGeneral(int pageNumber = 1, int pageSize = 10, string lan = "en")
+        {
+            var posts = await _postService.GetPostsGeneral(pageNumber, pageSize);
+            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToGetPosts, lan, posts));
+        }
+        [HttpPost("CheckReact")]
+        public async Task<IActionResult> CheckReact(ToggleReactionDto dto, string lan = "en")
+        {
+            var hasReacted = await _reactionService.CheckReact(dto);
+            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToCheckReaction, lan, hasReacted));
+        }
     }
 }

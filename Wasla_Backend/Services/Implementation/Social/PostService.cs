@@ -6,13 +6,15 @@
         private readonly IMapper _mapper;
         private readonly DateTimeHelper _dateTimeHelper;
         private readonly IUserRepository _userRepository;
+        private readonly IReactionRepository _reactionRepository;
         private readonly string _filePath;
 
         public PostService(IPostRepository postRepository,
                             IMapper mapper,
                             DateTimeHelper dateTimeHelper,
                             IWebHostEnvironment webHostEnvironment,
-                            IUserRepository userRepository
+                            IUserRepository userRepository,
+                            IReactionRepository reactionRepository
                           )
         {
             _postRepository = postRepository;
@@ -20,6 +22,7 @@
             _filePath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.FilesPosts.TrimStart('/'));
             _dateTimeHelper = dateTimeHelper;
             _userRepository = userRepository;
+            _reactionRepository = reactionRepository;
         }
 
 
@@ -32,14 +35,17 @@
             var post = _mapper.Map<Post>(dto);
             post.createdAt = _dateTimeHelper.Now;
 
-            if (dto.files != null && dto.files.Count > 0)
+            if (dto.filesDto != null && dto.filesDto.Any())
             {
-                post.files = new List<string>();
-                foreach (var file in dto.files)
+                var files = post.files ?? new List<string>();
+
+                foreach (var photo in dto.filesDto)
                 {
-                    var savedFileName = await FileOperation.SaveFile(file, _filePath);
-                    post.files.Add(savedFileName);
+                    var imagePath = await FileOperation.SaveFile(photo, _filePath);
+                    files.Add(imagePath);
                 }
+
+                post.files = files;
             }
 
             await _postRepository.AddAsync(post);
@@ -87,11 +93,47 @@
             await _postRepository.SaveChangesAsync();
         }
 
-        //public async Task<List<PostGeneralResponse>> GetPostsGeneral()
-        //{
-        //    var posts = await _postRepository.GetPostsByUserIdAsync(userId);
-        //    return _mapper.Map<List<PostGeneralResponse>>(posts);
+        public async Task<PagedResult<PostGeneralResponse>> GetPostsGeneral(int pageNumber, int pageSize)
+        {
+            var pagedPosts = await _postRepository.GetPostsGeneral(pageNumber, pageSize);
 
-        //}
+            var postIds = pagedPosts.Data.Select(p => p.id).ToList();
+
+            var reactionsDictionary =
+                await _reactionRepository.GetReactionCountsForPosts(
+                    postIds,
+                    ReactionTargetType.post);
+
+            var mappedPosts = pagedPosts.Data.Select(post => new PostGeneralResponse
+            {
+                postId = post.id,
+                userName = post.user.FullName,
+                content = post.content,
+
+                files = post.files?
+                    .Select(file => FileSetting.GetMediaUrl(file, MediaType.postFile))
+                    .ToList(),
+
+                numberofReactss =
+                    reactionsDictionary.TryGetValue(post.id, out var count)
+                        ? count
+                        : 0,
+
+                createdAt = post.createdAt,
+                updatedAt = post.updatedAt,
+                profilePhoto = FileSetting.GetMediaUrl(post.user.ProfilePhoto, MediaType.userImage),
+                userId = post.userId
+
+            }).ToList();
+
+            return new PagedResult<PostGeneralResponse>
+            {
+                PageNumber = pagedPosts.PageNumber,
+                PageSize = pagedPosts.PageSize,
+                TotalCount = pagedPosts.TotalCount,
+                Data = mappedPosts
+            };
+        }
+
     }
 }

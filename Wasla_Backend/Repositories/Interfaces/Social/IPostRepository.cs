@@ -2,6 +2,7 @@
 {
     public interface IPostRepository : IGenericRepository<Post>
     {
+        public Task<PagedResult<Post>> GetPostsGeneral(int pageNumber, int pageSize);
 
     }
 }

@@ -8,7 +8,7 @@
         public const string ImagesPathBooking = "/assets/images/booking";
         public const string MLModelsPath = "/assets/ai/models";
         public const string QrCodePath = "/assets/qrcodes";
-        public const string FilesPosts = "/assets/files/posts";
+        public const string FilesPosts = "/assets/files/social";
 
         public const string BaseUrl = "https://waslammka.runasp.net";
 
