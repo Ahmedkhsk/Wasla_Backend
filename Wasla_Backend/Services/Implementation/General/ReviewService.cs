@@ -25,7 +25,7 @@ namespace Wasla_Backend.Services.Implementation
             _toxicityClassifier = toxicityClassifier;
         }
 
-        public async Task AddReviewAsync(AddReviewDto review)
+        public async Task AddReviewAsync(AddReviewDto review,string lan="en")
         {
             var user = await _resididentRepository.GetByIdAsync(review.userId);
             if (user == null)
@@ -65,6 +65,16 @@ namespace Wasla_Backend.Services.Implementation
             }
 
             await _serviceProviderRepositpry.SaveChangesAsync();
+            var metadata = new Dictionary<string, string>
+            {
+    { "UserName", user.FullName },
+    { "Rating", review.rating.ToString("0.0") }
+            };
+
+            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(
+                x => x.ReviewNotification(
+                serviceProvider.Id, NotificationType.reviewScreen,Review.Id.ToString(), user.ProfilePhoto, lan, metadata
+                    ));
 
             var AddReview = new ReviewHubData
             {

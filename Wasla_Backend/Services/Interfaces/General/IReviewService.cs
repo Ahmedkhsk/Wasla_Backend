@@ -4,7 +4,7 @@
     {
         Task<IEnumerable<ReviewResponseDto>> GetReviewsByServiceProviderIdAsync(string serviceProviderId);
         Task<IEnumerable<ReviewResponseDto>> GetReviewsByRating(int rating,string serviceProviderId);
-        Task AddReviewAsync(AddReviewDto review);
+        Task AddReviewAsync(AddReviewDto review, string lan);
         Task UpdateReview(UpdateReviewDto updatereview);
         Task DeleteReviewAsync(int reviewId);
     }

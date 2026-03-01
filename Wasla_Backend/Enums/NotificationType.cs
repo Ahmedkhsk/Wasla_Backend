@@ -1,14 +1,51 @@
 ﻿namespace Wasla_Backend.Enums
 {
-    public enum NotificationType
+   public enum NotificationType
     {
-        None = 0,
-        NewEvent = 1,
-        EventUpdate = 2,
-        EventCancellation = 3,
-        NewMessage = 4,
-        FriendRequest = 5,
-        FriendRequestAccepted = 6,
-    
-    }
+        splashScreen,
+        onboardingScreen,
+        signInScreen,
+        signUpScreen,
+        resetPassScreen,
+        verifyScreen,
+        forgotScreen,
+        residentInfoScreen,
+        doctorInfoScreen,
+        doctorCompleteInfoScreen,
+        resturentInfoScreen,
+        authMapScreen,
+        residentHomeScreen,
+        residenBottomNavBar,
+        allServicesScreen,
+        residentSearchScreen,
+        doctorScreen,
+        doctorDetailsScreen,
+        chnageLangScreen,
+        residentEditProfileScreen,
+        accountChangePassScreen,
+        doctorNavbarScreen,
+        doctorAddServiceScreen,
+        reviewScreen,
+        doctorSeeSevicesScreen,
+        doctorBookingScreen,
+        doctorEditBookingScreen,
+        doctorEditProfileScreen,
+        allFavouritesScreen,
+        residentPersonalInfoScreen,
+        residentBookingScreen,
+        gymCompleteInfoScreen,
+        gymDashbaordScreen,
+        gymBottomNavBarScreen,
+        gymAddUpdatePackageScreen,
+        residentProfileInfoScreen,
+        doctorProfileInfoScreen,
+        gymProfileInfoScreen,
+        gymEditProfileScreen,
+        gymResidentScreen,
+        gymResidentDetailsScreen,
+        gymResidentSeePackagesScreen,
+        gymScanQrScreen,
+        notificationsScreen
+
+}
 }

@@ -20,11 +20,13 @@
             {
                 foreach (var item in metadata)
                 {
+                    var value = item.Value ?? string.Empty; 
+
                     if (title.Contains($"{{{item.Key}}}"))
-                        title = title.Replace($"{{{item.Key}}}", item.Value);
+                        title = title.Replace($"{{{item.Key}}}", value);
 
                     if (body.Contains($"{{{item.Key}}}"))
-                        body = body.Replace($"{{{item.Key}}}", item.Value);
+                        body = body.Replace($"{{{item.Key}}}", value);
                 }
             }
 

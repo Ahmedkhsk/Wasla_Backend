@@ -41,7 +41,7 @@
                 return BadRequest(ResponseHelper.Fail(LocalizationKey.InvalidData, lan,
                     ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
 
-            await _reviewService.AddReviewAsync(addReviewDto);
+            await _reviewService.AddReviewAsync(addReviewDto,lan);
             return Ok(ResponseHelper.Success(LocalizationKey.ReviewAddedSuccessfully, lan));
         }
 
