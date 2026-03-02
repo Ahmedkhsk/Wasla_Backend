@@ -18,29 +18,7 @@ namespace Wasla_Backend.Repositories.Implementation.General
            
         }
 
-        public async Task<IEnumerable<NotificationResponseDto>> GetNotificationByUserIdAfterLastSeenAsync(string userId, int pageNumber, int pageSize)
-        {
-            return await _context.Notifications
-                 .AsNoTracking()
-                 .Where(n => n.UserId == userId && (n.LastSeenAt == null || n.CreatedAt > n.LastSeenAt))
-                 .OrderByDescending(n => n.CreatedAt)
-                 .Skip((pageNumber - 1) * pageSize)
-                 .Take(pageSize)
-                 .Select(n => new NotificationResponseDto
-                 {
-                     Id = n.Id,
-                     UserId = n.UserId,
-                     Type = n.Type,
-                     ReferenceId = n.ReferenceId,
-                     Title = n.Title,
-                     Body = n.Body,
-                     IsSeen = n.IsSeen,
-                     CreatedAt = n.CreatedAt,
-                     LastSeenAt = n.LastSeenAt,
-                     ImageUrl = n.ImageUrl
-                 })
-                 .ToListAsync();
-        }
+     
 
         public async Task<IEnumerable<NotificationResponseDto>> GetNotificationsByUserIdAsync(string userId, int pageNumber, int pageSize)
         {
@@ -61,7 +39,7 @@ namespace Wasla_Backend.Repositories.Implementation.General
                      IsSeen = n.IsSeen,
                      CreatedAt = n.CreatedAt,
                      LastSeenAt = n.LastSeenAt,
-                     ImageUrl = n.ImageUrl
+                     ImageUrl = FileSetting.GetMediaUrl(n.ImageUrl, MediaType.userImage)
                  })
                  .ToListAsync();
         }
@@ -87,7 +65,7 @@ namespace Wasla_Backend.Repositories.Implementation.General
         public async Task<int> CountNotificationByuserId(string userId)
         {
             return await _context.Notifications
-                .Where(n => n.UserId == userId && !n.IsSeen)
+                .Where(n => n.UserId == userId && !n.IsSeen && (n.LastSeenAt == null || n.CreatedAt > n.LastSeenAt))
                 .CountAsync();
         }
     }

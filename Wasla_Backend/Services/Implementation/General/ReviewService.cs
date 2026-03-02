@@ -72,8 +72,8 @@ namespace Wasla_Backend.Services.Implementation
             };
 
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(
-                x => x.ReviewNotification(
-                serviceProvider.Id, NotificationType.reviewScreen,Review.Id.ToString(), user.ProfilePhoto, lan, metadata
+                x => x.sendNotification(
+                serviceProvider.Id, NotificationType.reviewScreen,Review.Id.ToString(),user.ProfilePhoto, lan, metadata
                     ));
 
             var AddReview = new ReviewHubData

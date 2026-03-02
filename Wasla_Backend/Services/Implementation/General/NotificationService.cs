@@ -47,21 +47,7 @@ namespace Wasla_Backend.Services.Implementation.General
             await _notificationRepository.SaveChangesAsync();
         }
 
-        public async Task<PagedResult<NotificationResponseDto>> GetNotificationByUserIdAfterLastSeenAsync(string userId, int pageNumber, int pageSize)
-        {
-            var user =await _userRepository.GetByIdAsync(userId);
-            if (user == null)
-                throw new NotFoundException(LocalizationKey.UserNotFound);
-            var notifications = await _notificationRepository.GetNotificationByUserIdAfterLastSeenAsync(userId, pageNumber, pageSize);
-       return new PagedResult<NotificationResponseDto>
-       {
-           Data = notifications.ToList(),
-           TotalCount =await _notificationRepository.CountNotificationByuserId(userId),
-           PageNumber = pageNumber,
-           PageSize = pageSize
-       };
 
-        }
 
         public async Task<PagedResult<NotificationResponseDto>> GetNotificationsByUserIdAsync(string userId, int pageNumber, int pageSize)
         {
@@ -108,6 +94,14 @@ namespace Wasla_Backend.Services.Implementation.General
             };
             await _notificationRepository.AddAsync(notification);
             await _notificationRepository.SaveChangesAsync();
+        }
+
+        public async Task<int> GetNotificationCountByUserIdAfterLastSeenAsync(string userId)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+                throw new NotFoundException(LocalizationKey.UserNotFound);
+            return await _notificationRepository.CountNotificationByuserId(userId);
         }
     }
 }

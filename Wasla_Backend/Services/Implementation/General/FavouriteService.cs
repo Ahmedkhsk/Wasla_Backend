@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Services.Implementation
+﻿using System.Reflection.Metadata;
+
+namespace Wasla_Backend.Services.Implementation
 {
     public class FavouriteService : IFavouriteService
     {
@@ -11,7 +13,7 @@
             _userRepository = userRepository;
         }
 
-        public async Task<ServiceProviderFavourite> AddFavourite(string residentId, string serviceProviderId)
+        public async Task<ServiceProviderFavourite> AddFavourite(string residentId, string serviceProviderId,string lan)
         {
             var user = await _userRepository.GetUserByIdAsync(residentId);
             if (user == null)
@@ -30,6 +32,20 @@
 
             await _favouriteRepository.AddAsync(favourite);
             await _favouriteRepository.SaveChangesAsync();
+            var metadata = new Dictionary<string, string>
+           {
+           { "UserName", user.FullName ?? string.Empty }
+           };
+            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(
+            x => x.sendNotification(
+        serviceProviderId,
+        NotificationType.allFavouritesScreen,
+       serviceProviderId,
+        user.ProfilePhoto,
+        lan,
+        metadata
+    )
+);
 
             return new ServiceProviderFavourite
             {
@@ -69,6 +85,7 @@
 
             _favouriteRepository.Delete(favourite);
             await _favouriteRepository.SaveChangesAsync();
+
         }
     }
 }

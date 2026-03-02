@@ -12,7 +12,7 @@
         [HttpPost("AddFavourite")]
         public async Task<IActionResult> AddFavourite(string residentId, string serviceProviderId,  string lan = "en")
         {
-           var favourite= await _favouriteService.AddFavourite(residentId, serviceProviderId);
+           var favourite= await _favouriteService.AddFavourite(residentId, serviceProviderId,lan);
             return Ok(ResponseHelper.Success(LocalizationKey.FavouriteAddedSuccessfully, lan,favourite));
         }
         [HttpDelete("RemoveFavourite")]

@@ -15,12 +15,11 @@ namespace Wasla_Backend.Controllers.General
         }
 
         [HttpGet("User/{userId}/AfterLastSeen")]
-        public async Task<IActionResult> GetNotificationsAfterLastSeen(string userId, int pageNumber = 1, int pageSize = 20, string lan = "en")
+        public async Task<IActionResult> GetNotificationsAfterLastSeen(string userId, string lan = "en")
         {
-            var pagedResult = await _notificationService
-                .GetNotificationByUserIdAfterLastSeenAsync(userId, pageNumber, pageSize);
+            var result = await _notificationService.GetNotificationCountByUserIdAfterLastSeenAsync(userId);
 
-            return Ok(ResponseHelper.Success(LocalizationKey.NotificationsFetched, lan, pagedResult));
+            return Ok(ResponseHelper.Success(LocalizationKey.NotificationsFetched, lan, result));
         }
 
         [HttpGet("User/{userId}")]
