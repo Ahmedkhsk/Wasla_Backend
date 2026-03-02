@@ -6,11 +6,13 @@
     {
         private readonly IPostService _postService;
         private readonly IReactionService _reactionService;
+        private readonly ICommentService _commentService;
 
-        public SocialController(IPostService postService, IReactionService reactionService)
+        public SocialController(IPostService postService, IReactionService reactionService,ICommentService commentService)
         {
             _postService = postService;
             _reactionService = reactionService;
+            _commentService = commentService;
         }
 
         [HttpPost("Post")]
@@ -47,6 +49,27 @@
         {
             var posts = await _postService.GetPostsByUserId(userId, currentUser, pageNumber, pageSize);
             return Ok(ResponseHelper.Success(LocalizationKey.SuccessToGetPosts, lan, posts));
+        }
+
+        [HttpPost("Comment")]
+        public async Task<IActionResult> AddComment(AddCommentDto dto,string lan)
+        {
+            await _commentService.AddComment(dto);
+            return Ok(ResponseHelper.Success(LocalizationKey.FailedToCreateComment, lan));
+        }
+
+        [HttpPut("Commnet")]
+        public async Task<IActionResult> UpdateComment(UpdateCommentDto dto, string lan)
+        {
+            await _commentService.UpdateComment(dto);
+            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToUpdateComment, lan));
+        }
+
+        [HttpDelete("Comment")]
+        public async Task<IActionResult> DeleteComment(int commentId, string lan)
+        {
+            await _commentService.DeleteComment(commentId);
+            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToDeleteComment,lan));
         }
 
         [HttpPost("ToggleReaction")]

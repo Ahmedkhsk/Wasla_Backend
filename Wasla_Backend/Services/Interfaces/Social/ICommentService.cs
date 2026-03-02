@@ -1,6 +1,10 @@
 ﻿namespace Wasla_Backend.Services.Interfaces
 {
-    public class ICommentService
+    public interface ICommentService
     {
+        public Task AddComment(AddCommentDto dto);
+        public Task UpdateComment(UpdateCommentDto dto);
+        public Task DeleteComment(int commentId);
+
     }
 }
