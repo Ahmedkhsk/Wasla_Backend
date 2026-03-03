@@ -2,6 +2,6 @@
 {
     public interface ICommentRepository : IGenericRepository<Comment>
     {
-
+        public Task<PagedResult<GetCommentsResponse>> GetCommentsByPostIdAsync(GetCommentDto dto);
     }
 }

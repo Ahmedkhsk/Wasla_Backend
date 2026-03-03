@@ -5,6 +5,7 @@
         public Task AddComment(AddCommentDto dto);
         public Task UpdateComment(UpdateCommentDto dto);
         public Task DeleteComment(int commentId);
+        public Task<PagedResult<GetCommentsResponse>> GetCommentsResponsesByPostId(GetCommentDto dto);
 
     }
 }

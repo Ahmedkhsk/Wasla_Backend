@@ -46,7 +46,7 @@
             if (dto.file != null)
             {
                 if (oldFile != null)
-                     FileOperation.DeleteFile(comment.file, _filePath);
+                    FileOperation.DeleteFile(comment.file, _filePath);
 
                 var newImage = await FileOperation.SaveFile(dto.file, _filePath);
                 comment.file = newImage;
@@ -57,7 +57,7 @@
             _commentRepository.Update(comment);
             await _commentRepository.SaveChangesAsync();
         }
-       
+
         public async Task DeleteComment(int commentId)
         {
             var comment = await _commentRepository.GetByIdAsync(commentId);
@@ -69,6 +69,11 @@
 
             _commentRepository.Delete(comment);
             await _commentRepository.SaveChangesAsync();
+        }
+
+        public async Task<PagedResult<GetCommentsResponse>> GetCommentsResponsesByPostId(GetCommentDto dto)
+        {
+            return await _commentRepository.GetCommentsByPostIdAsync(dto);
         }
     }
 }

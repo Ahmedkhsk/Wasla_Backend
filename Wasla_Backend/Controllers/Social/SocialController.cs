@@ -52,24 +52,31 @@
         }
 
         [HttpPost("Comment")]
-        public async Task<IActionResult> AddComment(AddCommentDto dto,string lan)
+        public async Task<IActionResult> AddComment(AddCommentDto dto,string lan = "en")
         {
             await _commentService.AddComment(dto);
-            return Ok(ResponseHelper.Success(LocalizationKey.FailedToCreateComment, lan));
+            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToCreateComment, lan));
         }
 
         [HttpPut("Commnet")]
-        public async Task<IActionResult> UpdateComment(UpdateCommentDto dto, string lan)
+        public async Task<IActionResult> UpdateComment(UpdateCommentDto dto, string lan = "en")
         {
             await _commentService.UpdateComment(dto);
             return Ok(ResponseHelper.Success(LocalizationKey.SuccessToUpdateComment, lan));
         }
 
         [HttpDelete("Comment")]
-        public async Task<IActionResult> DeleteComment(int commentId, string lan)
+        public async Task<IActionResult> DeleteComment(int commentId, string lan = "en")
         {
             await _commentService.DeleteComment(commentId);
             return Ok(ResponseHelper.Success(LocalizationKey.SuccessToDeleteComment,lan));
+        }
+
+        [HttpGet("Comments")]
+        public async Task<IActionResult> GetCommentsByPostId([FromQuery] GetCommentDto dto)
+        {
+            var comments = await _commentService.GetCommentsResponsesByPostId(dto);
+            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToGetComments, dto.lan, comments));
         }
 
         [HttpPost("ToggleReaction")]

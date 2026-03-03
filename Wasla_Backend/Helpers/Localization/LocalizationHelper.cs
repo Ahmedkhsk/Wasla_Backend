@@ -1090,12 +1090,18 @@
                 ["en"] = "Failed to delete comment.",
                 ["ar"] = "فشل في حذف التعليق."
             },
+            [LocalizationKey.SuccessToUpdateComment] = new()
+            {
+                ["en"] = "Comment updated successfully.",
+                ["ar"] = "تم تعديل التعليق بنجاح."
+            },
             [LocalizationKey.SuccessToToggleReaction] = new()
             {
                 ["en"] = "Reaction toggled successfully.",
                 ["ar"] = "تم تحديث التفاعل بنجاح."
             },
             #endregion
+
             [LocalizationKey.DriverNotFound]=new()
             {
                 ["en"] = "Driver not found.",
