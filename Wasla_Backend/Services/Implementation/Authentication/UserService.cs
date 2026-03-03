@@ -139,6 +139,7 @@
             {
                 Token = token,
                 UserId = user.Id,
+                profilePhoto = FileSetting.GetMediaUrl(user.ProfilePhoto, MediaType.userImage),
                 Role = roles.FirstOrDefault(),
                 IsCompletedRegister = user.IsCompleteRegistration,
                 IsVerfied = user.IsVerified,
