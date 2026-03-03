@@ -926,7 +926,7 @@
                 ["en"] = "Notification deleted successfully.",
                 ["ar"] = "تم حذف الإشعار بنجاح."
             },
-            [LocalizationKey.NotificationAdded]=new()
+            [LocalizationKey.NotificationAdded] = new()
             {
                 ["en"] = "Notification added successfully.",
                 ["ar"] = "تم إضافة الإشعار بنجاح."
@@ -1096,6 +1096,31 @@
                 ["ar"] = "تم تحديث التفاعل بنجاح."
             },
             #endregion
+            [LocalizationKey.DriverNotFound]=new()
+            {
+                ["en"] = "Driver not found.",
+                ["ar"] = "السائق غير موجود."
+            },
+            [LocalizationKey.VehicleNumberOrLicenseNumberAlreadyExists]=new()
+            {
+                ["en"] = "Vehicle number or license number already exists.",
+                ["ar"] = "رقم المركبة أو رقم الرخصة موجود بالفعل."
+            },
+            [LocalizationKey.CarImagesAreRequired]=new()
+            {
+                ["en"] = "Car images are required.",
+                ["ar"] = "صور السيارة مطلوبة."
+            },
+            [LocalizationKey.DriverFilesAreRequired]=new()
+            {
+                ["en"] = "Driver files are required.",
+                ["ar"] = "ملفات السائق مطلوبة."
+            },
+            [LocalizationKey.DriverCompleteRegisterSuccess] = new()
+            {
+                ["en"] = "Driver registration completed successfully",
+                ["ar"] = "تم إكمال تسجيل السائق بنجاح"
+            },
         };
 
         public static string GetLocalizedMessage(LocalizationKey key, string lan)

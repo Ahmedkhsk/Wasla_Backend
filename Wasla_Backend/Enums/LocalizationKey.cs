@@ -286,5 +286,10 @@
         BookingStatusUpdaterIterationFailed,
         NoUnitFound,
         #endregion
+        DriverNotFound,
+        VehicleNumberOrLicenseNumberAlreadyExists,
+        CarImagesAreRequired,
+        DriverFilesAreRequired,
+        DriverCompleteRegisterSuccess,
     }
 }

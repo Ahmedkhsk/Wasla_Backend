@@ -8,6 +8,7 @@
         bookingImage,
         postFile,
         qrCode,
-        MLModel
+        MLModel,
+        DriverFilePath
     }
 }

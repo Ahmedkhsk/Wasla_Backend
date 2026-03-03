@@ -1,4 +1,5 @@
-﻿using Notification = Wasla_Backend.Models.GeneralModel.Notification;
+﻿using Wasla_Backend.Models.Driver;
+using Notification = Wasla_Backend.Models.GeneralModel.Notification;
 
 namespace Wasla_Backend.Data
 {

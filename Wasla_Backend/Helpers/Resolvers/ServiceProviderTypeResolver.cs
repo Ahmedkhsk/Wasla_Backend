@@ -1,4 +1,5 @@
-﻿using Wasla_Backend.Models.GymModel;
+﻿using Wasla_Backend.Models.Driver;
+using Wasla_Backend.Models.GymModel;
 
 namespace Wasla_Backend.Helpers.Resolvers
 {

@@ -9,6 +9,8 @@
         public const string MLModelsPath = "/assets/ai/models";
         public const string QrCodePath = "/assets/qrcodes";
         public const string FilesPosts = "/assets/files/social";
+        public const string DriverFilePath = "/assets/files/driver";
+        public const string DriverCarImagesPath = "/assets/images/driver";
 
         public const string BaseUrl = "https://waslammka.runasp.net";
 
@@ -26,6 +28,7 @@
                 MediaType.postFile => FilesPosts,
                 MediaType.qrCode => QrCodePath,
                 MediaType.MLModel => MLModelsPath,
+                MediaType.DriverFilePath => DriverFilePath,
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
 

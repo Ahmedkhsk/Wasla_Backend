@@ -67,6 +67,7 @@ global using Wasla_Backend.DTOs.GymDTOS;
 global using Wasla_Backend.DTOs.UserEventDTOS;
 global using Wasla_Backend.DTOs.NotificationDTOS;
 global using Wasla_Backend.DTOs.SoicalDTOS;
+global using Wasla_Backend.DTOs.DriverDTOS;
 #endregion
 
 #region Project - Models
@@ -75,6 +76,7 @@ global using Wasla_Backend.Models.BaseModel;
 global using Wasla_Backend.Models.GeneralModel;
 global using Wasla_Backend.Models.GymModel;
 global using Wasla_Backend.Models.Social;
+global using Wasla_Backend.Models.Driver;
 
 
 #endregion
@@ -83,6 +85,10 @@ global using Wasla_Backend.Models.Social;
 global using Wasla_Backend.Repositories.Interfaces;
 global using Wasla_Backend.Repositories.Interfaces.Gyms;
 global using Wasla_Backend.Repositories.Implementation;
+global using Wasla_Backend.Repositories.Interfaces.driver;
+global using Wasla_Backend.Repositories.Interfaces.General;
+
+
 #endregion
 
 #region Project - Services
@@ -91,7 +97,8 @@ global using Wasla_Backend.Services.Interfaces.General;
 global using Wasla_Backend.Services.Interfaces.GymService;
 global using Wasla_Backend.Services.Implementation;
 global using Wasla_Backend.Services.Implementation.General;
-global using Wasla_Backend.Repositories.Interfaces.General;
+global using Wasla_Backend.Services.Interfaces.Driver;
+
 
 #endregion
 
