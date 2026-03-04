@@ -29,6 +29,96 @@
             };
         }
 
+        public async Task<PagedResult<PostGeneralResponse>> GetPostsByUsingReactionType(GetPostsByUsingReactionTypeDto dto)
+        {
+
+            var reactionPostsQuery = _context.Reactions
+                .Where(r =>
+                    r.userId == dto.userId &&
+                    r.targetType == ReactionTargetType.post &&
+                    r.reactionType == dto.reactionType)
+                .Select(r => r.targetId);
+
+            var postsQuery = _context.Posts
+                .Where(p => reactionPostsQuery.Contains(p.id));
+
+            var totalCount = await postsQuery.CountAsync();
+
+            var posts = await postsQuery
+                .OrderByDescending(p => p.createdAt)
+                .Skip((dto.pageNumber - 1) * dto.pageSize)
+                .Take(dto.pageSize)
+                .Select(p => new
+                {
+                    p.id,
+                    p.userId,
+                    userName = p.user.FullName,
+                    profilePhoto = p.user.ProfilePhoto,
+                    p.content,
+                    p.files,
+                    p.createdAt,
+                    p.updatedAt,
+
+                    numberofReacts = _context.Reactions.Count(r =>
+                        r.targetType == ReactionTargetType.post &&
+                        r.targetId == p.id &&
+                        r.reactionType == ReactionType.love),
+
+                    numberofSaves = _context.Reactions.Count(r =>
+                        r.targetType == ReactionTargetType.post &&
+                        r.targetId == p.id &&
+                        r.reactionType == ReactionType.save),
+
+                    numberofComments = _context.Comments.Count(c =>
+                        c.postId == p.id),
+
+                    isLoved = _context.Reactions.Any(r =>
+                        r.userId == dto.userId &&
+                        r.targetType == ReactionTargetType.post &&
+                        r.targetId == p.id &&
+                        r.reactionType == ReactionType.love),
+
+                    isSaved = _context.Reactions.Any(r =>
+                        r.userId == dto.userId &&
+                        r.targetType == ReactionTargetType.post &&
+                        r.targetId == p.id &&
+                        r.reactionType == ReactionType.save)
+                })
+                .ToListAsync();
+
+            var mappedPosts = posts.Select(p => new PostGeneralResponse
+            {
+                postId = p.id,
+                userId = p.userId,
+                userName = p.userName,
+                content = p.content,
+
+                files = p.files == null
+                    ? new List<string>()
+                    : p.files.Select(f => FileSetting.GetMediaUrl(f, MediaType.postFile)).ToList(),
+
+                profilePhoto = FileSetting.GetMediaUrl(p.profilePhoto, MediaType.userImage),
+
+                numberofReacts = p.numberofReacts,
+                numberofSaves = p.numberofSaves,
+                numberofComments = p.numberofComments,
+
+                isLoved = p.isLoved,
+                isSaved = p.isSaved,
+
+                createdAt = p.createdAt,
+                updatedAt = p.updatedAt
+            }).ToList();
+
+            return new PagedResult<PostGeneralResponse>
+            {
+                Data = mappedPosts,
+                PageNumber = dto.pageNumber,
+                PageSize = dto.pageSize,
+                TotalCount = totalCount
+            };
+        }
+
         public async Task<PagedResult<Post>> GetPostsByUserId(string userId,int pageNumber, int pageSize)
         {
             var query = _dbSet
@@ -52,8 +142,5 @@
                 Data = posts
             };
         }
-
-
-
     }
 }

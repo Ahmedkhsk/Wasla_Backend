@@ -7,24 +7,25 @@
         private readonly DateTimeHelper _dateTimeHelper;
         private readonly IUserRepository _userRepository;
         private readonly IReactionRepository _reactionRepository;
-        private readonly string _filePath;
+        private readonly IFileService _fileService;
+        private readonly ICommentRepository _commentRepository;
 
         public PostService(IPostRepository postRepository,
                             IMapper mapper,
                             DateTimeHelper dateTimeHelper,
-                            IWebHostEnvironment webHostEnvironment,
                             IUserRepository userRepository,
-                            IReactionRepository reactionRepository
-                          )
+                            IReactionRepository reactionRepository,
+                            IFileService fileService,
+                            ICommentRepository commentRepository)
         {
             _postRepository = postRepository;
             _mapper = mapper;
-            _filePath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.FilesPosts.TrimStart('/'));
             _dateTimeHelper = dateTimeHelper;
             _userRepository = userRepository;
             _reactionRepository = reactionRepository;
+            _fileService = fileService;
+            _commentRepository = commentRepository;
         }
-
 
         public async Task AddPost(AddPostDto dto)
         {
@@ -37,15 +38,9 @@
 
             if (dto.filesDto != null && dto.filesDto.Any())
             {
-                var files = post.files ?? new List<string>();
-
-                foreach (var photo in dto.filesDto)
-                {
-                    var imagePath = await FileOperation.SaveFile(photo, _filePath);
-                    files.Add(imagePath);
-                }
-
-                post.files = files;
+                post.files = await _fileService.AddFilesAsync(
+                    dto.filesDto,
+                    FileSetting.FilesPosts);
             }
 
             await _postRepository.AddAsync(post);
@@ -60,20 +55,11 @@
 
             _mapper.Map(dto, post);
 
-            if (dto.files != null && dto.files.Count > 0)
-            {
-                if (post.files != null && post.files.Count > 0)
-                    foreach (var oldFile in post.files)
-                        FileOperation.DeleteFile(oldFile, _filePath);
-
-                post.files = new List<string>();
-
-                foreach (var file in dto.files)
-                {
-                    var savedFileName = await FileOperation.SaveFile(file, _filePath);
-                    post.files.Add(savedFileName);
-                }
-            }
+            post.files = await _fileService.ReplaceFilesAsync(
+                post.files,
+                dto.files,
+                FileSetting.FilesPosts,
+                ReplaceFileMode.ModelNullable);
 
             _postRepository.Update(post);
             await _postRepository.SaveChangesAsync();
@@ -85,15 +71,13 @@
             if (post == null)
                 throw new NotFoundException(LocalizationKey.PostNotFound);
 
-            if (post.files != null && post.files.Count > 0)
-                foreach (var oldFile in post.files)
-                    FileOperation.DeleteFile(oldFile, _filePath);
+            _fileService.DeleteFiles(post.files, FileSetting.FilesPosts);
 
             _postRepository.Delete(post);
             await _postRepository.SaveChangesAsync();
         }
 
-        public async Task<PagedResult<PostGeneralResponse>> GetPostsGeneral(string userId ,int pageNumber, int pageSize)
+        public async Task<PagedResult<PostGeneralResponse>> GetPostsGeneral(string userId, int pageNumber, int pageSize)
         {
             var user = await _userRepository.GetUserByIdAsync(userId);
             if (user == null)
@@ -103,14 +87,17 @@
 
             var postIds = pagedPosts.Data.Select(p => p.id).ToList();
 
-            var reactionsDictionary = await _reactionRepository.GetReactionCountsForPosts(postIds,ReactionTargetType.post,ReactionType.love);
+            var reactionsDictionary = await _reactionRepository.GetReactionCountsForPosts(postIds, ReactionTargetType.post, ReactionType.love);
 
-            var userReactedPosts = await _reactionRepository.GetUserReactedPostIds(userId,postIds,ReactionTargetType.post, ReactionType.love);
+            var userReactedPosts = await _reactionRepository.GetUserReactedPostIds(userId, postIds, ReactionTargetType.post, ReactionType.love);
             
-            var savesDictionary = await _reactionRepository.GetReactionCountsForPosts(postIds,ReactionTargetType.post, ReactionType.save);
-            
+            var commentsDictionary = await _commentRepository.GetCommentCountsForPosts(postIds);
+
+            var savesDictionary = await _reactionRepository.GetReactionCountsForPosts(postIds, ReactionTargetType.post, ReactionType.save);
+
             var userSavedPosts = await _reactionRepository.GetUserReactedPostIds(userId, postIds, ReactionTargetType.post, ReactionType.save);
-
+            
+            
             var mappedPosts = pagedPosts.Data.Select(post => new PostGeneralResponse
             {
                 postId = post.id,
@@ -121,12 +108,12 @@
                     .Select(file => FileSetting.GetMediaUrl(file, MediaType.postFile))
                     .ToList(),
 
-                numberofReacts = reactionsDictionary.TryGetValue(post.id, out var count) ? count: 0,
+                numberofReacts = reactionsDictionary.TryGetValue(post.id, out var count) ? count : 0,
                 numberofSaves = savesDictionary.TryGetValue(post.id, out var c) ? c : 0,
-
+                numberofComments = commentsDictionary.TryGetValue(post.id, out var cc) ? cc : 0,
 
                 isLoved = userReactedPosts.Contains(post.id),
-                isSaved  = userSavedPosts.Contains(post.id),
+                isSaved = userSavedPosts.Contains(post.id),
                 createdAt = post.createdAt,
                 updatedAt = post.updatedAt,
                 profilePhoto = FileSetting.GetMediaUrl(post.user.ProfilePhoto, MediaType.userImage),
@@ -143,7 +130,7 @@
             };
         }
 
-        public async Task<PostByUserIdResponse> GetPostsByUserId(string userId, string currentUserId,int pageNumber,int pageSize)
+        public async Task<PostByUserIdResponse> GetPostsByUserId(string userId, string currentUserId, int pageNumber, int pageSize)
         {
             var user = await _userRepository.GetUserByIdAsync(userId);
 
@@ -158,17 +145,17 @@
             var pagedPosts =
                 await _postRepository.GetPostsByUserId(userId, pageNumber, pageSize);
 
-
             var postIds = pagedPosts.Data.Select(p => p.id).ToList();
 
             var reactionsDictionary = await _reactionRepository.GetReactionCountsForPosts(postIds, ReactionTargetType.post, ReactionType.love);
 
             var userReactedPosts = await _reactionRepository.GetUserReactedPostIds(userId, postIds, ReactionTargetType.post, ReactionType.love);
+            
+            var commentsDictionary = await _commentRepository.GetCommentCountsForPosts(postIds);
 
             var savesDictionary = await _reactionRepository.GetReactionCountsForPosts(postIds, ReactionTargetType.post, ReactionType.save);
 
             var userSavedPosts = await _reactionRepository.GetUserReactedPostIds(userId, postIds, ReactionTargetType.post, ReactionType.save);
-
 
             var mappedPosts = pagedPosts.Data.Select(post => new PostRespnse
             {
@@ -180,7 +167,7 @@
 
                 numberofReacts = reactionsDictionary.TryGetValue(post.id, out var count) ? count : 0,
                 numberofSaves = savesDictionary.TryGetValue(post.id, out var c) ? c : 0,
-
+                numberofComments = commentsDictionary.TryGetValue(post.id, out var cc) ? cc : 0,
 
                 isLoved = userReactedPosts.Contains(post.id),
                 isSaved = userSavedPosts.Contains(post.id),
@@ -204,6 +191,11 @@
                     Data = mappedPosts
                 }
             };
+        }
+
+        public async Task<PagedResult<PostGeneralResponse>> GetPostsByUsingReactionType(GetPostsByUsingReactionTypeDto dto)
+        {
+            return await _postRepository.GetPostsByUsingReactionType(dto);
         }
     }
 }

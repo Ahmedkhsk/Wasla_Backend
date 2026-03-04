@@ -51,6 +51,13 @@
             return Ok(ResponseHelper.Success(LocalizationKey.SuccessToGetPosts, lan, posts));
         }
 
+        [HttpGet("Posts/ReactionType")]
+        public async Task<IActionResult> GetPostsByUsingReactionType([FromQuery] GetPostsByUsingReactionTypeDto dto)
+        {
+            var posts = await _postService.GetPostsByUsingReactionType(dto);
+            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToGetPosts, dto.lan, posts));
+        }
+
         [HttpPost("Comment")]
         public async Task<IActionResult> AddComment(AddCommentDto dto,string lan = "en")
         {

@@ -3,5 +3,6 @@
     public interface ICommentRepository : IGenericRepository<Comment>
     {
         public Task<PagedResult<GetCommentsResponse>> GetCommentsByPostIdAsync(GetCommentDto dto);
+        public Task<Dictionary<int, int>> GetCommentCountsForPosts(List<int> postIds);
     }
 }

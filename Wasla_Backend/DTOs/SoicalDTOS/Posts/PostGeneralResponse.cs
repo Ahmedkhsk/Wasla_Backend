@@ -12,6 +12,7 @@
         public List<string>? files { get; set; }
         public int numberofReacts { get; set; }
         public int numberofSaves { get; set; }
+        public int numberofComments { get; set; }
         public DateTime createdAt { get; set; }
         public DateTime? updatedAt { get; set; }
     }

@@ -4,13 +4,16 @@
     {
         private readonly ICommentRepository _commentRepository;
         private readonly DateTimeHelper _dateTimeHelper;
-        private readonly string _filePath;
+        private readonly IFileService _fileService;
 
-        public CommentService(ICommentRepository commentRepository, IWebHostEnvironment webHostEnvironment, DateTimeHelper dateTimeHelper)
+        public CommentService(
+            ICommentRepository commentRepository,
+            DateTimeHelper dateTimeHelper,
+            IFileService fileService)
         {
             _commentRepository = commentRepository;
             _dateTimeHelper = dateTimeHelper;
-            _filePath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.FilesPosts.TrimStart('/'));
+            _fileService = fileService;
         }
 
         public async Task AddComment(AddCommentDto dto)
@@ -24,10 +27,7 @@
             };
 
             if (dto.file != null)
-            {
-                var savedFileName = await FileOperation.SaveFile(dto.file, _filePath);
-                comment.file = savedFileName;
-            }
+              comment.file = await _fileService.AddFileAsync(dto.file,FileSetting.FilesPosts);
 
             await _commentRepository.AddAsync(comment);
             await _commentRepository.SaveChangesAsync();
@@ -42,15 +42,11 @@
             if (dto.content != null)
                 comment.content = dto.content;
 
-            string? oldFile = comment.file;
-            if (dto.file != null)
-            {
-                if (oldFile != null)
-                    FileOperation.DeleteFile(comment.file, _filePath);
-
-                var newImage = await FileOperation.SaveFile(dto.file, _filePath);
-                comment.file = newImage;
-            }
+            comment.file = await _fileService.ReplaceFileAsync(
+                comment.file,
+                dto.file,
+                FileSetting.FilesPosts,
+                ReplaceFileMode.ModelNullable);
 
             comment.createdAt = _dateTimeHelper.Now;
 
@@ -64,8 +60,7 @@
             if (comment == null)
                 throw new NotFoundException(LocalizationKey.CommentNotFound);
 
-            if (!string.IsNullOrEmpty(comment.file))
-                FileOperation.DeleteFile(comment.file, _filePath);
+            _fileService.DeleteFile(comment.file, FileSetting.FilesPosts);
 
             _commentRepository.Delete(comment);
             await _commentRepository.SaveChangesAsync();

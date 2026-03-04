@@ -7,6 +7,20 @@
             
         }
 
+        public async Task<Dictionary<int, int>> GetCommentCountsForPosts(List<int> postIds)
+        {
+            return await _context.Comments
+                .AsNoTracking()
+                .Where(c => postIds.Contains(c.postId))
+                .GroupBy(c => c.postId)
+                .Select(g => new
+                {
+                    PostId = g.Key,
+                    Count = g.Count()
+                })
+                .ToDictionaryAsync(x => x.PostId, x => x.Count);
+        }
+
         public async Task<PagedResult<GetCommentsResponse>> GetCommentsByPostIdAsync(GetCommentDto dto)
         {
             var query = _context.Comments

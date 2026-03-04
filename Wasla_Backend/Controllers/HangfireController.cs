@@ -1,12 +1,5 @@
-﻿using Hangfire;
-using Hangfire.Storage;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-
-[ApiController]
+﻿[ApiController]
 [Route("api/hangfire")]
-// حطه Authorize في الإنتاج
-// [Authorize(Roles = "Admin")]
 public class HangfireController : ControllerBase
 {
     private readonly JobStorage _storage;
@@ -16,7 +9,6 @@ public class HangfireController : ControllerBase
         _storage = JobStorage.Current;
     }
 
-    // كل الإحصائيات العامة
     [HttpGet("stats")]
     public IActionResult GetStats()
     {
