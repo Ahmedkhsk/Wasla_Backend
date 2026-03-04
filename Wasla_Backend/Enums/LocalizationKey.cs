@@ -292,7 +292,8 @@
         CarImagesAreRequired,
         DriverFilesAreRequired,
         DriverCompleteRegisterSuccess,
-        GetDriverProfileSuccess 
+        GetDriverProfileSuccess ,
+        ChangeDriverStatusSuccess
         #endregion
     }
 }

@@ -1133,7 +1133,12 @@
             {
                 ["en"] = "Driver profile fetched successfully.",
                 ["ar"] = "تم جلب ملف السائق بنجاح."
-            }, 
+            },
+            [LocalizationKey.ChangeDriverStatusSuccess]=new()
+            {
+                ["en"] = "Driver status changed successfully.",
+                ["ar"] = "تم تغيير حالة السائق بنجاح."
+            }
             #endregion
         };
 

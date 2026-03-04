@@ -22,7 +22,14 @@ namespace Wasla_Backend.Services.Implementation.Driver
             _imagesPath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.DriverCarImagesPath.TrimStart('/'));
         }
 
-
+        public async Task ChangeStatus(string driverId, DriverStatus newStatus)
+        {
+            var affectedRows =await _driverRepository.ChangeStatus(driverId, newStatus);
+            if (affectedRows == 0)
+            {
+                throw new NotFoundException(LocalizationKey.DriverNotFound);
+            }
+        }
 
         public async Task CompleteRegister(DriverCompleteRegisterDto driverCompleteRegisterDto)
         {

@@ -4,6 +4,8 @@
     {
         public Task CompleteRegister(DriverCompleteRegisterDto driverCompleteRegisterDto);
         public Task<DriverProfileDTO> GetDriverProfileByIdAsync(string id);
+        public Task ChangeStatus(string driverId, DriverStatus newStatus);
+
 
     }
 }

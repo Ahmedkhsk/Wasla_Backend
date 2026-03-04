@@ -8,7 +8,7 @@
         public string? LicenseNumber { get; set; }
         public int DrivingExperienceYears { get; set; }
         public string? CarImages { get; set; }
-        public bool IsOnline { get; set; }=false;
+        public DriverStatus DriverStatus { get; set; }=DriverStatus.Offline;
         public int TripsCount { get; set; }= 0;
 
         [NotMapped]

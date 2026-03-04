@@ -9,6 +9,12 @@ namespace Wasla_Backend.Repositories.Implementation.driver
         {
         }
 
+        public async Task<int> ChangeStatus(string driverId, DriverStatus newStatus)
+        {
+            return await _context.Drivers.Where(d => d.Id == driverId)
+                .ExecuteUpdateAsync(s => s.SetProperty(d => d.DriverStatus, newStatus));
+        }
+
         public async Task<Driver> GetDriverByGmailAsync(string Gmail)
         {
             return await _context.Drivers.FirstOrDefaultAsync(d => d.Email == Gmail);
@@ -36,7 +42,8 @@ namespace Wasla_Backend.Repositories.Implementation.driver
                     description = d.Description,
                     birthDay=d.BirthDay,
                     carImages=d.images,
-                    driverFiles = d.DriverFiles
+                    driverFiles = d.DriverFiles,
+                    status = (int)d.DriverStatus
 
 
                 }).AsNoTracking()
