@@ -43,6 +43,7 @@
 
                     createdAt = c.createdAt,
                     updatedAt = c.updatedAt,
+                    userId = c.userId,
 
                     numberOfLikes = _context.Reactions.Count(r =>
                         r.targetId == c.id &&

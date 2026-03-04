@@ -8,6 +8,7 @@
         public int numberOfLikes { get; set; }
         public string? file { get; set; }
         public string userName { get; set; }
+        public string userId { get; set; }
         public string userProfile { get; set; }
         public DateTime createdAt { get; set; }
         public DateTime updatedAt { get; set; }
