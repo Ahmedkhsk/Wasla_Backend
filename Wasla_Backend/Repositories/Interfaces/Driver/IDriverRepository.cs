@@ -4,5 +4,6 @@
     {
         public Task<Driver> GetDriverByGmailAsync(string Gmail);
         public Task<bool> IsExistByVehicleNumberOrLicenseNumberAsync(string vehicleNumber, string licenseNumber);
+        public Task<DriverProfileDTO> GetDriverProfileByIdAsync(string id);
     }
 }

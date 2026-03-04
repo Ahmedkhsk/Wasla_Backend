@@ -286,10 +286,13 @@
         BookingStatusUpdaterIterationFailed,
         NoUnitFound,
         #endregion
+        #region Driver
         DriverNotFound,
         VehicleNumberOrLicenseNumberAlreadyExists,
         CarImagesAreRequired,
         DriverFilesAreRequired,
         DriverCompleteRegisterSuccess,
+        GetDriverProfileSuccess 
+        #endregion
     }
 }

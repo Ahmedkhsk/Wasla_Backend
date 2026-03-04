@@ -1102,22 +1102,24 @@
             },
             #endregion
 
-            [LocalizationKey.DriverNotFound]=new()
+            #region Driver
+
+            [LocalizationKey.DriverNotFound] = new()
             {
                 ["en"] = "Driver not found.",
                 ["ar"] = "السائق غير موجود."
             },
-            [LocalizationKey.VehicleNumberOrLicenseNumberAlreadyExists]=new()
+            [LocalizationKey.VehicleNumberOrLicenseNumberAlreadyExists] = new()
             {
                 ["en"] = "Vehicle number or license number already exists.",
                 ["ar"] = "رقم المركبة أو رقم الرخصة موجود بالفعل."
             },
-            [LocalizationKey.CarImagesAreRequired]=new()
+            [LocalizationKey.CarImagesAreRequired] = new()
             {
                 ["en"] = "Car images are required.",
                 ["ar"] = "صور السيارة مطلوبة."
             },
-            [LocalizationKey.DriverFilesAreRequired]=new()
+            [LocalizationKey.DriverFilesAreRequired] = new()
             {
                 ["en"] = "Driver files are required.",
                 ["ar"] = "ملفات السائق مطلوبة."
@@ -1127,6 +1129,12 @@
                 ["en"] = "Driver registration completed successfully",
                 ["ar"] = "تم إكمال تسجيل السائق بنجاح"
             },
+            [LocalizationKey.GetDriverProfileSuccess] = new()
+            {
+                ["en"] = "Driver profile fetched successfully.",
+                ["ar"] = "تم جلب ملف السائق بنجاح."
+            }, 
+            #endregion
         };
 
         public static string GetLocalizedMessage(LocalizationKey key, string lan)

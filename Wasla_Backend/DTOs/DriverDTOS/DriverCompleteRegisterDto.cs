@@ -5,6 +5,7 @@
         public string Email { get; set; }
         public string FullName { get; set; }
         public string Phone { get; set; }
+        public string BirthDay { get; set; }
         public VehicleType VehicleType { get; set; }
         public string VehicleModel { get; set; }
         public string VehicleNumber { get; set; }

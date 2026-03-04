@@ -75,6 +75,26 @@ namespace Wasla_Backend.Services.Implementation.Driver
             _driverRepository.Update(driver);
             await _driverRepository.SaveChangesAsync();
 
-        }   
+        }
+
+        public async Task<DriverProfileDTO> GetDriverProfileByIdAsync(string id)
+        {
+            var driver=await _driverRepository.GetByIdAsync(id);
+            if (driver == null)
+            {
+                throw new NotFoundException(LocalizationKey.DriverNotFound);
+            }
+            var response = await _driverRepository.GetDriverProfileByIdAsync(id);
+            response.profilePhoto=FileSetting.GetMediaUrl(response.profilePhoto, MediaType.userImage);
+            if (response.carImages != null && response.carImages.Count > 0)
+            {
+                response.carImages = response.carImages.Select(image => FileSetting.GetMediaUrl(image, MediaType.DriverCarImage)).ToList();
+            }
+            if (response.driverFiles != null && response.driverFiles.Count > 0)
+            {
+                response.driverFiles = response.driverFiles.Select(file => FileSetting.GetMediaUrl(file, MediaType.DriverFilePath)).ToList();
+            }
+            return response;
+        }
     }
 }

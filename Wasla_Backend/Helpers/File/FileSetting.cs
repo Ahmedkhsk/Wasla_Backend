@@ -29,6 +29,7 @@
                 MediaType.qrCode => QrCodePath,
                 MediaType.MLModel => MLModelsPath,
                 MediaType.DriverFilePath => DriverFilePath,
+                MediaType.DriverCarImage => DriverCarImagesPath,
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
 

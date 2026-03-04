@@ -15,10 +15,16 @@ namespace Wasla_Backend.Controllers.Driver
         }
 
         [HttpPost("CompleteRegister")]
-        public async Task<IActionResult> CompleteRegister([FromForm] DriverCompleteRegisterDto driverCompleteRegisterDto,string lan="en")
+        public async Task<IActionResult> CompleteRegister([FromForm] DriverCompleteRegisterDto driverCompleteRegisterDto, string lan = "en")
         {
             await _driverService.CompleteRegister(driverCompleteRegisterDto);
-            return Ok(ResponseHelper.Success(LocalizationKey.DriverCompleteRegisterSuccess,lan));
+            return Ok(ResponseHelper.Success(LocalizationKey.DriverCompleteRegisterSuccess, lan));
+        }
+        [HttpGet("GetDriverProfileById")]
+        public async Task<IActionResult> GetDriverProfileById(string id, string lan = "en")
+        {
+            var driverProfile = await _driverService.GetDriverProfileByIdAsync(id);
+            return Ok(ResponseHelper.Success(LocalizationKey.GetDriverProfileSuccess, lan, driverProfile));
         }
     }
 }

@@ -9,6 +9,7 @@
         postFile,
         qrCode,
         MLModel,
-        DriverFilePath
+        DriverFilePath,
+        DriverCarImage
     }
 }

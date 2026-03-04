@@ -3,5 +3,7 @@
     public interface IDriverService
     {
         public Task CompleteRegister(DriverCompleteRegisterDto driverCompleteRegisterDto);
+        public Task<DriverProfileDTO> GetDriverProfileByIdAsync(string id);
+
     }
 }
