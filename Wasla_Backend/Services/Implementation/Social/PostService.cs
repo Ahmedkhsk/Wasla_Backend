@@ -52,6 +52,7 @@
             var post = await _postRepository.GetByIdAsync(dto.id);
             if (post == null)
                 throw new NotFoundException(LocalizationKey.PostNotFound);
+        
 
             _mapper.Map(dto, post);
 
