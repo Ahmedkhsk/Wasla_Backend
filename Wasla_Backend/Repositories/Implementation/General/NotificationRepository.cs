@@ -1,4 +1,5 @@
-﻿using Notification = Wasla_Backend.Models.GeneralModel.Notification;
+﻿using Newtonsoft.Json;
+using Notification = Wasla_Backend.Models.GeneralModel.Notification;
 
 namespace Wasla_Backend.Repositories.Implementation.General
 {
@@ -20,28 +21,39 @@ namespace Wasla_Backend.Repositories.Implementation.General
 
      
 
-        public async Task<IEnumerable<NotificationResponseDto>> GetNotificationsByUserIdAsync(string userId, int pageNumber, int pageSize)
+        public async Task<IEnumerable<NotificationResponseDto>> GetNotificationsByUserIdAsync(string userId, int pageNumber, int pageSize,string lan)
         {
-            return await _context.Notifications
-                 .AsNoTracking()
-                 .Where(n => n.UserId == userId)
-                 .OrderByDescending(n => n.CreatedAt)
-                 .Skip((pageNumber - 1) * pageSize)
-                 .Take(pageSize)
-                 .Select(n => new NotificationResponseDto
-                 {
-                     Id = n.Id,
-                     UserId = n.UserId,
-                     Type = n.Type,
-                     ReferenceId = n.ReferenceId,
-                     Title = n.Title,
-                     Body = n.Body,
-                     IsSeen = n.IsSeen,
-                     CreatedAt = n.CreatedAt,
-                     LastSeenAt = n.LastSeenAt,
-                     ImageUrl = FileSetting.GetMediaUrl(n.ImageUrl, MediaType.userImage)
-                 })
-                 .ToListAsync();
+            var notifications = await _context.Notifications
+            .AsNoTracking()
+            .Where(n => n.UserId == userId)
+            .OrderByDescending(n => n.CreatedAt)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+            var result = notifications.Select(n =>
+            {
+                var metadata = !string.IsNullOrEmpty(n.MetadataJson)
+                    ? JsonConvert.DeserializeObject<Dictionary<string, string>>(n.MetadataJson)
+                    : null;
+
+                var (title, body) = NotificationTemplateEngine.Generate(n.Type, lan, metadata);
+
+                return new NotificationResponseDto
+                {
+                    Id = n.Id,
+                    UserId = n.UserId,
+                    Type = n.Type,
+                    ReferenceId = n.ReferenceId,
+                    IsSeen = n.IsSeen,
+                    CreatedAt = n.CreatedAt,
+                    LastSeenAt = n.LastSeenAt,
+                    ImageUrl = FileSetting.GetMediaUrl(n.ImageUrl, MediaType.userImage),
+                    Title = title,
+                    Body = body
+                };
+            }).ToList();
+            return result;
         }
 
         public async Task MarkAsSeenAsync(int notificationId)

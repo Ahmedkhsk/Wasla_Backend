@@ -4,7 +4,7 @@ namespace Wasla_Backend.Repositories.Interfaces.General
 {
     public interface INotificationRepository:IGenericRepository<Notification>
     {
-        public Task<IEnumerable<NotificationResponseDto>> GetNotificationsByUserIdAsync(string userId, int pageNumber, int pageSize);
+        public Task<IEnumerable<NotificationResponseDto>> GetNotificationsByUserIdAsync(string userId, int pageNumber, int pageSize,string lan);
         public Task MarkAsSeenAsync(int notificationId);
         public Task MarkAllAsSeenByUserIdAsync(string userId);
         public Task DeleteNotificationByNotificationIdAsync(int notificationId);

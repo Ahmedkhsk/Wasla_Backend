@@ -1,4 +1,5 @@
 ﻿
+using Newtonsoft.Json;
 using Notification = Wasla_Backend.Models.GeneralModel.Notification;
 
 namespace Wasla_Backend.Services.Implementation.General
@@ -18,22 +19,33 @@ namespace Wasla_Backend.Services.Implementation.General
             _firebaseService = firebaseService;
         }
 
-        public async Task SendAndSaveNotificationAsync(string userId,NotificationType type, string referenceId, string imageUrl,
-            string language = "en", Dictionary<string, string>? metadata = null)
-        { 
-           var (title, body) = NotificationTemplateEngine.Generate(type, language, metadata);
+        public async Task SendAndSaveNotificationAsync(
+      string userId,
+      NotificationType type,
+      string referenceId,
+      string imageUrl,
+      string language = "en",
+      Dictionary<string, string>? metadata = null)
+        {
+            var (title, body) = NotificationTemplateEngine.Generate(type, language, metadata);
+
             var userTopic = $"User_{userId}";
             await _firebaseService.SendToTopicAsync(userTopic, title, body, referenceId, type);
+
+            var metadataJson = metadata != null
+                ? JsonConvert.SerializeObject(metadata)
+                : null;
+
             var notification = new Notification
             {
                 UserId = userId,
-                Title = title,
-                Body = body,
                 Type = type,
                 ReferenceId = referenceId,
+                MetadataJson = metadataJson,
                 CreatedAt = _dateTimeHelper.Now,
                 ImageUrl = imageUrl
-             };
+            };
+
             await _notificationRepository.AddAsync(notification);
             await _notificationRepository.SaveChangesAsync();
         }
@@ -49,12 +61,12 @@ namespace Wasla_Backend.Services.Implementation.General
 
 
 
-        public async Task<PagedResult<NotificationResponseDto>> GetNotificationsByUserIdAsync(string userId, int pageNumber, int pageSize)
+        public async Task<PagedResult<NotificationResponseDto>> GetNotificationsByUserIdAsync(string userId, int pageNumber, int pageSize,string lan)
         {
            var user =await _userRepository.GetByIdAsync(userId);
             if (user == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
-            var notifications =await _notificationRepository.GetNotificationsByUserIdAsync(userId,pageNumber,pageSize);
+            var notifications =await _notificationRepository.GetNotificationsByUserIdAsync(userId,pageNumber,pageSize,lan);
             return new PagedResult<NotificationResponseDto>
             {
                 Data = notifications.ToList(),
@@ -85,8 +97,7 @@ namespace Wasla_Backend.Services.Implementation.General
             var notification = new Notification
             {
                 UserId = createNotificationDto.UserId,
-                Title = createNotificationDto.Title,
-                Body = createNotificationDto.Body,
+             
                 Type = createNotificationDto.Type,
                 ReferenceId = createNotificationDto.ReferenceId,
                 ImageUrl = createNotificationDto.ImageUrl,

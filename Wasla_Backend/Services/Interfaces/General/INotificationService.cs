@@ -3,7 +3,7 @@
     public interface INotificationService
     {
 
-        public Task<PagedResult<NotificationResponseDto>> GetNotificationsByUserIdAsync(string userId, int pageNumber, int pageSize);
+        public Task<PagedResult<NotificationResponseDto>> GetNotificationsByUserIdAsync(string userId, int pageNumber, int pageSize, string lan);
         public Task MarkAsSeenAsync(int notificationId);
         public Task MarkAllAsSeenByUserIdAsync(string userId);
         public Task<int> GetNotificationCountByUserIdAfterLastSeenAsync(string userId);

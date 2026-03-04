@@ -26,7 +26,7 @@ namespace Wasla_Backend.Controllers.General
         public async Task<IActionResult> GetNotifications(string userId, int pageNumber = 1, int pageSize = 20, string lan = "en")
         {
             var pagedResult = await _notificationService
-                .GetNotificationsByUserIdAsync(userId, pageNumber, pageSize);
+                .GetNotificationsByUserIdAsync(userId, pageNumber, pageSize,lan);
 
             return Ok(ResponseHelper.Success(LocalizationKey.NotificationsFetched, lan, pagedResult));
         }
