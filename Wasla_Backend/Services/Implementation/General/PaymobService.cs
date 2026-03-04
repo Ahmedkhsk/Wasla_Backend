@@ -90,8 +90,18 @@
                 special_reference = specialReference,
                 expiration = 3600,
                 merchant_order_id = specialReference.ToString(),
-                callback = $"{baseUrl}/api/payment/callback",       
-                post_url = $"{baseUrl}/api/payment/server-callback"  
+                callback = $"{baseUrl}/api/payment/callback",
+                post_url = $"{baseUrl}/api/payment/server-callback",
+             items = new[]
+              {
+                 new
+                 {
+                name = $"Welcome to Wasla! 👋 {service.Type} Service",
+                amount = amountCents,
+                description = $"Dear {resident.FullName}, Booking #{createPaymentDto.BookingId} with {serviceProvider.FullName}",
+                quantity = 1
+                 }
+             }
             };
 
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, "https://accept.paymob.com/v1/intention/");
