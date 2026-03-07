@@ -45,7 +45,9 @@
         gymResidentDetailsScreen,
         gymResidentSeePackagesScreen,
         gymScanQrScreen,
-        notificationsScreen
+        notificationsScreen,
+            gymPaymentSuccess,
+        gymPaymentFailed
 
-}
+    }
 }

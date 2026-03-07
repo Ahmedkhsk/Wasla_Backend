@@ -4,6 +4,8 @@
     {
         Active,
         Completed,
-        Cancelled
+        Cancelled,
+        PaymentPending
+        
     }
 }

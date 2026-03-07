@@ -21,7 +21,6 @@
             var responseData = new BookingResponseDto
             {
                 bookingId = data.bookingId,
-                qrCodeUrl = data.qrCodeUrl
             };
             return Ok(ResponseHelper.Success(LocalizationKey.BookingAddedSuccessfully, lan, responseData));
         }

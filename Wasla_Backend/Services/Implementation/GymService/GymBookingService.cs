@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Services.Implementation.GymService
+﻿using Wasla_Backend.data;
+
+namespace Wasla_Backend.Services.Implementation.GymService
 {
     public class GymBookingService : IGymBookingService
     {
@@ -9,6 +11,8 @@
         private readonly DateTimeHelper _dateTimeHelper;
         private readonly IMapper _mapper;
         private readonly string _qrPath;
+        private readonly IHubContext<BookingHub> _hub;
+        private readonly INotificationService _notificationService;
 
         public GymBookingService(IGymBookingRepository gymBookingRepository,
                                  IPackageRepository packageRepository,
@@ -16,7 +20,9 @@
                                  IResidentRepository residentRepository,
                                  IMapper mapper,
                                  IWebHostEnvironment webHostEnvironment,
-                                 DateTimeHelper dateTimeHelper)
+                                 DateTimeHelper dateTimeHelper,
+                                 IHubContext<BookingHub> hub,
+                                 INotificationService notificationService)
         {
             _gymBookingRepository = gymBookingRepository;
             _packageRepository = packageRepository;
@@ -25,6 +31,8 @@
             _mapper = mapper;
             _qrPath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.QrCodePath.TrimStart('/'));
             _dateTimeHelper = dateTimeHelper;
+            _hub = hub;
+            _notificationService = notificationService;
         }
 
         public async Task<BookResponse> Book(GymBookDto gymBookDto, string lan)
@@ -32,6 +40,7 @@
             var gym = await _gymRepository.GetByIdAsync(gymBookDto.gymId);
             if (gym == null)
                 throw new NotFoundException(LocalizationKey.GymNotFound);
+            string gymphoto=FileSetting.GetMediaUrl(gym.ProfilePhoto, MediaType.gymImage);
 
             var resident = await _residentRepository.GetByIdAsync(gymBookDto.residentId);
             if (resident == null)
@@ -68,6 +77,12 @@
             gymBooking.ServiceProviderType = ServiceProviderType.Gym;
             gymBooking.Service = service;
 
+       
+
+         
+
+            await _gymBookingRepository.AddAsync(gymBooking);
+            await _gymBookingRepository.SaveChangesAsync();
             var QrData = new QrCodeDto
             {
                 bookingId = gymBooking.Id,
@@ -76,14 +91,16 @@
                 gymName = gym.BusinessName,
                 serviceName = service.Name.GetText(lan),
                 bookingTime = gymBooking.BookingDate,
-                expiryDate = gymBooking.BookingDate.AddMonths(durationInMonths)
+                expiryDate = gymBooking.BookingDate.AddMonths(durationInMonths),
+                bookingStatus = gymBooking.BookingStatus
             };
+
+
 
             var qrcode = QRHelper.GenerateQRFile(QrData);
             var filePath = await FileOperation.SaveFile(qrcode, _qrPath);
 
-            await _gymBookingRepository.AddAsync(gymBooking);
-            await _gymBookingRepository.SaveChangesAsync();
+            Hangfire.BackgroundJob.Schedule(()=>CheckPayment( filePath, gymBooking.Id,gym.BusinessName,gymphoto,lan), TimeSpan.FromMinutes(10));
 
             var expiryDate = gymBooking.BookingDate.AddMonths(durationInMonths);
             var delay = expiryDate - _dateTimeHelper.Now;
@@ -95,9 +112,9 @@
                 delay
             );
 
+
             return new BookResponse
             {
-                qrCodeUrl = filePath,
                 serviceId = gymBookDto.serviceId,
                 serviceProviderId = gymBookDto.gymId,
                 residentId = gymBookDto.residentId,
@@ -112,6 +129,51 @@
 
             booking.BookingStatus = GymBookingStatus.Completed;
             await _gymBookingRepository.SaveChangesAsync();
+        }
+
+        public async Task CheckPayment(string filepath, int bookingId, string gymName,string photo,string lan)
+        {
+            var booking = await _gymBookingRepository.GetByIdAsync(bookingId);
+            if (booking == null) return;
+
+            var metadata = new Dictionary<string, string>
+    {
+        { "GymName", gymName ?? string.Empty }
+    };
+
+            if (!booking.IsPaid)
+            {
+                booking.BookingStatus = GymBookingStatus.Cancelled;
+                await _gymBookingRepository.SaveChangesAsync();
+
+                await _notificationService.SendAndSaveNotificationAsync(
+                    booking.ResidentId,
+                    NotificationType.gymPaymentFailed,
+                    booking.Id.ToString(),
+                   photo,
+                    lan,
+                    metadata
+                );
+            }
+            else
+            {
+                booking.BookingStatus = GymBookingStatus.Active;
+                await _gymBookingRepository.SaveChangesAsync();
+
+                filepath = FileSetting.GetMediaUrl(filepath, MediaType.qrCode);
+
+                await _hub.Clients.All
+                    .SendAsync("PaymentConfirmed", filepath);
+
+                await _notificationService.SendAndSaveNotificationAsync(
+                    booking.ResidentId,
+                    NotificationType.gymPaymentSuccess,
+                    booking.Id.ToString(),
+                    filepath,
+                   lan,
+                    metadata
+                );
+            }
         }
 
         public async Task<BookHubData> Cancel(int bookingId)

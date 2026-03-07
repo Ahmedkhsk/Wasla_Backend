@@ -21,6 +21,20 @@
     BodyAr = "{UserName} أضافك إلى المفضلة",
     TitleEn = "Added to Favorites ❤️",
     BodyEn = "{UserName} added you to favorites"
+},new NotificationTemplate
+{
+    Type = NotificationType.gymPaymentSuccess,
+    TitleAr = "تم الدفع بنجاح ✅",
+    BodyAr = "تمت عملية الدفع بنجاح وتم تأكيد حجزك في {GymName}. اضغط لعرض رمز الدخول (QR Code).",
+    TitleEn = "Payment Successful ✅",
+    BodyEn = "Your payment was completed and your booking at {GymName} is confirmed. Tap to view your QR code."
+},new NotificationTemplate
+{
+    Type = NotificationType.gymPaymentFailed,
+    TitleAr = "فشلت عملية الدفع ❌",
+    BodyAr = "لم تكتمل عملية الدفع لحجزك في {GymName}. اضغط لإعادة المحاولة وتأكيد الحجز.",
+    TitleEn = "Payment Failed ❌",
+    BodyEn = "Your payment for {GymName} did not go through. Tap to try the payment again and confirm your booking."
 },
 
 

@@ -13,7 +13,7 @@
 
         [ForeignKey("GymId")]
         public Gym Gym { get; set; }
-        public GymBookingStatus BookingStatus { get; set; } = GymBookingStatus.Active;
+        public GymBookingStatus BookingStatus { get; set; } = GymBookingStatus.PaymentPending;
         public DateTime BookingDate { get; set; } = DateTime.UtcNow;
         public GymServiceType GymServiceType { get; set; }
 

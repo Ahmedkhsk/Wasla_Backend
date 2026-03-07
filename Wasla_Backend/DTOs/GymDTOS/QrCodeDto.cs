@@ -9,5 +9,6 @@
         public string serviceName { get; set; }
         public DateTime bookingTime { get; set; }
         public DateTime expiryDate { get; set; }
+        public GymBookingStatus bookingStatus { get; set; }
     }
 }
