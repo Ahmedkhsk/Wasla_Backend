@@ -12,7 +12,6 @@ namespace Wasla_Backend.Services.Implementation.GymService
         private readonly IMapper _mapper;
         private readonly string _qrPath;
         private readonly IHubContext<BookingHub> _hub;
-        private readonly INotificationService _notificationService;
 
         public GymBookingService(IGymBookingRepository gymBookingRepository,
                                  IPackageRepository packageRepository,
@@ -21,8 +20,8 @@ namespace Wasla_Backend.Services.Implementation.GymService
                                  IMapper mapper,
                                  IWebHostEnvironment webHostEnvironment,
                                  DateTimeHelper dateTimeHelper,
-                                 IHubContext<BookingHub> hub,
-                                 INotificationService notificationService)
+                                 IHubContext<BookingHub> hub
+                                )
         {
             _gymBookingRepository = gymBookingRepository;
             _packageRepository = packageRepository;
@@ -32,7 +31,6 @@ namespace Wasla_Backend.Services.Implementation.GymService
             _qrPath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.QrCodePath.TrimStart('/'));
             _dateTimeHelper = dateTimeHelper;
             _hub = hub;
-            _notificationService = notificationService;
         }
 
         public async Task<BookResponse> Book(GymBookDto gymBookDto, string lan)
@@ -100,7 +98,8 @@ namespace Wasla_Backend.Services.Implementation.GymService
             var qrcode = QRHelper.GenerateQRFile(QrData);
             var filePath = await FileOperation.SaveFile(qrcode, _qrPath);
 
-            Hangfire.BackgroundJob.Schedule(()=>CheckPayment( filePath, gymBooking.Id,gym.BusinessName,gymphoto,lan), TimeSpan.FromMinutes(10));
+            Hangfire.BackgroundJob.Schedule(()=>
+            CheckPayment( filePath, gymBooking.Id,gym.BusinessName,gymphoto,lan), TimeSpan.FromMinutes(1));
 
             var expiryDate = gymBooking.BookingDate.AddMonths(durationInMonths);
             var delay = expiryDate - _dateTimeHelper.Now;
@@ -131,7 +130,7 @@ namespace Wasla_Backend.Services.Implementation.GymService
             await _gymBookingRepository.SaveChangesAsync();
         }
 
-        public async Task CheckPayment(string filepath, int bookingId, string gymName,string photo,string lan)
+        public async Task CheckPayment(string qrPath, int bookingId, string gymName,string gymphoto,string lan)
         {
             var booking = await _gymBookingRepository.GetByIdAsync(bookingId);
             if (booking == null) return;
@@ -146,33 +145,37 @@ namespace Wasla_Backend.Services.Implementation.GymService
                 booking.BookingStatus = GymBookingStatus.Cancelled;
                 await _gymBookingRepository.SaveChangesAsync();
 
-                await _notificationService.SendAndSaveNotificationAsync(
-                    booking.ResidentId,
-                    NotificationType.gymPaymentFailed,
-                    booking.Id.ToString(),
-                   photo,
-                    lan,
-                    metadata
-                );
+                Hangfire.BackgroundJob.Enqueue<NotificationFunction>(
+                  x => x.sendNotification(
+                      booking.ResidentId,
+                      NotificationType.gymPaymentFailed,
+                      booking.Id.ToString(),
+                      gymphoto,
+                      lan,
+                      metadata
+                  )
+              );
             }
             else
             {
                 booking.BookingStatus = GymBookingStatus.Active;
                 await _gymBookingRepository.SaveChangesAsync();
 
-                filepath = FileSetting.GetMediaUrl(filepath, MediaType.qrCode);
+                qrPath = FileSetting.GetMediaUrl(qrPath, MediaType.qrCode);
 
-                await _hub.Clients.All
-                    .SendAsync("PaymentConfirmed", filepath);
+                await _hub.Clients.User(booking.ResidentId)
+                .SendAsync("PaymentConfirmed", qrPath);
 
-                await _notificationService.SendAndSaveNotificationAsync(
-                    booking.ResidentId,
-                    NotificationType.gymPaymentSuccess,
-                    booking.Id.ToString(),
-                    filepath,
-                   lan,
-                    metadata
-                );
+                Hangfire.BackgroundJob.Enqueue<NotificationFunction>(
+                  x => x.sendNotification(
+                      booking.ResidentId,
+                      NotificationType.gymPaymentSuccess,
+                     qrPath,
+                      gymphoto,
+                      lan,
+                      metadata
+                  )
+              );
             }
         }
 

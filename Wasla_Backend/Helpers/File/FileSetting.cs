@@ -18,6 +18,8 @@
         {
             if (string.IsNullOrEmpty(fileName))
                 return null;
+            if (fileName.StartsWith("http://") || fileName.StartsWith("https://"))
+                return fileName;
 
             string path = type switch
             {

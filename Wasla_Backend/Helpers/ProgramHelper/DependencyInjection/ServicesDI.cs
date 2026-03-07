@@ -12,6 +12,8 @@
                  .AsImplementedInterfaces()
                  .WithScopedLifetime()
              );
+            services.AddSingleton<IUserIdProvider, NameIdentifierUserIdProvider>();
+
 
             return services;
         }
