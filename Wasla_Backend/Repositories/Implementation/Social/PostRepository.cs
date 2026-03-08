@@ -29,6 +29,11 @@
             };
         }
 
+        public async Task<int> GetPostsCountByUserId(string userId)
+        {
+            return await _dbSet.CountAsync(p => p.userId == userId);
+        }
+
         public async Task<PagedResult<PostGeneralResponse>> GetPostsByUsingReactionType(GetPostsByUsingReactionTypeDto dto)
         {
 

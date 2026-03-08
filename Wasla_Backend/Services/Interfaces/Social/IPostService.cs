@@ -8,5 +8,8 @@
         public Task<PagedResult<PostGeneralResponse>> GetPostsGeneral(string currentUserId, int pageNumber, int pageSize);
         public Task<PostByUserIdResponse> GetPostsByUserId(string userId, string currentUserId, int pageNumber, int pageSize);
         public Task<PagedResult<PostGeneralResponse>> GetPostsByUsingReactionType(GetPostsByUsingReactionTypeDto dto);
+        public Task<InformationProfileResponse> InformationProfileResponse(string userId);
+
+
     }
 }

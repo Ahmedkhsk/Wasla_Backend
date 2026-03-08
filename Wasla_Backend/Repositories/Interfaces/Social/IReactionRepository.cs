@@ -6,5 +6,6 @@
         public Task<Dictionary<int, int>> GetReactionCountsForPosts(List<int> postIds, ReactionTargetType targetType, ReactionType reactionType);
         public Task<HashSet<int>> GetUserReactedPostIds(string userId, List<int> postIds, ReactionTargetType type, ReactionType reactionType);
         public Task<int> GetReactionCount(int targetId, ReactionTargetType type, ReactionType reactionType);
+        public Task<int> GetReactionCountForUserPosts(string userId, ReactionTargetType targetType, ReactionType reactionType);
     }
 }

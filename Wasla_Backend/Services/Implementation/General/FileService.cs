@@ -38,26 +38,20 @@
             return result;
         }
 
-        public async Task<List<string>?> ReplaceFilesAsync(IEnumerable<string>? oldFiles,IEnumerable<IFormFile>? newFiles,string folder,ReplaceFileMode mode)
+        public async Task<List<string>> ReplaceFilesAsync(IEnumerable<string>? oldFiles, IEnumerable<string>? existingFiles, IEnumerable<IFormFile>? newFiles, string folder)
         {
-            var path = GetPath(folder);
+            var result = oldFiles?.ToList() ?? new List<string>();
+            var filesToDelete = GetDeletedItems(oldFiles, existingFiles);
 
-            if (newFiles == null)
-            {
-                if (mode == ReplaceFileMode.ModelNotNullable)
-                    return oldFiles?.ToList();
+            DeleteFiles(filesToDelete, folder);
+            result.RemoveAll(f => filesToDelete.Contains(f));
 
-                if (mode == ReplaceFileMode.ModelNullable)
-                {
-                    DeleteFiles(oldFiles, folder);
-                    return null;
-                }
-            }
+            if (newFiles != null)
+                result.AddRange(await AddFilesAsync(newFiles, folder));
 
-            DeleteFiles(oldFiles, folder);
-
-            return await AddFilesAsync(newFiles, folder);
+            return result;
         }
+
         public async Task<string?> ReplaceFileAsync(string? oldFile, IFormFile? newFile, string folder, ReplaceFileMode mode)
         {
             var path = GetPath(folder);
@@ -77,6 +71,25 @@
             DeleteFile(oldFile, folder);
 
             return await AddFileAsync(newFile, folder);
+        }
+        public List<TItem> GetDeletedItems<TItem>(IEnumerable<TItem>? oldItems, IEnumerable<TItem>? newItems)
+        {
+            if (oldItems == null)
+                return new List<TItem>();
+
+            if (newItems == null)
+                return oldItems.ToList();
+
+            var newSet = new HashSet<TItem>(newItems);
+
+            return oldItems
+                .Where(item => !newSet.Contains(item))
+                .ToList();
+        }
+
+        public List<string>? ExtractFileNames(IEnumerable<string>? urls)
+        {
+            return urls?.Select(u => Path.GetFileName(u)).ToList();
         }
 
         public void DeleteFile(string? file, string folder)

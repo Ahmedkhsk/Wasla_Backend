@@ -6,9 +6,9 @@
 
         Task<List<string>> AddFilesAsync(IEnumerable<IFormFile>? files, string folder);
 
-        Task<List<string>?> ReplaceFilesAsync(IEnumerable<string>? oldFiles,IEnumerable<IFormFile>? newFiles,string folder,ReplaceFileMode mode);
+        public Task<List<string>> ReplaceFilesAsync(IEnumerable<string>? oldFiles, IEnumerable<string>? existingFiles, IEnumerable<IFormFile>? newFiles, string folder);
         Task<string?> ReplaceFileAsync(string? oldFile, IFormFile? newFile, string folder, ReplaceFileMode mode);
-        
+        public List<string>? ExtractFileNames(IEnumerable<string>? urls);
         void DeleteFiles(IEnumerable<string>? files, string folder);
         void DeleteFile(string? file, string folder);
     }

@@ -45,6 +45,12 @@
                 .ToDictionaryAsync(x => x.PostId, x => x.Count);
         }
 
+        public async Task<int> GetReactionCountForUserPosts(string userId, ReactionTargetType targetType, ReactionType reactionType)
+        {
+            return await _context.Reactions
+                .Where(r => r.targetType == targetType && r.reactionType == reactionType && r.userId == userId)
+                .CountAsync();
+        }
         public async Task<HashSet<int>> GetUserReactedPostIds(string userId,List<int> postIds,ReactionTargetType type, ReactionType reactionType)
         {
             return await _context.Reactions

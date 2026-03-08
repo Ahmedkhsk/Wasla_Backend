@@ -8,7 +8,7 @@
         private readonly IReactionService _reactionService;
         private readonly ICommentService _commentService;
 
-        public SocialController(IPostService postService, IReactionService reactionService,ICommentService commentService)
+        public SocialController(IPostService postService, IReactionService reactionService, ICommentService commentService)
         {
             _postService = postService;
             _reactionService = reactionService;
@@ -40,7 +40,7 @@
         [HttpGet("Posts")]
         public async Task<IActionResult> GetPostsGeneral(string currentUserId, int pageNumber = 1, int pageSize = 10, string lan = "en")
         {
-            var posts = await _postService.GetPostsGeneral(currentUserId,pageNumber, pageSize);
+            var posts = await _postService.GetPostsGeneral(currentUserId, pageNumber, pageSize);
             return Ok(ResponseHelper.Success(LocalizationKey.SuccessToGetPosts, lan, posts));
         }
 
@@ -59,7 +59,7 @@
         }
 
         [HttpPost("Comment")]
-        public async Task<IActionResult> AddComment(AddCommentDto dto,string lan = "en")
+        public async Task<IActionResult> AddComment(AddCommentDto dto, string lan = "en")
         {
             await _commentService.AddComment(dto);
             return Ok(ResponseHelper.Success(LocalizationKey.SuccessToCreateComment, lan));
@@ -76,7 +76,7 @@
         public async Task<IActionResult> DeleteComment(int commentId, string lan = "en")
         {
             await _commentService.DeleteComment(commentId);
-            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToDeleteComment,lan));
+            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToDeleteComment, lan));
         }
 
         [HttpGet("Comments")]
@@ -100,5 +100,11 @@
             return Ok(ResponseHelper.Success(LocalizationKey.SuccessToCheckReaction, lan, hasReacted));
         }
 
+        [HttpGet("InformationProfile")]
+        public async Task<IActionResult> InformationProfile(string userId, string lan = "en")
+        {
+            var informationProfile = await _postService.InformationProfileResponse(userId);
+            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToGetInformationProfile, lan, informationProfile));
+        }
     }
 }

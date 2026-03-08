@@ -1100,6 +1100,11 @@
                 ["en"] = "Reaction toggled successfully.",
                 ["ar"] = "تم تحديث التفاعل بنجاح."
             },
+            [LocalizationKey.SuccessToGetInformationProfile] = new()
+            {
+                ["en"] = "Profile information retrieved successfully.",
+                ["ar"] = "تم جلب معلومات الملف الشخصي بنجاح."
+            },
             #endregion
 
             #region Driver

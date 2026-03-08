@@ -52,15 +52,17 @@
             var post = await _postRepository.GetByIdAsync(dto.id);
             if (post == null)
                 throw new NotFoundException(LocalizationKey.PostNotFound);
-        
+
+            var existingFileNames = _fileService.ExtractFileNames(dto.existingFiles);
 
             _mapper.Map(dto, post);
 
             post.files = await _fileService.ReplaceFilesAsync(
                 post.files,
-                dto.files,
-                FileSetting.FilesPosts,
-                ReplaceFileMode.ModelNullable);
+                existingFileNames,
+                dto.newFiles,
+                FileSetting.FilesPosts
+            );
 
             _postRepository.Update(post);
             await _postRepository.SaveChangesAsync();
@@ -191,6 +193,28 @@
                     TotalCount = pagedPosts.TotalCount,
                     Data = mappedPosts
                 }
+            };
+        }
+
+        public async Task<InformationProfileResponse> InformationProfileResponse(string userId)
+        {
+            var user = await _userRepository.GetUserByIdAsync(userId);
+            if (user == null) 
+                throw new NotFoundException(LocalizationKey.UserNotFound);
+
+            var postsCount = await _postRepository.GetPostsCountByUserId(userId);
+            
+            var reactionsCount = await _reactionRepository.GetReactionCountForUserPosts(userId, ReactionTargetType.post, ReactionType.love);
+
+            var savesCount = await _reactionRepository.GetReactionCountForUserPosts(userId, ReactionTargetType.post, ReactionType.save);
+
+            return new InformationProfileResponse
+            {
+                userName = user.FullName,
+                profilePhoto = FileSetting.GetMediaUrl(user.ProfilePhoto, MediaType.userImage),
+                postsCount = postsCount,
+                reactionsCount = reactionsCount,
+                savesCount = savesCount
             };
         }
 

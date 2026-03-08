@@ -235,6 +235,7 @@
         SuccessToUpdatePost,
         FailedToUpdatePost,
         SuccessToDeletePost,
+        SuccessToGetInformationProfile,
         FailedToDeletePost,
         SuccessToGetPost,
         SuccessToGetPosts,

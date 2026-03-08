@@ -4,6 +4,9 @@
     {
         public int id { get; set; }
         public string? content { get; set; }
-        public List<IFormFile>? files { get; set; }
+
+        public List<string>? existingFiles { get; set; }
+
+        public List<IFormFile>? newFiles { get; set; }
     }
 }
