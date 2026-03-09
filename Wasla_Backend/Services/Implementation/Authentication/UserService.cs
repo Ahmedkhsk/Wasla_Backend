@@ -237,6 +237,7 @@
             {
                 u.Id,
                 u.Email,
+                type=u.GetType().Name,
             });
         }
 

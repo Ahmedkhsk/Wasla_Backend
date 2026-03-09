@@ -18,6 +18,12 @@
         public async Task<PagedResult<AllGymsDataDto>> AllGyms(int pageNumber, int pageSize)
         {
             var data =  await _gymRepo.AllGyms(pageNumber,pageSize);
+            data.ForEach(g =>
+            {
+                
+                    g.ImageUrl = FileSetting.GetMediaUrl(g.ImageUrl,MediaType.userImage);
+                
+            });
 
             return new PagedResult<AllGymsDataDto>
             {
@@ -108,7 +114,10 @@
             var gym =await _gymRepo.GetByIdAsync(id);
             if (gym == null)
                 throw new NotFoundException(LocalizationKey.GymNotFound);
-            return await _gymRepo.GymProfile(id);
+            var data= await _gymRepo.GymProfile(id);
+            data.profilePhoto = FileSetting.GetMediaUrl(data.profilePhoto, MediaType.userImage);
+            data.photos = data.photos.Select(p => FileSetting.GetMediaUrl(p, MediaType.gymImage)).ToList();
+            return data;
         }
     }
 }
