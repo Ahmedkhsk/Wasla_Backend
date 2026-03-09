@@ -290,7 +290,7 @@
        
         #region Driver
         DriverNotFound,
-        VehicleNumberOrLicenseNumberAlreadyExists,
+        VehicleNumberAlreadyExists,
         CarImagesAreRequired,
         DriverFilesAreRequired,
         DriverCompleteRegisterSuccess,

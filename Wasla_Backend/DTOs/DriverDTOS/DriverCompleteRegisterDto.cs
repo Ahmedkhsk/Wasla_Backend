@@ -9,7 +9,6 @@
         public VehicleType VehicleType { get; set; }
         public string VehicleModel { get; set; }
         public string VehicleNumber { get; set; }
-        public string LicenseNumber { get; set; }
         public int DrivingExperienceYears { get; set; }
         public string Description { get; set; }
         public double? Latitude { get; set; }

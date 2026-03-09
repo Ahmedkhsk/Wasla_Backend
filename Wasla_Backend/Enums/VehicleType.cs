@@ -3,7 +3,6 @@
     public enum VehicleType
     {
         Car = 0,
-        Scooter = 1,
-        Taxi = 2
+        Scooter = 1
     }
 }

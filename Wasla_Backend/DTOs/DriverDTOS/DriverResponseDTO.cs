@@ -6,7 +6,6 @@
         public string fullName { get; set; }
         public string phone { get; set; }
         public string vehicleNumber { get; set; }
-        public string licenseNumber { get; set; }
         public int drivingExperienceYears { get; set; }
         public int tripsCount { get; set; }
         public VehicleType vehicleType { get; set; }

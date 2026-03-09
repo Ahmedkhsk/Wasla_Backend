@@ -1114,11 +1114,12 @@
                 ["en"] = "Driver not found.",
                 ["ar"] = "السائق غير موجود."
             },
-            [LocalizationKey.VehicleNumberOrLicenseNumberAlreadyExists] = new()
+            [LocalizationKey.VehicleNumberAlreadyExists] = new()
             {
-                ["en"] = "Vehicle number or license number already exists.",
-                ["ar"] = "رقم المركبة أو رقم الرخصة موجود بالفعل."
+                ["en"] = "Vehicle number already exists.",
+                ["ar"] = "رقم السيارة موجود بالفعل."
             },
+            
             [LocalizationKey.CarImagesAreRequired] = new()
             {
                 ["en"] = "Car images are required.",

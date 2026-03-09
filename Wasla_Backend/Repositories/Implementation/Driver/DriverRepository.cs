@@ -39,7 +39,6 @@ namespace Wasla_Backend.Repositories.Implementation.driver
                     fullName = d.FullName,
                     phone = d.Phone,
                     vehicleNumber = d.VehicleNumber,
-                    licenseNumber = d.LicenseNumber,
                     profilePhoto = d.ProfilePhoto,
                     drivingExperienceYears = d.DrivingExperienceYears,
                     vehicleType = (VehicleType)d.VehicleType,
@@ -58,9 +57,9 @@ namespace Wasla_Backend.Repositories.Implementation.driver
                 .FirstOrDefaultAsync();
         }
 
-        public Task<bool> IsExistByVehicleNumberOrLicenseNumberAsync(string vehicleNumber, string licenseNumber)
+        public Task<bool> IsExistByVehicleNumberAsync(string vehicleNumber)
         {
-            return _context.Drivers.AnyAsync(d => d.VehicleNumber == vehicleNumber || d.LicenseNumber == licenseNumber);
+            return _context.Drivers.AnyAsync(d => d.VehicleNumber == vehicleNumber);
         }
     }
 }

@@ -5,7 +5,6 @@
         public VehicleType? VehicleType { get; set; }
         public string? VehicleModel { get; set; }
         public string? VehicleNumber { get; set; }
-        public string? LicenseNumber { get; set; }
         public int DrivingExperienceYears { get; set; }
         public string? CarImages { get; set; }
         public DriverStatus DriverStatus { get; set; }=DriverStatus.Offline;

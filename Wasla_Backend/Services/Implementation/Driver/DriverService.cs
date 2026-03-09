@@ -42,11 +42,10 @@ namespace Wasla_Backend.Services.Implementation.Driver
                 throw new NotFoundException(LocalizationKey.DriverNotFound);
             }
 
-            var IsExist = await _driverRepository.IsExistByVehicleNumberOrLicenseNumberAsync
-                (driverCompleteRegisterDto.VehicleNumber, driverCompleteRegisterDto.LicenseNumber);
+            var IsExist = await _driverRepository.IsExistByVehicleNumberAsync(driverCompleteRegisterDto.VehicleNumber);
             if (IsExist)
             {
-                throw new BadRequestException(LocalizationKey.VehicleNumberOrLicenseNumberAlreadyExists);
+                throw new BadRequestException(LocalizationKey.VehicleNumberAlreadyExists);
             }
             if(driverCompleteRegisterDto.CarImages == null || driverCompleteRegisterDto.CarImages.Count == 0)
             {

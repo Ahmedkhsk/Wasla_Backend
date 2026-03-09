@@ -3,7 +3,7 @@
     public interface IDriverRepository:IGenericRepository<Driver>
     {
         public Task<Driver> GetDriverByGmailAsync(string Gmail);
-        public Task<bool> IsExistByVehicleNumberOrLicenseNumberAsync(string vehicleNumber, string licenseNumber);
+        public Task<bool> IsExistByVehicleNumberAsync(string vehicleNumber);
         public Task<DriverProfileDTO> GetDriverProfileByIdAsync(string id);
         public Task<int> ChangeStatus(string driverId, DriverStatus newStatus);
         public Task<List<string>> GetAllOnlineDriversIds();
