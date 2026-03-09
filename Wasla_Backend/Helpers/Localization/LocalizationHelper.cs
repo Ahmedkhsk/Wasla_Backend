@@ -1143,8 +1143,121 @@
             {
                 ["en"] = "Driver status changed successfully.",
                 ["ar"] = "تم تغيير حالة السائق بنجاح."
-            }
+            },
             #endregion
+
+            #region ChatAndUser
+
+            [LocalizationKey.SuccessToGetUsers] = new()
+            {
+                ["en"] = "Users retrieved successfully.",
+                ["ar"] = "تم جلب المستخدمين بنجاح."
+            },
+
+            [LocalizationKey.NoUsersFound] = new()
+            {
+                ["en"] = "No users found.",
+                ["ar"] = "لا يوجد مستخدمون."
+            },
+
+            [LocalizationKey.FailedToGetUsers] = new()
+            {
+                ["en"] = "Failed to retrieve users.",
+                ["ar"] = "فشل في جلب المستخدمين."
+            },
+
+            [LocalizationKey.SuccessToGetChats] = new()
+            {
+                ["en"] = "Chats retrieved successfully.",
+                ["ar"] = "تم جلب المحادثات بنجاح."
+            },
+
+            [LocalizationKey.NoChatsFound] = new()
+            {
+                ["en"] = "No chats found.",
+                ["ar"] = "لا توجد محادثات."
+            },
+
+            [LocalizationKey.FailedToGetChats] = new()
+            {
+                ["en"] = "Failed to retrieve chats.",
+                ["ar"] = "فشل في جلب المحادثات."
+            },
+
+            [LocalizationKey.SuccessToAddMessage] = new()
+            {
+                ["en"] = "Message sent successfully.",
+                ["ar"] = "تم إرسال الرسالة بنجاح."
+            },
+
+            [LocalizationKey.FailedToAddMessage] = new()
+            {
+                ["en"] = "Failed to send message.",
+                ["ar"] = "فشل في إرسال الرسالة."
+            },
+
+            [LocalizationKey.SuccessToUpdateMessage] = new()
+            {
+                ["en"] = "Message updated successfully.",
+                ["ar"] = "تم تحديث الرسالة بنجاح."
+            },
+
+            [LocalizationKey.FailedToUpdateMessage] = new()
+            {
+                ["en"] = "Failed to update message.",
+                ["ar"] = "فشل في تحديث الرسالة."
+            },
+
+            [LocalizationKey.SuccessToDeleteMessage] = new()
+            {
+                ["en"] = "Message deleted successfully.",
+                ["ar"] = "تم حذف الرسالة بنجاح."
+            },
+
+            [LocalizationKey.FailedToDeleteMessage] = new()
+            {
+                ["en"] = "Failed to delete message.",
+                ["ar"] = "فشل في حذف الرسالة."
+            },
+
+            [LocalizationKey.MessageNotFound] = new()
+            {
+                ["en"] = "Message not found.",
+                ["ar"] = "الرسالة غير موجودة."
+            },
+
+            [LocalizationKey.SuccessToDeleteChat] = new()
+            {
+                ["en"] = "Chat deleted successfully.",
+                ["ar"] = "تم حذف المحادثة بنجاح."
+            },
+
+            [LocalizationKey.FailedToDeleteChat] = new()
+            {
+                ["en"] = "Failed to delete chat.",
+                ["ar"] = "فشل في حذف المحادثة."
+            },
+
+            [LocalizationKey.ChatNotFound] = new()
+            {
+                ["en"] = "Chat not found.",
+                ["ar"] = "المحادثة غير موجودة."
+            },
+
+            [LocalizationKey.SuccessToUpdateBio] = new()
+            {
+                ["en"] = "Bio updated successfully.",
+                ["ar"] = "تم تحديث النبذة الشخصية بنجاح."
+            },
+
+            [LocalizationKey.FailedToUpdateBio] = new()
+            {
+                ["en"] = "Failed to update bio.",
+                ["ar"] = "فشل في تحديث النبذة الشخصية."
+            },
+
+            #endregion
+       
         };
 
         public static string GetLocalizedMessage(LocalizationKey key, string lan)

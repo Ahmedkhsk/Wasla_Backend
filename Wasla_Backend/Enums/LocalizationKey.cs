@@ -287,6 +287,7 @@
         BookingStatusUpdaterIterationFailed,
         NoUnitFound,
         #endregion
+       
         #region Driver
         DriverNotFound,
         VehicleNumberOrLicenseNumberAlreadyExists,
@@ -294,7 +295,36 @@
         DriverFilesAreRequired,
         DriverCompleteRegisterSuccess,
         GetDriverProfileSuccess ,
-        ChangeDriverStatusSuccess
+        ChangeDriverStatusSuccess,
+        #endregion
+
+        #region ChatAndUserKeys
+
+        SuccessToGetUsers,
+        NoUsersFound,
+        FailedToGetUsers,
+
+        SuccessToGetChats,
+        NoChatsFound,
+        FailedToGetChats,
+        ChatNotFound,
+
+        SuccessToAddMessage,
+        FailedToAddMessage,
+
+        SuccessToUpdateMessage,
+        FailedToUpdateMessage,
+
+        SuccessToDeleteMessage,
+        FailedToDeleteMessage,
+        MessageNotFound,
+
+        SuccessToDeleteChat,
+        FailedToDeleteChat,
+
+        SuccessToUpdateBio,
+        FailedToUpdateBio,
+
         #endregion
     }
 }
