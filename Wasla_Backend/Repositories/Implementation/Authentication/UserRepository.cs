@@ -24,6 +24,17 @@
             => await _userManager.FindByIdAsync(id);
         public async Task<IEnumerable<ApplicationUser>>GetAll()
             => await _userManager.Users.ToListAsync();
+        
+        public async Task<IEnumerable<GetUsersDto>> GetUsers()
+            => await _userManager.Users.Select(user => new GetUsersDto
+            {
+                id = user.Id,
+                name = user.FullName,
+                image = FileSetting.GetMediaUrl(user.ProfilePhoto,MediaType.userImage),
+                bio = user.bio
+            })
+            .ToListAsync();
+
         public async Task<List<ApplicationUser>> GetUsersByIdsAsync(List<string> ids)
         {
             return await _context.Users

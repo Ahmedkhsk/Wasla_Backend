@@ -11,6 +11,7 @@
         public const string FilesPosts = "/assets/files/social";
         public const string DriverFilePath = "/assets/files/driver";
         public const string DriverCarImagesPath = "/assets/images/driver";
+        public const string FilesChat = "/assets/files/chat";
 
         public const string BaseUrl = "https://waslammka.runasp.net";
 

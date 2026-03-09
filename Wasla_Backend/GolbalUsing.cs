@@ -68,6 +68,7 @@ global using Wasla_Backend.DTOs.UserEventDTOS;
 global using Wasla_Backend.DTOs.NotificationDTOS;
 global using Wasla_Backend.DTOs.SoicalDTOS;
 global using Wasla_Backend.DTOs.DriverDTOS;
+global using Wasla_Backend.DTOs.ChatDTOS;
 #endregion
 
 #region Project - Models
