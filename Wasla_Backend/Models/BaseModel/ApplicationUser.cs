@@ -14,7 +14,8 @@
         public int CountViolations { get; set; } = 0;
         public UserStatus Status { get; set; } = UserStatus.Pending;
         public DateTime CreatedAt { get; set; }
-        public DateTime? LastLogin { get; set; }
+        public DateTime? lastActive { get; set; }
+        public string? bio { get; set; } = "Hey there! I'm using Wasla.";
         public override string? UserName
         {
             get => Email;

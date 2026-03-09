@@ -77,7 +77,7 @@ global using Wasla_Backend.Models.GeneralModel;
 global using Wasla_Backend.Models.GymModel;
 global using Wasla_Backend.Models.Social;
 global using Wasla_Backend.Models.Driver;
-
+global using Wasla_Backend.Models.ChatModel;
 
 #endregion
 
