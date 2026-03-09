@@ -8,6 +8,6 @@
 
         public string receiverId { get; set; }
 
-        public ICollection<Message> messages { get; set; }
+        public ICollection<ChatMessage> messages { get; set; }
     }
 }

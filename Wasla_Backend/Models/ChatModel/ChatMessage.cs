@@ -1,7 +1,6 @@
-﻿
-namespace Wasla_Backend.Models.ChatsModel
+﻿namespace Wasla_Backend.Models.ChatModel
 {
-    public class Message
+    public class ChatMessage
     {
         public int id { get; set; }
 
@@ -33,4 +32,5 @@ namespace Wasla_Backend.Models.ChatsModel
             set => fileJson = JsonSerializer.Serialize(value);
         }
     }
+
 }

@@ -1,4 +1,6 @@
-﻿using Wasla_Backend.Models.Driver;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
+using Wasla_Backend.Models.Driver;
 using Notification = Wasla_Backend.Models.GeneralModel.Notification;
 
 namespace Wasla_Backend.Data
@@ -29,6 +31,8 @@ namespace Wasla_Backend.Data
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Reaction> Reactions { get; set; }
+        public DbSet<Chat> Chats { get; set; }
+        public DbSet<ChatMessage> Messages { get; set; }
 
 
         public Context(DbContextOptions<Context> options) : base(options) { }
@@ -46,11 +50,8 @@ namespace Wasla_Backend.Data
             builder.Entity<Package>().ToTable("Packages");
             builder.Entity<GymBooking>().ToTable("GymBookings");
             builder.Entity<Payment>().ToTable("Payments");
-      
 
-
-
-
+           
             builder.Entity<BaseBooking>()
                 .HasOne(b => b.Resident)
                 .WithMany()
@@ -58,10 +59,10 @@ namespace Wasla_Backend.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<GymBooking>()
-         .HasOne(b => b.Gym)
-         .WithMany() 
-         .HasForeignKey(b => b.GymId)
-         .OnDelete(DeleteBehavior.Restrict); 
+                .HasOne(b => b.Gym)
+                .WithMany() 
+                .HasForeignKey(b => b.GymId)
+                .OnDelete(DeleteBehavior.Restrict); 
 
             builder.Entity<GymBooking>()
                 .HasOne(b => b.Service)
@@ -134,12 +135,14 @@ namespace Wasla_Backend.Data
                     sa.WithOwner();
                 });
             });
+            
             builder.Entity<BaseService>().HasQueryFilter(s=>!s.IsDeleted &&!s.IsHidden);
+            
             builder.Entity<Payment>()
-     .HasOne(p => p.Resident)
-     .WithMany()
-     .HasForeignKey(p => p.ResidentId)
-     .OnDelete(DeleteBehavior.Restrict);
+                 .HasOne(p => p.Resident)
+                 .WithMany()
+                 .HasForeignKey(p => p.ResidentId)
+                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Payment>()
                 .HasOne(p => p.ServiceProvider)
@@ -151,7 +154,7 @@ namespace Wasla_Backend.Data
                 .HasOne(p => p.Service)
                 .WithMany()
                 .HasForeignKey(p => p.ServiceId)
-            .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Reviews>()
                 .HasOne(r => r.ServiceProvider)
