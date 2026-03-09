@@ -32,5 +32,23 @@ namespace Wasla_Backend.Controllers.Driver
             await _driverService.ChangeStatus(driverId, newStatus);
             return Ok(ResponseHelper.Success(LocalizationKey.ChangeDriverStatusSuccess, lan));
         }
+        [HttpPost("TrackingDriver")]
+        public async Task<IActionResult> TrackingDriver(TrackingDriverDto trackingDriver, string lan = "en")
+        {
+            await _driverService.TrackingDriver(trackingDriver);
+            return Ok(ResponseHelper.Success(LocalizationKey.TrackingDriverSuccess, lan));
+        }
+        [HttpGet("GetDriverLocation")]
+        public async Task<IActionResult> GetDriverLocation(string driverId, string lan = "en")
+        {
+            var location = _driverService.GetDriverLocation(driverId);
+            return Ok(ResponseHelper.Success(LocalizationKey.GetDriverLocationSuccess, lan, location));
+        }
+        [HttpGet("GetTopNearestDriver")]
+        public async Task<IActionResult> GetTopNearestDriver(double latitude, double longitude, string lan = "en")
+        {
+            var driversIds = await _driverService.GetTopNearestDriver(latitude, longitude);
+            return Ok(ResponseHelper.Success(LocalizationKey.GetTopNearestDriverSuccess, lan, driversIds));
+        }
     }
 }

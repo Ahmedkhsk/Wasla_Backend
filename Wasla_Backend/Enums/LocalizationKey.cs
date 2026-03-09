@@ -296,6 +296,10 @@
         DriverCompleteRegisterSuccess,
         GetDriverProfileSuccess ,
         ChangeDriverStatusSuccess,
+        TrackingDriverSuccess,
+        GetDriverLocationSuccess,
+        DriverLocationNotFound,
+        GetTopNearestDriverSuccess,
         #endregion
 
         #region ChatAndUserKeys

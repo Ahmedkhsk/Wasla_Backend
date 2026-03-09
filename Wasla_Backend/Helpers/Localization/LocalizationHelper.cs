@@ -1144,6 +1144,26 @@
                 ["en"] = "Driver status changed successfully.",
                 ["ar"] = "تم تغيير حالة السائق بنجاح."
             },
+            [LocalizationKey.TrackingDriverSuccess]=new()
+            {
+                ["en"] = "Driver location tracked successfully.",
+                ["ar"] = "تم تتبع موقع السائق بنجاح."
+            },
+            [LocalizationKey.GetDriverLocationSuccess]=new()
+            {
+                ["en"] = "Driver location retrieved successfully.",
+                ["ar"] = "تم جلب موقع السائق بنجاح."
+            },
+            [LocalizationKey.DriverLocationNotFound]=new()
+            {
+                ["en"] = "Driver location not found.",
+                ["ar"] = "موقع السائق غير موجود."
+            },
+            [LocalizationKey.GetTopNearestDriverSuccess]=new()
+            {
+                ["en"] = "Top nearest drivers retrieved successfully.",
+                ["ar"] = "تم جلب أقرب السائقين بنجاح."
+            },
             #endregion
 
             #region ChatAndUser

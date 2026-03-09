@@ -120,6 +120,7 @@ global using Wasla_Backend.Helpers.Time;
 global using Wasla_Backend.Helpers.Cashing;
 global using Wasla_Backend.Helpers.NotificationHelper;
 global using Wasla_Backend.Helpers.Hangfire;
+global using Wasla_Backend.Helpers.MathHelper;
 
 
 #endregion

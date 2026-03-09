@@ -9,10 +9,12 @@ namespace Wasla_Backend.Services.Implementation.Driver
         private readonly IMapper _mapper;
         private readonly string _FilePath;
         private readonly string _imagesPath;
+        private readonly CacheManager _cacheManager;
         public DriverService(
             IDriverRepository driverRepository,
             IWebHostEnvironment webHostEnvironment,
-            IMapper mapper
+            IMapper mapper,
+            CacheManager cacheManager
         )
         {
             _driverRepository = driverRepository;
@@ -20,6 +22,7 @@ namespace Wasla_Backend.Services.Implementation.Driver
             _imagePath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.ImagesPathUser.TrimStart('/'));
             _FilePath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.DriverFilePath.TrimStart('/'));
             _imagesPath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.DriverCarImagesPath.TrimStart('/'));
+            _cacheManager = cacheManager;
         }
 
         public async Task ChangeStatus(string driverId, DriverStatus newStatus)
@@ -84,6 +87,23 @@ namespace Wasla_Backend.Services.Implementation.Driver
 
         }
 
+        public LocationDto GetDriverLocation(string driverId)
+        {
+            var key = $"TrackingDriver_{driverId}";
+            var location = _cacheManager.Get<TrackingDriverDto>(key);
+            if (location == null)
+            {
+                throw new NotFoundException(LocalizationKey.DriverLocationNotFound);
+            }
+            var locationDto = new LocationDto
+            {
+                Latitude = location.Latitude,
+                Longitude = location.Longitude
+            };
+            return locationDto;
+
+        }
+
         public async Task<DriverProfileDTO> GetDriverProfileByIdAsync(string id)
         {
             var driver=await _driverRepository.GetByIdAsync(id);
@@ -102,6 +122,46 @@ namespace Wasla_Backend.Services.Implementation.Driver
                 response.driverFiles = response.driverFiles.Select(file => FileSetting.GetMediaUrl(file, MediaType.DriverFilePath)).ToList();
             }
             return response;
+        }
+
+        public async Task<List<string>> GetTopNearestDriver(double latitude, double longitude)
+        {
+            var onlineDriversIds = await _driverRepository.GetAllOnlineDriversIds();
+
+            var queue = new PriorityQueue<string, double>();
+
+            foreach (var driverId in onlineDriversIds)
+            {
+                var key = $"TrackingDriver_{driverId}";
+                var location = _cacheManager.Get<TrackingDriverDto>(key);
+
+                if (location == null)
+                    continue;
+
+                var distance = GeoHelper.CalculateDistance(
+                    latitude,
+                    longitude,
+                    location.Latitude,
+                    location.Longitude);
+
+                queue.Enqueue(driverId, distance);
+
+                if (queue.Count > 5)
+                    queue.Dequeue();
+            }
+
+            return queue.UnorderedItems
+                .OrderBy(x => x.Priority)
+                .Select(x => x.Element)
+                .ToList();
+        }
+
+        public Task TrackingDriver(TrackingDriverDto trackingDriver)
+        {
+            var key = $"TrackingDriver_{trackingDriver.DriverId}";
+            _cacheManager.Set(key, trackingDriver, TimeSpan.FromSeconds(30));
+            return Task.CompletedTask;
+
         }
     }
 }

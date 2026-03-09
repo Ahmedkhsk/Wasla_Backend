@@ -6,5 +6,6 @@
         public Task<bool> IsExistByVehicleNumberOrLicenseNumberAsync(string vehicleNumber, string licenseNumber);
         public Task<DriverProfileDTO> GetDriverProfileByIdAsync(string id);
         public Task<int> ChangeStatus(string driverId, DriverStatus newStatus);
+        public Task<List<string>> GetAllOnlineDriversIds();
     }
 }

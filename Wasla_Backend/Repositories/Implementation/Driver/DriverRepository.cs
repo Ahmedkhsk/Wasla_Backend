@@ -1,6 +1,7 @@
 ﻿
 
 
+
 namespace Wasla_Backend.Repositories.Implementation.driver
 {
     public class DriverRepository:GenericRepository<Driver>, IDriverRepository
@@ -13,6 +14,13 @@ namespace Wasla_Backend.Repositories.Implementation.driver
         {
             return await _context.Drivers.Where(d => d.Id == driverId)
                 .ExecuteUpdateAsync(s => s.SetProperty(d => d.DriverStatus, newStatus));
+        }
+
+        public async Task<List<string>> GetAllOnlineDriversIds()
+        {
+            return await _context.Drivers.Where(d => d.DriverStatus == DriverStatus.Online).AsNoTracking()
+                .Select(d => d.Id)
+                .ToListAsync();
         }
 
         public async Task<Driver> GetDriverByGmailAsync(string Gmail)
