@@ -22,7 +22,6 @@
             {
                 
                     g.ImageUrl = FileSetting.GetMediaUrl(g.ImageUrl,MediaType.userImage);
-                
             });
 
             return new PagedResult<AllGymsDataDto>
