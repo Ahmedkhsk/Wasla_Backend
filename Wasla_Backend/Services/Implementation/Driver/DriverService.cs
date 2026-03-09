@@ -144,16 +144,19 @@ namespace Wasla_Backend.Services.Implementation.Driver
                     location.Latitude,
                     location.Longitude);
 
-                queue.Enqueue(driverId, distance);
+                queue.Enqueue(driverId, -distance);
 
                 if (queue.Count > 5)
                     queue.Dequeue();
             }
 
-            return queue.UnorderedItems
-                .OrderBy(x => x.Priority)
-                .Select(x => x.Element)
+            var top5 = queue.UnorderedItems
+                .Select(x => (DriverId: x.Element, Distance: -x.Priority)) 
+                .OrderBy(d => d.Distance) 
+                .Select(d => d.DriverId)
                 .ToList();
+
+            return top5;
         }
 
         public Task TrackingDriver(TrackingDriverDto trackingDriver)
