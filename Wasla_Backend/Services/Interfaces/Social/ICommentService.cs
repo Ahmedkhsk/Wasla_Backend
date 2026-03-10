@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Services.Interfaces
+﻿using Wasla_Backend.DTOs.PaginationDTOS;
+
+namespace Wasla_Backend.Services.Interfaces
 {
     public interface ICommentService
     {

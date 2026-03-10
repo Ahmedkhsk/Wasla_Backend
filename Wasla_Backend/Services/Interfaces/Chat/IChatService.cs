@@ -3,7 +3,8 @@
     public interface IChatService
     {
         public Task AddMessage(AddMessageDto dto);
-        public Task<IEnumerable<GetUsersDto>> getUsers();
+        public Task<PagedResult<GetUsersDto>> getUsers(GetUsersInChatDto pagination);
 
     }
 }
+    

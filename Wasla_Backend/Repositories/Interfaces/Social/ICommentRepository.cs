@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Repositories.Interfaces
+﻿using Wasla_Backend.DTOs.PaginationDTOS;
+
+namespace Wasla_Backend.Repositories.Interfaces
 {
     public interface ICommentRepository : IGenericRepository<Comment>
     {

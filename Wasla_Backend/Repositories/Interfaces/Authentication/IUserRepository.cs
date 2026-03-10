@@ -8,7 +8,7 @@
         public Task<ApplicationUser> GetUserByIdAsync(string id);
         public Task<IEnumerable<ApplicationUser>> GetAll();
         public Task<int> countUsers();
-        public Task<IEnumerable<GetUsersDto>> GetUsers();
+        public Task<PagedResult<GetUsersDto>> GetUsers(PaginationParams pagination);
         public Task<IEnumerable<ApplicationUser>> GetUsersByRoleAsync(string roleName);
         public Task<List<ApplicationUser>> GetUsersByIdsAsync(List<string> ids);
 

@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Services.Implementation
+﻿using Wasla_Backend.DTOs.PaginationDTOS;
+
+namespace Wasla_Backend.Services.Implementation
 {
     public class AdminService : IAdminService
     {

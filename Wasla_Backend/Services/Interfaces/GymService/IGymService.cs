@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Services.Interfaces.GymService
+﻿using Wasla_Backend.DTOs.PaginationDTOS;
+
+namespace Wasla_Backend.Services.Interfaces.GymService
 {
     public interface IGymService
     {

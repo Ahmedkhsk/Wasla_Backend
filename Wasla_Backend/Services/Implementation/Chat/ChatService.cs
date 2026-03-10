@@ -54,9 +54,9 @@
             await _messageRepository.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<GetUsersDto>> getUsers()
+        public async Task<PagedResult<GetUsersDto>> getUsers(GetUsersInChatDto pagination)
         {
-            return await _userRepository.GetUsers();
+            return await _userRepository.GetUsers(pagination);
         }
     }
 }

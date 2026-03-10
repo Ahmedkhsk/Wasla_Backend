@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.DTOs.SoicalDTOS
+﻿using Wasla_Backend.DTOs.PaginationDTOS;
+
+namespace Wasla_Backend.DTOs.SoicalDTOS
 {
     public class PostByUserIdResponse
     {

@@ -80,13 +80,13 @@
             await _postRepository.SaveChangesAsync();
         }
 
-        public async Task<PagedResult<PostGeneralResponse>> GetPostsGeneral(string userId, int pageNumber, int pageSize)
+        public async Task<PagedResult<PostGeneralResponse>> GetPostsGeneral(string userId, PaginationParams paginationParams)
         {
             var user = await _userRepository.GetUserByIdAsync(userId);
             if (user == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
 
-            var pagedPosts = await _postRepository.GetPostsGeneral(pageNumber, pageSize);
+            var pagedPosts = await _postRepository.GetPostsGeneral(paginationParams);
 
             var postIds = pagedPosts.Data.Select(p => p.id).ToList();
 

@@ -69,6 +69,7 @@ global using Wasla_Backend.DTOs.NotificationDTOS;
 global using Wasla_Backend.DTOs.SoicalDTOS;
 global using Wasla_Backend.DTOs.DriverDTOS;
 global using Wasla_Backend.DTOs.ChatDTOS;
+global using Wasla_Backend.DTOs.PaginationDTOS;
 #endregion
 
 #region Project - Models
@@ -121,7 +122,7 @@ global using Wasla_Backend.Helpers.Cashing;
 global using Wasla_Backend.Helpers.NotificationHelper;
 global using Wasla_Backend.Helpers.Hangfire;
 global using Wasla_Backend.Helpers.MathHelper;
-
+global using Wasla_Backend.Helpers.PaginationHelper;
 
 #endregion
 

@@ -1,5 +1,6 @@
 ﻿
 using Newtonsoft.Json;
+using Wasla_Backend.DTOs.PaginationDTOS;
 using Notification = Wasla_Backend.Models.GeneralModel.Notification;
 
 namespace Wasla_Backend.Services.Implementation.General

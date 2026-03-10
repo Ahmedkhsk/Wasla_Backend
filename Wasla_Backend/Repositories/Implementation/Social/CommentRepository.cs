@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Repositories.Implementation
+﻿using Wasla_Backend.DTOs.PaginationDTOS;
+
+namespace Wasla_Backend.Repositories.Implementation
 {
     public class CommentRepository : GenericRepository<Comment>, ICommentRepository
     {

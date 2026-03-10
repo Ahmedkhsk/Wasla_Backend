@@ -38,9 +38,9 @@
         }
 
         [HttpGet("Posts")]
-        public async Task<IActionResult> GetPostsGeneral(string currentUserId, int pageNumber = 1, int pageSize = 10, string lan = "en")
+        public async Task<IActionResult> GetPostsGeneral(string currentUserId, [FromQuery]PaginationParams paginationParams, string lan = "en")
         {
-            var posts = await _postService.GetPostsGeneral(currentUserId, pageNumber, pageSize);
+            var posts = await _postService.GetPostsGeneral(currentUserId, paginationParams);
             return Ok(ResponseHelper.Success(LocalizationKey.SuccessToGetPosts, lan, posts));
         }
 
