@@ -1165,6 +1165,16 @@
                 ["en"] = "Top nearest drivers retrieved successfully.",
                 ["ar"] = "تم جلب أقرب السائقين بنجاح."
             },
+            [LocalizationKey.VehicleTypeNotSupported]=new()
+            {
+                ["en"] = "Vehicle type not supported.",
+                ["ar"] = "نوع السيارة غير مدعوم."
+            },
+            [LocalizationKey.EstimateRideSuccessfully]=new()
+            {
+                ["en"] = "Ride estimated successfully.",
+                ["ar"] = "تم تقدير الرحلة بنجاح."
+            },
             #endregion
 
             #region ChatAndUser

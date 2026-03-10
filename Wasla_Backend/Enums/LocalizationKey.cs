@@ -300,6 +300,8 @@
         GetDriverLocationSuccess,
         DriverLocationNotFound,
         GetTopNearestDriverSuccess,
+        VehicleTypeNotSupported,
+        EstimateRideSuccessfully,
         #endregion
 
         #region ChatAndUserKeys

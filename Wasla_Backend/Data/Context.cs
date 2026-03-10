@@ -33,6 +33,7 @@ namespace Wasla_Backend.Data
         public DbSet<Reaction> Reactions { get; set; }
         public DbSet<Chat> Chats { get; set; }
         public DbSet<ChatMessage> Messages { get; set; }
+        public DbSet<Ride> Rides { get; set; }
 
 
         public Context(DbContextOptions<Context> options) : base(options) { }
