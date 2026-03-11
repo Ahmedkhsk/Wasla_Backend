@@ -15,7 +15,7 @@
                     (c.senderId == receiverId && c.receiverId == senderId));
         }
 
-        public async Task<PagedResult<GetChats>> GetChatss(GetGeneralDto<string> pagination)
+        public async Task<PagedResult<GetChats>> GetChats(GetGeneralDto<string> pagination)
         {
             var query = _dbSet
                 .Where(c => c.senderId == pagination.id || c.receiverId == pagination.id)
@@ -30,7 +30,7 @@
                 {
                     chatId = x.chat.id,
                     receiverId = x.chat.receiverId,
-
+                    isEdit = x.lastMessage.isEdited,
                     messageText = x.lastMessage.messageText,
                     sentAt = x.lastMessage.sentAt,
                     readAt = x.lastMessage.readAt,

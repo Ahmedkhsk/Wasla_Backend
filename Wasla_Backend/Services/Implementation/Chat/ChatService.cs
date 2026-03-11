@@ -137,9 +137,9 @@
             return await _userRepository.GetUsers(pagination);
         }
 
-        public async Task<PagedResult<GetChats>> GetChatss(GetGeneralDto<string> pagination)
+        public async Task<PagedResult<GetChats>> GetChats(GetGeneralDto<string> pagination)
         {
-            var result =  await _chatRepository.GetChatss(pagination);
+            var result =  await _chatRepository.GetChats(pagination);
 
             foreach (var chat in result.Data)
             {

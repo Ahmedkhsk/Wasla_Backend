@@ -4,5 +4,6 @@
     {
         public string userId { get; set; }
         public string bio { get; set; }
+        public string lan { get; set; } = "en";
     }
 }
