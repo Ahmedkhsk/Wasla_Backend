@@ -7,6 +7,7 @@
         doctorCV,
         bookingImage,
         postFile,
+        chatFile,
         qrCode,
         MLModel,
         DriverFilePath,

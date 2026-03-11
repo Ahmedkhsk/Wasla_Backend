@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wasla_Backend.Data;
 
@@ -11,9 +12,11 @@ using Wasla_Backend.Data;
 namespace Wasla_Backend.data
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20260311135942_updateDbMessage")]
+    partial class updateDbMessage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -395,7 +398,11 @@ namespace Wasla_Backend.data
 
                     b.HasKey("id");
 
-                    b.ToTable("Chats", (string)null);
+                    b.HasIndex("receiverId");
+
+                    b.HasIndex("senderId");
+
+                    b.ToTable("Chats");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.ChatModel.ChatMessage", b =>
@@ -480,30 +487,6 @@ namespace Wasla_Backend.data
                     b.HasKey("Id");
 
                     b.ToTable("DoctorSpecializations");
-                });
-
-            modelBuilder.Entity("Wasla_Backend.Models.Driver.RideDispatchJob", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("DriverId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("JobId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("RideId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("RideDispatchJobs");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Favourites", b =>
@@ -941,7 +924,7 @@ namespace Wasla_Backend.data
                     b.ToTable("ServiceProvider");
                 });
 
-            modelBuilder.Entity("Wasla_Backend.Models.Driver.ride", b =>
+            modelBuilder.Entity("Wasla_Backend.Models.Driver.Ride", b =>
                 {
                     b.HasBaseType("Wasla_Backend.Models.BaseModel.BaseBooking");
 
@@ -1522,17 +1505,11 @@ namespace Wasla_Backend.data
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Wasla_Backend.Models.Driver.ride", b =>
+            modelBuilder.Entity("Wasla_Backend.Models.Driver.Ride", b =>
                 {
                     b.HasOne("Wasla_Backend.Models.Driver.Driver", "Driver")
                         .WithMany()
                         .HasForeignKey("DriverId");
-
-                    b.HasOne("Wasla_Backend.Models.BaseModel.BaseBooking", null)
-                        .WithOne()
-                        .HasForeignKey("Wasla_Backend.Models.Driver.Ride", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("Driver");
                 });

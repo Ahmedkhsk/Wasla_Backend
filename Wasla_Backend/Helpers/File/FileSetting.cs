@@ -33,6 +33,7 @@
                 MediaType.MLModel => MLModelsPath,
                 MediaType.DriverFilePath => DriverFilePath,
                 MediaType.DriverCarImage => DriverCarImagesPath,
+                MediaType.chatFile => FilesChat,
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
 
