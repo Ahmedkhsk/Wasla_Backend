@@ -316,10 +316,11 @@
 
         #region ChatAndUserKeys
 
-    SuccessToGetUsers,
+        SuccessToGetUsers,
         NoUsersFound,
         FailedToGetUsers,
-
+        MessageNotFoundOrNoPermission,
+        ChatNotFoundOrNoPermission,
         SuccessToGetChats,
         NoChatsFound,
         FailedToGetChats,

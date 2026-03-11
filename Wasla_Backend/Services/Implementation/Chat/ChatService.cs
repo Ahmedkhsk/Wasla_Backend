@@ -20,8 +20,8 @@
 
         public async Task AddMessage(AddMessageDto dto)
         {
-            var chat = await _chatRepository.GetChatByParticipantsAsync(dto.senderId,dto.reciverId);
-            
+            var chat = await _chatRepository.GetChatByParticipantsAsync(dto.senderId, dto.reciverId);
+
             if (chat == null)
             {
                 chat = new Chat
@@ -32,7 +32,7 @@
                 await _chatRepository.AddAsync(chat);
                 await _chatRepository.SaveChangesAsync();
             }
-            
+
             var message = new ChatMessage
             {
                 chatId = chat.id,
@@ -41,7 +41,7 @@
                 type = dto.type,
                 sentAt = _dateTimeHelper.Now
             };
-            
+
             if (dto.audio != null)
             {
                 message.audio = await _fileService.AddFileAsync(dto.audio, FileSetting.FilesChat);
@@ -54,9 +54,110 @@
             await _messageRepository.SaveChangesAsync();
         }
 
+        public async Task DeleteMessage(int messageId, string userId)
+        {
+            var message = await _messageRepository.GetByIdAsync(messageId);
+            if (message == null || message.senderId != userId)
+            {
+                throw new NotFoundException(LocalizationKey.MessageNotFoundOrNoPermission);
+            }
+            if (!string.IsNullOrEmpty(message.audio))
+            {
+                _fileService.DeleteFile(message.audio, FileSetting.FilesChat);
+            }
+            if (message.files != null && message.files.Any())
+            {
+                foreach (var file in message.files)
+                {
+                    _fileService.DeleteFile(file, FileSetting.FilesChat);
+                }
+            }
+            _messageRepository.Delete(message);
+            await _messageRepository.SaveChangesAsync();
+        }
+
+        public async Task DeleteChat(int chatId, string userId)
+        {
+            var chat = await _chatRepository.GetChatByIdAsync(chatId);
+            
+            if (chat == null || (chat.senderId != userId && chat.receiverId != userId))
+            {
+                throw new NotFoundException(LocalizationKey.ChatNotFoundOrNoPermission);
+            }
+
+            foreach (var message in chat.messages)
+            {
+                if (!string.IsNullOrEmpty(message.audio))
+                {
+                    _fileService.DeleteFile(message.audio, FileSetting.FilesChat);
+                }
+                if (message.files != null && message.files.Any())
+                {
+                    foreach (var file in message.files)
+                    {
+                        _fileService.DeleteFile(file, FileSetting.FilesChat);
+                    }
+                }
+            }
+            _chatRepository.Delete(chat);
+            await _chatRepository.SaveChangesAsync();
+        }
+
+        public async Task UpdateBio(UpdateBioDto updateBioDto)
+        {
+            var user = await _userRepository.GetUserByIdAsync(updateBioDto.userId);
+            if (user == null)
+            {
+                throw new NotFoundException(LocalizationKey.UserNotFound);
+            }
+
+            user.bio = updateBioDto.bio;
+            await _userRepository.UpdateUserAsync(user);
+        }
+
+        public async Task UpdateMessage(UpdateMessage updateMessage)
+        {
+            var message = await _messageRepository.GetByIdAsync(updateMessage.messageId);
+            if (message == null || message.senderId != updateMessage.senderId)
+            {
+                throw new NotFoundException(LocalizationKey.MessageNotFoundOrNoPermission);
+            }
+            message.messageText = updateMessage.messageText;
+            message.type = updateMessage.type;
+            var existFilesNames = _fileService.ExtractFileNames(updateMessage.existFiles);
+            message.files = await _fileService.ReplaceFilesAsync(message.files, existFilesNames,updateMessage.newFiles,FileSetting.FilesChat);
+            message.isEdited = true;
+
+            _messageRepository.Update(message);
+            await _messageRepository.SaveChangesAsync();
+        }
+
         public async Task<PagedResult<GetUsersDto>> getUsers(GetUsersInChatDto pagination)
         {
             return await _userRepository.GetUsers(pagination);
+        }
+
+        public async Task<PagedResult<GetChats>> GetChatss(GetGeneralDto<string> pagination)
+        {
+            var result =  await _chatRepository.GetChatss(pagination);
+
+            foreach (var chat in result.Data)
+            {
+                chat.profileReceiver =
+                    FileSetting.GetMediaUrl(chat.profileReceiver, MediaType.userImage);
+
+                if (!string.IsNullOrEmpty(chat.audio))
+                    chat.audio = FileSetting.GetMediaUrl(chat.audio, MediaType.chatFile);
+
+                if (chat.files != null && chat.files.Any())
+                {
+                    chat.files = chat.files
+                        .Select(f => FileSetting.GetMediaUrl(f, MediaType.chatFile))
+                        .ToList();
+                }
+            }
+
+            return result;
         }
     }
 }

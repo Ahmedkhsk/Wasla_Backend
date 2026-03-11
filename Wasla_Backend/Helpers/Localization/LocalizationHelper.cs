@@ -1236,6 +1236,18 @@
                 ["ar"] = "تم جلب المستخدمين بنجاح."
             },
 
+            [LocalizationKey.MessageNotFoundOrNoPermission] = new()
+            {
+                ["en"] = "Message not found or you don't have permission to delete it.",
+                ["ar"] = "الرسالة غير موجودة أو ليس لديك صلاحية لحذفها."
+            },
+
+            [LocalizationKey.ChatNotFoundOrNoPermission] = new()
+            {
+                ["en"] = "Chat not found or you don't have permission to access it.",
+                ["ar"] = "المحادثة غير موجودة أو ليس لديك صلاحية للوصول إليها."
+            },
+
             [LocalizationKey.NoUsersFound] = new()
             {
                 ["en"] = "No users found.",
