@@ -302,11 +302,21 @@
         GetTopNearestDriverSuccess,
         VehicleTypeNotSupported,
         EstimateRideSuccessfully,
-        #endregion
+        RequestRideSuccessfully,
+        ResidentHasActiveRide,
+        RideNotFound,
+        GetRideByIdSuccessfully,
+        CannotCancelRide,
+        SomeOneHadAcceptIt,
+        InvalidRideStatus,
+        AcceptRideSuccessfully,
+        CompleteRideSuccessfully,
+        CancelRideSuccessfully,
+    #endregion
 
         #region ChatAndUserKeys
 
-        SuccessToGetUsers,
+    SuccessToGetUsers,
         NoUsersFound,
         FailedToGetUsers,
 

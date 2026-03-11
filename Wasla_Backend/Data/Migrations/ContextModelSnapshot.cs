@@ -287,7 +287,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("ResidentId");
 
-                    b.ToTable("BaseBookings");
+                    b.ToTable("BaseBookings", (string)null);
 
                     b.UseTptMappingStrategy();
                 });
@@ -374,7 +374,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("userId");
 
-                    b.ToTable("DoctorBookings");
+                    b.ToTable("DoctorBookings", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.ChatModel.Chat", b =>
@@ -395,7 +395,7 @@ namespace Wasla_Backend.data
 
                     b.HasKey("id");
 
-                    b.ToTable("Chats");
+                    b.ToTable("Chats", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.ChatModel.ChatMessage", b =>
@@ -438,7 +438,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("chatId");
 
-                    b.ToTable("Messages");
+                    b.ToTable("Messages", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.ContactUs", b =>
@@ -463,7 +463,7 @@ namespace Wasla_Backend.data
 
                     b.HasKey("id");
 
-                    b.ToTable("ContactUs");
+                    b.ToTable("ContactUs", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.DoctorSpecialization", b =>
@@ -476,7 +476,7 @@ namespace Wasla_Backend.data
 
                     b.HasKey("Id");
 
-                    b.ToTable("DoctorSpecializations");
+                    b.ToTable("DoctorSpecializations", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Favourites", b =>
@@ -507,7 +507,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Favorite");
+                    b.ToTable("Favorite", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.GeneralModel.Notification", b =>
@@ -550,7 +550,7 @@ namespace Wasla_Backend.data
 
                     b.HasKey("Id");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.GeneralModel.Payment", b =>
@@ -629,7 +629,7 @@ namespace Wasla_Backend.data
 
                     b.HasKey("Id");
 
-                    b.ToTable("RefreshTokens");
+                    b.ToTable("RefreshTokens", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.ResidentIdentity", b =>
@@ -653,7 +653,7 @@ namespace Wasla_Backend.data
 
                     b.HasKey("Id");
 
-                    b.ToTable("residentIdentities");
+                    b.ToTable("residentIdentities", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Reviews", b =>
@@ -692,7 +692,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Review");
+                    b.ToTable("Review", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Service", b =>
@@ -717,7 +717,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("doctorId");
 
-                    b.ToTable("DoctorServices");
+                    b.ToTable("DoctorServices", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.ServiceDay", b =>
@@ -749,7 +749,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("serviceId");
 
-                    b.ToTable("ServiceDay");
+                    b.ToTable("ServiceDay", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Social.Comment", b =>
@@ -785,7 +785,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("userId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Social.Post", b =>
@@ -816,7 +816,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("userId");
 
-                    b.ToTable("Posts");
+                    b.ToTable("Posts", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Social.Reaction", b =>
@@ -847,7 +847,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("userId");
 
-                    b.ToTable("Reactions");
+                    b.ToTable("Reactions", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.UserEvent", b =>
@@ -876,7 +876,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("serviceProviderId");
 
-                    b.ToTable("UserEvents");
+                    b.ToTable("UserEvents", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Resident", b =>
@@ -911,7 +911,43 @@ namespace Wasla_Backend.data
                     b.Property<float>("Rating")
                         .HasColumnType("real");
 
-                    b.ToTable("ServiceProvider");
+                    b.ToTable("ServiceProvider", (string)null);
+                });
+
+            modelBuilder.Entity("Wasla_Backend.Models.Driver.Ride", b =>
+                {
+                    b.HasBaseType("Wasla_Backend.Models.BaseModel.BaseBooking");
+
+                    b.Property<double>("Distance")
+                        .HasColumnType("float");
+
+                    b.Property<string>("DriverId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<double>("DropoffLatitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("DropoffLongitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("PickupLatitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("PickupLongitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("RideDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasIndex("DriverId");
+
+                    b.ToTable("Rides", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.GymModel.GymBooking", b =>
@@ -1142,7 +1178,7 @@ namespace Wasla_Backend.data
 
                             b1.HasKey("ApplicationRoleId");
 
-                            b1.ToTable("AspNetRoles");
+                            b1.ToTable("AspNetRoles", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("ApplicationRoleId");
@@ -1223,7 +1259,7 @@ namespace Wasla_Backend.data
 
                             b1.HasKey("DoctorSpecializationId");
 
-                            b1.ToTable("DoctorSpecializations");
+                            b1.ToTable("DoctorSpecializations", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("DoctorSpecializationId");
@@ -1323,7 +1359,7 @@ namespace Wasla_Backend.data
 
                             b1.HasKey("Serviceid");
 
-                            b1.ToTable("DoctorServices");
+                            b1.ToTable("DoctorServices", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("Serviceid");
@@ -1346,7 +1382,7 @@ namespace Wasla_Backend.data
 
                             b1.HasKey("Serviceid");
 
-                            b1.ToTable("DoctorServices");
+                            b1.ToTable("DoctorServices", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("Serviceid");
@@ -1440,6 +1476,21 @@ namespace Wasla_Backend.data
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Wasla_Backend.Models.Driver.Ride", b =>
+                {
+                    b.HasOne("Wasla_Backend.Models.Driver.Driver", "Driver")
+                        .WithMany()
+                        .HasForeignKey("DriverId");
+
+                    b.HasOne("Wasla_Backend.Models.BaseModel.BaseBooking", null)
+                        .WithOne()
+                        .HasForeignKey("Wasla_Backend.Models.Driver.Ride", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Driver");
+                });
+
             modelBuilder.Entity("Wasla_Backend.Models.GymModel.GymBooking", b =>
                 {
                     b.HasOne("Wasla_Backend.Models.GymModel.Gym", "Gym")
@@ -1490,7 +1541,7 @@ namespace Wasla_Backend.data
 
                             b1.HasKey("PackageId");
 
-                            b1.ToTable("Packages");
+                            b1.ToTable("Packages", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("PackageId");
@@ -1513,7 +1564,7 @@ namespace Wasla_Backend.data
 
                             b1.HasKey("PackageId");
 
-                            b1.ToTable("Packages");
+                            b1.ToTable("Packages", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("PackageId");

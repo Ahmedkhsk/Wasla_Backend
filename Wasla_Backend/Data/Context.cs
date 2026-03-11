@@ -163,6 +163,9 @@ namespace Wasla_Backend.Data
                 .HasForeignKey(r => r.ServiceProviderId)
                 .OnDelete(DeleteBehavior.Restrict); 
             builder.Entity<Notification>().HasQueryFilter(n => !n.IsDeleted);
+            builder.Entity<Ride>()
+           .Property(r => r.Id)
+           .ValueGeneratedOnAdd();
 
 
 

@@ -123,9 +123,9 @@ namespace Wasla_Backend.Services.Implementation.Driver
             return response;
         }
 
-        public async Task<List<string>> GetTopNearestDriver(double latitude, double longitude)
+        public async Task<List<string>> GetTopNearestDriver(double latitude, double longitude,VehicleType vehicleType)
         {
-            var onlineDriversIds = await _driverRepository.GetAllOnlineDriversIds();
+            var onlineDriversIds = await _driverRepository.GetAllOnlineDriversIds(vehicleType);
 
             var queue = new PriorityQueue<string, double>();
 

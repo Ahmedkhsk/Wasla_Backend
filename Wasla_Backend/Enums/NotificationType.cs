@@ -46,8 +46,10 @@
         gymResidentSeePackagesScreen,
         gymScanQrScreen,
         notificationsScreen,
-            gymPaymentSuccess,
-        gymPaymentFailed
+        gymPaymentSuccess,
+        gymPaymentFailed,
+        newRideRequest,
+        rideAccepted
 
     }
 }

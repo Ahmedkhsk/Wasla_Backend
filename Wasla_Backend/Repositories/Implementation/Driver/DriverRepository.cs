@@ -16,9 +16,10 @@ namespace Wasla_Backend.Repositories.Implementation.driver
                 .ExecuteUpdateAsync(s => s.SetProperty(d => d.DriverStatus, newStatus));
         }
 
-        public async Task<List<string>> GetAllOnlineDriversIds()
+        public async Task<List<string>> GetAllOnlineDriversIds(VehicleType vehicleType)
         {
-            return await _context.Drivers.Where(d => d.DriverStatus == DriverStatus.Online).AsNoTracking()
+            return await _context.Drivers.Where(d => d.DriverStatus == DriverStatus.Online&&d.VehicleType==vehicleType)
+                .AsNoTracking()
                 .Select(d => d.Id)
                 .ToListAsync();
         }

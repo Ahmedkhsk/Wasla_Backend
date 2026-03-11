@@ -1175,6 +1175,57 @@
                 ["en"] = "Ride estimated successfully.",
                 ["ar"] = "تم تقدير الرحلة بنجاح."
             },
+            [LocalizationKey.RequestRideSuccessfully]=new()
+            {
+                ["en"] = "Ride requested successfully.",
+                ["ar"] = "تم طلب الرحلة بنجاح."
+            },
+            [LocalizationKey.ResidentHasActiveRide]=new()
+            {
+                ["en"] = "Resident already has an active ride.",
+                ["ar"] = "المقيم لديه رحلة نشطة بالفعل."
+            },
+            [LocalizationKey.RideNotFound]=new()
+            {
+                ["en"] = "Ride not found.",
+                ["ar"] = "الرحلة غير موجودة."
+            },
+            [LocalizationKey.GetRideByIdSuccessfully]=new()
+            {
+                ["en"] = "Ride details retrieved successfully.",
+                ["ar"] = "تم جلب تفاصيل الرحلة بنجاح."
+            },
+            [LocalizationKey.CannotCancelRide]=new()
+            {
+                ["en"] = "Cannot cancel the ride at this stage.",
+                ["ar"] = "لا يمكن إلغاء الرحلة في هذه المرحلة."
+            },
+            [LocalizationKey.SomeOneHadAcceptIt]=new()
+            {
+                ["en"] = "Someone has already accepted the ride request.",
+                ["ar"] = "لقد قام شخص ما بقبول طلب الرحلة بالفعل."
+            },
+            [LocalizationKey.InvalidRideStatus]=new()
+            {
+                ["en"] = "Invalid ride status.",
+                ["ar"] = "حالة الرحلة غير صالحة."
+            },
+            [LocalizationKey.AcceptRideSuccessfully]=new()
+            {
+                ["en"] = "Ride accepted successfully.",
+                ["ar"] = "تم قبول الرحلة بنجاح."
+            },
+            [LocalizationKey.CompleteRideSuccessfully]=new()
+            {
+                ["en"] = "Ride completed successfully.",
+                ["ar"] = "تم إكمال الرحلة بنجاح."
+            },
+            [LocalizationKey.CancelRideSuccessfully]=new()
+            {
+                ["en"] = "Ride cancelled successfully.",
+                ["ar"] = "تم إلغاء الرحلة بنجاح."
+            },
+
             #endregion
 
             #region ChatAndUser

@@ -45,9 +45,9 @@ namespace Wasla_Backend.Controllers.Driver
             return Ok(ResponseHelper.Success(LocalizationKey.GetDriverLocationSuccess, lan, location));
         }
         [HttpGet("GetTopNearestDriver")]
-        public async Task<IActionResult> GetTopNearestDriver(double latitude, double longitude, string lan = "en")
+        public async Task<IActionResult> GetTopNearestDriver(double latitude, double longitude,VehicleType vehicleType, string lan = "en")
         {
-            var driversIds = await _driverService.GetTopNearestDriver(latitude, longitude);
+            var driversIds = await _driverService.GetTopNearestDriver(latitude, longitude,vehicleType);
             return Ok(ResponseHelper.Success(LocalizationKey.GetTopNearestDriverSuccess, lan, driversIds));
         }
     }
