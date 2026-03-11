@@ -1,6 +1,6 @@
 ﻿namespace Wasla_Backend.Models.Driver
 {
-    public class Ride : BaseBooking
+    public class ride : BaseBooking
 
     {
         public string? DriverId { get; set; }

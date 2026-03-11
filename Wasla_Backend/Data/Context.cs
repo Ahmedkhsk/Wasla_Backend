@@ -33,7 +33,8 @@ namespace Wasla_Backend.Data
         public DbSet<Reaction> Reactions { get; set; }
         public DbSet<Chat> Chats { get; set; }
         public DbSet<ChatMessage> Messages { get; set; }
-        public DbSet<Ride> Rides { get; set; }
+       public DbSet<ride> rides { get; set; }
+        public DbSet<RideDispatchJob> RideDispatchJobs { get; set; }
 
 
         public Context(DbContextOptions<Context> options) : base(options) { }
@@ -51,8 +52,9 @@ namespace Wasla_Backend.Data
             builder.Entity<Package>().ToTable("Packages");
             builder.Entity<GymBooking>().ToTable("GymBookings");
             builder.Entity<Payment>().ToTable("Payments");
+           builder.Entity<ride>().ToTable("Rides");
 
-           
+
             builder.Entity<BaseBooking>()
                 .HasOne(b => b.Resident)
                 .WithMany()
@@ -163,9 +165,7 @@ namespace Wasla_Backend.Data
                 .HasForeignKey(r => r.ServiceProviderId)
                 .OnDelete(DeleteBehavior.Restrict); 
             builder.Entity<Notification>().HasQueryFilter(n => !n.IsDeleted);
-            builder.Entity<Ride>()
-           .Property(r => r.Id)
-           .ValueGeneratedOnAdd();
+        
 
 
 

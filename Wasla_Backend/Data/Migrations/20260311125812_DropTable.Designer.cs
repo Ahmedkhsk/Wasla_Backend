@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wasla_Backend.Data;
 
@@ -11,9 +12,11 @@ using Wasla_Backend.Data;
 namespace Wasla_Backend.data
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20260311125812_DropTable")]
+    partial class DropTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -387,15 +390,15 @@ namespace Wasla_Backend.data
 
                     b.Property<string>("receiverId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("senderId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
 
-                    b.ToTable("Chats", (string)null);
+                    b.ToTable("Chats");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.ChatModel.ChatMessage", b =>
@@ -414,9 +417,6 @@ namespace Wasla_Backend.data
 
                     b.Property<string>("fileJson")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("isEdited")
-                        .HasColumnType("bit");
 
                     b.Property<bool>("isSent")
                         .HasColumnType("bit");
@@ -480,30 +480,6 @@ namespace Wasla_Backend.data
                     b.HasKey("Id");
 
                     b.ToTable("DoctorSpecializations");
-                });
-
-            modelBuilder.Entity("Wasla_Backend.Models.Driver.RideDispatchJob", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("DriverId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("JobId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("RideId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("RideDispatchJobs");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Favourites", b =>
@@ -941,42 +917,6 @@ namespace Wasla_Backend.data
                     b.ToTable("ServiceProvider");
                 });
 
-            modelBuilder.Entity("Wasla_Backend.Models.Driver.ride", b =>
-                {
-                    b.HasBaseType("Wasla_Backend.Models.BaseModel.BaseBooking");
-
-                    b.Property<double>("Distance")
-                        .HasColumnType("float");
-
-                    b.Property<string>("DriverId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<double>("DropoffLatitude")
-                        .HasColumnType("float");
-
-                    b.Property<double>("DropoffLongitude")
-                        .HasColumnType("float");
-
-                    b.Property<double>("PickupLatitude")
-                        .HasColumnType("float");
-
-                    b.Property<double>("PickupLongitude")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime>("RideDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasIndex("DriverId");
-
-                    b.ToTable("Rides");
-                });
-
             modelBuilder.Entity("Wasla_Backend.Models.GymModel.GymBooking", b =>
                 {
                     b.HasBaseType("Wasla_Backend.Models.BaseModel.BaseBooking");
@@ -1256,25 +1196,6 @@ namespace Wasla_Backend.data
                     b.Navigation("user");
                 });
 
-            modelBuilder.Entity("Wasla_Backend.Models.ChatModel.Chat", b =>
-                {
-                    b.HasOne("Wasla_Backend.Models.ApplicationUser", "receiver")
-                        .WithMany()
-                        .HasForeignKey("receiverId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Wasla_Backend.Models.ApplicationUser", "sender")
-                        .WithMany()
-                        .HasForeignKey("senderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("receiver");
-
-                    b.Navigation("sender");
-                });
-
             modelBuilder.Entity("Wasla_Backend.Models.ChatModel.ChatMessage", b =>
                 {
                     b.HasOne("Wasla_Backend.Models.ChatModel.Chat", "Chat")
@@ -1520,21 +1441,6 @@ namespace Wasla_Backend.data
                         .HasForeignKey("Wasla_Backend.Models.ServiceProvider", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Wasla_Backend.Models.Driver.ride", b =>
-                {
-                    b.HasOne("Wasla_Backend.Models.Driver.Driver", "Driver")
-                        .WithMany()
-                        .HasForeignKey("DriverId");
-
-                    b.HasOne("Wasla_Backend.Models.BaseModel.BaseBooking", null)
-                        .WithOne()
-                        .HasForeignKey("Wasla_Backend.Models.Driver.Ride", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Driver");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.GymModel.GymBooking", b =>

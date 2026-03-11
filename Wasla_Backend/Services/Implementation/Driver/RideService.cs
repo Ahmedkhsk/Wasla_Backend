@@ -30,7 +30,7 @@ namespace Wasla_Backend.Services.Implementation.Driver
             var driver =await _driverRepository.GetByIdAsync(driverId);
             if (driver == null)
                 throw new NotFoundException(LocalizationKey.DriverNotFound);
-              var affectedRows = await _rideRepository.UpdateRideStatusAsync(rideId, RideStatus.Accepted, driverId);
+             var affectedRows = await _rideRepository.UpdateRideStatusAsync(rideId, RideStatus.Accepted, driverId);
             if (affectedRows == 0)
                 throw new BadRequestException(LocalizationKey.SomeOneHadAcceptIt);
             var metadata = new Dictionary<string, string>
@@ -56,8 +56,7 @@ namespace Wasla_Backend.Services.Implementation.Driver
             var ride =await _rideRepository.GetByIdAsync(rideId);
             if (ride == null)
                 throw new NotFoundException(LocalizationKey.RideNotFound);
-            if(ride.Status!= RideStatus.Pending)
-                throw new BadRequestException(LocalizationKey.CannotCancelRide);
+          
             ride.Status = RideStatus.Cancelled;
             _rideRepository.Update(ride);
             await _rideRepository.SaveChangesAsync();
@@ -148,7 +147,7 @@ namespace Wasla_Backend.Services.Implementation.Driver
                 VehicleType = requestRideDto.VehicleType
             };
             var estimateResult = EstimateRide(estimate);
-            var ride = new Ride
+            var ride = new RideModel
             {
                 ResidentId = requestRideDto.PassengerId,
                 PickupLatitude = requestRideDto.PickupLatitude,
@@ -168,6 +167,7 @@ namespace Wasla_Backend.Services.Implementation.Driver
 
             var OnlineDrivers = await _driverService.GetTopNearestDriver(requestRideDto.PickupLatitude,
                 requestRideDto.PickupLongitude,requestRideDto.VehicleType);
+            Console.WriteLine("Online Drivers: " + string.Join(", ", OnlineDrivers));
             foreach (var driverId in OnlineDrivers)
             {
                 var metadata = new Dictionary<string, string>
@@ -190,6 +190,19 @@ namespace Wasla_Backend.Services.Implementation.Driver
 
 
 
+        }
+
+        public async Task<int> StartRide(int rideId)
+        {
+            var ride=await _rideRepository.GetByIdAsync(rideId);
+            if (ride == null)
+                throw new NotFoundException(LocalizationKey.RideNotFound);
+            if (ride.Status != RideStatus.Accepted)
+                throw new BadRequestException(LocalizationKey.InvalidRideStatus);
+            ride.Status = RideStatus.InProgress;
+            _rideRepository.Update(ride);
+            await _rideRepository.SaveChangesAsync();
+            return ride.Id;
         }
     }
 }

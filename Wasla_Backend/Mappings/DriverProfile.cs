@@ -4,7 +4,7 @@
     {
         public DriverProfile()
         {
-            CreateMap<DriverCompleteRegisterDto, Driver>();
+            CreateMap<DriverCompleteRegisterDto, DriverModel>();
         }
     }
 }

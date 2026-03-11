@@ -1225,6 +1225,11 @@
                 ["en"] = "Ride cancelled successfully.",
                 ["ar"] = "تم إلغاء الرحلة بنجاح."
             },
+            [LocalizationKey.StartRideSuccessfully]=new()
+            {
+                ["en"] = "Ride started successfully.",
+                ["ar"] = "تم بدء الرحلة بنجاح."
+            },
 
             #endregion
 

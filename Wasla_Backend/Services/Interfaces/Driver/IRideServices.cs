@@ -9,6 +9,7 @@ namespace Wasla_Backend.Services.Interfaces.Driver
         public Task<int>AcceptRide(int rideId, string driverId);
         public Task<int> CompleteRide(int rideId);
         public Task<int> CancelRide(int rideId);
+        public Task<int>StartRide(int rideId);
 
     }
 }

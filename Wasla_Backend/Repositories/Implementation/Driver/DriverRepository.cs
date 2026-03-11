@@ -1,10 +1,11 @@
 ﻿
 
 
+using Wasla_Backend.Repositories.Interfaces.Driver;
 
-namespace Wasla_Backend.Repositories.Implementation.driver
+namespace Wasla_Backend.Repositories.Implementation.Drivers
 {
-    public class DriverRepository:GenericRepository<Driver>, IDriverRepository
+    public class DriverRepository:GenericRepository<DriverModel>, IDriverRepository
     {
         public DriverRepository(Context context) : base(context)
         {
@@ -24,7 +25,7 @@ namespace Wasla_Backend.Repositories.Implementation.driver
                 .ToListAsync();
         }
 
-        public async Task<Driver> GetDriverByGmailAsync(string Gmail)
+        public async Task<DriverModel> GetDriverByGmailAsync(string Gmail)
         {
             return await _context.Drivers.FirstOrDefaultAsync(d => d.Email == Gmail);
         }

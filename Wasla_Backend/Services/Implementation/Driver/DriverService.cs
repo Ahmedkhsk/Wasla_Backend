@@ -1,5 +1,6 @@
 ﻿
 
+
 namespace Wasla_Backend.Services.Implementation.Driver
 {
     public class DriverService : IDriverService
@@ -161,7 +162,7 @@ namespace Wasla_Backend.Services.Implementation.Driver
         public Task TrackingDriver(TrackingDriverDto trackingDriver)
         {
             var key = $"TrackingDriver_{trackingDriver.DriverId}";
-            _cacheManager.Set(key, trackingDriver, TimeSpan.FromSeconds(30));
+            _cacheManager.Set(key, trackingDriver, TimeSpan.FromMinutes(30));
             return Task.CompletedTask;
 
         }
