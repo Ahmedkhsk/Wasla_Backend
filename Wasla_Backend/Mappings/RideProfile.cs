@@ -4,7 +4,7 @@
     {
         public RideProfile()
         {
-            CreateMap<RequestRideDto, Ride>()
+            CreateMap<RequestRideDto, RideModel>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.ResidentId, opt => opt.MapFrom(src => src.PassengerId))
                 ;

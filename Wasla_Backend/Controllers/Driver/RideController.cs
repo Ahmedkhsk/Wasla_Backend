@@ -48,5 +48,11 @@ namespace Wasla_Backend.Controllers.Driver
             var result = await _rideServices.CancelRide(id);
             return Ok(ResponseHelper.Success(LocalizationKey.CancelRideSuccessfully, lan, result));
         }
+        [HttpPut("start/{id}")]
+        public async Task<IActionResult> StartRide(int id, string lan = "en")
+        {
+            var result = await _rideServices.StartRide(id);
+            return Ok(ResponseHelper.Success(LocalizationKey.StartRideSuccessfully, lan, result));
+        }
     }
 }

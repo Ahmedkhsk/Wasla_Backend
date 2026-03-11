@@ -8,7 +8,7 @@
             return role.ToLower() switch
             {
                 "doctor" => new Doctor(),
-                "driver" => new Driver(),
+                "driver" => new DriverModel(),
                 "resident" => new Resident(),
                 "restaurantOwner" => new Restaurant(),
                 "gym" => new Gym(),

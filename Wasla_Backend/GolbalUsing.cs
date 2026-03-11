@@ -78,8 +78,13 @@ global using Wasla_Backend.Models.BaseModel;
 global using Wasla_Backend.Models.GeneralModel;
 global using Wasla_Backend.Models.GymModel;
 global using Wasla_Backend.Models.Social;
-global using Wasla_Backend.Models.Driver;
 global using Wasla_Backend.Models.ChatModel;
+global using  RideModel = Wasla_Backend.Models.Driver.ride;
+global using DriverModel = Wasla_Backend.Models.Driver.Driver;
+global using RideDispatchJobModel = Wasla_Backend.Models.Driver.RideDispatchJob;
+
+
+
 
 #endregion
 
@@ -89,6 +94,8 @@ global using Wasla_Backend.Repositories.Interfaces.Gyms;
 global using Wasla_Backend.Repositories.Implementation;
 global using Wasla_Backend.Repositories.Interfaces.driver;
 global using Wasla_Backend.Repositories.Interfaces.General;
+global using Wasla_Backend.Repositories.Interfaces.Driver;
+
 
 
 #endregion

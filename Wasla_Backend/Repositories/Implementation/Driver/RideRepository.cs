@@ -1,9 +1,8 @@
 ﻿
 
-
 namespace Wasla_Backend.Repositories.Implementation.driver
 {
-    public class RideRepository : GenericRepository<Ride>, IRideRepository
+    public class RideRepository : GenericRepository<RideModel>, IRideRepository
     {
         public RideRepository(Context context) : base(context)
         {
@@ -11,14 +10,14 @@ namespace Wasla_Backend.Repositories.Implementation.driver
 
         public async Task<bool> IsHasActiveRide(string residentId)
         {
-            return await _context.Rides.AnyAsync
+            return await _context.rides.AnyAsync
               (r => r.ResidentId == residentId && (r.Status == RideStatus.InProgress
               ||r.Status == RideStatus.Accepted||r.Status==RideStatus.Pending ));
         }
 
         public Task<RideDetailsDto> rideDetails(int rideId)
         {
-            return _context.Rides.Where(r => r.Id == rideId).Include(r => r.Resident).AsNoTracking()
+            return _context.rides.Where(r => r.Id == rideId).Include(r => r.Resident).AsNoTracking()
                 .Select(r => new RideDetailsDto
                 {
                     ResidentName = r.Resident.FullName,
@@ -36,7 +35,7 @@ namespace Wasla_Backend.Repositories.Implementation.driver
 
         public async Task<int> UpdateRideStatusAsync(int rideId, RideStatus accepted, string driverId)
         {
-            return await _context.Rides.Where(r => r.Id == rideId&&r.Status==RideStatus.Pending)
+            return await _context.rides.Where(r => r.Id == rideId&&r.Status==RideStatus.Pending)
                 .ExecuteUpdateAsync(s =>
                  s.SetProperty(r => r.Status, accepted)
                 .SetProperty(r => r.DriverId, driverId));

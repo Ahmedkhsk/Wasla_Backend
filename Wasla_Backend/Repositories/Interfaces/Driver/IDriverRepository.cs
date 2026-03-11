@@ -1,8 +1,9 @@
-﻿namespace Wasla_Backend.Repositories.Interfaces.driver
+﻿
+namespace Wasla_Backend.Repositories.Interfaces.Driver
 {
-    public interface IDriverRepository:IGenericRepository<Driver>
+    public interface IDriverRepository:IGenericRepository<DriverModel>
     {
-        public Task<Driver> GetDriverByGmailAsync(string Gmail);
+        public Task<DriverModel> GetDriverByGmailAsync(string Gmail);
         public Task<bool> IsExistByVehicleNumberAsync(string vehicleNumber);
         public Task<DriverProfileDTO> GetDriverProfileByIdAsync(string id);
         public Task<int> ChangeStatus(string driverId, DriverStatus newStatus);
