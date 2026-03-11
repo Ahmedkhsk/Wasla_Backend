@@ -1,12 +1,5 @@
-RoleAlreadyExists
-NewPasswordSameAsOld
-ExpiredRefreshToken
-UserNotLoggedIn
-SpecializationNotFound
-ResidentIdRequired
-ResidentNotFound
-ServiceProviderIdRequired
-AmountMustBeGreaterThanZero
-ServiceIdRequired
-PaymobApiFailed
-InvalidPaymentMethod
+/chatHub
+OnConnectedAsync
+OnDisconnectedAsync
+Typing(string receiverId)
+StopTyping(string receiverId)

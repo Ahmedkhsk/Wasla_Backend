@@ -11,6 +11,27 @@
             _chatService = chatService;
         }
 
+        [HttpPost("Message")]
+        public async Task<IActionResult> SendMessage(AddMessageDto dto , string lan = "en")
+        {
+            await _chatService.AddMessage(dto);
+            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToAddMessage, lan));
+        }
+
+        [HttpPut("Message")]
+        public async Task<IActionResult> UpdateMessage(UpdateMessage dto,string lan = "en")
+        {
+            await _chatService.UpdateMessage(dto);
+            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToUpdateMessage, lan));
+        }
+
+        [HttpDelete("Message")]
+        public async Task<IActionResult> DeleteMessage(int messageId, string userId, string lan = "en")
+        {
+            await _chatService.DeleteMessage(messageId, userId);
+            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToDeleteMessage, lan));
+        }
+
         [HttpPut("Bio")]
         public async Task<IActionResult> UpdteBio(UpdateBioDto dto)
         {

@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Helpers.ProgramHelper.Pipeline
+﻿using Wasla_Backend.Hubs.ChatHubs;
+
+namespace Wasla_Backend.Helpers.ProgramHelper.Pipeline
 {
     public static class ApplicationPipeline
     {
@@ -30,6 +32,7 @@
             app.MapHub<BookingHub>("/bookingHub");
             app.MapHub<ServiceHub>("/serviceHub");
             app.MapHub<ReviewHub>("/reviewHub");
+            app.MapHub<ChatHub>("/chatHub");
 
             app.MapControllers();
 

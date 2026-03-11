@@ -10,6 +10,7 @@
         public Chat Chat { get; set; }
 
         public string senderId { get; set; }
+        public string receiverId { get; set; }
 
         public string? messageText { get; set; }
 

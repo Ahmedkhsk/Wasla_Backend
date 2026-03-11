@@ -1,4 +1,7 @@
-﻿namespace Wasla_Backend.Services.Implementation
+﻿using Microsoft.AspNetCore.SignalR;
+using Wasla_Backend.Hubs.ChatHubs;
+
+namespace Wasla_Backend.Services.Implementation
 {
     public class ChatService : IChatService
     {
@@ -7,15 +10,18 @@
         private readonly IUserRepository _userRepository;
         private readonly IFileService _fileService;
         private readonly DateTimeHelper _dateTimeHelper;
+        private readonly IHubContext<ChatHub> _hubContext;
 
         public ChatService(IChatRepository chatRepository, IMessageRepository messageRepository, IUserRepository userRepository,
-                            IFileService fileService, DateTimeHelper dateTimeHelper)
+                            IFileService fileService, DateTimeHelper dateTimeHelper,
+                            IHubContext<ChatHub> hubContext)
         {
             _chatRepository = chatRepository;
             _messageRepository = messageRepository;
             _userRepository = userRepository;
             _fileService = fileService;
             _dateTimeHelper = dateTimeHelper;
+            _hubContext = hubContext;
         }
 
         public async Task AddMessage(AddMessageDto dto)
@@ -37,6 +43,7 @@
             {
                 chatId = chat.id,
                 senderId = dto.senderId,
+                receiverId = dto.reciverId,
                 messageText = dto.messageText,
                 type = dto.type,
                 sentAt = _dateTimeHelper.Now
@@ -52,6 +59,10 @@
             }
             await _messageRepository.AddAsync(message);
             await _messageRepository.SaveChangesAsync();
+
+            await _hubContext.Clients
+                    .User(dto.reciverId)
+                    .SendAsync("ReceiveMessage", message);
         }
 
         public async Task DeleteMessage(int messageId, string userId)
@@ -74,6 +85,10 @@
             }
             _messageRepository.Delete(message);
             await _messageRepository.SaveChangesAsync();
+
+            await _hubContext.Clients
+                .Users(message.senderId, message.receiverId)
+                .SendAsync("MessageDeleted", messageId);
         }
 
         public async Task DeleteChat(int chatId, string userId)
@@ -130,6 +145,10 @@
 
             _messageRepository.Update(message);
             await _messageRepository.SaveChangesAsync();
+
+            await _hubContext.Clients
+                .Users(message.senderId, message.receiverId)
+                .SendAsync("MessageUpdated", message);
         }
 
         public async Task<PagedResult<GetUsersDto>> getUsers(GetUsersInChatDto pagination)
