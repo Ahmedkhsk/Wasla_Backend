@@ -10,6 +10,8 @@
         public Driver? Driver { get; set; }
 
         public double PickupLatitude { get; set; }
+        public string PickUpPlace { get; set; }
+        public string DropOffPlace { get; set; }
 
         public double PickupLongitude { get; set; }
 

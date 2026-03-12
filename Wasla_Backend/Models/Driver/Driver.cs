@@ -9,6 +9,7 @@
         public string? CarImages { get; set; }
         public DriverStatus DriverStatus { get; set; }=DriverStatus.Offline;
         public int TripsCount { get; set; }= 0;
+        public CarColor VehicleColor { get; set; }
 
         [NotMapped]
         public List<string>? images

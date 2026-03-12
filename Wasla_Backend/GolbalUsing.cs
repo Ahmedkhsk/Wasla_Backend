@@ -143,6 +143,8 @@ global using Wasla_Backend.Helpers.ProgramHelper.Pipeline;
 global using Wasla_Backend.Hubs.BookingHubs;
 global using Wasla_Backend.Hubs.ServiceHubs;
 global using Wasla_Backend.Hubs.ReviewHubs;
+global using Wasla_Backend.Hubs.DriverHubs;
+
 #endregion
 
 #region Project - Data

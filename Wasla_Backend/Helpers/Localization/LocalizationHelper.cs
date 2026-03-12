@@ -1230,6 +1230,11 @@
                 ["en"] = "Ride started successfully.",
                 ["ar"] = "تم بدء الرحلة بنجاح."
             },
+            [LocalizationKey.RideNotAcceptedYet]=new()
+            {
+                ["en"] = "Ride has not been accepted yet.",
+                ["ar"] = "لم يتم قبول الرحلة بعد."
+            },
 
             #endregion
 

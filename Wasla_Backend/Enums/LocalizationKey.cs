@@ -313,6 +313,7 @@
         CompleteRideSuccessfully,
         CancelRideSuccessfully,
         StartRideSuccessfully,
+        RideNotAcceptedYet,
     #endregion
 
         #region ChatAndUserKeys

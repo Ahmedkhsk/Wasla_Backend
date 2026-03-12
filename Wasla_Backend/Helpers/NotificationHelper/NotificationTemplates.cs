@@ -56,6 +56,26 @@
     TitleEn = "Ride Accepted 🚗",
     BodyEn = "Driver {DriverName} accepted your ride and is on the way"
 },
+      new NotificationTemplate
+{
+    Type = NotificationType.rideCancelled,
+
+    TitleAr = "تم إلغاء الرحلة ❌",
+    BodyAr = "{UserName} قام بإلغاء الرحلة",
+
+    TitleEn = "Ride Cancelled ❌",
+    BodyEn = "{UserName} cancelled the ride"
+},
+      new NotificationTemplate
+{
+    Type = NotificationType.rideCompleted,
+
+    TitleAr = "انتهت الرحلة ✅",
+    BodyAr = "تمت الرحلة بنجاح مع السائق {DriverName}. لا تنسَ تقييم السائق ⭐",
+
+    TitleEn = "Ride Completed ✅",
+    BodyEn = "Your ride with {DriverName} is completed. Please rate the driver ⭐"
+},
 
 
 

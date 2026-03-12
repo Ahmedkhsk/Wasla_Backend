@@ -49,7 +49,9 @@
         gymPaymentSuccess,
         gymPaymentFailed,
         newRideRequest,
-        rideAccepted
+        rideAccepted,
+        rideCancelled,
+            rideCompleted
 
     }
 }

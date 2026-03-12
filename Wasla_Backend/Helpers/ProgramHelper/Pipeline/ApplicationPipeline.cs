@@ -33,6 +33,7 @@ namespace Wasla_Backend.Helpers.ProgramHelper.Pipeline
             app.MapHub<ServiceHub>("/serviceHub");
             app.MapHub<ReviewHub>("/reviewHub");
             app.MapHub<ChatHub>("/chatHub");
+            app.MapHub<RideHub>("/rideHub");
 
             app.MapControllers();
 

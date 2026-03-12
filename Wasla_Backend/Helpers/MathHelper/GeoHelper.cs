@@ -20,6 +20,21 @@
 
             return R * c;
         }
+        public static double CalculateDuration(double distanceKm)
+        {
+            double averageSpeed;
+
+            if (distanceKm < 2)
+                averageSpeed = 20; 
+            else if (distanceKm < 10)
+                averageSpeed = 30; 
+            else
+                averageSpeed = 50; 
+
+            double hours = distanceKm / averageSpeed;
+
+            return hours * 60; 
+        }
 
         private static double ToRadians(double angle)
         {

@@ -7,7 +7,9 @@
         public double PickupLongitude { get; set; }
         public double DropoffLatitude { get; set; }
         public double DropoffLongitude { get; set; }
-        
-       public VehicleType VehicleType { get; set; }
+        public string PickUpPlace { get; set; }
+        public string DropOffPlace { get; set; }
+
+        public VehicleType VehicleType { get; set; }
     }
 }

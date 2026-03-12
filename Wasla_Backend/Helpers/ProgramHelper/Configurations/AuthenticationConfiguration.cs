@@ -30,9 +30,13 @@ namespace Wasla_Backend.Helpers.ProgramHelper.Configurations
                         var path = context.HttpContext.Request.Path;
 
                         if (!string.IsNullOrEmpty(accessToken) &&
-                            (path.StartsWithSegments("/bookingHub") || path.StartsWithSegments("/serviceHub")))
+                            (path.StartsWithSegments("/bookingHub") || path.StartsWithSegments("/serviceHub") ||
+                            path.StartsWithSegments("/rideHub")))
+
                         {
                             context.Token = accessToken;
+                            Console.WriteLine($"Token assigned to context.Token{context.Token}");
+
                         }
 
                         return Task.CompletedTask;

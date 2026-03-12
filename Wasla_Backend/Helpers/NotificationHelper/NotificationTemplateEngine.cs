@@ -9,6 +9,7 @@
         {
             var template = NotificationTemplates.Templates
                 .FirstOrDefault(t => t.Type == type);
+            Console.WriteLine($"Generating notification {template}");
 
             if (template == null)
                 throw new BadRequestException(LocalizationKey.TemplateNotFound);
