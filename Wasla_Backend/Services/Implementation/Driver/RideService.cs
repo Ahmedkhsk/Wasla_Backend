@@ -1,5 +1,7 @@
 ﻿
 
+using System.Runtime.InteropServices;
+
 namespace Wasla_Backend.Services.Implementation.Driver
 {
     public class RideService : IRideServices
@@ -47,6 +49,9 @@ namespace Wasla_Backend.Services.Implementation.Driver
                     "en",
                     metadata
                 ));
+            //segnal ride id
+            //3 end point to ride details
+            
 
             return ride.Id;
         }
@@ -56,10 +61,11 @@ namespace Wasla_Backend.Services.Implementation.Driver
             var ride =await _rideRepository.GetByIdAsync(rideId);
             if (ride == null)
                 throw new NotFoundException(LocalizationKey.RideNotFound);
-          
+            
             ride.Status = RideStatus.Cancelled;
             _rideRepository.Update(ride);
             await _rideRepository.SaveChangesAsync();
+            //notification if in progress or accepted
             return ride.Id;
         }
 
@@ -73,6 +79,7 @@ namespace Wasla_Backend.Services.Implementation.Driver
             ride.Status = RideStatus.Completed;
             _rideRepository.Update(ride);
             await _rideRepository.SaveChangesAsync();
+            //notification
             return ride.Id;
         }
 
@@ -186,6 +193,8 @@ namespace Wasla_Backend.Services.Implementation.Driver
                         metadata
                     ));
             }
+            //join group
+            //update dto
             return ride.Id;
 
 
