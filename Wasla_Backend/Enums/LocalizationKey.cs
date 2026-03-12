@@ -326,7 +326,8 @@
         NoChatsFound,
         FailedToGetChats,
         ChatNotFound,
-
+        SuccessToGetUserProfile,
+        SuccessToGetChat,
         SuccessToAddMessage,
         FailedToAddMessage,
 

@@ -1,4 +1,4 @@
-﻿namespace Wasla_Backend.DTOs
+﻿namespace Wasla_Backend.DTOs.PaginationDTOS
 {
     public class LanDto
     {

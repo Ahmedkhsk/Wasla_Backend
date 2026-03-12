@@ -1235,6 +1235,18 @@
 
             #region ChatAndUser
 
+            [LocalizationKey.SuccessToGetUserProfile] = new()
+            {
+                ["en"] = "User profile retrieved successfully.",
+                ["ar"] = "تم جلب ملف المستخدم بنجاح."
+            },
+
+            [LocalizationKey.SuccessToGetChat] = new()
+            {
+                ["en"] = "Chat retrieved successfully.",
+                ["ar"] = "تم جلب المحادثة بنجاح."
+            },
+
             [LocalizationKey.SuccessToGetUsers] = new()
             {
                 ["en"] = "Users retrieved successfully.",

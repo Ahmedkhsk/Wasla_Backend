@@ -15,7 +15,7 @@
                     (c.senderId == receiverId && c.receiverId == senderId));
         }
 
-        public async Task<PagedResult<GetChats>> GetChats(GetGeneralDto<string> pagination)
+        public async Task<PagedResult<GetChats>> GetChats(GetGeneralWithPaginationDto<string> pagination)
         {
             var query = _dbSet
                 .Where(c => c.senderId == pagination.id || c.receiverId == pagination.id)
@@ -56,6 +56,40 @@
             return await _dbSet
                 .Include(c => c.messages)
                 .FirstOrDefaultAsync(c => c.id == id);
+        }
+
+        public async Task<ChatResponse?> GetChatByUsingUserId(GetChatDto dto)
+        {
+            var chat = await _context.Chats
+                .Where(c =>
+                    (c.senderId == dto.senderId && c.receiverId == dto.receiverId) ||
+                    (c.senderId == dto.receiverId && c.receiverId == dto.senderId))
+                .FirstOrDefaultAsync();
+
+            if (chat == null)
+                return null;
+
+            var messagesQuery = _context.Messages
+                .Where(m => m.chatId == chat.id)
+                .OrderBy(m => m.sentAt)
+                .Select(m => new ChatMessageResponse
+                {
+                    messageText = m.messageText,
+                    audio = m.audio,
+                    type = m.type,
+                    sentAt = m.sentAt,
+                    readAt = m.readAt,
+                    isEdited = m.isEdited,
+                    files = m.files
+                });
+
+            return new ChatResponse 
+            {
+                chatId = chat.id,
+                senderId = dto.senderId,
+                receiverId = dto.receiverId,
+                messages = await messagesQuery.ToPagedResultAsync(dto.PageNumber, dto.PageSize) 
+            };
         }
     }
 }

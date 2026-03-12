@@ -156,7 +156,7 @@ namespace Wasla_Backend.Services.Implementation
             return await _userRepository.GetUsers(pagination);
         }
 
-        public async Task<PagedResult<GetChats>> GetChats(GetGeneralDto<string> pagination)
+        public async Task<PagedResult<GetChats>> GetChats(GetGeneralWithPaginationDto<string> pagination)
         {
             var result =  await _chatRepository.GetChats(pagination);
 
@@ -177,6 +177,34 @@ namespace Wasla_Backend.Services.Implementation
             }
 
             return result;
+        }
+        
+        public async Task<UserProfileReponse> GetUserProfile(string userId)
+        {
+            return await _userRepository.GetUserProfile(userId);
+        }
+
+        public async Task<ChatResponse?> GetChatAsync(GetChatDto dto)
+        {
+            var chat = await _chatRepository.GetChatByUsingUserId(dto);
+            if (chat == null)
+            {
+                throw new NotFoundException(LocalizationKey.ChatNotFound);
+            }
+
+            foreach(var message in chat.messages.Data)
+            {
+                if (!string.IsNullOrEmpty(message.audio))
+                    message.audio = FileSetting.GetMediaUrl(message.audio, MediaType.chatFile);
+                if (message.files != null && message.files.Any())
+                {
+                    message.files = message.files
+                        .Select(f => FileSetting.GetMediaUrl(f, MediaType.chatFile))
+                        .ToList();
+                }
+            }
+
+            return chat;
         }
     }
 }

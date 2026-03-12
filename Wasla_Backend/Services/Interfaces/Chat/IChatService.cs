@@ -8,7 +8,9 @@
         public Task UpdateBio(UpdateBioDto updateBioDto);
         public Task UpdateMessage(UpdateMessage updateMessage);
         public Task<PagedResult<GetUsersDto>> getUsers(PaginationParams pagination);
-        public Task<PagedResult<GetChats>> GetChats(GetGeneralDto<string> pagination);
+        public Task<PagedResult<GetChats>> GetChats(GetGeneralWithPaginationDto<string> pagination);
+        public Task<UserProfileReponse> GetUserProfile(string userId);
+        public Task<ChatResponse?> GetChatAsync(GetChatDto dto);
     }
 }
     

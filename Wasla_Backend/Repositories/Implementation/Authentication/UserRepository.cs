@@ -42,6 +42,20 @@
             );
         }
 
+        public async Task<UserProfileReponse> GetUserProfile(string userId)
+        {
+            return await _context.Users
+                .Where(u => u.Id == userId)
+                .Select(u => new UserProfileReponse
+                {
+                    id = u.Id,
+                    name = u.FullName,
+                    profileImage = FileSetting.GetMediaUrl(u.ProfilePhoto, MediaType.userImage),
+                    bio = u.bio,
+                    phone = u.Phone
+                }).FirstOrDefaultAsync();
+        }
+
         public async Task<List<ApplicationUser>> GetUsersByIdsAsync(List<string> ids)
         {
             return await _context.Users
