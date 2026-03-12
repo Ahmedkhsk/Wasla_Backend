@@ -47,13 +47,13 @@
         }
 
         [HttpGet("Users")]
-        public async Task<IActionResult> GetUserChats([FromQuery] GetUsersInChatDto pagination)
+        public async Task<IActionResult> GetUserChats([FromQuery] PaginationParams pagination)
         {
             var result = await _chatService.getUsers(pagination);
             return Ok(ResponseHelper.Success(LocalizationKey.SuccessToGetUsers, pagination.lan, result));
         }
 
-        [HttpGet("Chats")]
+        [HttpGet]
         public async Task<IActionResult> GetChats([FromQuery] GetGeneralDto<string> pagination)
         {
             var result = await _chatService.GetChats(pagination);

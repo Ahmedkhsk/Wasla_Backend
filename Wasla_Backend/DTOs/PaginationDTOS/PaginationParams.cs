@@ -1,6 +1,6 @@
 ﻿namespace Wasla_Backend.DTOs.PaginationDTOS
 {
-    public class PaginationParams
+    public class PaginationParams : LanDto
     {
         private const int MaxPageSize = 50;
 

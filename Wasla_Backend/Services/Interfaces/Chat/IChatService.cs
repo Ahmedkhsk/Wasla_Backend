@@ -7,7 +7,7 @@
         public Task DeleteChat(int chatId, string userId);
         public Task UpdateBio(UpdateBioDto updateBioDto);
         public Task UpdateMessage(UpdateMessage updateMessage);
-        public Task<PagedResult<GetUsersDto>> getUsers(GetUsersInChatDto pagination);
+        public Task<PagedResult<GetUsersDto>> getUsers(PaginationParams pagination);
         public Task<PagedResult<GetChats>> GetChats(GetGeneralDto<string> pagination);
     }
 }

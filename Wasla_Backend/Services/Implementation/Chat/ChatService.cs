@@ -151,7 +151,7 @@ namespace Wasla_Backend.Services.Implementation
                 .SendAsync("MessageUpdated", message);
         }
 
-        public async Task<PagedResult<GetUsersDto>> getUsers(GetUsersInChatDto pagination)
+        public async Task<PagedResult<GetUsersDto>> getUsers(PaginationParams pagination)
         {
             return await _userRepository.GetUsers(pagination);
         }

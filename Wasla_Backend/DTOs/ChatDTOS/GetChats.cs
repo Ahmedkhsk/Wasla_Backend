@@ -8,10 +8,10 @@
         public string profileReceiver { get; set; }
         public string? messageText { get; set; }
         public string? audio { get; set; }
-        public bool isEdit { get; set; }
-        public MessageType type { get; set; }
+        public bool? isEdit { get; set; }
+        public MessageType? type { get; set; }
         public List<string>? files { get; set; }
-        public DateTime sentAt { get; set; }
+        public DateTime? sentAt { get; set; }
         public DateTime? readAt { get; set; }
 
     }
