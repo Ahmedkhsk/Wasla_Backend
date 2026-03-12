@@ -1,6 +1,6 @@
 ﻿namespace Wasla_Backend.DTOs.ChatDTOS
 {
-    public class UpdateMessage
+    public class UpdateMessage : LanDto
     {
         public string senderId { get; set; }
         public int messageId { get; set; }

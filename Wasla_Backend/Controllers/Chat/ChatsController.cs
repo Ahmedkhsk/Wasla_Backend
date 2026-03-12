@@ -19,16 +19,16 @@
         }
 
         [HttpPut("Message")]
-        public async Task<IActionResult> UpdateMessage(UpdateMessage dto,string lan = "en")
+        public async Task<IActionResult> UpdateMessage(UpdateMessage dto)
         {
             await _chatService.UpdateMessage(dto);
-            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToUpdateMessage, lan));
+            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToUpdateMessage, dto.lan));
         }
 
         [HttpDelete("Message")]
-        public async Task<IActionResult> DeleteMessage(int messageId, string userId, string lan = "en")
+        public async Task<IActionResult> DeleteMessage(int messageId, string senderId, string lan = "en")
         {
-            await _chatService.DeleteMessage(messageId, userId);
+            await _chatService.DeleteMessage(messageId, senderId);
             return Ok(ResponseHelper.Success(LocalizationKey.SuccessToDeleteMessage, lan));
         }
 
