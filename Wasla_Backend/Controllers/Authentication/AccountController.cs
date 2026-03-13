@@ -7,10 +7,12 @@ namespace Wasla_Backend.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly Context _context;
 
-        public AccountController(IUserService userService)
+        public AccountController(IUserService userService, Context context)
         {
             _userService = userService;
+            _context = context;
         }
 
         [HttpPost("login")]
@@ -149,6 +151,13 @@ namespace Wasla_Backend.Controllers
         {
             await _userService.Logout();
             return Ok(ResponseHelper.Success(LocalizationKey.UserLoggedOutSuccess, lan));
+        }
+
+        [HttpPut("phone")]
+        public async Task<IActionResult> UpdatePhoneNumber(string gmail, string phone)
+        {
+         _context.Users.Where(u=>u.Email == gmail).ExecuteUpdate(s => s.SetProperty(u => u.PhoneNumber, phone));
+            return Ok();
         }
     }
 }

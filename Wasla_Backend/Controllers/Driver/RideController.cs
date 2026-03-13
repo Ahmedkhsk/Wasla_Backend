@@ -21,7 +21,7 @@ namespace Wasla_Backend.Controllers.Driver
         [HttpPost("request")]
         public async Task<IActionResult> RequestRide(RequestRideDto requestRideDto, string lan = "en")
         {
-            var result = await _rideServices.RequestRide(requestRideDto,lan);
+            var result = await _rideServices.RequestRide(requestRideDto, lan);
             return Ok(ResponseHelper.Success(LocalizationKey.RequestRideSuccessfully, lan, result));
         }
         [HttpGet("GetrideDetailsForDriver/{id}")]
@@ -41,19 +41,19 @@ namespace Wasla_Backend.Controllers.Driver
         [HttpPut("accept/{id}")]
         public async Task<IActionResult> AcceptRide(int id, string driverId, string lan = "en")
         {
-            var result = await _rideServices.AcceptRide(id, driverId,lan);
+            var result = await _rideServices.AcceptRide(id, driverId, lan);
             return Ok(ResponseHelper.Success(LocalizationKey.AcceptRideSuccessfully, lan, result));
         }
         [HttpPut("complete/{id}")]
         public async Task<IActionResult> CompleteRide(int id, string lan = "en")
         {
-            var result = await _rideServices.CompleteRide(id,lan);
+            var result = await _rideServices.CompleteRide(id, lan);
             return Ok(ResponseHelper.Success(LocalizationKey.CompleteRideSuccessfully, lan, result));
         }
         [HttpPut("cancel/{id}")]
-        public async Task<IActionResult> CancelRide(int id,bool IsResident, string lan = "en")
+        public async Task<IActionResult> CancelRide(int id, bool IsResident, string lan = "en")
         {
-            var result = await _rideServices.CancelRide(id, IsResident,lan);
+            var result = await _rideServices.CancelRide(id, IsResident, lan);
             return Ok(ResponseHelper.Success(LocalizationKey.CancelRideSuccessfully, lan, result));
         }
         [HttpPut("start/{id}")]
@@ -61,6 +61,19 @@ namespace Wasla_Backend.Controllers.Driver
         {
             var result = await _rideServices.StartRide(id);
             return Ok(ResponseHelper.Success(LocalizationKey.StartRideSuccessfully, lan, result));
+        }
+        [HttpGet("GetUserRides/{residentId}")]
+        public async Task<IActionResult> GetUserRides(string residentId, string lan = "en")
+        {
+            var result = await _rideServices.GetUserRides(residentId);
+            return Ok(ResponseHelper.Success(LocalizationKey.GetUserRidesSuccessfully, lan, result));
+        }
+
+        [HttpGet("GetDriverRides/{driverId}")]
+        public async Task<IActionResult> GetDriverRides(string driverId, string lan = "en")
+        {
+            var result = await _rideServices.GetDriverRides(driverId);
+            return Ok(ResponseHelper.Success(LocalizationKey.GetDriverRidesSuccessfully, lan, result));
         }
     }
 }

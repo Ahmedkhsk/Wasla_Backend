@@ -1235,6 +1235,16 @@
                 ["en"] = "Ride has not been accepted yet.",
                 ["ar"] = "لم يتم قبول الرحلة بعد."
             },
+            [LocalizationKey.GetUserRidesSuccessfully]=new()
+            {
+                ["en"] = "User rides retrieved successfully.",
+                ["ar"] = "تم جلب رحلات المستخدم بنجاح."
+            },
+            [LocalizationKey.GetDriverRidesSuccessfully] = new()
+            {
+                ["en"] = "Driver rides retrieved successfully.",
+                ["ar"] = "تم جلب رحلات السائق بنجاح."
+            },
 
             #endregion
 
