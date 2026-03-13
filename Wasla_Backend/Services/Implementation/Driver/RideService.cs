@@ -48,6 +48,10 @@
             var affectedRows = await _rideRepository.UpdateRideStatusAsync(rideId, RideStatus.Accepted, driverId);
             if (affectedRows == 0)
                 throw new BadRequestException(LocalizationKey.SomeOneHadAcceptIt);
+            driver.DriverStatus = DriverStatus.OnTrip;
+             _driverRepository.Update(driver);
+            await _driverRepository.SaveChangesAsync();
+
 
             var metadata = new Dictionary<string, string>
             {
@@ -75,33 +79,36 @@
             if (ride == null)
                 throw new NotFoundException(LocalizationKey.RideNotFound);
 
-            ride.Status = RideStatus.Cancelled;
-            _rideRepository.Update(ride);
-            await _rideRepository.SaveChangesAsync();
-
-            var ReferenceId = IsResident ? ride.DriverId : ride.ResidentId;
-            if (ReferenceId == null)
-                return ride.Id;
-
-            if (!IsResident && ride.Driver == null)
+            if (ride.DriverId != null && ride.Driver == null)
                 await _context.Entry(ride).Reference(r => r.Driver).LoadAsync();
 
-            if (IsResident && ride.Resident == null)
+            if (ride.Resident == null)
                 await _context.Entry(ride).Reference(r => r.Resident).LoadAsync();
+
+            ride.Status = RideStatus.Cancelled;
+
+            if (ride.Driver != null)
+                ride.Driver.DriverStatus = DriverStatus.Online;
+
+            await _driverRepository.SaveChangesAsync();
+
+            var referenceId = IsResident ? ride.DriverId : ride.ResidentId;
+            if (referenceId == null)
+                return ride.Id;
 
             var userName = IsResident ? ride.Resident?.FullName : ride.Driver?.FullName;
 
             var metadata = new Dictionary<string, string>
-            {
-                { "UserName", userName }
-            };
+    {
+        { "UserName", userName }
+    };
 
             var image = IsResident ? ride.Resident?.ProfilePhoto : ride.Driver?.ProfilePhoto;
             var imageUrl = _fileUrlBuilderService.GetMediaUrl(image, MediaType.userImage);
 
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(
                 x => x.sendNotification(
-                    ReferenceId,
+                    referenceId,
                     NotificationType.rideCancelled,
                     ride.Id.ToString(),
                     imageUrl,
@@ -122,10 +129,12 @@
                 throw new BadRequestException(LocalizationKey.InvalidRideStatus);
 
             ride.Status = RideStatus.Completed;
-            _rideRepository.Update(ride);
-            await _rideRepository.SaveChangesAsync();
+          
 
             await _context.Entry(ride).Reference(r => r.Driver).LoadAsync();
+            if (ride.Driver != null)
+                ride.Driver.DriverStatus=DriverStatus.Online;
+            await _rideRepository.SaveChangesAsync();
 
             var metadata = new Dictionary<string, string>
             {
