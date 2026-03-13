@@ -31,7 +31,7 @@ namespace Wasla_Backend.Helpers.ProgramHelper.Configurations
 
                         if (!string.IsNullOrEmpty(accessToken) &&
                             (path.StartsWithSegments("/bookingHub") || path.StartsWithSegments("/serviceHub") ||
-                            path.StartsWithSegments("/rideHub")))
+                            path.StartsWithSegments("/rideHub")) || path.StartsWithSegments("/reviewHub") || path.StartsWithSegments("/chatHub"))
 
                         {
                             context.Token = accessToken;

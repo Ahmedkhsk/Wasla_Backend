@@ -30,6 +30,7 @@
                 {
                     chatId = x.chat.id,
                     receiverId = x.chat.receiverId,
+                    senderId = x.chat.senderId,
                     isEdit = x.lastMessage.isEdited,
                     isMine = x.lastMessage.senderId == pagination.id,
                     messageId = x.lastMessage.id,
@@ -79,6 +80,8 @@
                     messageText = m.messageText,
                     audio = m.audio,
                     type = m.type,
+                    senderId = m.senderId,
+                    receiverId = m.receiverId,
                     isMine = m.senderId == dto.senderId,
                     messageId = m.id,
                     sentAt = m.sentAt,

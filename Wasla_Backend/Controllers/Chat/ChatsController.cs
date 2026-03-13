@@ -1,6 +1,4 @@
-﻿using Wasla_Backend.DTOs.PaginationDTOS;
-
-namespace Wasla_Backend.Controllers.Chat
+﻿namespace Wasla_Backend.Controllers.Chat
 {
     [Route("api/[controller]")]
     [ApiController]

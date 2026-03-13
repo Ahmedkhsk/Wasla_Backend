@@ -1,5 +1,6 @@
 ﻿namespace Wasla_Backend.Hubs.ChatHubs
 {
+    [Authorize]
     public class ChatHub : Hub
     {
         public override async Task OnConnectedAsync()

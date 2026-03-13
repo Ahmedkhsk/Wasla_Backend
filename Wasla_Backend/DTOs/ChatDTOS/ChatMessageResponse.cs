@@ -3,7 +3,8 @@
     public class ChatMessageResponse
     {
         public string? messageText { get; set; }
-
+        public string receiverId { get; set; }
+        public string senderId { get; set; }
         public string? audio { get; set; }
         public int? messageId { get; set; }
         public bool? isMine { get; set; }

@@ -3,6 +3,7 @@
     public class GetChats
     {
         public string receiverId { get; set; }
+        public string senderId { get; set; }
         public int chatId { get; set; }
         public string name { get; set; }
         public string profileReceiver { get; set; }

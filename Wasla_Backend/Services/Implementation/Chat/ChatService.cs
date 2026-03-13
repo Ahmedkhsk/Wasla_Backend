@@ -69,7 +69,27 @@
             await _messageRepository.AddAsync(message);
             await _messageRepository.SaveChangesAsync();
 
-            await _hubContext.Clients.User(dto.reciverId).SendAsync("ReceiveMessage", message);
+            var messageDto = new MessageHubDto
+            {
+                id = message.id,
+                chatId = message.chatId,
+                senderId = message.senderId,
+                receiverId = message.receiverId,
+                messageText = message.messageText,
+                audio = _fileUrlBuilderService.GetMediaUrl(message.audio,MediaType.chatFile),
+                type = message.type,
+                isMine = true,
+                sentAt = message.sentAt,
+                readAt = message.readAt,
+                isSent = message.isSent,
+                isEdited = message.isEdited,
+                files = message.files.Select(f => _fileUrlBuilderService.GetMediaUrl(f, MediaType.chatFile))
+                        .ToList()
+            };
+
+            await _hubContext.Clients.
+                Users(new List<string> { message.senderId, message.receiverId }).
+                SendAsync("ReceiveMessage", messageDto);
         }
 
         public async Task DeleteMessage(int messageId, string userId)
@@ -143,9 +163,26 @@
             _messageRepository.Update(message);
             await _messageRepository.SaveChangesAsync();
 
+            var messageDto = new MessageHubDto
+            {
+                id = message.id,
+                chatId = message.chatId,
+                senderId = message.senderId,
+                receiverId = message.receiverId,
+                messageText = message.messageText,
+                audio = _fileUrlBuilderService.GetMediaUrl(message.audio, MediaType.chatFile),
+                type = message.type,
+                sentAt = message.sentAt,
+                readAt = message.readAt,
+                isSent = message.isSent,
+                isEdited = message.isEdited,
+                files = message.files.Select(f => _fileUrlBuilderService.GetMediaUrl(f, MediaType.chatFile))
+                        .ToList()
+            };
+
             await _hubContext.Clients
-                .Users(message.senderId, message.receiverId)
-                .SendAsync("MessageUpdated", message);
+                .Users(new List<string> { message.senderId, message.receiverId })
+                .SendAsync("MessageUpdated", messageDto);
         }
 
         public async Task<PagedResult<GetUsersDto>> getUsers(PaginationParams pagination)
@@ -198,5 +235,6 @@
 
             return chat;
         }
+   
     }
 }
