@@ -11,6 +11,8 @@ namespace Wasla_Backend.Services.Interfaces.Driver
         public Task<int> CancelRide(int rideId,bool IsResident,string lan);
         public Task<int>StartRide(int rideId);
         public Task<RideDetailsForResidentDto> GetrideDetailsForResident(int rideId);
+        public Task<List<UserRideDto>> GetUserRides(string residentId);
+        public Task<List<DriverRideDto>> GetDriverRides(string driverId);
 
 
     }

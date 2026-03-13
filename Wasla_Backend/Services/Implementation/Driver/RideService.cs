@@ -179,6 +179,14 @@
             };
         }
 
+        public async Task<List<DriverRideDto>> GetDriverRides(string driverId)
+        {
+            var driver= await _driverRepository.GetByIdAsync(driverId);
+            if (driver == null)
+                throw new NotFoundException(LocalizationKey.DriverNotFound);
+            return await _rideRepository.GetDriverRides(driverId);
+        }
+
         public async Task<RideDetailsForDriverDto> GetrideDetailsForDriver(int rideId)
         {
             var rideDetails = await _rideRepository.GetrideDetailsForDriver(rideId);
@@ -201,6 +209,14 @@
             rideDetails.endRide = rideDetails.startRide.AddMinutes(GeoHelper.CalculateDuration(ride.Distance));
 
             return rideDetails;
+        }
+
+        public async Task<List<UserRideDto>> GetUserRides(string residentId)
+        {
+            var resident= await _residentRepository.GetByIdAsync(residentId);
+            if (resident == null)
+                throw new NotFoundException(LocalizationKey.ResidentNotFound);
+            return await _rideRepository.GetUserRides(residentId);
         }
 
         public async Task<int> RequestRide(RequestRideDto requestRideDto, string lan)

@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Repositories.Implementation.driver
+﻿
+
+namespace Wasla_Backend.Repositories.Implementation.driver
 {
     public class RideRepository : GenericRepository<RideModel>, IRideRepository
     {
@@ -101,6 +103,46 @@
                 Price = raw.Price,
                 startRide = raw.RideDate
             };
+        }
+
+        public async Task<List<UserRideDto>> GetUserRides(string residentId)
+        {
+           return await _context.rides
+                .Where(r => r.ResidentId == residentId&&r.Status==RideStatus.Completed)
+                .Include(r => r.Driver)
+                .Select(r => new UserRideDto
+                {
+                    RideId = r.Id,
+                    DriverName = r.Driver.FullName,
+                    DriverPhoto = _fileUrlBuilderService.GetMediaUrl(r.Driver.ProfilePhoto, MediaType.userImage),
+                    DriverPhone = r.Driver.PhoneNumber,
+                    PickUpPlace = r.PickUpPlace,
+                    DropOffPlace = r.DropOffPlace,
+                    Price = r.Price,
+                    RideDate = r.RideDate,
+                    
+                })
+                .ToListAsync();
+        }
+
+        public async Task<List<DriverRideDto>> GetDriverRides(string driverId)
+        {
+            return await _context.rides
+                .Where(r => r.DriverId == driverId && r.Status == RideStatus.Completed)
+                .Include(r => r.Resident)
+                .Select(r => new DriverRideDto
+                {
+                    RideId = r.Id,
+                    ResidentName = r.Resident.FullName,
+                    ResidentPhone = r.Resident.PhoneNumber,
+                    ResidentImage = _fileUrlBuilderService.GetMediaUrl(r.Resident.ProfilePhoto, MediaType.userImage),
+                    PickUpPlace = r.PickUpPlace,
+                    DropOffPlace = r.DropOffPlace,
+                    RideDate = r.RideDate,
+                    Price = r.Price,
+                    Distance = r.Distance
+                })
+                .ToListAsync();
         }
     }
 }

@@ -314,6 +314,8 @@
         CancelRideSuccessfully,
         StartRideSuccessfully,
         RideNotAcceptedYet,
+        GetUserRidesSuccessfully,
+        GetDriverRidesSuccessfully,
     #endregion
 
         #region ChatAndUserKeys

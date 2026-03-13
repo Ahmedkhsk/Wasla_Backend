@@ -107,8 +107,9 @@ global using Wasla_Backend.Services.Interfaces.GymService;
 global using Wasla_Backend.Services.Implementation;
 global using Wasla_Backend.Services.Implementation.General;
 global using Wasla_Backend.Services.Interfaces.Driver;
-global using Wasla_Backend.Services.Interfaces.Files;
 global using Wasla_Backend.Services.Implementation.Files;
+global using Wasla_Backend.Services.Interfaces.Files;
+
 #endregion
 
 #region Project - Factories
