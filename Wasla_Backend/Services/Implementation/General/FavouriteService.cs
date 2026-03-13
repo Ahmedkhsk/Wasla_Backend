@@ -1,19 +1,23 @@
-﻿using System.Reflection.Metadata;
-
-namespace Wasla_Backend.Services.Implementation
+﻿namespace Wasla_Backend.Services.Implementation
 {
     public class FavouriteService : IFavouriteService
     {
         private readonly IFavouriteRepository _favouriteRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IFileUrlBuilderService _fileUrlBuilderService;
 
-        public FavouriteService(IFavouriteRepository favouriteRepository, IUserRepository userRepository)
+        public FavouriteService(
+            IFavouriteRepository favouriteRepository,
+            IUserRepository userRepository,
+            IFileUrlBuilderService fileUrlBuilderService
+        )
         {
             _favouriteRepository = favouriteRepository;
             _userRepository = userRepository;
+            _fileUrlBuilderService = fileUrlBuilderService;
         }
 
-        public async Task<ServiceProviderFavourite> AddFavourite(string residentId, string serviceProviderId,string lan)
+        public async Task<ServiceProviderFavourite> AddFavourite(string residentId, string serviceProviderId, string lan)
         {
             var user = await _userRepository.GetUserByIdAsync(residentId);
             if (user == null)
@@ -32,20 +36,21 @@ namespace Wasla_Backend.Services.Implementation
 
             await _favouriteRepository.AddAsync(favourite);
             await _favouriteRepository.SaveChangesAsync();
+
             var metadata = new Dictionary<string, string>
-           {
-           { "UserName", user.FullName ?? string.Empty }
-           };
+            {
+                { "UserName", user.FullName ?? string.Empty }
+            };
+
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(
-            x => x.sendNotification(
-        serviceProviderId,
-        NotificationType.allFavouritesScreen,
-       serviceProviderId,
-        user.ProfilePhoto,
-        lan,
-        metadata
-    )
-);
+                x => x.sendNotification(
+                    serviceProviderId,
+                    NotificationType.allFavouritesScreen,
+                    serviceProviderId,
+                    _fileUrlBuilderService.GetMediaUrl(user.ProfilePhoto, MediaType.userImage),
+                    lan,
+                    metadata
+                ));
 
             return new ServiceProviderFavourite
             {
@@ -53,7 +58,7 @@ namespace Wasla_Backend.Services.Implementation
                 residentId = residentId,
                 serviceProviderId = serviceProviderId,
                 serviceProviderName = serviceProvider.FullName,
-                serviceProviderProfilePhoto = serviceProvider.ProfilePhoto,
+                serviceProviderProfilePhoto = _fileUrlBuilderService.GetMediaUrl(serviceProvider.ProfilePhoto, MediaType.userImage),
                 serviceProviderPhone = serviceProvider.Phone,
                 ServiceProviderType = favourite.ServiceType.ToString()
             };
@@ -85,7 +90,6 @@ namespace Wasla_Backend.Services.Implementation
 
             _favouriteRepository.Delete(favourite);
             await _favouriteRepository.SaveChangesAsync();
-
         }
     }
 }

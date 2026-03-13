@@ -8,7 +8,8 @@
         private readonly IDoctorServiceRepository _doctorServiceRepository;
         private readonly IDoctorRepository _doctorRepository;
         private readonly IResidentRepository _residentRepository;
-        private readonly string _imagePath;
+        private readonly IFileService _fileService;
+        private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly IHubContext<BookingHub> _hub;
         private readonly IMapper _mapper;
         private readonly ILogger<DoctorBookService> _logger = LoggerFactory.Create(builder =>
@@ -17,26 +18,27 @@
         }).CreateLogger<DoctorBookService>();
         private static readonly SemaphoreSlim _bookingLock = new SemaphoreSlim(1, 1);
 
-
-        public DoctorBookService(IBookingRepository bookingRepository,
-                            IUserRepository userRepository,
-                            IGenericRepository<ServiceDay> serviceDay,
-                            IWebHostEnvironment webHostEnvironment,
-                            IDoctorServiceRepository doctorServiceRepository,
-                            IDoctorRepository doctorRepository,
-                            IResidentRepository residentRepository,
-                            IHubContext<BookingHub> hub,
-                            IMapper mapper
-
-            )
+        public DoctorBookService(
+            IBookingRepository bookingRepository,
+            IUserRepository userRepository,
+            IGenericRepository<ServiceDay> serviceDay,
+            IDoctorServiceRepository doctorServiceRepository,
+            IDoctorRepository doctorRepository,
+            IResidentRepository residentRepository,
+            IFileService fileService,
+            IFileUrlBuilderService fileUrlBuilderService,
+            IHubContext<BookingHub> hub,
+            IMapper mapper
+        )
         {
             _bookingRepository = bookingRepository;
             _userRepository = userRepository;
             _serviceDayRepository = serviceDay;
-            _imagePath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.ImagesPathBooking.TrimStart('/'));
             _doctorServiceRepository = doctorServiceRepository;
             _doctorRepository = doctorRepository;
             _residentRepository = residentRepository;
+            _fileService = fileService;
+            _fileUrlBuilderService = fileUrlBuilderService;
             _hub = hub;
             _mapper = mapper;
         }
@@ -57,8 +59,7 @@
             if (status == BookingStatus.canceled && booking.serviceDay != null)
             {
                 booking.serviceDay.isBooking = false;
-                var countOfBookings =
-                        await _bookingRepository.CountBookingBYUserAndServiceProvider(booking.userId, booking.serviceProviderId);
+                var countOfBookings = await _bookingRepository.CountBookingBYUserAndServiceProvider(booking.userId, booking.serviceProviderId);
                 if (countOfBookings == 1 && booking.serviceProviderType == ServiceProviderType.Doctor)
                 {
                     var doctor = await _doctorRepository.GetByIdAsync(booking.serviceProviderId);
@@ -72,8 +73,8 @@
             }
 
             booking.bookingStatus = status;
-
             await _bookingRepository.SaveChangesAsync();
+
             var bookhubdata = new BookHubData
             {
                 serviceId = booking.serviceDayId,
@@ -96,14 +97,12 @@
             if (updateBookingDto.newDayOfWeek == WeekDayEnum.none ||
                string.IsNullOrWhiteSpace(updateBookingDto.newStart) ||
                string.IsNullOrWhiteSpace(updateBookingDto.newEnd))
-            {
                 throw new BadRequestException(LocalizationKey.InvalidBookingUpdateDetails);
-            }
 
             booking = _mapper.Map(updateBookingDto, booking);
-
             _bookingRepository.Update(booking);
             await _bookingRepository.SaveChangesAsync();
+
             var bookhubdata = new BookHubData
             {
                 serviceId = booking.serviceDayId,
@@ -117,9 +116,8 @@
         {
             var user = await _userRepository.GetUserByIdAsync(userId);
             if (user == null)
-            {
                 throw new NotFoundException(LocalizationKey.UserNotFound);
-            }
+
             return await _bookingRepository.GetBookingDetailsForUserAsync(userId, language);
         }
 
@@ -147,15 +145,10 @@
                 if (serviceDay.isBooking)
                     throw new BadRequestException(LocalizationKey.ServiceAlreadyBooked);
 
-                List<string> savedImages = new();
-                if (dto.images != null)
-                {
-                    foreach (var img in dto.images)
-                    {
-                        var path = await FileOperation.SaveFile(img, _imagePath);
-                        savedImages.Add(path);
-                    }
-                }
+                var savedImages = await _fileService.AddFilesAsync(
+                    dto.images,
+                    _fileUrlBuilderService.GetPath(MediaType.bookingImage)
+                );
 
                 var booking = new Booking
                 {
@@ -171,7 +164,6 @@
 
                 serviceDay.isBooking = true;
                 _serviceDayRepository.Update(serviceDay);
-
                 await _bookingRepository.AddAsync(booking);
 
                 if (serviceProvider is Doctor doc)
@@ -208,14 +200,13 @@
                         endDateTime
                     );
                 }
+
                 return booking.Id;
             }
             finally
             {
                 _bookingLock.Release();
-                
             }
-            
         }
     }
 }

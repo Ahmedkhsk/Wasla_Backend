@@ -10,10 +10,11 @@
         private readonly IMapper _mapper;
         private readonly TokenHelper _TokenHelper;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly string _imagePath;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly DateTimeHelper _dateTimeHelper;
         private readonly CacheManager _cacheManager;
+        private readonly IFileService _fileService;
+        private readonly IFileUrlBuilderService _fileUrlBuilderService;
 
         public UserService(
             IUserFactory userFactory,
@@ -24,10 +25,11 @@
             TokenHelper tokenHelper,
             UserManager<ApplicationUser> userManager,
             IRefreshTokenRepository refreshTokenRepository,
-            IWebHostEnvironment webHostEnvironment,
             IHttpContextAccessor httpContextAccessor,
             DateTimeHelper dateTimeHelper,
-            CacheManager cacheManager
+            CacheManager cacheManager,
+            IFileService fileService,
+            IFileUrlBuilderService fileUrlBuilderService
         )
         {
             _userFactory = userFactory;
@@ -38,10 +40,11 @@
             _TokenHelper = tokenHelper;
             _userManager = userManager;
             _dateTimeHelper = dateTimeHelper;
-            _imagePath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.ImagesPathUser.TrimStart('/'));
             _refreshTokenRepository = refreshTokenRepository;
             _httpContextAccessor = httpContextAccessor;
             _cacheManager = cacheManager;
+            _fileService = fileService;
+            _fileUrlBuilderService = fileUrlBuilderService;
         }
 
         public async Task<IdentityResult> VerifyEmailAsync(VerificationEmailDto model)
@@ -58,8 +61,6 @@
 
             user.IsVerified = true;
             var result = await _userRepository.UpdateUserAsync(user);
-            if (!result.Succeeded)
-                return result;
 
             return result;
         }
@@ -72,8 +73,10 @@
 
             string verificationCode = new Random().Next(1000, 9999).ToString();
             await _emailSender.SendEmailAsync(model.Email, "Verification Code", $"Your OTP is: <b>{verificationCode}</b>");
+
             string cacheKey = $"verify:{user.Id}";
             _cacheManager.Set(cacheKey, verificationCode, TimeSpan.FromMinutes(1));
+
             return IdentityResult.Success;
         }
 
@@ -127,7 +130,6 @@
                 throw new NotFoundException(LocalizationKey.EmailNotFound);
 
             var isPasswordValid = await _userManager.CheckPasswordAsync(user, model.Password);
-
             if (!isPasswordValid)
                 throw new BadRequestException(LocalizationKey.IncorrectPassword);
 
@@ -139,7 +141,7 @@
             {
                 Token = token,
                 UserId = user.Id,
-                profilePhoto = FileSetting.GetMediaUrl(user.ProfilePhoto, MediaType.userImage),
+                profilePhoto = _fileUrlBuilderService.GetMediaUrl(user.ProfilePhoto, MediaType.userImage),
                 Role = roles.FirstOrDefault(),
                 IsCompletedRegister = user.IsCompleteRegistration,
                 IsVerfied = user.IsVerified,
@@ -155,6 +157,7 @@
 
             await _refreshTokenRepository.AddAsync(refreshtoken);
             await _refreshTokenRepository.SaveChangesAsync();
+
             _httpContextAccessor.HttpContext.Response.Cookies.Append("RefreshToken", refreshToken, new CookieOptions
             {
                 HttpOnly = true,
@@ -237,7 +240,7 @@
             {
                 u.Id,
                 u.Email,
-                type=u.GetType().Name,
+                type = u.GetType().Name,
             });
         }
 
@@ -249,9 +252,7 @@
 
             var roles = await _userManager.GetRolesAsync(user);
             if (roles.Any())
-            {
                 await _userManager.RemoveFromRolesAsync(user, roles);
-            }
 
             var result = await _userManager.DeleteAsync(user);
             if (!result.Succeeded)

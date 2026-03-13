@@ -1,6 +1,4 @@
-﻿using Wasla_Backend.data;
-
-namespace Wasla_Backend.Services.Implementation.GymService
+﻿namespace Wasla_Backend.Services.Implementation.GymService
 {
     public class GymBookingService : IGymBookingService
     {
@@ -10,25 +8,29 @@ namespace Wasla_Backend.Services.Implementation.GymService
         private readonly IResidentRepository _residentRepository;
         private readonly DateTimeHelper _dateTimeHelper;
         private readonly IMapper _mapper;
-        private readonly string _qrPath;
+        private readonly IFileService _fileService;
+        private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly IHubContext<BookingHub> _hub;
 
-        public GymBookingService(IGymBookingRepository gymBookingRepository,
-                                 IPackageRepository packageRepository,
-                                 IGymRepository gymRepository,
-                                 IResidentRepository residentRepository,
-                                 IMapper mapper,
-                                 IWebHostEnvironment webHostEnvironment,
-                                 DateTimeHelper dateTimeHelper,
-                                 IHubContext<BookingHub> hub
-                                )
+        public GymBookingService(
+            IGymBookingRepository gymBookingRepository,
+            IPackageRepository packageRepository,
+            IGymRepository gymRepository,
+            IResidentRepository residentRepository,
+            IMapper mapper,
+            IFileService fileService,
+            IFileUrlBuilderService fileUrlBuilderService,
+            DateTimeHelper dateTimeHelper,
+            IHubContext<BookingHub> hub
+        )
         {
             _gymBookingRepository = gymBookingRepository;
             _packageRepository = packageRepository;
             _gymRepository = gymRepository;
             _residentRepository = residentRepository;
             _mapper = mapper;
-            _qrPath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.QrCodePath.TrimStart('/'));
+            _fileService = fileService;
+            _fileUrlBuilderService = fileUrlBuilderService;
             _dateTimeHelper = dateTimeHelper;
             _hub = hub;
         }
@@ -38,7 +40,8 @@ namespace Wasla_Backend.Services.Implementation.GymService
             var gym = await _gymRepository.GetByIdAsync(gymBookDto.gymId);
             if (gym == null)
                 throw new NotFoundException(LocalizationKey.GymNotFound);
-            string gymphoto=FileSetting.GetMediaUrl(gym.ProfilePhoto, MediaType.gymImage);
+
+            var gymPhotoUrl = _fileUrlBuilderService.GetMediaUrl(gym.ProfilePhoto, MediaType.gymImage);
 
             var resident = await _residentRepository.GetByIdAsync(gymBookDto.residentId);
             if (resident == null)
@@ -52,14 +55,10 @@ namespace Wasla_Backend.Services.Implementation.GymService
             if (IsexistingBooking)
                 throw new BadRequestException(LocalizationKey.PackageAlreadyBooked);
 
-            int durationInMonths = 0;
-
             var gymBooking = _mapper.Map<GymBooking>(gymBookDto);
-
             gymBooking.BookingDate = _dateTimeHelper.Now;
 
-            durationInMonths = service.DurationInMonths;
-            gymBooking.price = service.Price;
+            int durationInMonths;
 
             if (service.type == GymServiceType.Package)
             {
@@ -68,6 +67,7 @@ namespace Wasla_Backend.Services.Implementation.GymService
             }
             else
             {
+                durationInMonths = service.DurationInMonths;
                 var discountValue = service.Price * (service.Precentage / 100m);
                 gymBooking.price = service.Price - discountValue;
             }
@@ -75,12 +75,9 @@ namespace Wasla_Backend.Services.Implementation.GymService
             gymBooking.ServiceProviderType = ServiceProviderType.Gym;
             gymBooking.Service = service;
 
-       
-
-         
-
             await _gymBookingRepository.AddAsync(gymBooking);
             await _gymBookingRepository.SaveChangesAsync();
+
             var QrData = new QrCodeDto
             {
                 bookingId = gymBooking.Id,
@@ -93,13 +90,13 @@ namespace Wasla_Backend.Services.Implementation.GymService
                 bookingStatus = gymBooking.BookingStatus
             };
 
-
-
             var qrcode = QRHelper.GenerateQRFile(QrData);
-            var filePath = await FileOperation.SaveFile(qrcode, _qrPath);
+            var filePath = await _fileService.AddFileAsync(qrcode, _fileUrlBuilderService.GetPath(MediaType.qrCode));
 
-            Hangfire.BackgroundJob.Schedule(()=>
-            CheckPayment( filePath, gymBooking.Id,gym.BusinessName,gymphoto,lan), TimeSpan.FromMinutes(1));
+            Hangfire.BackgroundJob.Schedule(
+                () => CheckPayment(filePath, gymBooking.Id, gym.BusinessName, gymPhotoUrl, lan),
+                TimeSpan.FromMinutes(1)
+            );
 
             var expiryDate = gymBooking.BookingDate.AddMonths(durationInMonths);
             var delay = expiryDate - _dateTimeHelper.Now;
@@ -110,7 +107,6 @@ namespace Wasla_Backend.Services.Implementation.GymService
                 x => x.ExpireBooking(gymBooking.Id),
                 delay
             );
-
 
             return new BookResponse
             {
@@ -130,15 +126,15 @@ namespace Wasla_Backend.Services.Implementation.GymService
             await _gymBookingRepository.SaveChangesAsync();
         }
 
-        public async Task CheckPayment(string qrPath, int bookingId, string gymName,string gymphoto,string lan)
+        public async Task CheckPayment(string qrPath, int bookingId, string gymName, string gymPhotoUrl, string lan)
         {
             var booking = await _gymBookingRepository.GetByIdAsync(bookingId);
             if (booking == null) return;
 
             var metadata = new Dictionary<string, string>
-    {
-        { "GymName", gymName ?? string.Empty }
-    };
+            {
+                { "GymName", gymName ?? string.Empty }
+            };
 
             if (!booking.IsPaid)
             {
@@ -146,36 +142,33 @@ namespace Wasla_Backend.Services.Implementation.GymService
                 await _gymBookingRepository.SaveChangesAsync();
 
                 Hangfire.BackgroundJob.Enqueue<NotificationFunction>(
-                  x => x.sendNotification(
-                      booking.ResidentId,
-                      NotificationType.gymPaymentFailed,
-                      booking.Id.ToString(),
-                      gymphoto,
-                      lan,
-                      metadata
-                  )
-              );
+                    x => x.sendNotification(
+                        booking.ResidentId,
+                        NotificationType.gymPaymentFailed,
+                        booking.Id.ToString(),
+                        gymPhotoUrl,
+                        lan,
+                        metadata
+                    ));
             }
             else
             {
                 booking.BookingStatus = GymBookingStatus.Active;
                 await _gymBookingRepository.SaveChangesAsync();
 
-                qrPath = FileSetting.GetMediaUrl(qrPath, MediaType.qrCode);
+                var qrUrl = _fileUrlBuilderService.GetMediaUrl(qrPath, MediaType.qrCode);
 
-                await _hub.Clients.User(booking.ResidentId)
-                .SendAsync("PaymentConfirmed", qrPath);
+                await _hub.Clients.User(booking.ResidentId).SendAsync("PaymentConfirmed", qrUrl);
 
                 Hangfire.BackgroundJob.Enqueue<NotificationFunction>(
-                  x => x.sendNotification(
-                      booking.ResidentId,
-                      NotificationType.gymPaymentSuccess,
-                     qrPath,
-                      gymphoto,
-                      lan,
-                      metadata
-                  )
-              );
+                    x => x.sendNotification(
+                        booking.ResidentId,
+                        NotificationType.gymPaymentSuccess,
+                        qrUrl,
+                        gymPhotoUrl,
+                        lan,
+                        metadata
+                    ));
             }
         }
 
@@ -189,13 +182,12 @@ namespace Wasla_Backend.Services.Implementation.GymService
             _gymBookingRepository.Update(booking);
             await _gymBookingRepository.SaveChangesAsync();
 
-            var bookHubData = new BookHubData
+            return new BookHubData
             {
                 serviceId = booking.ServiceId,
                 serviceProviderId = booking.GymId,
                 residentId = booking.ResidentId
             };
-            return bookHubData;
         }
 
         public async Task<List<BookingOfGym>> PackageBookingOFGym(string gymId)
@@ -237,7 +229,6 @@ namespace Wasla_Backend.Services.Implementation.GymService
         public async Task<ChartsResponse> chartsResponse(string gymId)
         {
             var gym = await _gymRepository.GetByIdAsync(gymId);
-
             if (gym == null)
                 throw new NotFoundException(LocalizationKey.GymNotFound);
 

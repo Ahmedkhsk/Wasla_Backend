@@ -5,7 +5,8 @@
         public string? messageText { get; set; }
 
         public string? audio { get; set; }
-
+        public int? messageId { get; set; }
+        public bool? isMine { get; set; }
         public MessageType? type { get; set; }
 
         public DateTime? sentAt { get; set; }

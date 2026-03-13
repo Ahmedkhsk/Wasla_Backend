@@ -8,15 +8,19 @@
         private readonly IUserRepository _userRepository;
         private readonly IReactionRepository _reactionRepository;
         private readonly IFileService _fileService;
+        private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly ICommentRepository _commentRepository;
 
-        public PostService(IPostRepository postRepository,
-                            IMapper mapper,
-                            DateTimeHelper dateTimeHelper,
-                            IUserRepository userRepository,
-                            IReactionRepository reactionRepository,
-                            IFileService fileService,
-                            ICommentRepository commentRepository)
+        public PostService(
+            IPostRepository postRepository,
+            IMapper mapper,
+            DateTimeHelper dateTimeHelper,
+            IUserRepository userRepository,
+            IReactionRepository reactionRepository,
+            IFileService fileService,
+            IFileUrlBuilderService fileUrlBuilderService,
+            ICommentRepository commentRepository
+        )
         {
             _postRepository = postRepository;
             _mapper = mapper;
@@ -24,6 +28,7 @@
             _userRepository = userRepository;
             _reactionRepository = reactionRepository;
             _fileService = fileService;
+            _fileUrlBuilderService = fileUrlBuilderService;
             _commentRepository = commentRepository;
         }
 
@@ -37,11 +42,10 @@
             post.createdAt = _dateTimeHelper.Now;
 
             if (dto.filesDto != null && dto.filesDto.Any())
-            {
                 post.files = await _fileService.AddFilesAsync(
                     dto.filesDto,
-                    FileSetting.FilesPosts);
-            }
+                    _fileUrlBuilderService.GetPath(MediaType.postFile)
+                );
 
             await _postRepository.AddAsync(post);
             await _postRepository.SaveChangesAsync();
@@ -61,7 +65,7 @@
                 post.files,
                 existingFileNames,
                 dto.newFiles,
-                FileSetting.FilesPosts
+                _fileUrlBuilderService.GetPath(MediaType.postFile)
             );
 
             _postRepository.Update(post);
@@ -74,7 +78,7 @@
             if (post == null)
                 throw new NotFoundException(LocalizationKey.PostNotFound);
 
-            _fileService.DeleteFiles(post.files, FileSetting.FilesPosts);
+            _fileService.DeleteFiles(post.files, _fileUrlBuilderService.GetPath(MediaType.postFile));
 
             _postRepository.Delete(post);
             await _postRepository.SaveChangesAsync();
@@ -87,41 +91,31 @@
                 throw new NotFoundException(LocalizationKey.UserNotFound);
 
             var pagedPosts = await _postRepository.GetPostsGeneral(paginationParams);
-
             var postIds = pagedPosts.Data.Select(p => p.id).ToList();
 
             var reactionsDictionary = await _reactionRepository.GetReactionCountsForPosts(postIds, ReactionTargetType.post, ReactionType.love);
-
             var userReactedPosts = await _reactionRepository.GetUserReactedPostIds(userId, postIds, ReactionTargetType.post, ReactionType.love);
-            
             var commentsDictionary = await _commentRepository.GetCommentCountsForPosts(postIds);
-
             var savesDictionary = await _reactionRepository.GetReactionCountsForPosts(postIds, ReactionTargetType.post, ReactionType.save);
-
             var userSavedPosts = await _reactionRepository.GetUserReactedPostIds(userId, postIds, ReactionTargetType.post, ReactionType.save);
-            
-            
+
             var mappedPosts = pagedPosts.Data.Select(post => new PostGeneralResponse
             {
                 postId = post.id,
                 userName = post.user.FullName,
                 content = post.content,
-
                 files = post.files?
-                    .Select(file => FileSetting.GetMediaUrl(file, MediaType.postFile))
+                    .Select(file => _fileUrlBuilderService.GetMediaUrl(file, MediaType.postFile))
                     .ToList(),
-
                 numberofReacts = reactionsDictionary.TryGetValue(post.id, out var count) ? count : 0,
                 numberofSaves = savesDictionary.TryGetValue(post.id, out var c) ? c : 0,
                 numberofComments = commentsDictionary.TryGetValue(post.id, out var cc) ? cc : 0,
-
                 isLoved = userReactedPosts.Contains(post.id),
                 isSaved = userSavedPosts.Contains(post.id),
                 createdAt = post.createdAt,
                 updatedAt = post.updatedAt,
-                profilePhoto = FileSetting.GetMediaUrl(post.user.ProfilePhoto, MediaType.userImage),
+                profilePhoto = _fileUrlBuilderService.GetMediaUrl(post.user.ProfilePhoto, MediaType.userImage),
                 userId = post.userId
-
             }).ToList();
 
             return new PagedResult<PostGeneralResponse>
@@ -136,28 +130,20 @@
         public async Task<PostByUserIdResponse> GetPostsByUserId(string userId, string currentUserId, int pageNumber, int pageSize)
         {
             var user = await _userRepository.GetUserByIdAsync(userId);
-
             if (user == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
 
             var currentUser = await _userRepository.GetUserByIdAsync(currentUserId);
-
             if (currentUser == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
 
-            var pagedPosts =
-                await _postRepository.GetPostsByUserId(userId, pageNumber, pageSize);
-
+            var pagedPosts = await _postRepository.GetPostsByUserId(userId, pageNumber, pageSize);
             var postIds = pagedPosts.Data.Select(p => p.id).ToList();
 
             var reactionsDictionary = await _reactionRepository.GetReactionCountsForPosts(postIds, ReactionTargetType.post, ReactionType.love);
-
             var userReactedPosts = await _reactionRepository.GetUserReactedPostIds(userId, postIds, ReactionTargetType.post, ReactionType.love);
-            
             var commentsDictionary = await _commentRepository.GetCommentCountsForPosts(postIds);
-
             var savesDictionary = await _reactionRepository.GetReactionCountsForPosts(postIds, ReactionTargetType.post, ReactionType.save);
-
             var userSavedPosts = await _reactionRepository.GetUserReactedPostIds(userId, postIds, ReactionTargetType.post, ReactionType.save);
 
             var mappedPosts = pagedPosts.Data.Select(post => new PostRespnse
@@ -165,16 +151,13 @@
                 postId = post.id,
                 content = post.content,
                 files = post.files?
-                    .Select(file => FileSetting.GetMediaUrl(file, MediaType.postFile))
+                    .Select(file => _fileUrlBuilderService.GetMediaUrl(file, MediaType.postFile))
                     .ToList(),
-
                 numberofReacts = reactionsDictionary.TryGetValue(post.id, out var count) ? count : 0,
                 numberofSaves = savesDictionary.TryGetValue(post.id, out var c) ? c : 0,
                 numberofComments = commentsDictionary.TryGetValue(post.id, out var cc) ? cc : 0,
-
                 isLoved = userReactedPosts.Contains(post.id),
                 isSaved = userSavedPosts.Contains(post.id),
-
                 createdAt = post.createdAt,
                 updatedAt = post.updatedAt
             }).ToList();
@@ -183,9 +166,7 @@
             {
                 userId = user.Id,
                 userName = user.FullName,
-                profilePhoto =
-                    FileSetting.GetMediaUrl(user.ProfilePhoto, MediaType.userImage),
-
+                profilePhoto = _fileUrlBuilderService.GetMediaUrl(user.ProfilePhoto, MediaType.userImage),
                 posts = new PagedResult<PostRespnse>
                 {
                     PageNumber = pagedPosts.PageNumber,
@@ -199,19 +180,17 @@
         public async Task<InformationProfileResponse> InformationProfileResponse(string userId)
         {
             var user = await _userRepository.GetUserByIdAsync(userId);
-            if (user == null) 
+            if (user == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
 
             var postsCount = await _postRepository.GetPostsCountByUserId(userId);
-            
             var reactionsCount = await _reactionRepository.GetReactionCountForUserPosts(userId, ReactionTargetType.post, ReactionType.love);
-
             var savesCount = await _reactionRepository.GetReactionCountForUserPosts(userId, ReactionTargetType.post, ReactionType.save);
 
             return new InformationProfileResponse
             {
                 userName = user.FullName,
-                profilePhoto = FileSetting.GetMediaUrl(user.ProfilePhoto, MediaType.userImage),
+                profilePhoto = _fileUrlBuilderService.GetMediaUrl(user.ProfilePhoto, MediaType.userImage),
                 postsCount = postsCount,
                 reactionsCount = reactionsCount,
                 savesCount = savesCount

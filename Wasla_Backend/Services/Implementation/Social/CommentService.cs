@@ -1,21 +1,23 @@
-﻿using Wasla_Backend.DTOs.PaginationDTOS;
-
-namespace Wasla_Backend.Services.Implementation
+﻿namespace Wasla_Backend.Services.Implementation
 {
     public class CommentService : ICommentService
     {
         private readonly ICommentRepository _commentRepository;
         private readonly DateTimeHelper _dateTimeHelper;
         private readonly IFileService _fileService;
+        private readonly IFileUrlBuilderService _fileUrlBuilderService;
 
         public CommentService(
             ICommentRepository commentRepository,
             DateTimeHelper dateTimeHelper,
-            IFileService fileService)
+            IFileService fileService,
+            IFileUrlBuilderService fileUrlBuilderService
+        )
         {
             _commentRepository = commentRepository;
             _dateTimeHelper = dateTimeHelper;
             _fileService = fileService;
+            _fileUrlBuilderService = fileUrlBuilderService;
         }
 
         public async Task AddComment(AddCommentDto dto)
@@ -29,7 +31,10 @@ namespace Wasla_Backend.Services.Implementation
             };
 
             if (dto.file != null)
-              comment.file = await _fileService.AddFileAsync(dto.file,FileSetting.FilesPosts);
+                comment.file = await _fileService.AddFileAsync(
+                    dto.file,
+                    _fileUrlBuilderService.GetPath(MediaType.postFile)
+                );
 
             await _commentRepository.AddAsync(comment);
             await _commentRepository.SaveChangesAsync();
@@ -47,9 +52,8 @@ namespace Wasla_Backend.Services.Implementation
             comment.file = await _fileService.ReplaceFileAsync(
                 comment.file,
                 dto.file,
-                FileSetting.FilesPosts,
-                ReplaceFileMode.ModelNullable);
-
+                _fileUrlBuilderService.GetPath(MediaType.postFile)
+            );
             comment.createdAt = _dateTimeHelper.Now;
 
             _commentRepository.Update(comment);
@@ -62,7 +66,7 @@ namespace Wasla_Backend.Services.Implementation
             if (comment == null)
                 throw new NotFoundException(LocalizationKey.CommentNotFound);
 
-            _fileService.DeleteFile(comment.file, FileSetting.FilesPosts);
+            _fileService.DeleteFile(comment.file, _fileUrlBuilderService.GetPath(MediaType.postFile));
 
             _commentRepository.Delete(comment);
             await _commentRepository.SaveChangesAsync();

@@ -6,41 +6,43 @@
         private readonly IMapper _mapper;
         private readonly IGenericRepository<DoctorSpecialization> _doctorSpecializationRepository;
         private readonly IBookingRepository _bookingRepository;
-        private readonly string _imagePath;
-        private readonly string _cvPath;
+        private readonly IFileService _fileService;
+        private readonly IFileUrlBuilderService _fileUrlBuilderService;
 
         public DoctorService(
             IDoctorRepository doctorRepository,
-            IWebHostEnvironment webHostEnvironment,
             IMapper mapper,
             IStringLocalizer<DoctorService> localizer,
             IGenericRepository<DoctorSpecialization> doctorSpecializationRepository,
-            IBookingRepository bookingRepository
+            IBookingRepository bookingRepository,
+            IFileService fileService,
+            IFileUrlBuilderService fileUrlBuilderService
         )
         {
             _doctorRepository = doctorRepository;
             _mapper = mapper;
             _doctorSpecializationRepository = doctorSpecializationRepository;
             _bookingRepository = bookingRepository;
-
-            _imagePath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.ImagesPathUser.TrimStart('/'));
-            _cvPath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.PathCVDoctor.TrimStart('/'));
+            _fileService = fileService;
+            _fileUrlBuilderService = fileUrlBuilderService;
         }
 
         public async Task CompleteData(DoctorCompleteDto doctorCompleteDto)
         {
             var doctor = await _doctorRepository.GetByEmail(doctorCompleteDto.Email);
-
             if (doctor == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
 
             _mapper.Map(doctorCompleteDto, doctor);
 
-            var image = await FileOperation.SaveFile(doctorCompleteDto.Image, _imagePath);
-            var cv = await FileOperation.SaveFile(doctorCompleteDto.CV, _cvPath);
-
-            doctor.ProfilePhoto = image;
-            doctor.CV = cv;
+            doctor.ProfilePhoto = await _fileService.AddFileAsync(
+                doctorCompleteDto.Image,
+                _fileUrlBuilderService.GetPath(MediaType.userImage)
+            );
+            doctor.CV = await _fileService.AddFileAsync(
+                doctorCompleteDto.CV,
+                _fileUrlBuilderService.GetPath(MediaType.doctorCV)
+            );
             doctor.IsCompleteRegistration = true;
 
             _doctorRepository.Update(doctor);
@@ -51,24 +53,20 @@
         {
             var doctorSpecialization = await _doctorSpecializationRepository.GetAllAsync();
 
-            var specializationResponse = doctorSpecialization.Select(ds => new DoctorSpecializationResponse
+            return doctorSpecialization.Select(ds => new DoctorSpecializationResponse
             {
                 Id = ds.Id,
                 Name = ds.Specialization.GetText(lan)
             });
-
-            return specializationResponse;
         }
 
         public async Task<IEnumerable<AllDoctorDataDto>> GetAllDoctors(string lan)
         {
             var doctors = await _doctorRepository.GetAllSortedByRating();
-
             var allDoctorDataDtos = _mapper.Map<IEnumerable<AllDoctorDataDto>>(doctors);
+
             foreach (var doctor in allDoctorDataDtos)
-            {
                 doctor.specialtyName = await _doctorRepository.GetDoctorSpecializationName(doctor.Id, lan);
-            }
 
             return allDoctorDataDtos;
         }
@@ -76,12 +74,10 @@
         public async Task<IEnumerable<AllDoctorDataDto>> GetDoctorBySpecialist(int specialistId, string lan)
         {
             var doctors = await _doctorRepository.GetBySpecialist(specialistId);
-
             var allDoctorDataDtos = _mapper.Map<IEnumerable<AllDoctorDataDto>>(doctors);
+
             foreach (var doctor in allDoctorDataDtos)
-            {
                 doctor.specialtyName = await _doctorRepository.GetDoctorSpecializationName(doctor.Id, lan);
-            }
 
             return allDoctorDataDtos;
         }
@@ -89,7 +85,6 @@
         public async Task<DoctorChartDto> GetDoctorChart(string doctorId)
         {
             var doctor = await _doctorRepository.GetById(doctorId);
-
             if (doctor == null)
                 throw new NotFoundException(LocalizationKey.DoctorNotFound);
 
@@ -106,7 +101,6 @@
         public async Task<List<GetAllBookingResponse>> GetAllBookingOfDoctors(string docId, BookingStatus status, string lan)
         {
             var doctor = await _doctorRepository.GetById(docId);
-
             if (doctor == null)
                 throw new BadRequestException(LocalizationKey.DoctorNotFound);
 
@@ -119,7 +113,6 @@
         public async Task<DoctorProfileResponse> GetDoctorProfile(string id, string lan)
         {
             var doctor = await _doctorRepository.GetById(id);
-
             if (doctor == null)
                 throw new NotFoundException(LocalizationKey.DoctorNotFound);
 
@@ -136,12 +129,11 @@
         public async Task UpdateDoctorProfile(UpdateDoctorDto updateDoctorDto)
         {
             var doctor = await _doctorRepository.GetById(updateDoctorDto.userId);
-
             if (doctor == null)
                 throw new NotFoundException(LocalizationKey.DoctorNotFound);
 
-            var image = doctor.ProfilePhoto;
-            var cv = doctor.CV;
+            var currentImage = doctor.ProfilePhoto;
+            var currentCv = doctor.CV;
             var specializationId = doctor.SpecializationId;
 
             _mapper.Map(updateDoctorDto, doctor);
@@ -159,27 +151,16 @@
                 doctor.SpecializationId = specializationId;
             }
 
-            if (updateDoctorDto.profilePhoto != null)
-            {
-                FileOperation.DeleteFile(doctor.ProfilePhoto, _imagePath);
-                image = await FileOperation.SaveFile(updateDoctorDto.profilePhoto, _imagePath);
-                doctor.ProfilePhoto = image;
-            }
-            else
-            {
-                doctor.ProfilePhoto = image;
-            }
-
-            if (updateDoctorDto.cv != null)
-            {
-                FileOperation.DeleteFile(doctor.CV, _cvPath);
-                cv = await FileOperation.SaveFile(updateDoctorDto.cv, _cvPath);
-                doctor.CV = cv;
-            }
-            else
-            {
-                doctor.CV = cv;
-            }
+            doctor.ProfilePhoto = await _fileService.ReplaceFileAsync(
+                currentImage,
+                updateDoctorDto.profilePhoto,
+                _fileUrlBuilderService.GetPath(MediaType.userImage)
+            );
+            doctor.CV = await _fileService.ReplaceFileAsync(
+                currentCv,
+                updateDoctorDto.cv,
+                _fileUrlBuilderService.GetPath(MediaType.doctorCV)
+            );
 
             _doctorRepository.Update(doctor);
             await _doctorRepository.SaveChangesAsync();
@@ -192,12 +173,10 @@
                 throw new NotFoundException(LocalizationKey.DoctorNotFound);
 
             var doctor = await _doctorRepository.GetDoctorData(doctorId);
-
             if (doctor == null)
                 return null;
 
-            doctor.specialtyName =
-                await _doctorRepository.GetDoctorSpecializationName(doctorId, lan);
+            doctor.specialtyName = await _doctorRepository.GetDoctorSpecializationName(doctorId, lan);
 
             return doctor;
         }

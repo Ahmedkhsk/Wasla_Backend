@@ -9,6 +9,7 @@
             services.AddTransient<EmailSenderHelper>();
             services.AddSingleton<DateTimeHelper>();
             services.AddSingleton<CacheManager>();
+            services.AddScoped<FileValidator>();
 
             return services;
         }

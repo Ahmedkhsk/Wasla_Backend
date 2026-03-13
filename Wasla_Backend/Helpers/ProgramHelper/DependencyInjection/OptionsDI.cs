@@ -8,6 +8,9 @@
             services.Configure<EmailSettings>(config.GetSection("Email"));
             services.Configure<RateLimitSettings>(config.GetSection("RateLimitSettings"));
             services.Configure<TimeZoneSettings>(config.GetSection("TimeZones"));
+            services.Configure<FileSettings>(config.GetSection("FileSettings"));
+            services.Configure<FileStorageSettings>(config.GetSection("FileStorage"));
+
             services.AddMemoryCache();
 
             return services;

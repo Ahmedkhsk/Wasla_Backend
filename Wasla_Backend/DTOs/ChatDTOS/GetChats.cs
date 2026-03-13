@@ -7,6 +7,8 @@
         public string name { get; set; }
         public string profileReceiver { get; set; }
         public string? messageText { get; set; }
+        public int? messageId { get; set; }
+        public bool? isMine { get; set; }
         public string? audio { get; set; }
         public bool? isEdit { get; set; }
         public MessageType? type { get; set; }

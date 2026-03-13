@@ -2,8 +2,11 @@
 {
     public class PostRepository : GenericRepository<Post>, IPostRepository
     {
-        public PostRepository(Context context) : base(context)
+        private readonly IFileUrlBuilderService _fileUrlBuilderService;
+
+        public PostRepository(Context context, IFileUrlBuilderService fileUrlBuilderService) : base(context)
         {
+            _fileUrlBuilderService = fileUrlBuilderService;
         }
 
         public async Task<PagedResult<Post>> GetPostsGeneral(PaginationParams paginationParams)
@@ -27,7 +30,6 @@
 
         public async Task<PagedResult<PostGeneralResponse>> GetPostsByUsingReactionType(GetPostsByUsingReactionTypeDto dto)
         {
-
             var reactionPostsQuery = _context.Reactions
                 .Where(r =>
                     r.userId == dto.userId &&
@@ -54,26 +56,21 @@
                     p.files,
                     p.createdAt,
                     p.updatedAt,
-
                     numberofReacts = _context.Reactions.Count(r =>
                         r.targetType == ReactionTargetType.post &&
                         r.targetId == p.id &&
                         r.reactionType == ReactionType.love),
-
                     numberofSaves = _context.Reactions.Count(r =>
                         r.targetType == ReactionTargetType.post &&
                         r.targetId == p.id &&
                         r.reactionType == ReactionType.save),
-
                     numberofComments = _context.Comments.Count(c =>
                         c.postId == p.id),
-
                     isLoved = _context.Reactions.Any(r =>
                         r.userId == dto.userId &&
                         r.targetType == ReactionTargetType.post &&
                         r.targetId == p.id &&
                         r.reactionType == ReactionType.love),
-
                     isSaved = _context.Reactions.Any(r =>
                         r.userId == dto.userId &&
                         r.targetType == ReactionTargetType.post &&
@@ -88,20 +85,15 @@
                 userId = p.userId,
                 userName = p.userName,
                 content = p.content,
-
                 files = p.files == null
                     ? new List<string>()
-                    : p.files.Select(f => FileSetting.GetMediaUrl(f, MediaType.postFile)).ToList(),
-
-                profilePhoto = FileSetting.GetMediaUrl(p.profilePhoto, MediaType.userImage),
-
+                    : p.files.Select(f => _fileUrlBuilderService.GetMediaUrl(f, MediaType.postFile)).ToList(),
+                profilePhoto = _fileUrlBuilderService.GetMediaUrl(p.profilePhoto, MediaType.userImage),
                 numberofReacts = p.numberofReacts,
                 numberofSaves = p.numberofSaves,
                 numberofComments = p.numberofComments,
-
                 isLoved = p.isLoved,
                 isSaved = p.isSaved,
-
                 createdAt = p.createdAt,
                 updatedAt = p.updatedAt
             }).ToList();
@@ -115,7 +107,7 @@
             };
         }
 
-        public async Task<PagedResult<Post>> GetPostsByUserId(string userId,int pageNumber, int pageSize)
+        public async Task<PagedResult<Post>> GetPostsByUserId(string userId, int pageNumber, int pageSize)
         {
             var query = _dbSet
                 .Where(p => p.userId == userId)

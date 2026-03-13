@@ -1,9 +1,4 @@
-﻿
-
-using System.Runtime.InteropServices;
-using Microsoft.AspNetCore.SignalR;
-
-namespace Wasla_Backend.Services.Implementation.Driver
+﻿namespace Wasla_Backend.Services.Implementation.Driver
 {
     public class RideService : IRideServices
     {
@@ -15,11 +10,19 @@ namespace Wasla_Backend.Services.Implementation.Driver
         private readonly IDriverRepository _driverRepository;
         private readonly IHubContext<RideHub> _hub;
         private readonly Context _context;
+        private readonly IFileUrlBuilderService _fileUrlBuilderService;
 
-        public RideService(IRideRepository rideRepository, IResidentRepository residentRepository,
-            IMapper mapper,DateTimeHelper dateTimeHelper, IDriverService driverService, IDriverRepository driverRepository,
-            IHubContext<RideHub> hub, Context context
-            )
+        public RideService(
+            IRideRepository rideRepository,
+            IResidentRepository residentRepository,
+            IMapper mapper,
+            DateTimeHelper dateTimeHelper,
+            IDriverService driverService,
+            IDriverRepository driverRepository,
+            IHubContext<RideHub> hub,
+            Context context,
+            IFileUrlBuilderService fileUrlBuilderService
+        )
         {
             _rideRepository = rideRepository;
             _residentRepository = residentRepository;
@@ -29,46 +32,49 @@ namespace Wasla_Backend.Services.Implementation.Driver
             _driverRepository = driverRepository;
             _hub = hub;
             _context = context;
+            _fileUrlBuilderService = fileUrlBuilderService;
         }
 
         public async Task<int> AcceptRide(int rideId, string driverId, string lan)
         {
-            var ride =await _rideRepository.GetByIdAsync(rideId);
+            var ride = await _rideRepository.GetByIdAsync(rideId);
             if (ride == null)
                 throw new NotFoundException(LocalizationKey.RideNotFound);
-            var driver =await _driverRepository.GetByIdAsync(driverId);
+
+            var driver = await _driverRepository.GetByIdAsync(driverId);
             if (driver == null)
                 throw new NotFoundException(LocalizationKey.DriverNotFound);
-             var affectedRows = await _rideRepository.UpdateRideStatusAsync(rideId, RideStatus.Accepted, driverId);
+
+            var affectedRows = await _rideRepository.UpdateRideStatusAsync(rideId, RideStatus.Accepted, driverId);
             if (affectedRows == 0)
                 throw new BadRequestException(LocalizationKey.SomeOneHadAcceptIt);
+
             var metadata = new Dictionary<string, string>
-    {
-        { "DriverName", driver.FullName }
-    };
+            {
+                { "DriverName", driver.FullName }
+            };
 
             BackgroundJob.Enqueue<NotificationFunction>(
                 x => x.sendNotification(
                     ride.ResidentId,
                     NotificationType.rideAccepted,
                     ride.Id.ToString(),
-                    driver.ProfilePhoto,
+                    _fileUrlBuilderService.GetMediaUrl(driver.ProfilePhoto, MediaType.userImage),
                     lan,
                     metadata
                 ));
+
             await _hub.Clients.User(ride.ResidentId).SendAsync("RideAccepted", ride.Id);
-
-
 
             return ride.Id;
         }
 
         public async Task<int> CancelRide(int rideId, bool IsResident, string lan)
         {
-            var ride =await _rideRepository.GetByIdAsync(rideId);
+            var ride = await _rideRepository.GetByIdAsync(rideId);
             if (ride == null)
                 throw new NotFoundException(LocalizationKey.RideNotFound);
-            
+
             ride.Status = RideStatus.Cancelled;
             _rideRepository.Update(ride);
             await _rideRepository.SaveChangesAsync();
@@ -76,30 +82,22 @@ namespace Wasla_Backend.Services.Implementation.Driver
             var ReferenceId = IsResident ? ride.DriverId : ride.ResidentId;
             if (ReferenceId == null)
                 return ride.Id;
+
             if (!IsResident && ride.Driver == null)
-            {
-                await _context.Entry(ride)
-                              .Reference(r => r.Driver)
-                              .LoadAsync();
-            }
+                await _context.Entry(ride).Reference(r => r.Driver).LoadAsync();
 
             if (IsResident && ride.Resident == null)
-            {
-                await _context.Entry(ride)
-                              .Reference(r => r.Resident)
-                              .LoadAsync();
-            }
-            var userName = IsResident
-       ? ride.Resident?.FullName
-       : ride.Driver?.FullName;
+                await _context.Entry(ride).Reference(r => r.Resident).LoadAsync();
+
+            var userName = IsResident ? ride.Resident?.FullName : ride.Driver?.FullName;
 
             var metadata = new Dictionary<string, string>
-    {
-        { "UserName", userName }
-    };
-            var image = IsResident ? ride.Resident?.ProfilePhoto : ride.Driver?.ProfilePhoto;
-            var imageUrl = FileSetting.GetMediaUrl(image,MediaType.userImage );
+            {
+                { "UserName", userName }
+            };
 
+            var image = IsResident ? ride.Resident?.ProfilePhoto : ride.Driver?.ProfilePhoto;
+            var imageUrl = _fileUrlBuilderService.GetMediaUrl(image, MediaType.userImage);
 
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(
                 x => x.sendNotification(
@@ -116,32 +114,31 @@ namespace Wasla_Backend.Services.Implementation.Driver
 
         public async Task<int> CompleteRide(int rideId, string lan)
         {
-            var ride =await _rideRepository.GetByIdAsync(rideId);
+            var ride = await _rideRepository.GetByIdAsync(rideId);
             if (ride == null)
                 throw new NotFoundException(LocalizationKey.RideNotFound);
+
             if (ride.Status != RideStatus.InProgress)
                 throw new BadRequestException(LocalizationKey.InvalidRideStatus);
+
             ride.Status = RideStatus.Completed;
             _rideRepository.Update(ride);
             await _rideRepository.SaveChangesAsync();
-            await _context.Entry(ride)
-                          .Reference(r => r.Driver)
-                          .LoadAsync();
+
+            await _context.Entry(ride).Reference(r => r.Driver).LoadAsync();
 
             var metadata = new Dictionary<string, string>
-    {
-        { "DriverName", ride.Driver?.FullName }
-    };
+            {
+                { "DriverName", ride.Driver?.FullName }
+            };
 
-            var image = ride.Driver?.ProfilePhoto;
-
-            var imageUrl = FileSetting.GetMediaUrl(image, MediaType.userImage);
+            var imageUrl = _fileUrlBuilderService.GetMediaUrl(ride.Driver?.ProfilePhoto, MediaType.userImage);
 
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(
                 x => x.sendNotification(
                     ride.ResidentId,
                     NotificationType.rideCompleted,
-                   ride.DriverId,
+                    ride.DriverId,
                     imageUrl,
                     lan,
                     metadata
@@ -165,74 +162,66 @@ namespace Wasla_Backend.Services.Implementation.Driver
 
             distance *= RoadFactor;
 
-            double pricePerKm = 0;
-
-            switch (calculateRideDto.VehicleType)
+            double pricePerKm = calculateRideDto.VehicleType switch
             {
-                case VehicleType.Scooter:
-                    pricePerKm = 15;
-                    break;
-
-                case VehicleType.Car:
-                    pricePerKm = 20;
-                    break;
-
-                default:
-                    throw new BadRequestException(LocalizationKey.VehicleTypeNotSupported);
-            }
+                VehicleType.Scooter => 15,
+                VehicleType.Car => 20,
+                _ => throw new BadRequestException(LocalizationKey.VehicleTypeNotSupported)
+            };
 
             var ridePrice = BaseFare + (distance * pricePerKm);
+            var finalPrice = ridePrice + (ridePrice * Commission);
 
-            var commission = ridePrice * Commission;
-
-            var finalPrice = ridePrice + commission;
-
-            var rideEstimate = new RideEstimateDto
+            return new RideEstimateDto
             {
                 EstimatedPrice = Math.Round(finalPrice, 2),
                 Distance = Math.Round(distance, 2)
             };
-
-            return rideEstimate;
         }
 
         public async Task<RideDetailsForDriverDto> GetrideDetailsForDriver(int rideId)
         {
-            var rideDetails =await _rideRepository.GetrideDetailsForDriver(rideId);
+            var rideDetails = await _rideRepository.GetrideDetailsForDriver(rideId);
             if (rideDetails == null)
                 throw new NotFoundException(LocalizationKey.RideNotFound);
+
             return rideDetails;
         }
 
         public async Task<RideDetailsForResidentDto> GetrideDetailsForResident(int rideId)
         {
-            var ride=await _rideRepository.GetByIdAsync(rideId);
+            var ride = await _rideRepository.GetByIdAsync(rideId);
             if (ride == null)
                 throw new NotFoundException(LocalizationKey.RideNotFound);
-            if(ride.DriverId == null)
+
+            if (ride.DriverId == null)
                 throw new BadRequestException(LocalizationKey.RideNotAcceptedYet);
-            var rideDetails= await _rideRepository.GetrideDetailsForResident(rideId);
+
+            var rideDetails = await _rideRepository.GetrideDetailsForResident(rideId);
             rideDetails.endRide = rideDetails.startRide.AddMinutes(GeoHelper.CalculateDuration(ride.Distance));
+
             return rideDetails;
         }
 
         public async Task<int> RequestRide(RequestRideDto requestRideDto, string lan)
         {
-           var resident =await _residentRepository.GetByIdAsync(requestRideDto.PassengerId);
+            var resident = await _residentRepository.GetByIdAsync(requestRideDto.PassengerId);
             if (resident == null)
                 throw new NotFoundException(LocalizationKey.ResidentNotFound);
+
             var hasActiveRide = await _rideRepository.IsHasActiveRide(requestRideDto.PassengerId);
             if (hasActiveRide)
                 throw new BadRequestException(LocalizationKey.ResidentHasActiveRide);
-            var estimate = new CalculateRideDto
+
+            var estimateResult = EstimateRide(new CalculateRideDto
             {
                 PickupLatitude = requestRideDto.PickupLatitude,
                 PickupLongitude = requestRideDto.PickupLongitude,
                 DropoffLatitude = requestRideDto.DropoffLatitude,
                 DropoffLongitude = requestRideDto.DropoffLongitude,
                 VehicleType = requestRideDto.VehicleType
-            };
-            var estimateResult = EstimateRide(estimate);
+            });
+
             var ride = new RideModel
             {
                 ResidentId = requestRideDto.PassengerId,
@@ -247,49 +236,54 @@ namespace Wasla_Backend.Services.Implementation.Driver
                 ServiceProviderType = ServiceProviderType.Driver,
                 PickUpPlace = requestRideDto.PickUpPlace,
                 DropOffPlace = requestRideDto.DropOffPlace
-
             };
-           
+
             await _rideRepository.AddAsync(ride);
             await _rideRepository.SaveChangesAsync();
 
-            var OnlineDrivers = await _driverService.GetTopNearestDriver(requestRideDto.PickupLatitude,
-                requestRideDto.PickupLongitude,requestRideDto.VehicleType);
-            Console.WriteLine("Online Drivers: " + string.Join(", ", OnlineDrivers));
-            foreach (var driverId in OnlineDrivers)
+            var residentPhotoUrl = _fileUrlBuilderService.GetMediaUrl(resident.ProfilePhoto, MediaType.userImage);
+
+            var onlineDrivers = await _driverService.GetTopNearestDriver(
+                requestRideDto.PickupLatitude,
+                requestRideDto.PickupLongitude,
+                requestRideDto.VehicleType
+            );
+
+            foreach (var driverId in onlineDrivers)
             {
                 var metadata = new Dictionary<string, string>
-    {
-        { "Distance", ride.Distance.ToString("0.0") },
-        { "Price", ride.Price.ToString("0.0") }
-    };
+                {
+                    { "Distance", ride.Distance.ToString("0.0") },
+                    { "Price", ride.Price.ToString("0.0") }
+                };
 
                 Hangfire.BackgroundJob.Enqueue<NotificationFunction>(
                     x => x.sendNotification(
                         driverId,
                         NotificationType.newRideRequest,
                         ride.Id.ToString(),
-                        resident.ProfilePhoto,
+                        residentPhotoUrl,
                         lan,
                         metadata
                     ));
             }
+
             return ride.Id;
-
-
-
         }
 
         public async Task<int> StartRide(int rideId)
         {
-            var ride=await _rideRepository.GetByIdAsync(rideId);
+            var ride = await _rideRepository.GetByIdAsync(rideId);
             if (ride == null)
                 throw new NotFoundException(LocalizationKey.RideNotFound);
+
             if (ride.Status != RideStatus.Accepted)
                 throw new BadRequestException(LocalizationKey.InvalidRideStatus);
+
             ride.Status = RideStatus.InProgress;
             _rideRepository.Update(ride);
             await _rideRepository.SaveChangesAsync();
+
             return ride.Id;
         }
     }

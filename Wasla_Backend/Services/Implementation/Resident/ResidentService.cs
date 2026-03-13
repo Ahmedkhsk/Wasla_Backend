@@ -6,15 +6,17 @@
         private readonly IResidentIdentityRepository _ResidentIdentityRepository;
         private readonly IMapper _mapper;
         private readonly IStringLocalizer<ResidentService> _localizer;
-        private readonly string _imagePath;
+        private readonly IFileService _fileService;
+        private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly IBookingRepository _bookingRepository;
 
         public ResidentService(
             IResidentRepository ResidentRepository,
             IResidentIdentityRepository ResidentIdentityRepository,
-            IWebHostEnvironment webHostEnvironment,
             IMapper mapper,
             IStringLocalizer<ResidentService> localizer,
+            IFileService fileService,
+            IFileUrlBuilderService fileUrlBuilderService,
             IBookingRepository bookingRepository
         )
         {
@@ -22,7 +24,8 @@
             _ResidentIdentityRepository = ResidentIdentityRepository;
             _mapper = mapper;
             _localizer = localizer;
-            _imagePath = Path.Combine(webHostEnvironment.WebRootPath, FileSetting.ImagesPathUser.TrimStart('/'));
+            _fileService = fileService;
+            _fileUrlBuilderService = fileUrlBuilderService;
             _bookingRepository = bookingRepository;
         }
 
@@ -41,7 +44,10 @@
                 throw new NotFoundException(LocalizationKey.UserNotFound);
 
             _mapper.Map(model, resident);
-            resident.ProfilePhoto = await FileOperation.SaveFile(model.Image, _imagePath);
+            resident.ProfilePhoto = await _fileService.AddFileAsync(
+                model.Image,
+                _fileUrlBuilderService.GetPath(MediaType.userImage)
+            );
             resident.IsCompleteRegistration = true;
 
             _ResidentRepository.Update(resident);
@@ -51,24 +57,16 @@
         public async Task EditProfile(EditProfileDto editProfileDto)
         {
             var user = await _ResidentRepository.GetByIdAsync(editProfileDto.id);
-
             if (user == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
 
             _mapper.Map(editProfileDto, user);
 
-            var image = user.ProfilePhoto;
-
-            if (editProfileDto.image == null)
-            {
-                user.ProfilePhoto = image;
-            }
-            else
-            {
-                FileOperation.DeleteFile(image, _imagePath);
-                image = await FileOperation.SaveFile(editProfileDto.image, _imagePath);
-                user.ProfilePhoto = image;
-            }
+            user.ProfilePhoto = await _fileService.ReplaceFileAsync(
+                user.ProfilePhoto,
+                editProfileDto.image,
+                _fileUrlBuilderService.GetPath(MediaType.userImage)
+            );
 
             _ResidentRepository.Update(user);
             await _ResidentRepository.SaveChangesAsync();
@@ -80,8 +78,7 @@
             if (user == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
 
-            var response = _mapper.Map<ResponseProfileDto>(user);
-            return response;
+            return _mapper.Map<ResponseProfileDto>(user);
         }
 
         public async Task<ResidentChartDto> GetResidentChartAsync(string residentId)

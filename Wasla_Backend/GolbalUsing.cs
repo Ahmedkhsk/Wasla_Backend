@@ -107,8 +107,8 @@ global using Wasla_Backend.Services.Interfaces.GymService;
 global using Wasla_Backend.Services.Implementation;
 global using Wasla_Backend.Services.Implementation.General;
 global using Wasla_Backend.Services.Interfaces.Driver;
-
-
+global using Wasla_Backend.Services.Interfaces.Files;
+global using Wasla_Backend.Services.Implementation.Files;
 #endregion
 
 #region Project - Factories
@@ -144,7 +144,7 @@ global using Wasla_Backend.Hubs.BookingHubs;
 global using Wasla_Backend.Hubs.ServiceHubs;
 global using Wasla_Backend.Hubs.ReviewHubs;
 global using Wasla_Backend.Hubs.DriverHubs;
-
+global using Wasla_Backend.Hubs.ChatHubs;
 #endregion
 
 #region Project - Data

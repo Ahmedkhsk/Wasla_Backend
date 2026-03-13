@@ -1,63 +1,106 @@
-﻿
-
-namespace Wasla_Backend.Repositories.Implementation.driver
+﻿namespace Wasla_Backend.Repositories.Implementation.driver
 {
     public class RideRepository : GenericRepository<RideModel>, IRideRepository
     {
-        public RideRepository(Context context) : base(context)
+        private readonly IFileUrlBuilderService _fileUrlBuilderService;
+
+        public RideRepository(Context context, IFileUrlBuilderService fileUrlBuilderService) : base(context)
         {
+            _fileUrlBuilderService = fileUrlBuilderService;
         }
 
         public async Task<bool> IsHasActiveRide(string residentId)
         {
-            return await _context.rides.AnyAsync
-              (r => r.ResidentId == residentId && (r.Status == RideStatus.InProgress
-              ||r.Status == RideStatus.Accepted||r.Status==RideStatus.Pending ));
+            return await _context.rides.AnyAsync(r =>
+                r.ResidentId == residentId &&
+                (r.Status == RideStatus.InProgress ||
+                 r.Status == RideStatus.Accepted ||
+                 r.Status == RideStatus.Pending));
         }
 
         public async Task<RideDetailsForDriverDto> GetrideDetailsForDriver(int rideId)
         {
-            return await _context.rides.Where(r => r.Id == rideId).Include(r => r.Resident).AsNoTracking()
-                .Select(r => new RideDetailsForDriverDto
+            var raw = await _context.rides
+                .Where(r => r.Id == rideId)
+                .Include(r => r.Resident)
+                .AsNoTracking()
+                .Select(r => new
                 {
-                    ResidentName = r.Resident.FullName,
-                    ResidentPhone = r.Resident.PhoneNumber,
-                    ResidentImage=FileSetting.GetMediaUrl(r.Resident.ProfilePhoto, MediaType.userImage),
-                    PickUpPlace = r.PickUpPlace,
-                    DropOffPlace = r.DropOffPlace,
-                    Price = r.Price,
-                    Distance = r.Distance
-                }).FirstOrDefaultAsync();
+                    r.Resident.FullName,
+                    r.Resident.PhoneNumber,
+                    r.Resident.ProfilePhoto,
+                    r.PickUpPlace,
+                    r.DropOffPlace,
+                    r.Price,
+                    r.Distance
+                })
+                .FirstOrDefaultAsync();
+
+            if (raw == null) return null;
+
+            return new RideDetailsForDriverDto
+            {
+                ResidentName = raw.FullName,
+                ResidentPhone = raw.PhoneNumber,
+                ResidentImage = _fileUrlBuilderService.GetMediaUrl(raw.ProfilePhoto, MediaType.userImage),
+                PickUpPlace = raw.PickUpPlace,
+                DropOffPlace = raw.DropOffPlace,
+                Price = raw.Price,
+                Distance = raw.Distance
+            };
         }
 
         public async Task<int> UpdateRideStatusAsync(int rideId, RideStatus accepted, string driverId)
         {
-            return await _context.rides.Where(r => r.Id == rideId&&r.Status==RideStatus.Pending)
-                .ExecuteUpdateAsync(s =>
-                 s.SetProperty(r => r.Status, accepted)
-                .SetProperty(r => r.DriverId, driverId));
+            return await _context.rides
+                .Where(r => r.Id == rideId && r.Status == RideStatus.Pending)
+                .ExecuteUpdateAsync(s => s
+                    .SetProperty(r => r.Status, accepted)
+                    .SetProperty(r => r.DriverId, driverId));
         }
 
         public async Task<RideDetailsForResidentDto> GetrideDetailsForResident(int rideId)
         {
-            return await _context.rides.Where(r => r.Id == rideId).Include(r => r.Driver).AsNoTracking()
-                .Select(r => new RideDetailsForResidentDto
+            var raw = await _context.rides
+                .Where(r => r.Id == rideId)
+                .Include(r => r.Driver)
+                .AsNoTracking()
+                .Select(r => new
                 {
-                    DriverName = r.Driver.FullName,
-                    YearsOfExperience = r.Driver.DrivingExperienceYears,
-                    Rating = r.Driver.Rating,
-                    VehicleModel = r.Driver.VehicleModel,
-                    VehicleNumber = r.Driver.VehicleNumber,
-                    VehicleImage = FileSetting.GetMediaUrl(r.Driver.images.FirstOrDefault(), MediaType.DriverCarImage),
-                    VehicleColor = r.Driver.VehicleColor.ToString(),
-                    DriverPhone = r.Driver.PhoneNumber,
-                    DriverImage = FileSetting.GetMediaUrl(r.Driver.ProfilePhoto, MediaType.userImage),
-                    PickUpPlace = r.PickUpPlace,
-                    DropOffPlace = r.DropOffPlace,
-                    Price = r.Price,
-                    startRide = r.RideDate,
+                    r.Driver.FullName,
+                    r.Driver.DrivingExperienceYears,
+                    r.Driver.Rating,
+                    r.Driver.VehicleModel,
+                    r.Driver.VehicleNumber,
+                    r.Driver.VehicleColor,
+                    r.Driver.PhoneNumber,
+                    r.Driver.ProfilePhoto,
+                    FirstCarImage = r.Driver.images.FirstOrDefault(),
+                    r.PickUpPlace,
+                    r.DropOffPlace,
+                    r.Price,
+                    r.RideDate
+                })
+                .FirstOrDefaultAsync();
 
-                }).FirstOrDefaultAsync();
+            if (raw == null) return null;
+
+            return new RideDetailsForResidentDto
+            {
+                DriverName = raw.FullName,
+                YearsOfExperience = raw.DrivingExperienceYears,
+                Rating = raw.Rating,
+                VehicleModel = raw.VehicleModel,
+                VehicleNumber = raw.VehicleNumber,
+                VehicleColor = raw.VehicleColor.ToString(),
+                VehicleImage = _fileUrlBuilderService.GetMediaUrl(raw.FirstCarImage, MediaType.DriverCarImage),
+                DriverPhone = raw.PhoneNumber,
+                DriverImage = _fileUrlBuilderService.GetMediaUrl(raw.ProfilePhoto, MediaType.userImage),
+                PickUpPlace = raw.PickUpPlace,
+                DropOffPlace = raw.DropOffPlace,
+                Price = raw.Price,
+                startRide = raw.RideDate
+            };
         }
     }
 }
