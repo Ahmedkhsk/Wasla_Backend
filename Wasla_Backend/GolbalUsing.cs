@@ -35,6 +35,8 @@ global using System.Net.Http.Headers;
 global using System.Data;
 global using System.Drawing;
 global using System.Drawing.Imaging;
+global using Microsoft.AspNetCore.Authorization;
+
 #endregion
 
 #region Third-Party Libraries
