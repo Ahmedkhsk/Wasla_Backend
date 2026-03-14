@@ -213,6 +213,9 @@
 
             if (ride.DriverId == null)
                 throw new BadRequestException(LocalizationKey.RideNotAcceptedYet);
+            if (ride.Status==RideStatus.Completed)
+                throw new BadRequestException(LocalizationKey.RideCompleted);
+
 
             var rideDetails = await _rideRepository.GetrideDetailsForResident(rideId);
             rideDetails.endRide = rideDetails.startRide.AddMinutes(GeoHelper.CalculateDuration(ride.Distance));

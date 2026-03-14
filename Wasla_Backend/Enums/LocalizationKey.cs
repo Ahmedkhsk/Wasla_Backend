@@ -316,6 +316,7 @@
         RideNotAcceptedYet,
         GetUserRidesSuccessfully,
         GetDriverRidesSuccessfully,
+        RideCompleted,
     #endregion
 
         #region ChatAndUserKeys

@@ -1245,6 +1245,11 @@
                 ["en"] = "Driver rides retrieved successfully.",
                 ["ar"] = "تم جلب رحلات السائق بنجاح."
             },
+            [LocalizationKey.RideCompleted]=new()
+            {
+                ["en"] = "Ride has already been completed.",
+                ["ar"] = "تم إكمال الرحلة بالفعل."
+            },
 
             #endregion
 

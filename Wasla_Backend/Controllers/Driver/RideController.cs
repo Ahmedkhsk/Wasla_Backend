@@ -31,7 +31,7 @@ namespace Wasla_Backend.Controllers.Driver
             return Ok(ResponseHelper.Success(LocalizationKey.GetRideByIdSuccessfully, lan, result));
         }
 
-        [HttpGet("GetrideDetailsForRider/{id}")]
+        [HttpGet("GetrideDetailsForResident/{id}")]
         public async Task<IActionResult> GetrideDetailsForRider(int id, string lan = "en")
         {
             var result = await _rideServices.GetrideDetailsForResident(id);
