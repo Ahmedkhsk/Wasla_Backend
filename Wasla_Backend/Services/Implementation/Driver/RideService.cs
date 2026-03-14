@@ -133,7 +133,11 @@
 
             await _context.Entry(ride).Reference(r => r.Driver).LoadAsync();
             if (ride.Driver != null)
-                ride.Driver.DriverStatus=DriverStatus.Online;
+            {
+                ride.Driver.DriverStatus = DriverStatus.Online;
+                ride.Driver.TripsCount += 1;
+                _driverRepository.Update(ride.Driver);
+            }
             await _rideRepository.SaveChangesAsync();
 
             var metadata = new Dictionary<string, string>
