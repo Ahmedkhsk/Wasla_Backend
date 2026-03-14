@@ -125,7 +125,7 @@
                                     monthGroub => new CollectedPerMonthDto
                                     {
                                         month = monthGroub.Key,
-                                        amount = monthGroub.Sum(d => d.price)
+                                        amount = (double)monthGroub.Sum(d => d.price)
                                     }).OrderBy(m => m.month).ToList()
                     }
                 ).OrderBy(y => y.year).ToListAsync();

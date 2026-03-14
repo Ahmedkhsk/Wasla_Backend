@@ -9,6 +9,9 @@ namespace Wasla_Backend.Repositories.Interfaces.driver
         public Task<RideDetailsForResidentDto> GetrideDetailsForResident(int rideId);
         public Task<List<UserRideDto>> GetUserRides(string residentId);
         public Task<List<DriverRideDto>> GetDriverRides(string driverId);
+        public Task<DriverChartDto> GetDriverChart(string driverId);
+
+
 
     }
 }

@@ -146,5 +146,50 @@ namespace Wasla_Backend.Repositories.Implementation.driver
                 })
                 .ToListAsync();
         }
+
+        public async Task<DriverChartDto> GetDriverChart(string driverId)
+        {
+            var ridesQuery = _context.rides
+                .AsNoTracking()
+                .Where(r => r.DriverId == driverId && r.Status == RideStatus.Completed);
+
+            var numberOfRides = await ridesQuery.CountAsync();
+
+            var numberOfDeliveredResident = await ridesQuery
+                .Select(r => r.ResidentId)
+                .Distinct()
+                .CountAsync();
+
+            var totalAmount = await ridesQuery.SumAsync(r => r.Price);
+
+            var years = await ridesQuery
+                .GroupBy(r => r.RideDate.Year)
+                .Select(yearGroup => new CollectedPerYearDto
+                {
+                    year = yearGroup.Key,
+                    months = yearGroup
+                        .GroupBy(r => r.RideDate.Month)
+                        .Select(monthGroup => new CollectedPerMonthDto
+                        {
+                            month = monthGroup.Key,
+                            amount = monthGroup.Sum(r => r.Price)
+                        })
+                        .OrderBy(m => m.month)
+                        .ToList()
+                })
+                .OrderBy(y => y.year)
+                .ToListAsync();
+
+            return new DriverChartDto
+            {
+                numberOfRides = numberOfRides,
+                numberOfDeliveredResident = numberOfDeliveredResident,
+                totalAmount = totalAmount,
+                years = years
+            };
+        }
+
+
+
     }
 }

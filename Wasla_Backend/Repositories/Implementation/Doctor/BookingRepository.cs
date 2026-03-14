@@ -166,7 +166,7 @@ namespace Wasla_Backend.Repositories.Implementation
                         .Select(monthGroup => new CollectedPerMonthDto
                         {
                             month = monthGroup.Key,
-                            amount = monthGroup.Sum(b => (decimal)b.price)
+                            amount = monthGroup.Sum(b => b.price)
                         })
                         .OrderBy(m => m.month)
                         .ToList()
@@ -188,7 +188,7 @@ namespace Wasla_Backend.Repositories.Implementation
                         .Select(monthGroup => new CollectedPerMonthDto
                         {
                             month = monthGroup.Key,
-                            amount = monthGroup.Sum(b => (decimal)b.price)
+                            amount = monthGroup.Sum(b => b.price)
                         })
                         .OrderBy(m => m.month)
                         .ToList()

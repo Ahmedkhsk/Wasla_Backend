@@ -317,6 +317,8 @@
         GetUserRidesSuccessfully,
         GetDriverRidesSuccessfully,
         RideCompleted,
+        GetDriverChartSuccessfully,
+        UpdateDriverProfileSuccess,
     #endregion
 
         #region ChatAndUserKeys

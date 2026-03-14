@@ -69,6 +69,50 @@
             await _driverRepository.SaveChangesAsync();
         }
 
+        public async Task UpdateDriverProfile(UpdateDriverProfileDto dto)
+        {
+            var driver =await _driverRepository.GetByIdAsync(dto.Id);
+
+            if (driver == null)
+                throw new NotFoundException(LocalizationKey.DriverNotFound);
+
+            _mapper.Map(dto, driver);
+
+            if (dto.Photo != null)
+            {
+                driver.ProfilePhoto = await _fileService.ReplaceFileAsync(
+                    driver.ProfilePhoto,
+                    dto.Photo,
+                    _fileUrlBuilderService.GetPath(MediaType.userImage)
+                );
+            }
+
+
+            if (dto.CarImages != null && dto.CarImages.Any())
+            {
+                _fileService.DeleteFiles(driver.images, _fileUrlBuilderService.GetPath(MediaType.DriverCarImage));
+
+                driver.images = await _fileService.AddFilesAsync(
+                    dto.CarImages,
+                    _fileUrlBuilderService.GetPath(MediaType.DriverCarImage)
+                );
+            }
+
+
+            if (dto.DriverFiles != null && dto.DriverFiles.Any())
+            {
+                _fileService.DeleteFiles(driver.DriverFiles, _fileUrlBuilderService.GetPath(MediaType.DriverFilePath));
+
+                driver.DriverFiles = await _fileService.AddFilesAsync(
+                    dto.DriverFiles,
+                    _fileUrlBuilderService.GetPath(MediaType.DriverFilePath)
+                );
+            }
+
+            await _driverRepository.SaveChangesAsync();
+        }
+
+
         public LocationDto GetDriverLocation(string driverId)
         {
             var key = $"TrackingDriver_{driverId}";

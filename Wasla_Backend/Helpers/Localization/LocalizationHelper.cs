@@ -1250,6 +1250,16 @@
                 ["en"] = "Ride has already been completed.",
                 ["ar"] = "تم إكمال الرحلة بالفعل."
             },
+            [LocalizationKey.GetDriverChartSuccessfully]=new()
+            {
+                ["en"] = "Driver chart fetched successfully.",
+                ["ar"] = "تم جلب مخطط السائق بنجاح."
+            },
+            [LocalizationKey.UpdateDriverProfileSuccess]=new()
+            {
+                ["en"] = "Driver profile updated successfully.",
+                ["ar"] = "تم تحديث ملف السائق بنجاح."
+            },
 
             #endregion
 

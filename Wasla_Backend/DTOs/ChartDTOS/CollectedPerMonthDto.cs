@@ -3,6 +3,6 @@
     public class CollectedPerMonthDto
     {
         public int month { get; set; }
-        public decimal amount { get; set; }
+        public double amount { get; set; }
     }
 }

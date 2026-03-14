@@ -14,7 +14,7 @@
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
         public IFormFile photo { get; set; }
-        public CarColor VehicleColor { get; set; }
+        public VehicleColor VehicleColor { get; set; }
 
         public List<IFormFile> CarImages { get; set; }
         public List<IFormFile> DriverFiles { get; set; }

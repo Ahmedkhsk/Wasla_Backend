@@ -1,6 +1,6 @@
 ﻿namespace Wasla_Backend.Enums
 {
-    public enum CarColor
+    public enum VehicleColor
     {
         Red,
         Blue,

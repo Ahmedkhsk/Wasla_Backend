@@ -8,5 +8,7 @@
         public Task TrackingDriver(TrackingDriverDto trackingDriver);
          public LocationDto GetDriverLocation(string driverId);
           public Task<List<string>>GetTopNearestDriver(double latitude, double longitude,VehicleType vehicleType);
+        public Task UpdateDriverProfile(UpdateDriverProfileDto dto);
+
     }
 }

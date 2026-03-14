@@ -188,6 +188,14 @@
             };
         }
 
+        public async Task<DriverChartDto> GetDriverChart(string driverId)
+        {
+            var driver =await _driverRepository.GetByIdAsync(driverId);
+            if (driver == null)
+                throw new NotFoundException(LocalizationKey.DriverNotFound);
+           return await _rideRepository.GetDriverChart(driverId);
+        }
+
         public async Task<List<DriverRideDto>> GetDriverRides(string driverId)
         {
             var driver= await _driverRepository.GetByIdAsync(driverId);

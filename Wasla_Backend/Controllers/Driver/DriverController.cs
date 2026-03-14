@@ -26,6 +26,14 @@ namespace Wasla_Backend.Controllers.Driver
             var driverProfile = await _driverService.GetDriverProfileByIdAsync(id);
             return Ok(ResponseHelper.Success(LocalizationKey.GetDriverProfileSuccess, lan, driverProfile));
         }
+
+        [HttpPut("UpdateDriverProfile")]
+        public async Task<IActionResult> UpdateDriverProfile([FromForm] UpdateDriverProfileDto dto, string lan = "en")
+        {
+            await _driverService.UpdateDriverProfile(dto);
+            return Ok(ResponseHelper.Success(LocalizationKey.UpdateDriverProfileSuccess, lan));
+        }
+
         [HttpPut("ChangeStatus")]
         public async Task<IActionResult> ChangeStatus(string driverId, DriverStatus newStatus, string lan = "en")
         {
