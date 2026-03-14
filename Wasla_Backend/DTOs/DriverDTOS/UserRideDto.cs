@@ -10,5 +10,6 @@
         public string DropOffPlace { get; set; }
         public DateTime RideDate { get; set; }
         public double Price { get; set; }
+        public string Status { get; set; }
     }
 }

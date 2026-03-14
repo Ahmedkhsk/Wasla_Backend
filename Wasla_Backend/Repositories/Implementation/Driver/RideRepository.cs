@@ -108,7 +108,7 @@ namespace Wasla_Backend.Repositories.Implementation.driver
         public async Task<List<UserRideDto>> GetUserRides(string residentId)
         {
            return await _context.rides
-                .Where(r => r.ResidentId == residentId&&r.Status==RideStatus.Completed)
+                .Where(r => r.ResidentId == residentId)
                 .Include(r => r.Driver)
                 .Select(r => new UserRideDto
                 {
@@ -120,7 +120,8 @@ namespace Wasla_Backend.Repositories.Implementation.driver
                     DropOffPlace = r.DropOffPlace,
                     Price = r.Price,
                     RideDate = r.RideDate,
-                    
+                    Status = r.Status.ToString()
+
                 })
                 .ToListAsync();
         }
@@ -128,7 +129,7 @@ namespace Wasla_Backend.Repositories.Implementation.driver
         public async Task<List<DriverRideDto>> GetDriverRides(string driverId)
         {
             return await _context.rides
-                .Where(r => r.DriverId == driverId && r.Status == RideStatus.Completed)
+                .Where(r => r.DriverId == driverId )
                 .Include(r => r.Resident)
                 .Select(r => new DriverRideDto
                 {
@@ -140,7 +141,8 @@ namespace Wasla_Backend.Repositories.Implementation.driver
                     DropOffPlace = r.DropOffPlace,
                     RideDate = r.RideDate,
                     Price = r.Price,
-                    Distance = r.Distance
+                    Distance = r.Distance,
+                    Status = r.Status.ToString()
                 })
                 .ToListAsync();
         }
