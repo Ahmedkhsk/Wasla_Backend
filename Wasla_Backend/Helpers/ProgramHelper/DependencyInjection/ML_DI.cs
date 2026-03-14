@@ -7,16 +7,18 @@
             services.AddSingleton<BadWordsService>();
             services.AddSingleton<ToxicityClassifier>(sp =>
             {
-                var config = sp.GetRequiredService<IConfiguration>();
-                var env = sp.GetRequiredService<IWebHostEnvironment>();
-                var badWordsService = sp.GetRequiredService<BadWordsService>();
-                var fileUrlBuilder = sp.GetRequiredService<IFileUrlBuilderService>();
+                using var scope = sp.CreateScope();
+                var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+                var env = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
+                var badWordsService = scope.ServiceProvider.GetRequiredService<BadWordsService>();
+                var fileUrlBuilder = scope.ServiceProvider.GetRequiredService<IFileUrlBuilderService>();
 
                 string modelName = config["MLSettings:ModelOutputPath"] ?? "toxicity_model.zip";
                 string modelPath = Path.Combine(
                     fileUrlBuilder.GetPath(MediaType.MLModel),
                     modelName
                 );
+
 
                 var classifier = new ToxicityClassifier(config, badWordsService);
                 classifier.LoadModel(modelPath);
