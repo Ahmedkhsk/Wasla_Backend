@@ -3,6 +3,7 @@
     public class RideDetailsForResidentDto
     {
         public string DriverName { get; set; }
+        public string DriverID { get; set; }
         public int YearsOfExperience { get; set; }
         public double Rating { get; set; }
         public string VehicleModel { get; set; }

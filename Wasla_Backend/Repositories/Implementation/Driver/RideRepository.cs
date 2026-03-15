@@ -74,6 +74,7 @@ namespace Wasla_Backend.Repositories.Implementation.driver
                 .AsNoTracking()
                 .Select(r => new
                 {
+                    r.DriverId,
                     r.Driver.FullName,
                     r.Driver.DrivingExperienceYears,
                     r.Driver.Rating,
@@ -95,6 +96,7 @@ namespace Wasla_Backend.Repositories.Implementation.driver
             return new RideDetailsForResidentDto
             {
                 DriverName = raw.FullName,
+                DriverID = raw.DriverId,
                 YearsOfExperience = raw.DrivingExperienceYears,
                 Rating = raw.Rating,
                 VehicleModel = raw.VehicleModel,
