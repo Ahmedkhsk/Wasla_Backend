@@ -213,6 +213,10 @@
             var rideDetails = await _rideRepository.GetrideDetailsForDriver(rideId);
             if (rideDetails == null)
                 throw new NotFoundException(LocalizationKey.RideNotFound);
+            var Duration = GeoHelper.CalculateDuration(rideDetails.Distance);
+            rideDetails.DropOffTime = rideDetails.PickUpTime.AddMinutes(Duration);
+            rideDetails.Duration = Duration;
+
 
             return rideDetails;
         }

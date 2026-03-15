@@ -15,7 +15,7 @@
         public double longitude { get; set; }
         public string description { get; set; }
         public string profilePhoto { get; set; }
-        public int status { get; set; }
+        public string status { get; set; }
         public List<string> carImages { get; set; }
         public List<string> driverFiles { get; set; }
 

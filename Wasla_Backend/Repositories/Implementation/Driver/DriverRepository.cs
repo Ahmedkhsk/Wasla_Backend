@@ -52,7 +52,7 @@ namespace Wasla_Backend.Repositories.Implementation.Drivers
                     birthDay=d.BirthDay,
                     carImages=d.images,
                     driverFiles = d.DriverFiles,
-                    status = (int)d.DriverStatus
+                    status = d.DriverStatus.ToString()
 
 
                 }).AsNoTracking()

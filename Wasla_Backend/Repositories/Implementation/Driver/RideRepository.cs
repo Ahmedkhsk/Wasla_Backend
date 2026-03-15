@@ -31,10 +31,12 @@ namespace Wasla_Backend.Repositories.Implementation.driver
                     r.Resident.FullName,
                     r.Resident.PhoneNumber,
                     r.Resident.ProfilePhoto,
+
                     r.PickUpPlace,
                     r.DropOffPlace,
                     r.Price,
-                    r.Distance
+                    r.Distance,
+                    r.PickupLatitude, r.PickupLongitude,r.RideDate
                 })
                 .FirstOrDefaultAsync();
 
@@ -47,6 +49,9 @@ namespace Wasla_Backend.Repositories.Implementation.driver
                 ResidentImage = _fileUrlBuilderService.GetMediaUrl(raw.ProfilePhoto, MediaType.userImage),
                 PickUpPlace = raw.PickUpPlace,
                 DropOffPlace = raw.DropOffPlace,
+                PickUpLatitude=raw.PickupLatitude,
+                PickUpLongitude = raw.PickupLongitude,
+                PickUpTime=raw.RideDate,
                 Price = raw.Price,
                 Distance = raw.Distance
             };
