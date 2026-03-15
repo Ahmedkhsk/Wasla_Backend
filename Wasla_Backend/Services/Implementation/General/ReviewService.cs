@@ -65,16 +65,20 @@ namespace Wasla_Backend.Services.Implementation
             }
 
             await _serviceProviderRepositpry.SaveChangesAsync();
-            var metadata = new Dictionary<string, string>
+            
+            if(serviceProvider is not DriverModel)
+            {
+                var metadata = new Dictionary<string, string>
             {
     { "UserName", user.FullName },
     { "Rating", review.rating.ToString("0.0") }
             };
 
-            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(
-                x => x.sendNotification(
-                serviceProvider.Id, NotificationType.reviewScreen,Review.Id.ToString(),user.ProfilePhoto, lan, metadata
-                    ));
+                Hangfire.BackgroundJob.Enqueue<NotificationFunction>(
+                    x => x.sendNotification(
+                    serviceProvider.Id, NotificationType.reviewScreen, Review.Id.ToString(), user.ProfilePhoto, lan, metadata
+                        ));
+            }
 
             var AddReview = new ReviewHubData
             {
