@@ -12,5 +12,6 @@
         public string DriverFiles { get; set; }
         public string DriverCarImages { get; set; }
         public string ChatFiles { get; set; }
+        public string TechnicianDocuments { get; set; }
     }
 }

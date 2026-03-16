@@ -11,6 +11,7 @@
         qrCode,
         MLModel,
         DriverFilePath,
-        DriverCarImage
+        DriverCarImage,
+        TechnicianDocument
     }
 }

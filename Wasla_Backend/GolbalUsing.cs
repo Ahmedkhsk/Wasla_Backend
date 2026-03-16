@@ -73,6 +73,7 @@ global using Wasla_Backend.DTOs.SoicalDTOS;
 global using Wasla_Backend.DTOs.DriverDTOS;
 global using Wasla_Backend.DTOs.ChatDTOS;
 global using Wasla_Backend.DTOs.PaginationDTOS;
+global using Wasla_Backend.DTOs.TechnicianDtos;
 #endregion
 
 #region Project - Models
@@ -85,6 +86,8 @@ global using Wasla_Backend.Models.ChatModel;
 global using  RideModel = Wasla_Backend.Models.Driver.ride;
 global using DriverModel = Wasla_Backend.Models.Driver.Driver;
 global using RideDispatchJobModel = Wasla_Backend.Models.Driver.RideDispatchJob;
+global using Wasla_Backend.Models.technician;
+
 
 
 
@@ -98,6 +101,7 @@ global using Wasla_Backend.Repositories.Implementation;
 global using Wasla_Backend.Repositories.Interfaces.driver;
 global using Wasla_Backend.Repositories.Interfaces.General;
 global using Wasla_Backend.Repositories.Interfaces.Driver;
+global using Wasla_Backend.Repositories.Interfaces.technician;
 
 
 
@@ -112,6 +116,7 @@ global using Wasla_Backend.Services.Implementation.General;
 global using Wasla_Backend.Services.Interfaces.Driver;
 global using Wasla_Backend.Services.Implementation.Files;
 global using Wasla_Backend.Services.Interfaces.Files;
+global using Wasla_Backend.Services.Interfaces.technician;
 
 #endregion
 

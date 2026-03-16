@@ -23,6 +23,7 @@
                 MediaType.DriverFilePath => _settings.Paths.DriverFiles,
                 MediaType.DriverCarImage => _settings.Paths.DriverCarImages,
                 MediaType.chatFile => _settings.Paths.ChatFiles,
+                MediaType.TechnicianDocument => _settings.Paths.TechnicianDocuments,
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }

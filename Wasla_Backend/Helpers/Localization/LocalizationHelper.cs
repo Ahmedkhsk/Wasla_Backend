@@ -1398,7 +1398,35 @@
             },
 
             #endregion
-       
+            #region Technician
+
+            [LocalizationKey.TechnicianNotFound] = new()
+            {
+                ["en"] = "Technician not found.",
+                ["ar"] = "الفني غير موجود."
+            },
+            [LocalizationKey.TechnicianCompleteRegisterSuccessfully] = new()
+            {
+                ["en"] = "Technician registration completed successfully",
+                ["ar"] = "تم إكمال تسجيل الفني بنجاح"
+            },
+            [LocalizationKey.TechnicianProfileRetrievedSuccessfully] = new()
+            {
+                ["en"] = "Technician profile fetched successfully.",
+                ["ar"] = "تم جلب ملف الفني بنجاح."
+
+            },
+            [LocalizationKey.TechnicianProfileUpdatedSuccessfully] = new()
+            {
+                ["en"] = "Technician profile updated successfully.",
+                ["ar"] = "تم تحديث ملف الفني بنجاح."
+            },
+            [LocalizationKey.DocumentsAreRequired] = new()
+            {
+                ["en"] = "Technician documents are required.",
+                ["ar"] = "وثائق الفني مطلوبة."
+            }, 
+            #endregion
         };
 
         public static string GetLocalizedMessage(LocalizationKey key, string lan)

@@ -12,7 +12,11 @@
         }
 
         private string GetPath(string folder)
-            => Path.Combine(_env.WebRootPath, folder.TrimStart('/'));
+            {
+            if (string.IsNullOrWhiteSpace(folder))
+                throw new Exception("Folder path is not configured in FileStorage settings.");
+            return Path.Combine(_env.WebRootPath, folder.TrimStart('/'));
+        }
 
         public async Task<string?> AddFileAsync(IFormFile? file, string folder)
         {

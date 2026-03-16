@@ -287,7 +287,15 @@
         BookingStatusUpdaterIterationFailed,
         NoUnitFound,
         #endregion
-       
+
+        #region Technician
+        TechnicianNotFound,
+        TechnicianCompleteRegisterSuccessfully,
+        TechnicianProfileRetrievedSuccessfully,
+        TechnicianProfileUpdatedSuccessfully,
+        DocumentsAreRequired, 
+        #endregion
+
         #region Driver
         DriverNotFound,
         VehicleNumberAlreadyExists,
