@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wasla_Backend.Data;
 
@@ -11,9 +12,11 @@ using Wasla_Backend.Data;
 namespace Wasla_Backend.data
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20260316151735_Technican")]
+    partial class Technican
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1158,14 +1161,11 @@ namespace Wasla_Backend.data
                 {
                     b.HasBaseType("Wasla_Backend.Models.ServiceProvider");
 
-                    b.Property<string>("DocumentsJson")
+                    b.PrimitiveCollection<string>("Documents")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ExperienceYears")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsAvailable")
-                        .HasColumnType("bit");
 
                     b.Property<int?>("Specialty")
                         .HasColumnType("int");

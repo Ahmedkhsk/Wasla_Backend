@@ -2,12 +2,19 @@
 {
     public class Technician : ServiceProvider
     {
-        public string? Specialty { get; set; } 
-        public int ExperienceYears { get; set; }
-        public decimal HourlyRate { get; set; }
-        public string? AvailableHours { get; set; } 
-        public string? ToolsList { get; set; } 
-        public string? ServiceArea { get; set; } 
-        public string? LicenseNumber { get; set; } 
+        public TechnicianSpecialty? Specialty { get; set; } 
+        public int? ExperienceYears { get; set; }
+        public bool IsAvailable { get; set; }
+        public string? DocumentsJson { get; set; }
+
+        [NotMapped]
+        public List<string>? Documents
+        {
+            get => DocumentsJson == null
+                ? new List<string>()
+                : JsonSerializer.Deserialize<List<string>>(DocumentsJson);
+
+            set => DocumentsJson = JsonSerializer.Serialize(value);
+        }
     }
 }

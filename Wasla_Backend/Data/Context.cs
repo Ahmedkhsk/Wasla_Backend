@@ -35,6 +35,7 @@ namespace Wasla_Backend.Data
         public DbSet<ChatMessage> Messages { get; set; }
         public DbSet<ride> rides { get; set; }
         public DbSet<RideDispatchJob> RideDispatchJobs { get; set; }
+        public DbSet<Technician> Technicians { get; set; }
 
 
         public Context(DbContextOptions<Context> options) : base(options) { }
@@ -53,6 +54,7 @@ namespace Wasla_Backend.Data
             builder.Entity<GymBooking>().ToTable("GymBookings");
             builder.Entity<Payment>().ToTable("Payments");
             builder.Entity<ride>().ToTable("Rides");
+            builder.Entity<Technician>().ToTable("Technicians");
 
 
             builder.Entity<BaseBooking>()
