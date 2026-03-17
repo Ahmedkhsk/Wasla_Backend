@@ -1398,6 +1398,7 @@
             },
 
             #endregion
+
             #region Technician
 
             [LocalizationKey.TechnicianNotFound] = new()
@@ -1425,7 +1426,17 @@
             {
                 ["en"] = "Technician documents are required.",
                 ["ar"] = "وثائق الفني مطلوبة."
-            }, 
+            },
+            [LocalizationKey.TechnicianSpecialtiesRetrievedSuccessfully]=new()
+            {
+                ["en"] = "Technician specialties retrieved successfully.",
+                ["ar"] = "تم جلب تخصصات الفني بنجاح."
+            },
+            [LocalizationKey.TechniciansRetrievedSuccessfully]=new()
+            {
+                ["en"] = "Technicians retrieved successfully.",
+                ["ar"] = "تم جلب الفنيين بنجاح."
+            },
             #endregion
         };
 

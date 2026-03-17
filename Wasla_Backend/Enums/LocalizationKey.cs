@@ -293,7 +293,9 @@
         TechnicianCompleteRegisterSuccessfully,
         TechnicianProfileRetrievedSuccessfully,
         TechnicianProfileUpdatedSuccessfully,
-        DocumentsAreRequired, 
+        DocumentsAreRequired,
+        TechnicianSpecialtiesRetrievedSuccessfully,
+        TechniciansRetrievedSuccessfully,
         #endregion
 
         #region Driver

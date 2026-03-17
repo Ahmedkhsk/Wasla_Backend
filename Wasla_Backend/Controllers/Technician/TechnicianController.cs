@@ -30,5 +30,19 @@ namespace Wasla_Backend.Controllers.Technician
             await _technicianService.UpdateProfile(technicianUpdateProfileDto);
             return Ok(ResponseHelper.Success(LocalizationKey.TechnicianProfileUpdatedSuccessfully, lan));
         }
+        [HttpGet("Specializations")]
+        public IActionResult GetSpecialization(string lan = "en")
+        {
+            var specializations = _technicianService.GetSpecializations(lan);
+            return Ok(ResponseHelper.Success(LocalizationKey.TechnicianSpecialtiesRetrievedSuccessfully, lan, specializations));
+        }
+        [HttpGet("GetBySpecialty")]
+        public async Task<IActionResult> GetBySpecialty(TechnicianSpecialty? specialty, int pageNumber = 1, int pageSize = 10, string lan = "en")
+        {
+            var technicians = await _technicianService.GetTechniciansBySpecialty(specialty, pageNumber, pageSize, lan);
+            return Ok(ResponseHelper.Success(LocalizationKey.TechniciansRetrievedSuccessfully, lan, technicians));
+
+        }
+
     }
 }

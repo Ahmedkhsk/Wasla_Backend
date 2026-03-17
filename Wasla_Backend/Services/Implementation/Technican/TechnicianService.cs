@@ -1,4 +1,7 @@
 ﻿
+
+using Wasla_Backend.Helpers.Extensions;
+
 namespace Wasla_Backend.Services.Implementation.technican
 {
     public class TechnicianService:ITechnicianService
@@ -49,6 +52,35 @@ namespace Wasla_Backend.Services.Implementation.technican
             }
 
             return profile;
+        }
+
+        public List<TechnicianSpecializationDto> GetSpecializations(string lan)
+        {
+            return Enum.GetValues(typeof(TechnicianSpecialty))
+                .Cast<TechnicianSpecialty>()
+                .Select(s => new TechnicianSpecializationDto {
+                    Id = (int)s,
+                    Name = s.GetName(lan)
+                }).ToList();
+        }
+
+        public async Task<PagedResult<TechnicianListDto>> GetTechniciansBySpecialty(
+       TechnicianSpecialty? specialty, int pageNumber, int pageSize, string lan)
+        {
+            var technicians = await _technicianRepository.GetTechniciansBySpecialty(specialty, pageNumber, pageSize, lan);
+
+            technicians.ForEach(t =>
+            {
+                t.ImageUrl = _fileUrlBuilderService.GetMediaUrl(t.ImageUrl, MediaType.userImage);
+            });
+
+            return new PagedResult<TechnicianListDto>
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = technicians.Count, 
+                Data = technicians
+            };
         }
 
         public async Task UpdateProfile(TechnicianUpdateProfileDto technicianUpdateProfileDto)
