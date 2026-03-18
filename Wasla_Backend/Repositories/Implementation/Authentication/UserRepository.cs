@@ -73,6 +73,8 @@
                 .Select(u => new
                 {
                     u.Id,
+                    u.isOnline,
+                    u.lastSeen,
                     u.FullName,
                     u.ProfilePhoto,
                     u.bio,
@@ -88,6 +90,8 @@
                 name = raw.FullName,
                 profileImage = _fileUrlBuilderService.GetMediaUrl(raw.ProfilePhoto, MediaType.userImage),
                 bio = raw.bio,
+                isOnline = raw.isOnline,
+                lastSeen = raw.lastSeen,
                 phone = raw.Phone
             };
         }

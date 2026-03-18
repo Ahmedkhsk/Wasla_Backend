@@ -1,36 +1,65 @@
-﻿namespace Wasla_Backend.Hubs.ChatHubs
+﻿public class ChatHub : Hub
 {
-    [Authorize]
-    public class ChatHub : Hub
+    private readonly UserConnectionHelper _connectionManager;
+    private readonly IUserRepository _userRepository;
+    private readonly DateTimeHelper _dateTimeHelper;
+
+    public ChatHub(
+        UserConnectionHelper connectionManager,
+        IUserRepository userRepository,
+        DateTimeHelper dateTimeHelper)
     {
-        public override async Task OnConnectedAsync()
+        _connectionManager = connectionManager;
+        _userRepository = userRepository;
+        _dateTimeHelper = dateTimeHelper;
+    }
+
+    public override async Task OnConnectedAsync()
+    {
+        var userId = Context.UserIdentifier;
+        var connectionId = Context.ConnectionId;
+
+        if (!string.IsNullOrEmpty(userId))
         {
-            var userId = Context.UserIdentifier;
-            await Clients.All.SendAsync("UserOnline", userId);
-            await base.OnConnectedAsync();
+            _connectionManager.AddConnection(userId, connectionId);
+
+            if (_connectionManager.GetConnectionCount(userId) == 1)
+            {
+                var user = await _userRepository.GetUserByIdAsync(userId);
+                if (user != null)
+                {
+                    user.isOnline = true;
+                    await _userRepository.UpdateUserAsync(user);
+                    await Clients.All.SendAsync("UserOnline", new { userId });
+                }
+            }
         }
 
-        public override async Task OnDisconnectedAsync(Exception exception)
+        await base.OnConnectedAsync();
+    }
+
+    public override async Task OnDisconnectedAsync(Exception? exception)
+    {
+        var userId = Context.UserIdentifier;
+        var connectionId = Context.ConnectionId;
+
+        if (!string.IsNullOrEmpty(userId))
         {
-            var userId = Context.UserIdentifier;
-            await Clients.All.SendAsync("UserOffline", userId);
-            await base.OnDisconnectedAsync(exception);
+            _connectionManager.RemoveConnection(userId, connectionId);
+
+            if (_connectionManager.GetConnectionCount(userId) == 0)
+            {
+                var user = await _userRepository.GetUserByIdAsync(userId);
+                if (user != null)
+                {
+                    user.isOnline = false;
+                    user.lastSeen = _dateTimeHelper.Now;
+                    await _userRepository.UpdateUserAsync(user);
+                    await Clients.All.SendAsync("UserOffline", new { userId, lastSeen = user.lastSeen });
+                }
+            }
         }
 
-        public async Task Typing(string receiverId)
-        {
-            var senderId = Context.UserIdentifier;
-
-            await Clients.User(receiverId)
-                .SendAsync("UserTyping", senderId);
-        }
-
-        public async Task StopTyping(string receiverId)
-        {
-            var senderId = Context.UserIdentifier;
-
-            await Clients.User(receiverId)
-                .SendAsync("UserStopTyping", senderId);
-        }
+        await base.OnDisconnectedAsync(exception);
     }
 }

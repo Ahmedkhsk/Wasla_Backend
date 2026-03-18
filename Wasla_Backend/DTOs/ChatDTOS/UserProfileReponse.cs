@@ -4,6 +4,8 @@
     {
         public string id { get; set; }
         public string name { get; set; }
+        public bool isOnline { get; set; }
+        public DateTime? lastSeen { get; set; }
         public string? profileImage { get; set; }
         public string bio { get; set; }
         public string phone { get; set; }

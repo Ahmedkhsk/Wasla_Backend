@@ -10,6 +10,7 @@
             services.AddSingleton<DateTimeHelper>();
             services.AddSingleton<CacheManager>();
             services.AddScoped<FileValidator>();
+            services.AddSingleton<UserConnectionHelper>();
 
             return services;
         }
