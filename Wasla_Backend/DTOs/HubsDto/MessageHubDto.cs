@@ -7,7 +7,8 @@
         public int chatId { get; set; }
         public string senderId { get; set; }
         public string receiverId { get; set; }
-
+        public string nameReceiver { get; set; }
+        public string profileReceiver { get; set; }
         public string? messageText { get; set; }
 
         public string? audio { get; set; }

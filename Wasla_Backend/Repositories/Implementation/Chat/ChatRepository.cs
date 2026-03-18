@@ -74,7 +74,7 @@
 
             var messagesQuery = _context.Messages
                 .Where(m => m.chatId == chat.id)
-                .OrderBy(m => m.sentAt)
+                .OrderByDescending(m => m.sentAt)
                 .Select(m => new ChatMessageResponse
                 {
                     messageText = m.messageText,

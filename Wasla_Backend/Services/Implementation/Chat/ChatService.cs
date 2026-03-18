@@ -69,11 +69,15 @@
             await _messageRepository.AddAsync(message);
             await _messageRepository.SaveChangesAsync();
 
+            var receiver = await _userRepository.GetUserByIdAsync(dto.reciverId);  
+
             var messageDto = new MessageHubDto
             {
                 id = message.id,
                 chatId = message.chatId,
                 senderId = message.senderId,
+                profileReceiver = _fileUrlBuilderService.GetMediaUrl(receiver.ProfilePhoto, MediaType.userImage),
+                nameReceiver = receiver.FullName,
                 receiverId = message.receiverId,
                 messageText = message.messageText,
                 audio = _fileUrlBuilderService.GetMediaUrl(message.audio,MediaType.chatFile),
