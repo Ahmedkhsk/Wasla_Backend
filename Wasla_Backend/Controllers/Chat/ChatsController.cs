@@ -39,7 +39,7 @@
             return Ok(ResponseHelper.Success(LocalizationKey.SuccessToUpdateBio, dto.lan));
         }
 
-        [HttpPut("mark-as-read/{chatId}")]
+        [HttpPut("MarkAsRead/{chatId}")]
         public async Task<IActionResult> MarkAsRead(int chatId, string lan = "en")
         {
             var userId = User.GetUserId();
