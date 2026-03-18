@@ -1,4 +1,5 @@
-﻿public class ChatHub : Hub
+﻿[Authorize]
+public class ChatHub : Hub
 {
     private readonly UserConnectionHelper _connectionManager;
     private readonly IUserRepository _userRepository;
