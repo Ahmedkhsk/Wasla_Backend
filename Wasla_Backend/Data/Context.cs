@@ -37,7 +37,7 @@ namespace Wasla_Backend.Data
         public DbSet<ride> rides { get; set; }
         public DbSet<RideDispatchJob> RideDispatchJobs { get; set; }
         public DbSet<Technician> Technicians { get; set; }
-
+        public DbSet<Report> Reports { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options) { }
 
