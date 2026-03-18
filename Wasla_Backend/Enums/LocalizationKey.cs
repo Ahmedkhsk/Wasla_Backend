@@ -231,6 +231,7 @@
 
         #region Posts
         SuccessToCreatePost,
+        SuccessToReport,
         FailedToCreatePost,
         SuccessToUpdatePost,
         FailedToUpdatePost,

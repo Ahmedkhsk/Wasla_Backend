@@ -1,5 +1,4 @@
-﻿[Authorize]
-public class ChatHub : Hub
+﻿public class ChatHub : Hub
 {
     private readonly UserConnectionHelper _connectionManager;
     private readonly IUserRepository _userRepository;
@@ -63,4 +62,17 @@ public class ChatHub : Hub
 
         await base.OnDisconnectedAsync(exception);
     }
+
+    public async Task Typing(string receiverId)
+    {
+        var senderId = Context.UserIdentifier;
+        await Clients.User(receiverId).SendAsync("UserTyping", senderId);
+    }
+
+    public async Task StopTyping(string receiverId)
+    {
+        var senderId = Context.UserIdentifier;
+        await Clients.User(receiverId).SendAsync("UserStopTyping", senderId);
+    }
+
 }

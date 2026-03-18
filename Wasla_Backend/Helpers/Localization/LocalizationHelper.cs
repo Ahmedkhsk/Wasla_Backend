@@ -1008,6 +1008,11 @@
                 ["en"] = "Post not found.",
                 ["ar"] = "المنشور غير موجود."
             },
+            [LocalizationKey.SuccessToMarkAsRead] = new()
+            {
+                ["en"] = "Marked as read successfully.",
+                ["ar"] = "تم تحديد الرسائل كمقروءة بنجاح."
+            },
             [LocalizationKey.SuccessToCheckReaction] = new()
             {
                 ["en"] = "Reaction checked successfully.",
@@ -1269,6 +1274,12 @@
             {
                 ["en"] = "User profile retrieved successfully.",
                 ["ar"] = "تم جلب ملف المستخدم بنجاح."
+            },
+
+            [LocalizationKey.SuccessToMarkAsRead] = new()
+            {
+                ["en"] = "Marked as read successfully.",
+                ["ar"] = "تم تحديد الرسائل كمقروءة بنجاح."
             },
 
             [LocalizationKey.SuccessToGetChat] = new()

@@ -7,12 +7,15 @@
         private readonly IPostService _postService;
         private readonly IReactionService _reactionService;
         private readonly ICommentService _commentService;
+        private readonly IReportService _reportService;
 
-        public SocialController(IPostService postService, IReactionService reactionService, ICommentService commentService)
+        public SocialController(IPostService postService, IReactionService reactionService,
+                                ICommentService commentService, IReportService reportService)
         {
             _postService = postService;
             _reactionService = reactionService;
             _commentService = commentService;
+            _reportService = reportService;
         }
 
         [HttpPost("Post")]
@@ -38,7 +41,7 @@
         }
 
         [HttpGet("Posts")]
-        public async Task<IActionResult> GetPostsGeneral(string currentUserId, [FromQuery]PaginationParams paginationParams, string lan = "en")
+        public async Task<IActionResult> GetPostsGeneral(string currentUserId, [FromQuery] PaginationParams paginationParams, string lan = "en")
         {
             var posts = await _postService.GetPostsGeneral(currentUserId, paginationParams);
             return Ok(ResponseHelper.Success(LocalizationKey.SuccessToGetPosts, lan, posts));
@@ -106,5 +109,19 @@
             var informationProfile = await _postService.InformationProfileResponse(userId);
             return Ok(ResponseHelper.Success(LocalizationKey.SuccessToGetInformationProfile, lan, informationProfile));
         }
+
+        [HttpPost("Report")]
+        public async Task<IActionResult> Report(AddReportDto dto)
+        {
+            await _reportService.AddReport(dto);
+            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToReport, dto.lan));
+        }
+
+        //[HttpPut("Hide")]
+        //public async Task<IActionResult> HidePostOrComment(HidePostOrCommentDto dto, string lan = "en")
+        //{
+        //    await _postService.HidePostOrComment(dto);
+        //    return Ok(ResponseHelper.Success(LocalizationKey.SuccessToHide, lan));
+        //}
     }
 }
