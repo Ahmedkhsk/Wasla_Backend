@@ -18,7 +18,27 @@
         public async Task<PagedResult<GetChats>> GetChats(GetGeneralWithPaginationDto<string> pagination)
         {
             var query = _dbSet
-                .Where(c => c.senderId == pagination.id || c.receiverId == pagination.id)
+                .Where(c => c.senderId == pagination.id || c.receiverId == pagination.id);
+
+            if (!string.IsNullOrWhiteSpace(pagination.search))
+            {
+                var search = pagination.search;
+                query = query.Where(c =>
+                    EF.Functions.Like(
+                        c.senderId == pagination.id
+                            ? c.receiver.FullName
+                            : c.sender.FullName,
+                        $"%{search}%"
+                    )
+                    ||
+                    c.messages
+                        .OrderByDescending(m => m.sentAt)
+                        .Take(1)
+                        .Any(m => EF.Functions.Like(m.messageText, $"%{search}%"))
+                );
+            }
+
+            var resultQuery = query
                 .Select(c => new
                 {
                     chat = c,
@@ -26,11 +46,19 @@
                         .OrderByDescending(m => m.sentAt)
                         .FirstOrDefault()
                 })
+                .Where(x => x.lastMessage != null)
                 .Select(x => new GetChats
                 {
                     chatId = x.chat.id,
-                    receiverId = x.chat.receiverId,
-                    senderId = x.chat.senderId,
+                    receiverId = x.chat.senderId == pagination.id
+                        ? x.chat.receiverId
+                        : x.chat.senderId,
+
+                    senderId = x.chat.senderId == pagination.id
+                        ? x.chat.senderId
+                        : x.chat.receiverId,
+                    
+                    UnreadMessageCount = x.chat.messages.Count(m => m.senderId != pagination.id && !m.isRead),
                     isEdit = x.lastMessage.isEdited,
                     isMine = x.lastMessage.senderId == pagination.id,
                     messageId = x.lastMessage.id,
@@ -40,7 +68,7 @@
                     type = x.lastMessage.type,
                     audio = x.lastMessage.audio,
                     files = x.lastMessage.files,
-
+                    
                     name = x.chat.senderId == pagination.id
                         ? x.chat.receiver.FullName
                         : x.chat.sender.FullName,
@@ -51,9 +79,8 @@
                 })
                 .OrderByDescending(c => c.sentAt);
 
-            return await query.ToPagedResultAsync(pagination.PageNumber, pagination.PageSize);
+            return await resultQuery.ToPagedResultAsync(pagination.PageNumber, pagination.PageSize);
         }
-
         public async Task<Chat?> GetChatByIdAsync(int id)
         {
             return await _dbSet

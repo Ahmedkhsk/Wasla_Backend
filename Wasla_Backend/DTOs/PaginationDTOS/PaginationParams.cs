@@ -14,5 +14,6 @@
             set => _pageSize = value > MaxPageSize ? MaxPageSize : value;
         }
 
+        public string? search { get; set; }
     }
 }

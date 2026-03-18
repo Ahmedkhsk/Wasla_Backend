@@ -10,7 +10,6 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Options;
 global using Microsoft.Extensions.Localization;
 global using Microsoft.Extensions.Caching.Memory;
-global using Microsoft.AspNetCore.Authorization;
 #endregion
 
 #region Machine Learning
@@ -171,3 +170,5 @@ global using Wasla_Backend.Enums;
 #region Project - Exceptions
 global using Wasla_Backend.Exceptions;
 #endregion
+
+using Wasla_Backend.Extensions;

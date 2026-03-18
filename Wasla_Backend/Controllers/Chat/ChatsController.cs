@@ -1,6 +1,4 @@
-﻿using Wasla_Backend.Extensions;
-
-namespace Wasla_Backend.Controllers.Chat
+﻿namespace Wasla_Backend.Controllers.Chat
 {
     [Route("api/[controller]")]
     [ApiController]

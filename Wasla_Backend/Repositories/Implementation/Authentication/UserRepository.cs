@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Repositories.Implementation
+﻿using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+
+namespace Wasla_Backend.Repositories.Implementation
 {
     public class UserRepository : IUserRepository
     {
@@ -37,14 +39,22 @@
 
         public async Task<PagedResult<GetUsersDto>> GetUsers(PaginationParams pagination)
         {
-            var rawQuery = _userManager.Users
-                .Select(user => new
-                {
-                    user.Id,
-                    user.FullName,
-                    user.ProfilePhoto,
-                    user.bio
-                });
+            var query = _userManager.Users.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(pagination.search))
+            {
+                query = query.Where(u =>
+                    u.FullName.Contains(pagination.search)   
+                    );
+            }
+
+            var rawQuery = query.Select(user => new
+            {
+                user.Id,
+                user.FullName,
+                user.ProfilePhoto,
+                user.bio
+            });
 
             var paged = await rawQuery.ToPagedResultAsync(
                 pagination.PageNumber,
@@ -65,7 +75,6 @@
                 }).ToList()
             };
         }
-
         public async Task<UserProfileReponse> GetUserProfile(string userId)
         {
             var raw = await _context.Users

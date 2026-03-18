@@ -5,6 +5,7 @@
         public string receiverId { get; set; }
         public string senderId { get; set; }
         public int chatId { get; set; }
+        public int UnreadMessageCount { get; set; }
         public string name { get; set; }
         public string profileReceiver { get; set; }
         public string? messageText { get; set; }
