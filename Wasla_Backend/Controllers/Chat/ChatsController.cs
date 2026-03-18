@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Controllers.Chat
+﻿using Wasla_Backend.Extensions;
+
+namespace Wasla_Backend.Controllers.Chat
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -38,6 +40,16 @@
             await _chatService.UpdateBio(dto);
             return Ok(ResponseHelper.Success(LocalizationKey.SuccessToUpdateBio, dto.lan));
         }
+
+        [HttpPut("mark-as-read/{chatId}")]
+        public async Task<IActionResult> MarkAsRead(int chatId, string lan = "en")
+        {
+            var userId = ClaimsPrincipalHelper.GetUserId(User);
+
+            await _chatService.MarkAsRead(chatId, userId);
+            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToMarkAsRead, lan));
+        }
+
 
         [HttpDelete("Chat")]
         public async Task<IActionResult> DeleteChat(int chatId, string userId, string lan = "en")

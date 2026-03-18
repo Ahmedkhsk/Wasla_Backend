@@ -334,6 +334,7 @@
         #region ChatAndUserKeys
 
         SuccessToGetUsers,
+        SuccessToMarkAsRead,
         NoUsersFound,
         FailedToGetUsers,
         MessageNotFoundOrNoPermission,

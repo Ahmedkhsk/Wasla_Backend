@@ -22,8 +22,9 @@
 
         public DateTime? readAt { get; set; }
 
-        public bool isSent { get; set; } 
+        public bool isSent { get; set; }
         public bool isEdited { get; set; } = false;
+        public bool isRead { get; set; } = false;
         public string? fileJson { get; set; }
 
         [NotMapped]

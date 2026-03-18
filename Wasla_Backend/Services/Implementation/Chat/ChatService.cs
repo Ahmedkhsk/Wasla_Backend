@@ -189,6 +189,41 @@
                 .SendAsync("MessageUpdated", messageDto);
         }
 
+        public async Task MarkAsRead(int chatId, string userId)
+        {
+            var chat = await _chatRepository.GetChatByIdAsync(chatId);
+
+            if (chat == null || (chat.senderId != userId && chat.receiverId != userId))
+                throw new NotFoundException(LocalizationKey.ChatNotFoundOrNoPermission);
+
+            var otherUserId = chat.senderId == userId
+                ? chat.receiverId
+                : chat.senderId;
+
+            var timeNow = _dateTimeHelper.Now;
+
+            var messageIds = await _messageRepository.MarkAsRead(chatId, userId, timeNow);
+
+            if (!messageIds.Any())
+                return;
+
+            await _hubContext.Clients
+                .Users(new List<string> { userId, otherUserId })
+                .SendAsync("MessagesRead", new
+                {
+                    chatId,
+                    readerId = userId,
+                    messageIds
+                });
+
+            await _hubContext.Clients
+                .Users(new List<string> { userId, otherUserId })
+                .SendAsync("ChatUpdated", new
+                {
+                    chatId
+                });
+        }
+
         public async Task<PagedResult<GetUsersDto>> getUsers(PaginationParams pagination)
         {
             return await _userRepository.GetUsers(pagination);
