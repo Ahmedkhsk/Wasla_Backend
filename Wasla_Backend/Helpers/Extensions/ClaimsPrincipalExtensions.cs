@@ -1,6 +1,6 @@
-﻿namespace Wasla_Backend.Extensions
+﻿namespace Wasla_Backend.Helpers.Extensions
 {
-    public static class ClaimsPrincipalHelper
+    public static class ClaimsPrincipalExtensions
     {
         public static string GetUserId(this ClaimsPrincipal user)
         {

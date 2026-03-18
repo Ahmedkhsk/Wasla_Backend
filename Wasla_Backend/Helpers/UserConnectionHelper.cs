@@ -1,42 +1,28 @@
-﻿namespace Wasla_Backend.Helpers
+﻿public class UserConnectionHelper
 {
-    public class UserConnectionHelper
+    private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, byte>> _connections = new();
+
+    public void AddConnection(string userId, string connectionId)
     {
-        private readonly Dictionary<string, HashSet<string>> _connections = new();
+        var userConnections = _connections.GetOrAdd(userId, _ => new ConcurrentDictionary<string, byte>());
+        userConnections.TryAdd(connectionId, 0);
+    }
 
-        public void AddConnection(string userId, string connectionId)
-        {
-            lock (_connections)
-            {
-                if (!_connections.ContainsKey(userId))
-                    _connections[userId] = new HashSet<string>();
+    public void RemoveConnection(string userId, string connectionId)
+    {
+        if (!_connections.TryGetValue(userId, out var userConnections))
+            return;
 
-                _connections[userId].Add(connectionId);
-            }
-        }
+        userConnections.TryRemove(connectionId, out _);
 
-        public void RemoveConnection(string userId, string connectionId)
-        {
-            lock (_connections)
-            {
-                if (!_connections.ContainsKey(userId))
-                    return;
+        if (userConnections.IsEmpty)
+            _connections.TryRemove(userId, out _);
+    }
 
-                _connections[userId].Remove(connectionId);
-
-                if (_connections[userId].Count == 0)
-                    _connections.Remove(userId);
-            }
-        }
-
-        public int GetConnectionCount(string userId)
-        {
-            lock (_connections)
-            {
-                return _connections.ContainsKey(userId)
-                    ? _connections[userId].Count
-                    : 0;
-            }
-        }
+    public int GetConnectionCount(string userId)
+    {
+        return _connections.TryGetValue(userId, out var userConnections)
+            ? userConnections.Count
+            : 0;
     }
 }

@@ -42,7 +42,7 @@
         [HttpPut("mark-as-read/{chatId}")]
         public async Task<IActionResult> MarkAsRead(int chatId, string lan = "en")
         {
-            var userId = ClaimsPrincipalHelper.GetUserId(User);
+            var userId = User.GetUserId();
 
             await _chatService.MarkAsRead(chatId, userId);
             return Ok(ResponseHelper.Success(LocalizationKey.SuccessToMarkAsRead, lan));

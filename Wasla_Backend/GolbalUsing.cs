@@ -35,6 +35,7 @@ global using System.Data;
 global using System.Drawing;
 global using System.Drawing.Imaging;
 global using Microsoft.AspNetCore.Authorization;
+global using System.Collections.Concurrent;
 
 #endregion
 
@@ -138,7 +139,7 @@ global using Wasla_Backend.Helpers.NotificationHelper;
 global using Wasla_Backend.Helpers.Hangfire;
 global using Wasla_Backend.Helpers.MathHelper;
 global using Wasla_Backend.Helpers.PaginationHelper;
-
+global using Wasla_Backend.Helpers.Extensions;
 #endregion
 
 #region Project - Program Helpers
@@ -152,7 +153,6 @@ global using Wasla_Backend.Hubs.BookingHubs;
 global using Wasla_Backend.Hubs.ServiceHubs;
 global using Wasla_Backend.Hubs.ReviewHubs;
 global using Wasla_Backend.Hubs.DriverHubs;
-global using Wasla_Backend.Hubs.ChatHubs;
 #endregion
 
 #region Project - Data
@@ -171,4 +171,3 @@ global using Wasla_Backend.Enums;
 global using Wasla_Backend.Exceptions;
 #endregion
 
-using Wasla_Backend.Extensions;
