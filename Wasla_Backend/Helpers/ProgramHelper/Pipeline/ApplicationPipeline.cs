@@ -1,6 +1,4 @@
-﻿using Wasla_Backend.Hubs.ChatHubs;
-
-namespace Wasla_Backend.Helpers.ProgramHelper.Pipeline
+﻿namespace Wasla_Backend.Helpers.ProgramHelper.Pipeline
 {
     public static class ApplicationPipeline
     {
