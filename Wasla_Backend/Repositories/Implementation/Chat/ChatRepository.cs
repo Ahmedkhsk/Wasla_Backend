@@ -18,7 +18,11 @@
         public async Task<PagedResult<GetChats>> GetChats(GetGeneralWithPaginationDto<string> pagination)
         {
             var query = _dbSet
-                .Where(c => c.senderId == pagination.id || c.receiverId == pagination.id);
+                .Where(c => c.senderId == pagination.id || c.receiverId == pagination.id)
+                .Where(c =>
+                    (c.senderId == pagination.id && c.deletedBySenderId == null) ||
+                    (c.receiverId == pagination.id && c.deletedByReceiverId == null)
+                );
 
             if (!string.IsNullOrWhiteSpace(pagination.search))
             {
@@ -81,6 +85,7 @@
 
             return await resultQuery.ToPagedResultAsync(pagination.PageNumber, pagination.PageSize);
         }
+        
         public async Task<Chat?> GetChatByIdAsync(int id)
         {
             return await _dbSet
@@ -99,8 +104,13 @@
             if (chat == null)
                 return null;
 
+            var deletedAt = chat.senderId == dto.senderId
+                ? chat.senderDeletedAt
+                : chat.receiverDeletedAt;
+
             var messagesQuery = _context.Messages
                 .Where(m => m.chatId == chat.id)
+                .Where(m => deletedAt == null || m.sentAt > deletedAt)
                 .OrderByDescending(m => m.sentAt)
                 .Select(m => new ChatMessageResponse
                 {
@@ -117,12 +127,12 @@
                     files = m.files
                 });
 
-            return new ChatResponse 
+            return new ChatResponse
             {
                 chatId = chat.id,
                 senderId = dto.senderId,
                 receiverId = dto.receiverId,
-                messages = await messagesQuery.ToPagedResultAsync(dto.PageNumber, dto.PageSize) 
+                messages = await messagesQuery.ToPagedResultAsync(dto.PageNumber, dto.PageSize)
             };
         }
     }

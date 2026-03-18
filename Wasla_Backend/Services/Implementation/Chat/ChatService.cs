@@ -32,7 +32,6 @@
         public async Task AddMessage(AddMessageDto dto)
         {
             var chat = await _chatRepository.GetChatByParticipantsAsync(dto.senderId, dto.reciverId);
-
             if (chat == null)
             {
                 chat = new Chat
@@ -42,6 +41,19 @@
                 };
                 await _chatRepository.AddAsync(chat);
                 await _chatRepository.SaveChangesAsync();
+            }
+            else
+            {
+                if (chat.senderId == dto.senderId)
+                {
+                    chat.deletedBySenderId = null;
+                    chat.senderDeletedAt = null;
+                }
+                else
+                {
+                    chat.deletedByReceiverId = null;
+                    chat.receiverDeletedAt = null;
+                }
             }
 
             var message = new ChatMessage
@@ -69,8 +81,7 @@
             await _messageRepository.AddAsync(message);
             await _messageRepository.SaveChangesAsync();
 
-            var receiver = await _userRepository.GetUserByIdAsync(dto.reciverId);  
-
+            var receiver = await _userRepository.GetUserByIdAsync(dto.reciverId);
             var messageDto = new MessageHubDto
             {
                 id = message.id,
@@ -80,22 +91,20 @@
                 nameReceiver = receiver.FullName,
                 receiverId = message.receiverId,
                 messageText = message.messageText,
-                audio = _fileUrlBuilderService.GetMediaUrl(message.audio,MediaType.chatFile),
+                audio = _fileUrlBuilderService.GetMediaUrl(message.audio, MediaType.chatFile),
                 type = message.type,
                 isMine = true,
                 sentAt = message.sentAt,
                 readAt = message.readAt,
                 isSent = message.isSent,
                 isEdited = message.isEdited,
-                files = message.files.Select(f => _fileUrlBuilderService.GetMediaUrl(f, MediaType.chatFile))
-                        .ToList()
+                files = message.files.Select(f => _fileUrlBuilderService.GetMediaUrl(f, MediaType.chatFile)).ToList()
             };
 
-            await _hubContext.Clients.
-                Users(new List<string> { message.senderId, message.receiverId }).
-                SendAsync("ReceiveMessage", messageDto);
+            await _hubContext.Clients
+                .Users(new List<string> { message.senderId, message.receiverId })
+                .SendAsync("ReceiveMessage", messageDto);
         }
-
         public async Task DeleteMessage(int messageId, string userId)
         {
             var message = await _messageRepository.GetByIdAsync(messageId);
@@ -119,20 +128,20 @@
         public async Task DeleteChat(int chatId, string userId)
         {
             var chat = await _chatRepository.GetChatByIdAsync(chatId);
-
             if (chat == null || (chat.senderId != userId && chat.receiverId != userId))
                 throw new NotFoundException(LocalizationKey.ChatNotFoundOrNoPermission);
 
-            foreach (var message in chat.messages)
+            if (chat.senderId == userId)
             {
-                if (!string.IsNullOrEmpty(message.audio))
-                    _fileService.DeleteFile(message.audio, _fileUrlBuilderService.GetPath(MediaType.chatFile));
-
-                if (message.files != null && message.files.Any())
-                    _fileService.DeleteFiles(message.files, _fileUrlBuilderService.GetPath(MediaType.chatFile));
+                chat.deletedBySenderId = userId;
+                chat.senderDeletedAt = _dateTimeHelper.Now;
+            }
+            else
+            {
+                chat.deletedByReceiverId = userId;
+                chat.receiverDeletedAt = _dateTimeHelper.Now;
             }
 
-            _chatRepository.Delete(chat);
             await _chatRepository.SaveChangesAsync();
         }
 

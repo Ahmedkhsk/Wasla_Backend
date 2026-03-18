@@ -12,6 +12,10 @@
         [ForeignKey("receiver")]
         public string receiverId { get; set; }
         public ApplicationUser receiver { get; set; }
+        public string? deletedBySenderId { get; set; }
+        public string? deletedByReceiverId { get; set; }
+        public DateTime? senderDeletedAt { get; set; }
+        public DateTime? receiverDeletedAt { get; set; }
 
         public ICollection<ChatMessage> messages { get; set; }
     }
