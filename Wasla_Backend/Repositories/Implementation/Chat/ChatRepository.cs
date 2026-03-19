@@ -54,13 +54,8 @@
                 .Select(x => new GetChats
                 {
                     chatId = x.chat.id,
-                    receiverId = x.chat.senderId == pagination.id
-                        ? x.chat.receiverId
-                        : x.chat.senderId,
-
-                    senderId = x.chat.senderId == pagination.id
-                        ? x.chat.senderId
-                        : x.chat.receiverId,
+                    receiverId = x.lastMessage.receiverId,
+                    senderId = x.lastMessage.senderId,
                     
                     UnreadMessageCount = x.chat.messages.Count(m => m.senderId != pagination.id && !m.isRead),
                     isEdit = x.lastMessage.isEdited,
