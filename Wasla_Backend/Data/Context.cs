@@ -38,6 +38,7 @@ namespace Wasla_Backend.Data
         public DbSet<RideDispatchJob> RideDispatchJobs { get; set; }
         public DbSet<Technician> Technicians { get; set; }
         public DbSet<Report> Reports { get; set; }
+        public DbSet<TechnicianBooking> TechnicianBookings { get; set; }
 
         public Context(DbContextOptions<Context> options) : base(options) { }
 
@@ -56,6 +57,7 @@ namespace Wasla_Backend.Data
             builder.Entity<Payment>().ToTable("Payments");
             builder.Entity<ride>().ToTable("Rides");
             builder.Entity<Technician>().ToTable("Technicians");
+            builder.Entity<TechnicianBooking>().ToTable("TechnicianBookings");
 
 
             builder.Entity<BaseBooking>()

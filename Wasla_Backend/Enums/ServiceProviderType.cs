@@ -5,6 +5,7 @@
         Doctor = 1,
         Restaurant,
         Driver,
-        Gym
+        Gym,
+        Technician,
     }
 }
