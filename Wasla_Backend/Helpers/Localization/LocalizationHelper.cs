@@ -1448,6 +1448,41 @@
                 ["en"] = "Technicians retrieved successfully.",
                 ["ar"] = "تم جلب الفنيين بنجاح."
             },
+            [LocalizationKey.GetBookingDetailsSuccessfully]=new()
+            {
+                ["en"] = "Booking details retrieved successfully.",
+                ["ar"] = "تم جلب تفاصيل الحجز بنجاح."
+            },
+            [LocalizationKey.AcceptBookingSuccessfully] = new()
+            {
+                ["en"] = "Booking accepted successfully.",
+                ["ar"] = "تم قبول الحجز بنجاح."
+            },
+            [LocalizationKey.CancelBookingSuccessfully] = new()
+            {
+                ["en"] = "Booking cancelled successfully.",
+                ["ar"] = "تم إلغاء الحجز بنجاح."
+            },
+            [LocalizationKey.RejectBookingSuccessfully]=new()
+            {
+                ["en"] = "Booking rejected successfully.",
+                ["ar"] = "تم رفض الحجز بنجاح."
+            },
+            [LocalizationKey.GetTechnicianBookingsSuccessfully]=new()
+            {
+                ["en"] = "Technician bookings retrieved successfully.",
+                ["ar"] = "تم جلب حجوزات الفني بنجاح."
+            },
+            [LocalizationKey.GetResidentBookingsSuccessfully]=new()
+            {
+                ["en"] = "Resident bookings retrieved successfully.",
+                ["ar"] = "تم جلب حجوزات المقيم بنجاح."
+            },
+            [LocalizationKey.CreateBookingSuccessfully]=new()
+            {
+                ["en"] = "Booking created successfully.",
+                ["ar"] = "تم إنشاء الحجز بنجاح."
+            },
             #endregion
         };
 

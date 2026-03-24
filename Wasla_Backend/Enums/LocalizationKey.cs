@@ -297,6 +297,13 @@
         DocumentsAreRequired,
         TechnicianSpecialtiesRetrievedSuccessfully,
         TechniciansRetrievedSuccessfully,
+        GetBookingDetailsSuccessfully,
+        AcceptBookingSuccessfully,
+        RejectBookingSuccessfully,
+        CancelBookingSuccessfully,
+        GetTechnicianBookingsSuccessfully,
+        GetResidentBookingsSuccessfully,
+        CreateBookingSuccessfully,
         #endregion
 
         #region Driver
