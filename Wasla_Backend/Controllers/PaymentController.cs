@@ -18,6 +18,13 @@ public class PaymentController : ControllerBase
         return Ok(ResponseHelper.Success(LocalizationKey.PaymentProcessedSuccessfully, lan, redirectUrl));
     }
 
+    [HttpPost("refund/{bookingId}")]
+    public async Task<IActionResult> Refund(int bookingId, string lan = "en")
+    {
+        var result = await _paymentService.RefundPaymentAsync(bookingId);
+        return Ok(ResponseHelper.Success(LocalizationKey.RefundProcessedSuccessfully, lan, result));
+    }
+
     [HttpGet("callback")]
     public IActionResult Callback()
     {
@@ -105,6 +112,11 @@ public class PaymentController : ControllerBase
             if (!receivedHmac.Equals(calculatedHmac, StringComparison.OrdinalIgnoreCase))
                 return Unauthorized("Invalid HMAC");
 
+            // ✅ جيب الـ Paymob Transaction ID الحقيقي
+            string paymobTransactionId = null;
+            if (obj.TryGetProperty("id", out var idElement))
+                paymobTransactionId = idElement.ToString();
+
             string merchantOrderId = null;
             if (obj.TryGetProperty("order", out var order) &&
                 order.TryGetProperty("merchant_order_id", out var merchantOrderIdElement) &&
@@ -113,12 +125,18 @@ public class PaymentController : ControllerBase
                 merchantOrderId = merchantOrderIdElement.ToString();
             }
 
-            bool isSuccess = obj.TryGetProperty("success", out var successElement) && successElement.GetBoolean();
+            bool isSuccess = obj.TryGetProperty("success", out var successElement)
+                && successElement.GetBoolean();
+
+            bool isRefunded = obj.TryGetProperty("is_refunded", out var refundedElement)
+                && refundedElement.GetBoolean();
 
             if (!string.IsNullOrEmpty(merchantOrderId))
             {
-                if (isSuccess)
-                    await _paymentService.UpdateOrderSuccess(merchantOrderId);
+                if (isRefunded)
+                    await _paymentService.UpdateOrderRefunded(merchantOrderId);
+                else if (isSuccess)
+                    await _paymentService.UpdateOrderSuccess(merchantOrderId, paymobTransactionId);
                 else
                     await _paymentService.UpdateOrderFailed(merchantOrderId);
             }
@@ -129,5 +147,19 @@ public class PaymentController : ControllerBase
         {
             return StatusCode(500, $"Error processing server callback: {ex.Message}");
         }
+    }
+
+    [HttpGet("status/{bookingId}")]
+    public async Task<IActionResult> GetPaymentStatus(int bookingId, string lan = "en")
+    {
+        var payment = await _paymentService.GetPaymentByBookingIdAsync(bookingId);
+        return Ok(ResponseHelper.Success(LocalizationKey.PaymentInitializedSuccessfully, lan, new
+        {
+            status = payment.Status.ToString(),
+            isPaid = payment.Status == PaymentStatus.Completed,
+            paymentMethod = payment.PaymentMethod.ToString(),
+            amount = payment.Amount,
+            paymobTransactionId = payment.PaymobTransactionId
+        }));
     }
 }

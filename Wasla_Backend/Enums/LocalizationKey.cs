@@ -287,6 +287,9 @@
         TimeZoneNotConfigured,
         BookingStatusUpdaterIterationFailed,
         NoUnitFound,
+        RefundFailed,
+        RefundProcessedSuccessfully,
+        PaymentDetailsRetrievedSuccessfully,
         #endregion
 
         #region Technician

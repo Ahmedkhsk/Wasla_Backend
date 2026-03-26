@@ -778,6 +778,21 @@
                 ["en"] = "Payment method not found.",
                 ["ar"] = "طريقة الدفع غير موجودة."
             },
+            [LocalizationKey.RefundFailed] = new()
+            {
+                ["en"] = "Failed to process refund.",
+                ["ar"] = "فشل في معالجة الاسترداد."
+            },
+            [LocalizationKey.RefundProcessedSuccessfully] = new()
+            {
+                ["en"] = "Refund processed successfully.",
+                ["ar"] = "تمت معالجة الاسترداد بنجاح."
+            },
+            [LocalizationKey.PaymentDetailsRetrievedSuccessfully]=new()
+            {
+                ["en"] = "Payment details retrieved successfully.",
+                ["ar"] = "تم جلب تفاصيل الدفع بنجاح."
+            },
             #endregion
 
             #region Resident
