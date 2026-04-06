@@ -4,7 +4,7 @@ using Wasla_Backend.Helpers.Extensions;
 
 namespace Wasla_Backend.Services.Implementation.technican
 {
-    public class TechnicianService:ITechnicianService
+    public class TechnicianService : ITechnicianService
     {
         private readonly ITechnicianRepository _technicianRepository;
         private readonly IMapper _mapper;
@@ -38,6 +38,15 @@ namespace Wasla_Backend.Services.Implementation.technican
             );
             Technician.IsCompleteRegistration = true;
             await _technicianRepository.SaveChangesAsync();
+        }
+
+        public async Task<TechnicianChartDto> GetChartById(string TechnicianId)
+        {
+            var IdExist = await _technicianRepository.IsExistById(TechnicianId);
+            if (!IdExist)
+                throw new NotFoundException(LocalizationKey.TechnicianNotFound);
+           return await _technicianRepository.GetChartById(TechnicianId);
+            
         }
 
         public async Task<TechnicianProfileDto> GetProfileById(string id)

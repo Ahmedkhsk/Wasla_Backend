@@ -83,5 +83,49 @@ namespace Wasla_Backend.Repositories.Implementation.technician
 
             return technicians;
         }
+
+        public async Task<TechnicianChartDto> GetChartById(string TechnicianId)
+        {
+           
+            var bookingquery = _context.TechnicianBookings
+                .AsNoTracking()
+                .Where(r => r.TechnicianId == TechnicianId && r.Status == TechnicianBookingStatus.Done);
+
+            var numberOfRides = await bookingquery.CountAsync();
+
+            var numberOfDeliveredResident = await bookingquery
+                .Select(r => r.ResidentId)
+                .Distinct()
+                .CountAsync();
+
+            var totalAmount = await bookingquery.SumAsync(r => r.Price);
+
+            var years = await bookingquery
+                .GroupBy(r => r.BookingDate.Year)
+                .Select(yearGroup => new CollectedPerYearDto
+                {
+                    year = yearGroup.Key,
+                    months = yearGroup
+                        .GroupBy(r => r.BookingDate.Month)
+                        .Select(monthGroup => new CollectedPerMonthDto
+                        {
+                            month = monthGroup.Key,
+                            amount = monthGroup.Sum(r => r.Price)
+                        })
+                        .OrderBy(m => m.month)
+                        .ToList()
+                })
+                .OrderBy(y => y.year)
+                .ToListAsync();
+
+            return new TechnicianChartDto
+            {
+                CompletedBookings = numberOfRides,
+                NumberOfResidents = numberOfDeliveredResident,
+                totalAmount = totalAmount,
+                years = years
+            };
+        }
     }
+    
 }

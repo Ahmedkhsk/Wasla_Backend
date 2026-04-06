@@ -43,6 +43,12 @@ namespace Wasla_Backend.Controllers.Technician
             return Ok(ResponseHelper.Success(LocalizationKey.TechniciansRetrievedSuccessfully, lan, technicians));
 
         }
+        [HttpGet("GetChart")]
+        public async Task<IActionResult> GetChart(string TechnicianId, string lan = "en")
+        {
+            var chartData = await _technicianService.GetChartById(TechnicianId);
+            return Ok(ResponseHelper.Success(LocalizationKey.TechnicianChartRetrievedSuccessfully, lan, chartData));
 
+        }
     }
 }

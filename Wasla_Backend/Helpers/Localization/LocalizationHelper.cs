@@ -1498,6 +1498,11 @@
                 ["en"] = "Booking created successfully.",
                 ["ar"] = "تم إنشاء الحجز بنجاح."
             },
+            [LocalizationKey.TechnicianChartRetrievedSuccessfully]=new()
+            {
+                ["en"] = "Technician chart fetched successfully.",
+                ["ar"] = "تم جلب مخطط الفني بنجاح."
+            }
             #endregion
         };
 

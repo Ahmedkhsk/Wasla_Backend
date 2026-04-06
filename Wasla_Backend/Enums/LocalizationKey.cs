@@ -307,6 +307,7 @@
         GetTechnicianBookingsSuccessfully,
         GetResidentBookingsSuccessfully,
         CreateBookingSuccessfully,
+        TechnicianChartRetrievedSuccessfully,
         #endregion
 
         #region Driver
