@@ -1,5 +1,6 @@
 ﻿using Wasla_Backend.Models.Driver;
 using Wasla_Backend.Models.GymModel;
+using Wasla_Backend.Models.technician;
 
 namespace Wasla_Backend.Helpers.Resolvers
 {
@@ -10,7 +11,9 @@ namespace Wasla_Backend.Helpers.Resolvers
         { typeof(Doctor), ServiceProviderType.Doctor },
         { typeof(Restaurant), ServiceProviderType.Restaurant },
         { typeof(Driver), ServiceProviderType.Driver },
-        { typeof(Gym), ServiceProviderType.Gym }
+        { typeof(Gym), ServiceProviderType.Gym },
+          {typeof(Technician),ServiceProviderType.Technician }
+
 
     };
 
@@ -34,6 +37,7 @@ namespace Wasla_Backend.Helpers.Resolvers
                 ServiceProviderType.Driver => applicationUser as Driver,
                 ServiceProviderType.Gym => applicationUser as Gym,
                 ServiceProviderType.Restaurant => applicationUser as Restaurant,
+                ServiceProviderType.Technician => applicationUser as Technician,
                 _ => throw new ArgumentException($"Unknown ServiceProviderType: {serviceType}")
             };
         }
