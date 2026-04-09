@@ -8,6 +8,7 @@
         public string TechnicianImage { get; set; }
         public double price { get; set; }
         public DateTime BookingDate { get; set; }
+        public TechnicianSpecialty TechnicianSpeciality { get; set; }
         public TechnicianBookingStatus Status { get; set; }
     }
 }

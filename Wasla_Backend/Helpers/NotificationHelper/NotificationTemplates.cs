@@ -76,6 +76,16 @@
     TitleEn = "Ride Completed ✅",
     BodyEn = "Your ride with {DriverName} is completed. Please rate the driver ⭐"
 },
+      new NotificationTemplate
+{
+    Type = NotificationType.technicianNewBookingRequest,
+
+    TitleAr = "طلب حجز جديد 🔧",
+    BodyAr = "{UserName} أرسل لك طلب حجز جديد",
+
+    TitleEn = "New Booking Request 🔧",
+    BodyEn = "{UserName} sent you a new booking request"
+},
 
 
 

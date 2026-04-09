@@ -51,7 +51,8 @@
         newRideRequest,
         rideAccepted,
         rideCancelled,
-            rideCompleted
+        rideCompleted,
+        technicianNewBookingRequest
 
     }
 }

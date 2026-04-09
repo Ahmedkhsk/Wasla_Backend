@@ -95,6 +95,19 @@ namespace Wasla_Backend.Services.Implementation.technican
             await _technicianBookingRepository.AddAsync(booking);
             await _technicianBookingRepository.SaveChangesAsync();
             await _hub.Clients.User(technician.Id).SendAsync("TechnicianBookingRequested", booking.Id);
+            var metadata = new Dictionary<string, string>
+{
+    { "UserName", resident.FullName }
+};
+            BackgroundJob.Enqueue<NotificationFunction>(
+    x => x.sendNotification(
+        technician.Id,
+        NotificationType.technicianNewBookingRequest,
+        booking.Id.ToString(),
+        _fileUrlBuilderService.GetMediaUrl(resident.ProfilePhoto, MediaType.userImage),
+        "en",
+        metadata
+    ));
             return booking.Id;
 
         }

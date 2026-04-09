@@ -65,8 +65,9 @@ namespace Wasla_Backend.Repositories.Implementation.technician
                 TechnicianImage = tb.Technician.ProfilePhoto,
                 price = tb.Price,
                 BookingDate = tb.BookingDate,
-                Status = tb.Status
-            }).ToListAsync();
+                Status = tb.Status,
+                TechnicianSpeciality = tb.Specialty
+                }).ToListAsync();
         }
 
         public async Task<List<BookingDetailsForTechnicianDto>> technicianBookingOfTechnician(string technicianId)

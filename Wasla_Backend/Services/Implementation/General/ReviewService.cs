@@ -39,7 +39,7 @@ namespace Wasla_Backend.Services.Implementation
             if (numberOfReviews >= 3)
                 throw new BadRequestException(LocalizationKey.CannotAddMoreThan3Reviews);
 
-            if (user.CountViolations >= 5)
+            if (user.CountViolations >= 50)
                 throw new BadRequestException(LocalizationKey.UserBlockedDueToViolations);
 
             var isToxic = _toxicityClassifier.IsBadWord(review.content);
