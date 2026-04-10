@@ -1502,8 +1502,178 @@
             {
                 ["en"] = "Technician chart fetched successfully.",
                 ["ar"] = "تم جلب مخطط الفني بنجاح."
-            }
+            },
             #endregion
+            
+            #region Restaurant
+
+            [LocalizationKey.RestaurantNotFound] = new()
+            {
+                ["en"] = "Restaurant not found.",
+                ["ar"] = "المطعم غير موجود."
+            },
+
+            [LocalizationKey.MenuItemsRetrievedSuccessfully] = new()
+            {
+                ["en"] = "Menu items retrieved successfully.",
+                ["ar"] = "تم جلب عناصر القائمة بنجاح."
+            },
+
+            [LocalizationKey.MenuItemCreatedSuccessfully] = new()
+            {
+                ["en"] = "Menu item created successfully.",
+                ["ar"] = "تم إنشاء عنصر في القائمة بنجاح."
+            },
+
+            [LocalizationKey.MenuItemUpdatedSuccessfully] = new()
+            {
+                ["en"] = "Menu item updated successfully.",
+                ["ar"] = "تم تحديث عنصر القائمة بنجاح."
+            },
+
+            [LocalizationKey.MenuItemDeletedSuccessfully] = new()
+            {
+                ["en"] = "Menu item deleted successfully.",
+                ["ar"] = "تم حذف عنصر من القائمة بنجاح."
+            },
+
+            [LocalizationKey.TablesConfiguredSuccessfully] = new()
+            {
+                ["en"] = "Tables configured successfully.",
+                ["ar"] = "تم إعداد الطاولات بنجاح."
+            },
+
+            [LocalizationKey.TablesRetrievedSuccessfully] = new()
+            {
+                ["en"] = "Tables retrieved successfully.",
+                ["ar"] = "تم جلب الطاولات بنجاح."
+            },
+
+            [LocalizationKey.ReservationCreatedSuccessfully] = new()
+            {
+                ["en"] = "Reservation created successfully.",
+                ["ar"] = "تم إنشاء الحجز بنجاح."
+            },
+
+            [LocalizationKey.ReservationCancelledSuccessfully] = new()
+            {
+                ["en"] = "Reservation cancelled successfully.",
+                ["ar"] = "تم إلغاء الحجز بنجاح."
+            },
+
+            [LocalizationKey.ReservationsRetrievedSuccessfully] = new()
+            {
+                ["en"] = "Reservations retrieved successfully.",
+                ["ar"] = "تم جلب الحجوزات بنجاح."
+            },
+
+            [LocalizationKey.ReservationApprovedSuccessfully] = new()
+            {
+                ["en"] = "Reservation approved successfully.",
+                ["ar"] = "تم تأكيد الحجز بنجاح."
+            },
+
+            [LocalizationKey.ReservationRejectedSuccessfully] = new()
+            {
+                ["en"] = "Reservation rejected successfully.",
+                ["ar"] = "تم رفض الحجز بنجاح."
+            },
+
+            [LocalizationKey.OrderCreatedSuccessfully] = new()
+            {
+                ["en"] = "Order created successfully.",
+                ["ar"] = "تم إنشاء الطلب بنجاح."
+            },
+
+            [LocalizationKey.OrderRetrievedSuccessfully] = new()
+            {
+                ["en"] = "Order retrieved successfully.",
+                ["ar"] = "تم جلب الطلب بنجاح."
+            },
+
+            [LocalizationKey.OrdersRetrievedSuccessfully] = new()
+            {
+                ["en"] = "Orders retrieved successfully.",
+                ["ar"] = "تم جلب الطلبات بنجاح."
+            },
+
+            [LocalizationKey.OrderStatusUpdatedSuccessfully] = new()
+            {
+                ["en"] = "Order status updated successfully.",
+                ["ar"] = "تم تحديث حالة الطلب بنجاح."
+            },
+
+            [LocalizationKey.CartUpdatedSuccessfully] = new()
+            {
+                ["en"] = "Cart updated successfully.",
+                ["ar"] = "تم تحديث السلة بنجاح."
+            },
+
+            [LocalizationKey.ItemAddedToCartSuccessfully] = new()
+            {
+                ["en"] = "Item added to cart successfully.",
+                ["ar"] = "تمت إضافة العنصر إلى السلة بنجاح."
+            },
+
+            [LocalizationKey.ItemRemovedFromCartSuccessfully] = new()
+            {
+                ["en"] = "Item removed from cart successfully.",
+                ["ar"] = "تم حذف العنصر من السلة بنجاح."
+            },
+
+            [LocalizationKey.CheckoutCompletedSuccessfully] = new()
+            {
+                ["en"] = "Checkout completed successfully.",
+                ["ar"] = "تم إتمام الطلب بنجاح."
+            },
+
+            #endregion
+            
+            #region RestaurantCategory
+
+            [LocalizationKey.RestaurantCategoryCreatedSuccessfully] = new()
+            {
+                ["en"] = "Category created successfully.",
+                ["ar"] = "تم إنشاء التصنيف بنجاح."
+            },
+
+            [LocalizationKey.RestaurantCategoryUpdatedSuccessfully] = new()
+            {
+                ["en"] = "Category updated successfully.",
+                ["ar"] = "تم تحديث التصنيف بنجاح."
+            },
+
+            [LocalizationKey.RestaurantCategoryDeletedSuccessfully] = new()
+            {
+                ["en"] = "Category deleted successfully.",
+                ["ar"] = "تم حذف التصنيف بنجاح."
+            },
+
+            [LocalizationKey.RestaurantCategoryRetrievedSuccessfully] = new()
+            {
+                ["en"] = "Category retrieved successfully.",
+                ["ar"] = "تم جلب التصنيف بنجاح."
+            },
+
+            [LocalizationKey.RestaurantCategoriesRetrievedSuccessfully] = new()
+            {
+                ["en"] = "Categories retrieved successfully.",
+                ["ar"] = "تم جلب التصنيفات بنجاح."
+            },
+
+            [LocalizationKey.RestaurantCategoryNotFound] = new()
+            {
+                ["en"] = "Category not found.",
+                ["ar"] = "التصنيف غير موجود."
+            },
+
+            [LocalizationKey.ProfileCompletedSuccessfully] = new()
+            {
+                ["en"] = "Profile completed successfully.",
+                ["ar"] = "تم إكمال الملف الشخصي بنجاح."
+            },
+            #endregion
+
         };
 
         public static string GetLocalizedMessage(LocalizationKey key, string lan)

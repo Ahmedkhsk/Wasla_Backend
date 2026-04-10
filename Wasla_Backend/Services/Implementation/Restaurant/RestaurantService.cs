@@ -1,0 +1,60 @@
+﻿namespace Wasla_Backend.Services.Implementation
+{
+    public class RestaurantService : IRestaurantService
+    {
+        private readonly IRestaurantRepository _restaurantRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IFileService _fileService;
+        private readonly IMapper _mapper;
+        private readonly IFileUrlBuilderService _fileUrlBuilderService;
+        private readonly IGenericRepository<RestaurantCategory> _restaurantCategoryRepo;
+
+        public RestaurantService
+            (
+            IRestaurantRepository restaurantRepository,IUserRepository userRepository,
+            IFileService fileService,IMapper mapper,IFileUrlBuilderService fileUrlBuilderService,
+            IGenericRepository<RestaurantCategory> restaurantCategoryRepo
+            ) 
+        {
+            _restaurantRepository = restaurantRepository;
+            _userRepository = userRepository;
+            _fileService = fileService;
+            _mapper = mapper;
+            _fileUrlBuilderService = fileUrlBuilderService;
+            _restaurantCategoryRepo = restaurantCategoryRepo;
+        }  
+
+        public async Task CompleteProfile(CompleteRegisterRestaurantDto dto)
+        {
+            var restaurant = await _restaurantRepository.GetByIdAsync(dto.id);
+
+            if ( restaurant == null )
+                throw new NotFoundException(LocalizationKey.UserNotFound);
+
+            var category = await _restaurantCategoryRepo.GetByIdAsync(dto.restaurantCategoryId);
+            if (category == null)
+                throw new NotFoundException(LocalizationKey.RestaurantCategoryNotFound);
+
+            _mapper.Map(dto, restaurant);
+
+            if (dto.profile != null)
+            {
+                restaurant.ProfilePhoto = await _fileService.AddFileAsync(
+                            dto.profile,
+                            _fileUrlBuilderService.GetPath(MediaType.userImage));
+            }
+
+            if(dto.gallery !=null)
+            {
+                restaurant.images = await _fileService.AddFilesAsync(
+                            dto.gallery,
+                            _fileUrlBuilderService.GetPath(MediaType.restaurantImage));
+            }
+
+            restaurant.IsCompleteRegistration = true;
+            _restaurantRepository.Update(restaurant);
+            await _restaurantRepository.SaveChangesAsync();
+        }
+
+    }
+}

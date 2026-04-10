@@ -8,6 +8,7 @@
         bookingImage,
         postFile,
         chatFile,
+        restaurantImage,
         qrCode,
         MLModel,
         DriverFilePath,

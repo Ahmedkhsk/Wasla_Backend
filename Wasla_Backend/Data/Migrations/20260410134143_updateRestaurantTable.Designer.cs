@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wasla_Backend.Data;
 
@@ -11,9 +12,11 @@ using Wasla_Backend.Data;
 namespace Wasla_Backend.data
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20260410134143_updateRestaurantTable")]
+    partial class updateRestaurantTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -712,23 +715,6 @@ namespace Wasla_Backend.data
                     b.ToTable("residentIdentities");
                 });
 
-            modelBuilder.Entity("Wasla_Backend.Models.Restaurant.RestaurantCategory", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("id");
-
-                    b.ToTable("RestaurantCategories");
-                });
-
             modelBuilder.Entity("Wasla_Backend.Models.Reviews", b =>
                 {
                     b.Property<int>("Id")
@@ -1236,16 +1222,11 @@ namespace Wasla_Backend.data
                     b.Property<string>("gallery")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("numberOfPersons")
+                    b.Property<int>("numberOfPersons")
                         .HasColumnType("int");
 
-                    b.Property<int?>("numberOfTables")
+                    b.Property<int>("numberOfTables")
                         .HasColumnType("int");
-
-                    b.Property<int?>("restaurantCategoryId")
-                        .HasColumnType("int");
-
-                    b.HasIndex("restaurantCategoryId");
 
                     b.ToTable("Restaurant", (string)null);
                 });
@@ -1825,12 +1806,6 @@ namespace Wasla_Backend.data
                         .HasForeignKey("Wasla_Backend.Models.Restaurant.Restaurant", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Wasla_Backend.Models.Restaurant.RestaurantCategory", "restaurantCategory")
-                        .WithMany()
-                        .HasForeignKey("restaurantCategoryId");
-
-                    b.Navigation("restaurantCategory");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.technician.Technician", b =>

@@ -6,6 +6,7 @@
         public string GymImages { get; set; }
         public string DoctorCV { get; set; }
         public string BookingImages { get; set; }
+        public string RestaurantImages { get; set; }
         public string MLModels { get; set; }
         public string QrCodes { get; set; }
         public string PostFiles { get; set; }

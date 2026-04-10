@@ -58,6 +58,7 @@ global using Wasla_Backend.DTOs.Authentication;
 global using Wasla_Backend.DTOs.AdminDTOS;
 global using Wasla_Backend.DTOs.DoctorDTO;
 global using Wasla_Backend.DTOs.ResidentDTOS;
+global using Wasla_Backend.DTOs.RestaurantDTOS;
 global using Wasla_Backend.DTOs.RoleDTOS;
 global using Wasla_Backend.DTOs.MlDTOS;
 global using Wasla_Backend.DTOs.ServiceDTOS;
@@ -87,11 +88,8 @@ global using  RideModel = Wasla_Backend.Models.Driver.ride;
 global using DriverModel = Wasla_Backend.Models.Driver.Driver;
 global using RideDispatchJobModel = Wasla_Backend.Models.Driver.RideDispatchJob;
 global using Wasla_Backend.Models.technician;
-
-
-
-
-
+global using Wasla_Backend.Models.Driver;
+global using Wasla_Backend.Models.Restaurant;
 #endregion
 
 #region Project - Repositories
@@ -170,4 +168,3 @@ global using Wasla_Backend.Enums;
 #region Project - Exceptions
 global using Wasla_Backend.Exceptions;
 #endregion
-

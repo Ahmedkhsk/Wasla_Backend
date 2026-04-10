@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
-using Wasla_Backend.Models.Driver;
-using Wasla_Backend.Models.technician;
-using Notification = Wasla_Backend.Models.GeneralModel.Notification;
+﻿using Notification = Wasla_Backend.Models.GeneralModel.Notification;
 
 namespace Wasla_Backend.Data
 {
@@ -39,7 +35,8 @@ namespace Wasla_Backend.Data
         public DbSet<Technician> Technicians { get; set; }
         public DbSet<Report> Reports { get; set; }
         public DbSet<TechnicianBooking> TechnicianBookings { get; set; }
-
+        public DbSet<RestaurantCategory> RestaurantCategories { get; set; }
+        
         public Context(DbContextOptions<Context> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder builder)

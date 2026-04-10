@@ -10,7 +10,7 @@
                 "doctor" => new Doctor(),
                 "driver" => new DriverModel(),
                 "resident" => new Resident(),
-                "restaurantOwner" => new Restaurant(),
+                "restaurant" => new Restaurant(),
                 "gym" => new Gym(),
                 "technician" => new Technician(),
                 _ => throw new NotFoundException(LocalizationKey.RoleNotFound)

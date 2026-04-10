@@ -19,6 +19,7 @@
                 MediaType.bookingImage => _settings.Paths.BookingImages,
                 MediaType.postFile => _settings.Paths.PostFiles,
                 MediaType.qrCode => _settings.Paths.QrCodes,
+                MediaType.restaurantImage => _settings.Paths.RestaurantImages,
                 MediaType.MLModel => _settings.Paths.MLModels,
                 MediaType.DriverFilePath => _settings.Paths.DriverFiles,
                 MediaType.DriverCarImage => _settings.Paths.DriverCarImages,

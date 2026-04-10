@@ -374,5 +374,48 @@
         FailedToUpdateBio,
 
         #endregion
+
+        #region Restaurant
+
+        RestaurantNotFound,
+
+        MenuItemsRetrievedSuccessfully,
+        MenuItemCreatedSuccessfully,
+        MenuItemUpdatedSuccessfully,
+        MenuItemDeletedSuccessfully,
+
+        TablesConfiguredSuccessfully,
+        TablesRetrievedSuccessfully,
+
+        ReservationCreatedSuccessfully,
+        ReservationCancelledSuccessfully,
+        ReservationsRetrievedSuccessfully,
+        ReservationApprovedSuccessfully,
+        ReservationRejectedSuccessfully,
+
+        OrderCreatedSuccessfully,
+        OrderRetrievedSuccessfully,
+        OrdersRetrievedSuccessfully,
+        OrderStatusUpdatedSuccessfully,
+
+        CartUpdatedSuccessfully,
+        ItemAddedToCartSuccessfully,
+        ItemRemovedFromCartSuccessfully,
+        CheckoutCompletedSuccessfully,
+
+        #endregion
+
+        #region RestaurantCategory
+
+        RestaurantCategoryCreatedSuccessfully,
+        RestaurantCategoryUpdatedSuccessfully,
+        RestaurantCategoryDeletedSuccessfully,
+        RestaurantCategoryRetrievedSuccessfully,
+        RestaurantCategoriesRetrievedSuccessfully,
+        RestaurantCategoryNotFound,
+
+        ProfileCompletedSuccessfully,
+        #endregion
+
     }
 }
