@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Services.Implementation.GymService
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Wasla_Backend.Services.Implementation.GymService
 {
     public class GymBookingService : IGymBookingService
     {
@@ -11,6 +13,7 @@
         private readonly IFileService _fileService;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly IHubContext<BookingHub> _hub;
+        private readonly Context _dbContext;
 
         public GymBookingService(
             IGymBookingRepository gymBookingRepository,
@@ -21,7 +24,8 @@
             IFileService fileService,
             IFileUrlBuilderService fileUrlBuilderService,
             DateTimeHelper dateTimeHelper,
-            IHubContext<BookingHub> hub
+            IHubContext<BookingHub> hub,
+            Context dbContext
         )
         {
             _gymBookingRepository = gymBookingRepository;
@@ -33,6 +37,7 @@
             _fileUrlBuilderService = fileUrlBuilderService;
             _dateTimeHelper = dateTimeHelper;
             _hub = hub;
+            _dbContext = dbContext;
         }
 
         public async Task<BookResponse> Book(GymBookDto gymBookDto, string lan)
@@ -107,6 +112,21 @@
                 x => x.ExpireBooking(gymBooking.Id),
                 delay
             );
+            var metadata = new Dictionary<string, string>
+{
+    { "UserName", resident.FullName ?? "User" },
+    { "PackageName", service.Name.English    }
+};
+            var image = _fileUrlBuilderService.GetMediaUrl(resident.ProfilePhoto, MediaType.userImage);
+
+            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
+                gym.Id,
+                NotificationType.gymPackageBooked,
+                gymBooking.Id.ToString(),
+                image,
+                lan,
+                metadata
+            ));
 
             return new BookResponse
             {
@@ -124,6 +144,14 @@
 
             booking.BookingStatus = GymBookingStatus.Completed;
             await _gymBookingRepository.SaveChangesAsync();
+            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
+    booking.ResidentId,
+    NotificationType.gymPackageExpired,
+    booking.ServiceId.ToString(),
+    null,
+    "en",
+    null
+));
         }
 
         public async Task CheckPayment(string qrPath, int bookingId, string gymName, string gymPhotoUrl, string lan)
@@ -177,10 +205,26 @@
             var booking = await _gymBookingRepository.GetByIdAsync(bookingId);
             if (booking == null)
                 throw new NotFoundException(LocalizationKey.BookingNotFound);
+            await _dbContext.Entry(booking).Reference(x => x.Resident).LoadAsync();
+            await _dbContext.Entry(booking).Reference(x => x.Service).LoadAsync();
 
             booking.BookingStatus = GymBookingStatus.Cancelled;
             _gymBookingRepository.Update(booking);
             await _gymBookingRepository.SaveChangesAsync();
+            var userName = booking.Resident?.FullName ?? "User";
+            var packageName = booking.Service?.Name.English ?? "Package";
+            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
+    booking.GymId,
+    NotificationType.gymBookingCancelled,
+    booking.Id.ToString(),
+    null,
+    "en",
+    new Dictionary<string, string>
+    {
+        { "UserName", userName },
+        { "PackageName", packageName }
+    }
+));
 
             return new BookHubData
             {

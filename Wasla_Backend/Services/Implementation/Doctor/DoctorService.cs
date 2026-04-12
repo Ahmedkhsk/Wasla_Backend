@@ -47,6 +47,14 @@
 
             _doctorRepository.Update(doctor);
             await _doctorRepository.SaveChangesAsync();
+            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
+                doctor.Id,
+                NotificationType.doctorCompleteInfoScreen,
+                doctor.Id,
+                doctor.ProfilePhoto,
+                "en",
+                null
+            ));
         }
 
         public async Task<IEnumerable<DoctorSpecializationResponse>> DoctorSpecializations(string lan)

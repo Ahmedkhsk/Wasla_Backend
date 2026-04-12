@@ -1,4 +1,7 @@
-﻿namespace Wasla_Backend.Services.Implementation
+﻿using System.Numerics;
+using Wasla_Backend.Models;
+
+namespace Wasla_Backend.Services.Implementation
 {
     public class DoctorBookService : IDoctorBookService
     {
@@ -82,6 +85,14 @@
                 serviceProviderId = booking.serviceProviderId
             };
             await _hub.Clients.All.SendAsync("Bookingcanceled", bookhubdata);
+            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
+    booking.userId,
+    NotificationType.doctorCancelBookingScreen,
+    booking.Id.ToString(),
+    null,   
+    "en",
+    null    
+));
         }
 
         public async Task UpdateBooking(UpdateBookingDto updateBookingDto)
@@ -110,6 +121,14 @@
                 serviceProviderId = booking.serviceProviderId
             };
             await _hub.Clients.All.SendAsync("BookingUpdated", bookhubdata);
+      Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
+      booking.userId,
+      NotificationType.doctorEditBookingScreen,
+      booking.Id.ToString(),
+     null,
+      "en",
+      null 
+  ));
         }
 
         public async Task<List<ServiceBookingDetailsDto>> GetBookingDetailsForUserAsync(string userId, string language)
@@ -201,12 +220,33 @@
                     );
                 }
 
+                var metadata = new Dictionary<string, string>
+{
+    { "UserName", user.FullName ?? "User" },
+    { "Date", booking.bookingDate.ToString("dddd hh:mm tt") }
+};
+
+                var image = _fileUrlBuilderService.GetMediaUrl(user.ProfilePhoto, MediaType.userImage);
+
+                
+
+                Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
+                    serviceProvider.Id,
+                    NotificationType.doctorBookingScreen,
+                    booking.Id.ToString(),
+                    image,
+                    "en",
+                    metadata
+                ));
+
                 return booking.Id;
+                
             }
             finally
             {
                 _bookingLock.Release();
             }
+
         }
     }
 }

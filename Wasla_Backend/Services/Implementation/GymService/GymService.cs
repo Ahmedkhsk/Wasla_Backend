@@ -61,6 +61,16 @@
 
             gym.IsCompleteRegistration = true;
             await _gymRepo.SaveChangesAsync();
+            var image = _fileUrlBuilderService.GetMediaUrl(gym.ProfilePhoto, MediaType.userImage);
+
+            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
+                gym.Id,
+                NotificationType.gymCompleteInfoScreen,
+                gym.Id,
+                image,
+                "en",
+                null
+            ));
         }
 
         public async Task UpdateProfile(UpdateProfileGym dto)

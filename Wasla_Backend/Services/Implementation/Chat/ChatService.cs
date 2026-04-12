@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Services.Implementation
+﻿using Microsoft.VisualBasic;
+
+namespace Wasla_Backend.Services.Implementation
 {
     public class ChatService : IChatService
     {
@@ -82,6 +84,7 @@
             await _messageRepository.SaveChangesAsync();
 
             var receiver = await _userRepository.GetUserByIdAsync(dto.reciverId);
+            var sender = await _userRepository.GetUserByIdAsync(dto.senderId);
             var messageDto = new MessageHubDto
             {
                 id = message.id,
@@ -104,6 +107,19 @@
             await _hubContext.Clients
                 .Users(new List<string> { message.senderId, message.receiverId })
                 .SendAsync("ReceiveMessage", messageDto);
+            var metadata = new Dictionary<string, string>
+{
+    { "SenderName", sender.FullName ?? "User" }
+};
+            var chatmessgaeId=string.Concat(chat.id, " , ", message.id);
+            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
+    receiver.Id,
+    NotificationType.messageReceived,
+    chatmessgaeId,
+    null,   
+    "en",
+    metadata
+));
         }
         public async Task DeleteMessage(int messageId, string userId)
         {

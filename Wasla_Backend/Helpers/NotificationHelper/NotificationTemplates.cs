@@ -86,6 +86,106 @@
     TitleEn = "New Booking Request 🔧",
     BodyEn = "{UserName} sent you a new booking request"
 },
+      new NotificationTemplate
+{
+    Type = NotificationType.doctorCompleteInfoScreen,
+
+    TitleAr = "تم إكمال بياناتك بنجاح 🎉",
+    BodyAr = "شكرًا لك! تم تسجيل بياناتك بنجاح ويمكنك الآن بدء استخدام التطبيق واستقبال الحجوزات",
+
+    TitleEn = "Profile Completed 🎉",
+    BodyEn = "Thank you! Your information has been successfully submitted. You can now start using the app and receive bookings"
+},
+      new NotificationTemplate
+{
+    Type = NotificationType.doctorBookingScreen,
+
+    TitleAr = "حجز جديد 🩺",
+    BodyAr = "{UserName} قام بحجز موعد معك بتاريخ {Date}",
+
+    TitleEn = "New Booking 🩺",
+    BodyEn = "{UserName} booked an appointment with you on {Date}"
+},
+  new NotificationTemplate
+{
+    Type = NotificationType.doctorEditBookingScreen,
+
+    TitleAr = "تم تعديل الحجز ✏️",
+    BodyAr = "قام الدكتور بتعديل تفاصيل حجزك",
+
+    TitleEn = "Booking Updated ✏️",
+    BodyEn = "Doctor has updated your booking"
+},
+  new NotificationTemplate
+{
+    Type = NotificationType.doctorCancelBookingScreen,
+
+    TitleAr = "تم إلغاء الحجز ❌",
+    BodyAr = "قام الدكتور بإلغاء حجزك",
+
+    TitleEn = "Booking Cancelled ❌",
+    BodyEn = "Doctor has cancelled your booking"
+},
+  new NotificationTemplate
+{
+    Type = NotificationType.messageReceived,
+
+    TitleAr = "رسالة جديدة 💬",
+    BodyAr = "لديك رسالة جديدة من {SenderName}",
+
+    TitleEn = "New Message 💬",
+    BodyEn = "You have a new message from {SenderName}"
+},
+  new NotificationTemplate
+{
+    Type = NotificationType.driverCompleteInfoScreen,
+
+    TitleAr = "تم إكمال التسجيل 🎉",
+    BodyAr = "شكرًا لك! تم تسجيل بياناتك بنجاح ويمكنك الآن البدء في استقبال الرحلات",
+
+    TitleEn = "Registration Completed 🎉",
+    BodyEn = "Thank you! Your registration is complete. You can now start receiving rides"
+},
+new NotificationTemplate
+{
+    Type = NotificationType.gymCompleteInfoScreen,
+
+    TitleAr = "تم إكمال البيانات 🎉",
+    BodyAr = "شكرًا لك! تم تسجيل بيانات الجيم بنجاح ويمكنك الآن إدارة حسابك",
+
+    TitleEn = "Profile Completed 🎉",
+    BodyEn = "Thank you! Your gym profile has been successfully created"
+},
+new NotificationTemplate
+{
+    Type = NotificationType.gymPackageBooked,
+
+    TitleAr = "تم حجز باقة جديدة 🎉",
+    BodyAr = "تم حجز باقة {PackageName} بواسطة {UserName}",
+
+    TitleEn = "New Package Booking 🎉",
+    BodyEn = "{UserName} booked {PackageName} package"
+},
+new NotificationTemplate
+{
+    Type = NotificationType.gymPackageExpired,
+
+    TitleAr = "انتهت الباقة ⏳",
+    BodyAr = "انتهت صلاحية باقتك، يمكنك تجديدها الآن",
+
+    TitleEn = "Package Expired ⏳",
+    BodyEn = "Your package has expired. Please renew it to continue"
+},
+new NotificationTemplate
+{
+    Type = NotificationType.gymBookingCancelled,
+
+    TitleAr = "تم إلغاء الحجز ❌",
+    BodyAr = "قام {UserName} بإلغاء حجز باقة {PackageName}",
+
+    TitleEn = "Booking Cancelled ❌",
+    BodyEn = "{UserName} cancelled {PackageName} booking"
+},
 
 
 

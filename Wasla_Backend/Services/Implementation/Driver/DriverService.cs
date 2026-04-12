@@ -67,6 +67,15 @@
             driver.IsCompleteRegistration = true;
             _driverRepository.Update(driver);
             await _driverRepository.SaveChangesAsync();
+            var imageUrl = _fileUrlBuilderService.GetMediaUrl(driver.ProfilePhoto, MediaType.userImage);
+            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
+    driver.Id,
+    NotificationType.driverCompleteInfoScreen,
+    driver.Id,
+    imageUrl,       
+    "en",        
+    null
+));
         }
 
         public async Task UpdateDriverProfile(UpdateDriverProfileDto dto)

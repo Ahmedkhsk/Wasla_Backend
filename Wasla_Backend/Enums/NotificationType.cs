@@ -29,6 +29,7 @@
         doctorSeeSevicesScreen,
         doctorBookingScreen,
         doctorEditBookingScreen,
+        doctorCancelBookingScreen,
         doctorEditProfileScreen,
         allFavouritesScreen,
         residentPersonalInfoScreen,
@@ -52,7 +53,14 @@
         rideAccepted,
         rideCancelled,
         rideCompleted,
-        technicianNewBookingRequest
+        technicianNewBookingRequest,
+        messageReceived,
+            driverCompleteInfoScreen,
+        gymPackageBooked,
+        gymPackageExpired,
+        gymBookingCancelled,
+
+
 
     }
 }
