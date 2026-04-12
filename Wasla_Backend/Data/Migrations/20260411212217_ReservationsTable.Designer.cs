@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wasla_Backend.Data;
 
@@ -11,9 +12,11 @@ using Wasla_Backend.Data;
 namespace Wasla_Backend.data
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20260411212217_ReservationsTable")]
+    partial class ReservationsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -720,29 +723,29 @@ namespace Wasla_Backend.data
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
+                    b.Property<string>("date")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("day")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("numberOfPersons")
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("reservationDate")
-                        .HasColumnType("date");
-
-                    b.Property<TimeOnly>("reservationTime")
-                        .HasColumnType("time");
-
-                    b.Property<string>("restaurantId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("status")
                         .HasColumnType("int");
+
+                    b.Property<string>("time")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("userId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("id");
-
-                    b.HasIndex("restaurantId");
 
                     b.HasIndex("userId");
 
@@ -1524,19 +1527,11 @@ namespace Wasla_Backend.data
 
             modelBuilder.Entity("Wasla_Backend.Models.Restaurant.Reservations", b =>
                 {
-                    b.HasOne("Wasla_Backend.Models.Restaurant.Restaurant", "restaurants")
-                        .WithMany()
-                        .HasForeignKey("restaurantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Wasla_Backend.Models.Resident", "user")
+                    b.HasOne("Wasla_Backend.Models.ApplicationUser", "user")
                         .WithMany()
                         .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("restaurants");
 
                     b.Navigation("user");
                 });

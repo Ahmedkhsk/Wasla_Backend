@@ -1504,13 +1504,89 @@
                 ["ar"] = "تم جلب مخطط الفني بنجاح."
             },
             #endregion
-            
+
             #region Restaurant
 
             [LocalizationKey.RestaurantNotFound] = new()
             {
                 ["en"] = "Restaurant not found.",
                 ["ar"] = "المطعم غير موجود."
+            },
+            [LocalizationKey.ReservationStatusChangedSuccessfully] = new()
+            {
+                ["en"] = "Reservation status changed successfully.",
+                ["ar"] = "تم تغيير حالة الحجز بنجاح."
+            },
+            [LocalizationKey.ReservationCreatedSuccessfully] = new()
+            {
+                ["en"] = "Reservation created successfully.",
+                ["ar"] = "تم إنشاء الحجز بنجاح."
+            },
+
+            [LocalizationKey.ReservationRetrievedSuccessfully] = new()
+            {
+                ["en"] = "Reservation retrieved successfully.",
+                ["ar"] = "تم جلب الحجز بنجاح."
+            },
+
+            [LocalizationKey.ReservationsRetrievedSuccessfully] = new()
+            {
+                ["en"] = "Reservations retrieved successfully.",
+                ["ar"] = "تم جلب الحجوزات بنجاح."
+            },
+
+            [LocalizationKey.ReservationStatusUpdatedSuccessfully] = new()
+            {
+                ["en"] = "Reservation status updated successfully.",
+                ["ar"] = "تم تحديث حالة الحجز بنجاح."
+            },
+
+            [LocalizationKey.ReservationDeletedSuccessfully] = new()
+            {
+                ["en"] = "Reservation deleted successfully.",
+                ["ar"] = "تم حذف الحجز بنجاح."
+            },
+
+            [LocalizationKey.ReservationCancelledSuccessfully] = new()
+            {
+                ["en"] = "Reservation cancelled successfully.",
+                ["ar"] = "تم إلغاء الحجز بنجاح."
+            },
+
+            [LocalizationKey.ReservationApprovedSuccessfully] = new()
+            {
+                ["en"] = "Reservation approved successfully.",
+                ["ar"] = "تم تأكيد الحجز بنجاح."
+            },
+
+            [LocalizationKey.ReservationRejectedSuccessfully] = new()
+            {
+                ["en"] = "Reservation rejected successfully.",
+                ["ar"] = "تم رفض الحجز بنجاح."
+            },
+
+            [LocalizationKey.ReservationNotFound] = new()
+            {
+                ["en"] = "Reservation not found.",
+                ["ar"] = "الحجز غير موجود."
+            },
+
+            [LocalizationKey.InvalidReservationStatus] = new()
+            {
+                ["en"] = "Invalid reservation status.",
+                ["ar"] = "حالة الحجز غير صالحة."
+            },
+
+            [LocalizationKey.ReservationAlreadyCancelled] = new()
+            {
+                ["en"] = "Reservation is already cancelled.",
+                ["ar"] = "الحجز ملغي بالفعل."
+            },
+
+            [LocalizationKey.ReservationAlreadyCompleted] = new()
+            {
+                ["en"] = "Reservation is already completed.",
+                ["ar"] = "الحجز مكتمل بالفعل."
             },
 
             [LocalizationKey.MenuItemsRetrievedSuccessfully] = new()
@@ -1547,36 +1623,6 @@
             {
                 ["en"] = "Tables retrieved successfully.",
                 ["ar"] = "تم جلب الطاولات بنجاح."
-            },
-
-            [LocalizationKey.ReservationCreatedSuccessfully] = new()
-            {
-                ["en"] = "Reservation created successfully.",
-                ["ar"] = "تم إنشاء الحجز بنجاح."
-            },
-
-            [LocalizationKey.ReservationCancelledSuccessfully] = new()
-            {
-                ["en"] = "Reservation cancelled successfully.",
-                ["ar"] = "تم إلغاء الحجز بنجاح."
-            },
-
-            [LocalizationKey.ReservationsRetrievedSuccessfully] = new()
-            {
-                ["en"] = "Reservations retrieved successfully.",
-                ["ar"] = "تم جلب الحجوزات بنجاح."
-            },
-
-            [LocalizationKey.ReservationApprovedSuccessfully] = new()
-            {
-                ["en"] = "Reservation approved successfully.",
-                ["ar"] = "تم تأكيد الحجز بنجاح."
-            },
-
-            [LocalizationKey.ReservationRejectedSuccessfully] = new()
-            {
-                ["en"] = "Reservation rejected successfully.",
-                ["ar"] = "تم رفض الحجز بنجاح."
             },
 
             [LocalizationKey.OrderCreatedSuccessfully] = new()
@@ -1628,7 +1674,7 @@
             },
 
             #endregion
-            
+           
             #region RestaurantCategory
 
             [LocalizationKey.RestaurantCategoryCreatedSuccessfully] = new()
@@ -1673,6 +1719,7 @@
                 ["ar"] = "تم إكمال الملف الشخصي بنجاح."
             },
             #endregion
+
 
         };
 

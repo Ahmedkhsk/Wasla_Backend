@@ -2,8 +2,6 @@
 {
     public class Restaurant : ServiceProvider
     {
-        public int? numberOfTables { get; set; }
-        public int? numberOfPersons { get; set; }
         public string? gallery { get; set; }
         public int? restaurantCategoryId { get; set; }
 

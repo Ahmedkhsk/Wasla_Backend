@@ -3,6 +3,6 @@
     public class RestaurantCategory
     {
         public int id { get; set; }
-        public string name { get; set; }
+        public MultilingualText name { get; set; }
     }
 }

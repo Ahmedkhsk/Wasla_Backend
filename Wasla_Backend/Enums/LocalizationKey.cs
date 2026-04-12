@@ -392,6 +392,14 @@
         ReservationsRetrievedSuccessfully,
         ReservationApprovedSuccessfully,
         ReservationRejectedSuccessfully,
+        ReservationRetrievedSuccessfully,
+        ReservationStatusUpdatedSuccessfully,
+        ReservationDeletedSuccessfully,
+        ReservationStatusChangedSuccessfully,
+        ReservationNotFound,
+        InvalidReservationStatus,
+        ReservationAlreadyCancelled,
+        ReservationAlreadyCompleted,
 
         OrderCreatedSuccessfully,
         OrderRetrievedSuccessfully,
@@ -416,6 +424,5 @@
 
         ProfileCompletedSuccessfully,
         #endregion
-
     }
 }

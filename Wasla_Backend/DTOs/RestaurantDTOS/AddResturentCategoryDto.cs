@@ -2,6 +2,6 @@
 {
     public class AddResturentCategoryDto : LanDto
     {
-        public string name { get; set; }
+        public MultilingualText name { get; set; }
     }
 }

@@ -36,6 +36,7 @@ namespace Wasla_Backend.Data
         public DbSet<Report> Reports { get; set; }
         public DbSet<TechnicianBooking> TechnicianBookings { get; set; }
         public DbSet<RestaurantCategory> RestaurantCategories { get; set; }
+        public DbSet<Reservations> Reservations { get; set; }
         
         public Context(DbContextOptions<Context> options) : base(options) { }
 
@@ -110,6 +111,18 @@ namespace Wasla_Backend.Data
                     sa.WithOwner();
                 });
             });
+
+            builder.Entity<RestaurantCategory>(entity =>
+            {
+                entity.OwnsOne(d => d.name, sa =>
+                {
+                    sa.Property(p => p.English).HasColumnName("Name_English");
+                    sa.Property(p => p.Arabic).HasColumnName("Name_Arabic");
+                    sa.WithOwner();
+                });
+            });
+
+
             builder.Entity<Booking>()
                 .HasOne(b => b.serviceDay)
                 .WithMany()

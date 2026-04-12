@@ -1,0 +1,32 @@
+﻿namespace Wasla_Backend.Repositories.Implementation
+{
+    public class ReservationRepository : GenericRepository<Reservations> , IReservationRepository
+    {
+        public ReservationRepository(Context context) : base(context)
+        {
+           
+        }
+
+        public async Task<PagedResult<Reservations>> GetRestaurantReservations(GetGeneralWithPaginationDto<string> dto)
+        {
+            var query = _dbSet
+                .Where(r => r.restaurantId == dto.id && r.status == Status.Pending)
+                .Include(r => r.user)
+                .OrderByDescending(r => r.id)
+                .AsNoTracking();
+
+            return await query.ToPagedResultAsync(dto.PageNumber, dto.PageSize);
+        }
+
+        public async Task<PagedResult<Reservations>> GetResidentReservations(GetGeneralWithPaginationDto<string> dto)
+        {
+            var query = _dbSet
+                .Where(r => r.userId == dto.id)
+                .OrderByDescending(r => r.id)
+                .AsNoTracking()
+                .AsQueryable();
+
+            return await query.ToPagedResultAsync(dto.PageNumber, dto.PageSize);
+        }
+    }
+}
