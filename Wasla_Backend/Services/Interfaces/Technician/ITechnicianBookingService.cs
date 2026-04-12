@@ -10,6 +10,6 @@
         public Task<List<TechnicianBookingOfResident>> technicianBookingOfResidents(string residentId);
         public Task<List<TechnicianBookingOfResident>> GetByResidentIdAndSpecialization(string residentId, TechnicianSpecialty specialization);
 
-        public Task CancelBooking(int bookingId);
+        public Task CancelBooking(int bookingId,bool IsResident);
     }
 }

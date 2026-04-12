@@ -55,10 +55,18 @@
         rideCompleted,
         technicianNewBookingRequest,
         messageReceived,
-            driverCompleteInfoScreen,
+        driverCompleteInfoScreen,
         gymPackageBooked,
         gymPackageExpired,
         gymBookingCancelled,
+        residentCompleteInfoScreen,
+        technicianCompleteInfoScreen,
+        technicianAcceptBooking,
+        technicianRejectBooking,
+            technicianCancelBooking,
+        userTechnicianBookingCancelled,
+        postCommented,
+        postReacted
 
 
 

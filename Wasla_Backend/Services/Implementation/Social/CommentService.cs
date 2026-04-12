@@ -6,22 +6,37 @@
         private readonly DateTimeHelper _dateTimeHelper;
         private readonly IFileService _fileService;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
+        private readonly IPostRepository _postRepository;
+        private readonly IResidentRepository _residentRepository;
 
         public CommentService(
             ICommentRepository commentRepository,
             DateTimeHelper dateTimeHelper,
             IFileService fileService,
-            IFileUrlBuilderService fileUrlBuilderService
+            IFileUrlBuilderService fileUrlBuilderService,
+            IPostRepository postRepository
+            ,
+            IResidentRepository residentRepository
+
         )
         {
             _commentRepository = commentRepository;
             _dateTimeHelper = dateTimeHelper;
             _fileService = fileService;
             _fileUrlBuilderService = fileUrlBuilderService;
+            _postRepository = postRepository;
+            _residentRepository = residentRepository;
         }
 
         public async Task AddComment(AddCommentDto dto)
         {
+            var post = await _postRepository.GetByIdAsync(dto.postId);
+
+            if (post == null)
+                throw new NotFoundException(LocalizationKey.NoPostsFound);
+            var resident = await _residentRepository.GetByIdAsync(dto.userId);
+            if (resident == null)
+                throw new NotFoundException(LocalizationKey.UserNotFound);
             var comment = new Comment
             {
                 content = dto.content,
@@ -38,6 +53,21 @@
 
             await _commentRepository.AddAsync(comment);
             await _commentRepository.SaveChangesAsync();
+            var metadata = new Dictionary<string, string>
+{
+    { "UserName", resident.FullName ?? "User" }
+};
+            var image=_fileUrlBuilderService.GetMediaUrl(resident.ProfilePhoto, MediaType.userImage);
+            var postcomment=string.Concat(dto.postId," , ",comment.id);
+
+            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
+                post.userId, 
+                NotificationType.postCommented,
+                postcomment,
+                image,
+                "en",
+                metadata
+            ));
         }
 
         public async Task UpdateComment(UpdateCommentDto dto)

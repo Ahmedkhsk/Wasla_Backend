@@ -42,9 +42,9 @@ namespace Wasla_Backend.Controllers.Technician
         }
 
         [HttpPut("cancel/{bookingId}")]
-        public async Task<IActionResult> CancelBooking(int bookingId, string lan = "en")
+        public async Task<IActionResult> CancelBooking(int bookingId,bool IsResident, string lan = "en")
         {
-            await _technicianBookingService.CancelBooking(bookingId);
+            await _technicianBookingService.CancelBooking(bookingId,IsResident);
             return Ok(ResponseHelper.Success(LocalizationKey.CancelBookingSuccessfully, lan));
         }
 

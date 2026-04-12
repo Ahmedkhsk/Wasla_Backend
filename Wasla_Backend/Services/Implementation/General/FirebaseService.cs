@@ -4,26 +4,35 @@ namespace Wasla_Backend.Services.Implementation.General
 {
     public class FirebaseService : IFirebaseService
     {
+        private static readonly object _lock = new object();
+
         public FirebaseApp App { get; private set; }
 
         public FirebaseService(IConfiguration configuration)
         {
-            if (FirebaseApp.DefaultInstance == null)
+            lock (_lock)
             {
-                var firebaseSection = configuration.GetSection("Firebase");
-                var firebaseConfig = firebaseSection.Get<FireBaseSettings>();
-                firebaseConfig.Private_key = firebaseConfig.Private_key.Replace("\\n", "\n");
-                var json = JsonSerializer.Serialize(firebaseConfig);
-
-                App = FirebaseApp.Create(new AppOptions()
+                if (FirebaseApp.DefaultInstance == null)
                 {
-                    Credential = GoogleCredential.FromJson(json)
-                });
+                    var firebaseSection = configuration.GetSection("Firebase");
+                    var firebaseConfig = firebaseSection.Get<FireBaseSettings>();
+
+                    firebaseConfig.Private_key =
+                        firebaseConfig.Private_key.Replace("\\n", "\n");
+
+                    var json = JsonSerializer.Serialize(firebaseConfig);
+
+                    App = FirebaseApp.Create(new AppOptions()
+                    {
+                        Credential = GoogleCredential.FromJson(json)
+                    });
+                }
+                else
+                {
+                    App = FirebaseApp.DefaultInstance;
+                }
             }
-            else
-            {
-                App = FirebaseApp.DefaultInstance;
-            }
+
         }
 
         public async Task SubscribeDeviceAsync(string deviceToken, string userId)
@@ -42,13 +51,13 @@ namespace Wasla_Backend.Services.Implementation.General
             await FirebaseMessaging.DefaultInstance.UnsubscribeFromTopicAsync(new List<string> { deviceToken }, allTopic);
         }
 
-        public async Task<string> SendToTopicAsync(string topic, string title, string body,string refrenceId,NotificationType type)
+        public async Task<string> SendToTopicAsync(string topic, string title, string body, string refrenceId, NotificationType type)
         {
             var data = new Dictionary<string, string>();
             data["refrenceId"] = refrenceId;
             data["type"] = ((int)type).ToString();
-            
-            var message = new Message { Topic = topic, Notification = new Notification { Title = title, Body = body },Data=data };
+
+            var message = new Message { Topic = topic, Notification = new Notification { Title = title, Body = body }, Data = data };
             return await FirebaseMessaging.DefaultInstance.SendAsync(message);
         }
 
@@ -57,7 +66,7 @@ namespace Wasla_Backend.Services.Implementation.General
             var data = new Dictionary<string, string>();
             data["refrenceId"] = refrenceId;
             data["type"] = type.ToString();
-            var message = new Message { Token = deviceToken, Notification = new Notification { Title = title, Body = body },Data=data };
+            var message = new Message { Token = deviceToken, Notification = new Notification { Title = title, Body = body }, Data = data };
             return await FirebaseMessaging.DefaultInstance.SendAsync(message);
         }
     }

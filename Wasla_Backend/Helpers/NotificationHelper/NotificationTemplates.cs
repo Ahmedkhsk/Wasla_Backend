@@ -186,6 +186,86 @@ new NotificationTemplate
     TitleEn = "Booking Cancelled ❌",
     BodyEn = "{UserName} cancelled {PackageName} booking"
 },
+new NotificationTemplate
+{
+    Type = NotificationType.residentCompleteInfoScreen,
+
+    TitleAr = "تم إكمال بياناتك 🎉",
+    BodyAr = "تم تسجيل بياناتك بنجاح ويمكنك الآن استخدام جميع خدمات التطبيق",
+
+    TitleEn = "Profile Completed 🎉",
+    BodyEn = "Your profile is complete. You can now use all app features"
+},
+new NotificationTemplate
+{
+    Type = NotificationType.technicianCompleteInfoScreen,
+
+    TitleAr = "تم إكمال بياناتك 🎉",
+    BodyAr = "تم تسجيل بياناتك بنجاح ويمكنك الآن استقبال طلبات الخدمات",
+
+    TitleEn = "Profile Completed 🎉",
+    BodyEn = "Your profile is complete. You can now receive service requests"
+},
+new NotificationTemplate
+{
+    Type = NotificationType.technicianAcceptBooking,
+
+    TitleAr = "تم قبول الحجز ✅",
+    BodyAr = "قام الفني بقبول طلب الخدمة الخاص بك",
+
+    TitleEn = "Booking Accepted ✅",
+    BodyEn = "The technician has accepted your service request"
+},
+new NotificationTemplate
+{
+    Type = NotificationType.technicianRejectBooking,
+
+    TitleAr = "تم رفض الحجز ❌",
+    BodyAr = "قام الفني برفض طلب الخدمة الخاص بك",
+
+    TitleEn = "Booking Rejected ❌",
+    BodyEn = "The technician has rejected your service request"
+},
+new NotificationTemplate
+{
+    Type = NotificationType.userTechnicianBookingCancelled,
+
+    TitleAr = "تم إلغاء الحجز ❌",
+    BodyAr = "تم إلغاء طلب الخدمة الخاص بك",
+
+    TitleEn = "Booking Cancelled ❌",
+    BodyEn = "Your service request has been cancelled"
+},
+new NotificationTemplate
+{
+    Type = NotificationType.technicianCancelBooking,
+
+    TitleAr = "تم إلغاء الحجز ❌",
+    BodyAr = "قام العميل بإلغاء طلب الخدمة",
+
+    TitleEn = "Booking Cancelled ❌",
+    BodyEn = "The customer has cancelled the service request"
+},
+new NotificationTemplate
+{
+    Type = NotificationType.postCommented,
+
+    TitleAr = "تعليق جديد 💬",
+    BodyAr = "{UserName} علّق على منشورك",
+
+    TitleEn = "New Comment 💬",
+    BodyEn = "{UserName} commented on your post"
+},
+new NotificationTemplate
+{
+    Type = NotificationType.postReacted,
+
+    TitleAr = "تفاعل جديد ❤️",
+    BodyAr = "{UserName} تفاعل على منشورك",
+
+    TitleEn = "New Reaction ❤️",
+    BodyEn = "{UserName} reacted to your post"
+},
 
 
 

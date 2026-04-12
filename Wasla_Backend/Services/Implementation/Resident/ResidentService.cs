@@ -52,6 +52,15 @@
 
             _ResidentRepository.Update(resident);
             await _ResidentRepository.SaveChangesAsync();
+            var image = _fileUrlBuilderService.GetMediaUrl(resident.ProfilePhoto, MediaType.userImage);
+            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
+     resident.Id,
+     NotificationType.residentCompleteInfoScreen,
+     resident.Id,
+     image,
+     "en",
+     null
+ ));
         }
 
         public async Task EditProfile(EditProfileDto editProfileDto)

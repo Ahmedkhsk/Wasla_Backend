@@ -37,15 +37,51 @@ namespace Wasla_Backend.Services.Implementation.technican
                 () => _technicianBookingRepository.ChangeBookingStatus(bookingId, TechnicianBookingStatus.Done),
                 booking.BookingDate
             );
+            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
+    booking.ResidentId,
+    NotificationType.technicianAcceptBooking,
+    booking.Id.ToString(),
+    null,
+    "en",
+    null
+));
         }
-        
 
-        public async Task CancelBooking(int bookingId)
+
+        public async Task CancelBooking(int bookingId, bool isResident)
         {
+            var booking = await _technicianBookingRepository.GetByIdAsync(bookingId);
 
-            var affectedRows = await _technicianBookingRepository.ChangeBookingStatus(bookingId, TechnicianBookingStatus.Cancelled);
-            if (affectedRows == 0)
+            if (booking == null)
                 throw new NotFoundException(LocalizationKey.BookingNotFound);
+
+            booking.Status = TechnicianBookingStatus.Cancelled;
+
+            _technicianBookingRepository.Update(booking);
+            await _technicianBookingRepository.SaveChangesAsync();
+
+            if (isResident)
+            {
+                Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
+                    booking.TechnicianId,
+                    NotificationType.technicianCancelBooking,
+                    booking.Id.ToString(),
+                    null,
+                    "en",
+                    null
+                ));
+            }
+            else
+            {
+             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
+                    booking.ResidentId,
+                    NotificationType.userTechnicianBookingCancelled,
+                    booking.Id.ToString(),
+                    null,
+                    "en",
+                    null
+                ));
+            }
         }
 
         public async Task<BookingDetailsForTechnicianDto> GetBookingDetailsForTechnician(int bookingId)
@@ -67,10 +103,24 @@ namespace Wasla_Backend.Services.Implementation.technican
 
         public async Task RejectBooking(int bookingId)
         {
-            
-           var affectedRows= await _technicianBookingRepository.ChangeBookingStatus(bookingId, TechnicianBookingStatus.Rejected);
-            if (affectedRows == 0)
+            var booking = await _technicianBookingRepository.GetByIdAsync(bookingId);
+
+            if (booking == null)
                 throw new NotFoundException(LocalizationKey.BookingNotFound);
+
+            booking.Status = TechnicianBookingStatus.Rejected;
+
+            _technicianBookingRepository.Update(booking);
+            await _technicianBookingRepository.SaveChangesAsync();
+
+            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
+                booking.ResidentId,
+                NotificationType.technicianRejectBooking,
+                booking.Id.ToString(),
+                null,
+                "en",
+                null
+            ));
         }
 
         public async Task<int> RequestBooking(TechnicianBookingRequestDto request)

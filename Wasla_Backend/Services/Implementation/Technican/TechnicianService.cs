@@ -1,6 +1,7 @@
 ﻿
 
 using Wasla_Backend.Helpers.Extensions;
+using Wasla_Backend.Models.technician;
 
 namespace Wasla_Backend.Services.Implementation.technican
 {
@@ -38,6 +39,15 @@ namespace Wasla_Backend.Services.Implementation.technican
             );
             Technician.IsCompleteRegistration = true;
             await _technicianRepository.SaveChangesAsync();
+            var image = _fileUrlBuilderService.GetMediaUrl(Technician.ProfilePhoto, MediaType.userImage);
+            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
+    Technician.Id,
+    NotificationType.technicianCompleteInfoScreen,
+    Technician.Id,
+    image,
+    "en",
+    null
+));
         }
 
         public async Task<TechnicianChartDto> GetChartById(string TechnicianId)
