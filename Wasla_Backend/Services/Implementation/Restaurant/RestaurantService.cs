@@ -89,7 +89,37 @@
             _restaurantRepository.Update(restaurant);
             await _restaurantRepository.SaveChangesAsync();
         }
-   
+        
+        public async Task<PagedResult<GetAllRestaurantsResponse>> GetAll(PaginationParams paginationParams)
+        {
+            var result = await _restaurantRepository.GetAllRestaurants(paginationParams);
+
+            var mappedItems = result.Data.Select(r =>
+            {
+                var mapped = _mapper.Map<GetAllRestaurantsResponse>(r);
+
+                mapped.profile = _fileUrlBuilderService.GetMediaUrl(
+                    r.ProfilePhoto,
+                    MediaType.userImage
+                );
+
+                mapped.gallery = r.images.Select(image => _fileUrlBuilderService.GetMediaUrl(
+                    image,
+                    MediaType.restaurantImage
+                )).ToList();
+
+                return mapped;
+            }).ToList();
+
+            return new PagedResult<GetAllRestaurantsResponse>
+            {
+                Data = mappedItems,
+                PageNumber = result.PageNumber,
+                PageSize = result.PageSize,
+                TotalCount = result.TotalCount
+            };
+        }
+
         
     }
 }

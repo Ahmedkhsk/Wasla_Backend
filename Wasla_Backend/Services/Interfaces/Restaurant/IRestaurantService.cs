@@ -4,5 +4,6 @@
     {
         public Task CompleteProfile(CompleteRegisterRestaurantDto dto);
         public Task UpdateRestaurant(UpdateRestaurantDto dto);
+        public Task<PagedResult<GetAllRestaurantsResponse>> GetAll(PaginationParams paginationParams);
     }
 }
