@@ -129,6 +129,12 @@ namespace Wasla_Backend.Services.Implementation
                     userBase = userBase,
                     details = new AdminGymDetailsDto(gym)
                 },
+                Technician technician => new AdminUserDetailsResponseDto
+                {
+                    role = role.FirstOrDefault(),
+                    userBase = userBase,
+                    details = new AdminTechnicianDetailsDto(technician)
+                },
             };
         }
     }
