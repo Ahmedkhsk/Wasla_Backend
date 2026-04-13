@@ -1512,6 +1512,37 @@
                 ["en"] = "Restaurant not found.",
                 ["ar"] = "المطعم غير موجود."
             },
+
+            [LocalizationKey.RestaurantCreatedSuccessfully] = new()
+            {
+                ["en"] = "Restaurant created successfully.",
+                ["ar"] = "تم إنشاء المطعم بنجاح."
+            },
+
+            [LocalizationKey.RestaurantUpdatedSuccessfully] = new()
+            {
+                ["en"] = "Restaurant updated successfully.",
+                ["ar"] = "تم تحديث بيانات المطعم بنجاح."
+            },
+
+            [LocalizationKey.RestaurantDeletedSuccessfully] = new()
+            {
+                ["en"] = "Restaurant deleted successfully.",
+                ["ar"] = "تم حذف المطعم بنجاح."
+            },
+
+            [LocalizationKey.RestaurantRetrievedSuccessfully] = new()
+            {
+                ["en"] = "Restaurant retrieved successfully.",
+                ["ar"] = "تم جلب بيانات المطعم بنجاح."
+            },
+
+            [LocalizationKey.RestaurantsRetrievedSuccessfully] = new()
+            {
+                ["en"] = "Restaurants retrieved successfully.",
+                ["ar"] = "تم جلب المطاعم بنجاح."
+            },
+
             [LocalizationKey.ReservationStatusChangedSuccessfully] = new()
             {
                 ["en"] = "Reservation status changed successfully.",

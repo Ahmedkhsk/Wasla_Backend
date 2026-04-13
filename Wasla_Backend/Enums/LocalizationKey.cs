@@ -378,6 +378,12 @@
         #region Restaurant
 
         RestaurantNotFound,
+        RestaurantCreatedSuccessfully,
+        RestaurantUpdatedSuccessfully,
+        RestaurantDeletedSuccessfully,
+
+        RestaurantRetrievedSuccessfully,
+        RestaurantsRetrievedSuccessfully,
 
         MenuItemsRetrievedSuccessfully,
         MenuItemCreatedSuccessfully,

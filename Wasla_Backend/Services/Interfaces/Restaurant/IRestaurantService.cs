@@ -3,5 +3,6 @@
     public interface IRestaurantService
     {
         public Task CompleteProfile(CompleteRegisterRestaurantDto dto);
+        public Task UpdateRestaurant(UpdateRestaurantDto dto);
     }
 }

@@ -18,5 +18,11 @@
             return Ok(ResponseHelper.Success(LocalizationKey.ProfileCompletedSuccessfully, dto.lan));
         }
 
+        [HttpPut("UpdateRestaurant")]
+        public async Task<IActionResult> UpdateRestaurant([FromForm] UpdateRestaurantDto dto)
+        {
+            await _restaurantService.UpdateRestaurant(dto);
+            return Ok(ResponseHelper.Success(LocalizationKey.RestaurantUpdatedSuccessfully, dto.lan));
+        }
     }
 }

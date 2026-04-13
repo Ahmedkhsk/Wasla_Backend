@@ -1,6 +1,6 @@
 ﻿namespace Wasla_Backend.DTOs.RestaurantDTOS
 {
-    public class UpdateRestaurantDto
+    public class UpdateRestaurantDto : LanDto
     {
         public string id { get; set; }
         public string name { get; set; }
