@@ -42,15 +42,7 @@
                 { "UserName", user.FullName ?? string.Empty }
             };
 
-            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(
-                x => x.sendNotification(
-                    serviceProviderId,
-                    NotificationType.allFavouritesScreen,
-                    serviceProviderId,
-                    _fileUrlBuilderService.GetMediaUrl(user.ProfilePhoto, MediaType.userImage),
-                    lan,
-                    metadata
-                ));
+           
 
             return new ServiceProviderFavourite
             {
