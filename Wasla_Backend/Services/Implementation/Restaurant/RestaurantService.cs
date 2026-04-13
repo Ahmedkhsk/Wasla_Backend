@@ -56,5 +56,40 @@
             await _restaurantRepository.SaveChangesAsync();
         }
 
+        public async Task UpdateRestaurant(UpdateRestaurantDto dto)
+        {
+            var restaurant = await _restaurantRepository.GetByIdAsync(dto.id);
+
+            if (restaurant == null)
+                throw new NotFoundException(LocalizationKey.UserNotFound);
+
+            var category = await _restaurantCategoryRepo.GetByIdAsync(dto.restaurantCategoryId);
+            if (category == null)
+                throw new NotFoundException(LocalizationKey.RestaurantCategoryNotFound);
+
+            _mapper.Map(dto, restaurant);
+
+            if (dto.profile != null)
+            {
+                restaurant.ProfilePhoto = await _fileService.ReplaceFileAsync(
+                            restaurant.ProfilePhoto,
+                            dto.profile,
+                            _fileUrlBuilderService.GetPath(MediaType.userImage));
+            }
+
+            if (dto.gallery != null)
+            {
+                restaurant.images = await _fileService.ReplaceFilesAsync(
+                            restaurant.images,
+                            null,
+                            dto.gallery,
+                            _fileUrlBuilderService.GetPath(MediaType.restaurantImage));
+            }
+
+            _restaurantRepository.Update(restaurant);
+            await _restaurantRepository.SaveChangesAsync();
+        }
+   
+        
     }
 }

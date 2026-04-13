@@ -17,5 +17,6 @@
             await _restaurantService.CompleteProfile(dto);
             return Ok(ResponseHelper.Success(LocalizationKey.ProfileCompletedSuccessfully, dto.lan));
         }
+
     }
 }
