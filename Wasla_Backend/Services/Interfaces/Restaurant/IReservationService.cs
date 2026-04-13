@@ -7,5 +7,6 @@
         Task ChangeStatus(int reservationId, Status status);
 
         Task<PagedResult<GetReservationsToRestaurantResponse>> GetRestaurantReservations(GetGeneralWithPaginationDto<string> dto);
+        Task<PagedResult<GetReservationsToResidentReponse>> GetResidentReservations(GetGeneralWithPaginationDto<string> dto);
     }
 }

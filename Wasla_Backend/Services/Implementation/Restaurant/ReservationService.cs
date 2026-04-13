@@ -80,5 +80,30 @@
                 TotalCount = result.TotalCount
             };
         }
+
+        public async Task<PagedResult<GetReservationsToResidentReponse>> GetResidentReservations(GetGeneralWithPaginationDto<string> dto)
+        {
+            var result = await _reservationsRepository.GetResidentReservations(dto);
+
+            var mappedItems = result.Data.Select(r =>
+            {
+                var mapped = _mapper.Map<GetReservationsToResidentReponse>(r);
+
+                mapped.restaurantProfile = _fileUrlBuilderService.GetMediaUrl(
+                    r.user.ProfilePhoto,
+                    MediaType.userImage
+                );
+
+                return mapped;
+            }).ToList();
+
+            return new PagedResult<GetReservationsToResidentReponse>
+            {
+                Data = mappedItems,
+                PageNumber = result.PageNumber,
+                PageSize = result.PageSize,
+                TotalCount = result.TotalCount
+            };
+        }
     }
 }

@@ -32,5 +32,12 @@
             return Ok(ResponseHelper.Success(LocalizationKey.ReservationRetrievedSuccessfully, dto.lan, reservations));
         }
 
+        [HttpGet("ResidentReservations")]
+        public async Task<IActionResult> GetResidentReservations([FromQuery] GetGeneralWithPaginationDto<string> dto)
+        {
+            var reservations = await _reservationService.GetResidentReservations(dto);
+            return Ok(ResponseHelper.Success(LocalizationKey.ReservationRetrievedSuccessfully, dto.lan, reservations));
+        }
+
     }
 }

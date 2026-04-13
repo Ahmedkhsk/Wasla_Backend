@@ -22,6 +22,7 @@
         {
             var query = _dbSet
                 .Where(r => r.userId == dto.id)
+                .Include(r => r.restaurants)
                 .OrderByDescending(r => r.id)
                 .AsNoTracking()
                 .AsQueryable();
