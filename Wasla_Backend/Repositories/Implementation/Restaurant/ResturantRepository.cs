@@ -6,7 +6,10 @@
 
     public async Task<PagedResult<Restaurant>> GetAllRestaurants(PaginationParams dto)
     {
-        var query = _dbSet.AsNoTracking().AsQueryable();
+        var query = _dbSet
+                        .Where(r => r.restaurantCategoryId == dto.filterId)
+                        .AsNoTracking()
+                        .AsQueryable();
         
         return await query.ToPagedResultAsync(dto.PageNumber, dto.PageSize);
     }
