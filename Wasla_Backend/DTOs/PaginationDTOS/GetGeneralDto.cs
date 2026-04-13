@@ -2,6 +2,6 @@
 {
     public class GetGeneralDto<T> : LanDto
     {
-        public T Id { get; set; }
+        public T id { get; set; }
     }
 }

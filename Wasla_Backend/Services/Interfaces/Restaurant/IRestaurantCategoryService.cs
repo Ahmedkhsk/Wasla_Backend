@@ -5,6 +5,6 @@
         public Task AddCategory(AddResturentCategoryDto dto);
         public Task UpdateCategory(UpdateResturentCategoryDto dto);
         public Task DeleteCategory(int id);
-        public Task<IEnumerable<RestaurantCategory>> GetAll();
+        public Task<IEnumerable<GetRestaurantCategoriesResponse>> GetAll(string lan);
     }
 }

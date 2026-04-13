@@ -26,7 +26,7 @@
 
         public async Task CompleteProfile(CompleteRegisterRestaurantDto dto)
         {
-            var restaurant = await _restaurantRepository.GetByIdAsync(dto.id);
+            var restaurant = await _restaurantRepository.GetByEmailAsync(dto.email);
 
             if ( restaurant == null )
                 throw new NotFoundException(LocalizationKey.UserNotFound);

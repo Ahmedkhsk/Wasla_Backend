@@ -2,7 +2,8 @@
 {
     public class CompleteRegisterRestaurantDto : LanDto
     {
-        public string id { get; set; }
+        [EmailAddress]
+        public string email { get; set; }
         public string name { get; set; }
         public string description { get; set; }
         public string phoneNumber { get; set; }

@@ -42,9 +42,15 @@
             await _repo.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<RestaurantCategory>> GetAll()
+        public async Task<IEnumerable<GetRestaurantCategoriesResponse>> GetAll(string lan)
         {
-            return await _repo.GetAllAsync();
+            var categories = await _repo.GetAllAsync();
+            
+            return categories.Select(c => new GetRestaurantCategoriesResponse
+            {
+                id = c.id,
+                name = c.name.GetText(lan)
+            });
         }
 
     }

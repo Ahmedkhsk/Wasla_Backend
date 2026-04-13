@@ -73,7 +73,7 @@
         [HttpGet("UserProfile")]
         public async Task<IActionResult> GetUserProfile([FromQuery] GetGeneralDto<string> dto)
         {
-            var result = await _chatService.GetUserProfile(dto.Id);
+            var result = await _chatService.GetUserProfile(dto.id);
             return Ok(ResponseHelper.Success(LocalizationKey.SuccessToGetUserProfile, dto.lan, result));
         }
 

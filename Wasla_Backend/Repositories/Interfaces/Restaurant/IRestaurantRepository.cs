@@ -3,6 +3,6 @@
     public interface IRestaurantRepository: IGenericRepository<Restaurant>
     {
         public Task<PagedResult<Restaurant>> GetAllRestaurants(PaginationParams dto);
-
+        public Task<Restaurant> GetByEmailAsync(string email);
     }
 }

@@ -25,18 +25,18 @@
             return Ok(ResponseHelper.Success(LocalizationKey.RestaurantCategoryUpdatedSuccessfully, dto.lan));
         }
 
-        [HttpDelete("Category/{id}")]
-        public async Task<IActionResult> DeleteCategory(int id, [FromQuery] string lan = "en")
+        [HttpDelete("Category")]
+        public async Task<IActionResult> DeleteCategory([FromQuery] GetGeneralDto<int> dto)
         {
-            await _restaurantCategoryService.DeleteCategory(id);
-            return Ok(ResponseHelper.Success(LocalizationKey.RestaurantCategoryDeletedSuccessfully, lan));
+            await _restaurantCategoryService.DeleteCategory(dto.id);
+            return Ok(ResponseHelper.Success(LocalizationKey.RestaurantCategoryDeletedSuccessfully, dto.lan));
         }
 
         [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAll(string lan = "en")
+        public async Task<IActionResult> GetAll(LanDto lanDto)
         {
-            var categories = await _restaurantCategoryService.GetAll();
-            return Ok(ResponseHelper.Success(LocalizationKey.RestaurantCategoriesRetrievedSuccessfully,lan, categories));
+            var categories = await _restaurantCategoryService.GetAll(lanDto.lan);
+            return Ok(ResponseHelper.Success(LocalizationKey.RestaurantCategoriesRetrievedSuccessfully, lanDto.lan, categories));
         }
     }
 }
