@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Services.Implementation
+﻿using Wasla_Backend.DTOs.PaginationDTOS;
+
+namespace Wasla_Backend.Services.Implementation
 {
     public class RestaurantService : IRestaurantService
     {
@@ -11,10 +13,10 @@
 
         public RestaurantService
             (
-            IRestaurantRepository restaurantRepository,IUserRepository userRepository,
-            IFileService fileService,IMapper mapper,IFileUrlBuilderService fileUrlBuilderService,
+            IRestaurantRepository restaurantRepository, IUserRepository userRepository,
+            IFileService fileService, IMapper mapper, IFileUrlBuilderService fileUrlBuilderService,
             IGenericRepository<RestaurantCategory> restaurantCategoryRepo
-            ) 
+            )
         {
             _restaurantRepository = restaurantRepository;
             _userRepository = userRepository;
@@ -22,13 +24,13 @@
             _mapper = mapper;
             _fileUrlBuilderService = fileUrlBuilderService;
             _restaurantCategoryRepo = restaurantCategoryRepo;
-        }  
+        }
 
         public async Task CompleteProfile(CompleteRegisterRestaurantDto dto)
         {
             var restaurant = await _restaurantRepository.GetByEmailAsync(dto.email);
 
-            if ( restaurant == null )
+            if (restaurant == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
 
             var category = await _restaurantCategoryRepo.GetByIdAsync(dto.restaurantCategoryId);
@@ -44,7 +46,7 @@
                             _fileUrlBuilderService.GetPath(MediaType.userImage));
             }
 
-            if(dto.gallery !=null)
+            if (dto.gallery != null)
             {
                 restaurant.images = await _fileService.AddFilesAsync(
                             dto.gallery,
@@ -77,19 +79,19 @@
                             _fileUrlBuilderService.GetPath(MediaType.userImage));
             }
 
-            if (dto.gallery != null)
+            if (dto.files.newFiles != null)
             {
                 restaurant.images = await _fileService.ReplaceFilesAsync(
                             restaurant.images,
-                            null,
-                            dto.gallery,
+                            dto.files.existingFiles,
+                            dto.files.newFiles,
                             _fileUrlBuilderService.GetPath(MediaType.restaurantImage));
             }
 
             _restaurantRepository.Update(restaurant);
             await _restaurantRepository.SaveChangesAsync();
         }
-        
+
         public async Task<PagedResult<GetAllRestaurantsResponse>> GetAll(PaginationParams paginationParams)
         {
             var result = await _restaurantRepository.GetAllRestaurants(paginationParams);
@@ -119,6 +121,27 @@
                 TotalCount = result.TotalCount
             };
         }
-        
+
+        public async Task<GetRestaurantResponse> GetRestaurant(GetGeneralDto<string> dto)
+        {
+            var restaurant = await _restaurantRepository.GetByUserIdAsync(dto.id);
+            if (restaurant == null)
+                throw new NotFoundException(LocalizationKey.UserNotFound);
+            
+            var mapped = _mapper.Map<GetRestaurantResponse>(restaurant, opt =>
+            {
+                opt.Items["lang"] = dto.lan;
+            });
+
+            mapped.profile = _fileUrlBuilderService.GetMediaUrl(
+                restaurant.ProfilePhoto,
+                MediaType.userImage
+            );
+            mapped.gallery = restaurant.images.Select(image => _fileUrlBuilderService.GetMediaUrl(
+                image,
+                MediaType.restaurantImage
+            )).ToList();
+            return mapped;
+        }
     }
 }

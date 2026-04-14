@@ -19,5 +19,9 @@
         return await _dbSet.FirstOrDefaultAsync(r => r.Email == email);
     }
 
+    public async Task<Restaurant> GetByUserIdAsync(string userId)
+    {
+        return await _dbSet.Include(r => r.restaurantCategory).FirstOrDefaultAsync(r => r.Id == userId);
+    }
 
 }

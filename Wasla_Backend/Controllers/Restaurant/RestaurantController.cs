@@ -31,5 +31,12 @@
             var restaurants = await _restaurantService.GetAll(dto);
             return Ok(ResponseHelper.Success(LocalizationKey.RestaurantsRetrievedSuccessfully, dto.lan, restaurants));
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetRestaurant([FromQuery] GetGeneralDto<string> dto)
+        {
+            var restaurant = await _restaurantService.GetRestaurant(dto);
+            return Ok(ResponseHelper.Success(LocalizationKey.RestaurantRetrievedSuccessfully, dto.lan, restaurant));
+        }
     }
 }

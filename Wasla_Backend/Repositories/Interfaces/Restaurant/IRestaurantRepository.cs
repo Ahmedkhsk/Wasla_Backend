@@ -4,5 +4,6 @@
     {
         public Task<PagedResult<Restaurant>> GetAllRestaurants(PaginationParams dto);
         public Task<Restaurant> GetByEmailAsync(string email);
+        public Task<Restaurant> GetByUserIdAsync(string userId);
     }
 }

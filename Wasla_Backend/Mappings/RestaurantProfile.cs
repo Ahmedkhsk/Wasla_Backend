@@ -28,6 +28,19 @@
                 .ForMember(dest => dest.profile, opt => opt.Ignore())
                 .ForMember(dest => dest.gallery, opt => opt.Ignore());
 
+            CreateMap<Restaurant, GetRestaurantResponse>()
+                .ForMember(dest => dest.id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.email, opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.name, opt => opt.MapFrom(src => src.BusinessName))
+                .ForMember(dest => dest.ownerName, opt => opt.MapFrom(src => src.FullName))
+                .ForMember(dest => dest.description, opt => opt.MapFrom(src => src.Description))
+                .ForMember(dest => dest.phoneNumber, opt => opt.MapFrom(src => src.Phone))
+                .ForMember(dest => dest.restaurantCategoryId, opt => opt.MapFrom(src => src.restaurantCategoryId))
+                .ForMember(dest => dest.restaurantCategoryName, opt => opt.MapFrom((src, dest, destMember, context) =>
+                    src.restaurantCategory.name.GetText(context.Items["lang"].ToString())
+                ))
+                .ForMember(dest => dest.profile, opt => opt.Ignore())
+                .ForMember(dest => dest.gallery, opt => opt.Ignore());
         }
     }
 }

@@ -57,14 +57,14 @@
             if (post == null)
                 throw new NotFoundException(LocalizationKey.PostNotFound);
 
-            var existingFileNames = _fileService.ExtractFileNames(dto.existingFiles);
+            var existingFileNames = _fileService.ExtractFileNames(dto.files.existingFiles);
 
             _mapper.Map(dto, post);
 
             post.files = await _fileService.ReplaceFilesAsync(
                 post.files,
                 existingFileNames,
-                dto.newFiles,
+                dto.files.newFiles,
                 _fileUrlBuilderService.GetPath(MediaType.postFile)
             );
 
