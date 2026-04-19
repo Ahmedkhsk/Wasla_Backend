@@ -67,6 +67,8 @@
             if (category == null)
                 throw new NotFoundException(LocalizationKey.RestaurantCategoryNotFound);
 
+            var existingFileNames = _fileService.ExtractFileNames(dto.files.existingFiles);
+
             _mapper.Map(dto, restaurant);
 
             if (dto.profile != null)
@@ -81,7 +83,7 @@
             {
                 restaurant.images = await _fileService.ReplaceFilesAsync(
                             restaurant.images,
-                            dto.files.existingFiles,
+                            existingFileNames,
                             dto.files.newFiles,
                             _fileUrlBuilderService.GetPath(MediaType.restaurantImage));
             }

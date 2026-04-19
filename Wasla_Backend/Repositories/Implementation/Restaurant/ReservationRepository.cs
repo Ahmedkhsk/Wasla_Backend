@@ -10,7 +10,7 @@
         public async Task<PagedResult<Reservations>> GetRestaurantReservations(GetGeneralWithPaginationDto<string> dto)
         {
             var query = _dbSet
-                .Where(r => r.restaurantId == dto.id && r.status == Status.Pending)
+                .Where(r => r.restaurantId == dto.id)
                 .Include(r => r.user)
                 .OrderByDescending(r => r.id)
                 .AsNoTracking();

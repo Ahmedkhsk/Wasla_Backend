@@ -6,7 +6,8 @@
         {
             CreateMap<AddPostDto, Post>();
 
-            CreateMap<UpdatePostDto, Post>();
+            CreateMap<UpdatePostDto, Post>()
+                .ForMember(dest => dest.files, opt => opt.Ignore());
         }
     }
 }
