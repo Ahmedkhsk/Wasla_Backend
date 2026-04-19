@@ -1,6 +1,4 @@
-﻿using Wasla_Backend.Enums;
-
-namespace Wasla_Backend.Exceptions
+﻿namespace Wasla_Backend.Exceptions
 {
     public class BadRequestException : Exception
     {
@@ -31,4 +29,6 @@ namespace Wasla_Backend.Exceptions
             Key = key;
         }
     }
+
+
 }

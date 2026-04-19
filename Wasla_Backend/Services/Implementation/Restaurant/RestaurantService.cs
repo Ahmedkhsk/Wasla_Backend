@@ -1,6 +1,4 @@
-﻿using Wasla_Backend.DTOs.PaginationDTOS;
-
-namespace Wasla_Backend.Services.Implementation
+﻿namespace Wasla_Backend.Services.Implementation
 {
     public class RestaurantService : IRestaurantService
     {
@@ -92,7 +90,7 @@ namespace Wasla_Backend.Services.Implementation
             await _restaurantRepository.SaveChangesAsync();
         }
 
-        public async Task<PagedResult<GetAllRestaurantsResponse>> GetAll(PaginationParams paginationParams)
+        public async Task<PagedResult<GetAllRestaurantsResponse>> GetAll(GetGeneralWithPaginationDto<int> paginationParams)
         {
             var result = await _restaurantRepository.GetAllRestaurants(paginationParams);
 

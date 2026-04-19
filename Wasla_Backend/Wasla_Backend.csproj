@@ -39,7 +39,6 @@
   <ItemGroup>
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="wwwroot\assets\cv\doctor\" />
-    <Folder Include="wwwroot\assets\images\user\" />
     <Folder Include="wwwroot\assets\ai\models\" />
   </ItemGroup>
 

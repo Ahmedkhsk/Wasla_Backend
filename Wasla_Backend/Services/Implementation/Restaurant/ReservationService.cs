@@ -90,7 +90,7 @@
                 var mapped = _mapper.Map<GetReservationsToResidentReponse>(r);
 
                 mapped.restaurantProfile = _fileUrlBuilderService.GetMediaUrl(
-                    r.user.ProfilePhoto,
+                    r.restaurants.ProfilePhoto,
                     MediaType.userImage
                 );
 

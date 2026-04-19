@@ -1,6 +1,6 @@
 ﻿namespace Wasla_Backend.DTOs.RestaurantDTOS
 {
-    public class AddReservationDto : LanDto
+    public class AddReservationDto
     {
         public string userId { get; set; }
         public string restaurantId { get; set; }

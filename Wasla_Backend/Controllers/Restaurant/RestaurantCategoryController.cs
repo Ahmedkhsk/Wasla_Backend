@@ -12,17 +12,17 @@
         }
 
         [HttpPost("Category")]
-        public async Task<IActionResult> AddCategory(AddResturentCategoryDto dto)
+        public async Task<IActionResult> AddCategory(AddResturentCategoryDto dto, [FromQuery] LanDto lanDto)
         {
             await _restaurantCategoryService.AddCategory(dto);
-            return Ok(ResponseHelper.Success(LocalizationKey.RestaurantCategoryCreatedSuccessfully, dto.lan));
+            return Ok(ResponseHelper.Success(LocalizationKey.RestaurantCategoryCreatedSuccessfully, lanDto.lan));
         }
 
         [HttpPut("Category")]
-        public async Task<IActionResult> UpdateCategory(UpdateResturentCategoryDto dto)
+        public async Task<IActionResult> UpdateCategory(UpdateResturentCategoryDto dto , [FromQuery] LanDto lanDto)
         {
             await _restaurantCategoryService.UpdateCategory(dto);
-            return Ok(ResponseHelper.Success(LocalizationKey.RestaurantCategoryUpdatedSuccessfully, dto.lan));
+            return Ok(ResponseHelper.Success(LocalizationKey.RestaurantCategoryUpdatedSuccessfully, lanDto.lan));
         }
 
         [HttpDelete("Category")]
@@ -33,7 +33,7 @@
         }
 
         [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAll(LanDto lanDto)
+        public async Task<IActionResult> GetAll([FromQuery] LanDto lanDto)
         {
             var categories = await _restaurantCategoryService.GetAll(lanDto.lan);
             return Ok(ResponseHelper.Success(LocalizationKey.RestaurantCategoriesRetrievedSuccessfully, lanDto.lan, categories));

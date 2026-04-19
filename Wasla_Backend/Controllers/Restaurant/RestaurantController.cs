@@ -26,7 +26,7 @@
         }
 
         [HttpGet("Restaurants")]
-        public async Task<IActionResult> GetRestaurants([FromQuery] GetGeneralWithPaginationDto<string> dto)
+        public async Task<IActionResult> GetRestaurants([FromQuery] GetGeneralWithPaginationDto<int> dto)
         {
             var restaurants = await _restaurantService.GetAll(dto);
             return Ok(ResponseHelper.Success(LocalizationKey.RestaurantsRetrievedSuccessfully, dto.lan, restaurants));

@@ -15,6 +15,5 @@
         }
 
         public string? search { get; set; }
-        public int? filterId { get; set; }
     }
 }

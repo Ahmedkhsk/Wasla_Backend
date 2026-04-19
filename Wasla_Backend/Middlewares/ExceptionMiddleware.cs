@@ -36,6 +36,7 @@
 
             HttpStatusCode statusCode;
             LocalizationKey key;
+            object? data = null;
 
             switch (ex)
             {
@@ -57,12 +58,18 @@
                 default:
                     statusCode = HttpStatusCode.InternalServerError;
                     key = LocalizationKey.ServerError;
+
+                    data = new
+                    {
+                        error = ex.Message,
+                        stackTrace = ex.StackTrace
+                    };
                     break;
             }
 
             context.Response.StatusCode = (int)statusCode;
 
-            var response = ResponseHelper.Fail(key, lan);
+            var response = ResponseHelper.Fail(key, lan, data);
 
             var json = JsonSerializer.Serialize(response, new JsonSerializerOptions
             {

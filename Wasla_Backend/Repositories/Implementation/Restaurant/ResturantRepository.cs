@@ -4,12 +4,14 @@
     {
     }
 
-    public async Task<PagedResult<Restaurant>> GetAllRestaurants(PaginationParams dto)
+    public async Task<PagedResult<Restaurant>> GetAllRestaurants(GetGeneralWithPaginationDto<int> dto)
     {
         var query = _dbSet
-                        .Where(r => r.restaurantCategoryId == dto.filterId)
                         .AsNoTracking()
                         .AsQueryable();
+        
+        if(dto.id != 0)
+            query = query.Where(r => r.restaurantCategoryId == dto.id);
         
         return await query.ToPagedResultAsync(dto.PageNumber, dto.PageSize);
     }

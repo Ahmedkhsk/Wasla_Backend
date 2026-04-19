@@ -12,10 +12,10 @@
         }
 
         [HttpPost("Reservation")]
-        public async Task<IActionResult> AddReservation(AddReservationDto dto)
+        public async Task<IActionResult> AddReservation(AddReservationDto dto, [FromQuery] LanDto lanDto)
         {
             await _reservationService.AddReservatio(dto);
-            return Ok(ResponseHelper.Success(LocalizationKey.ReservationCreatedSuccessfully, dto.lan));
+            return Ok(ResponseHelper.Success(LocalizationKey.ReservationCreatedSuccessfully, lanDto.lan));
         }
 
         [HttpPut("ChangeStatus")]
