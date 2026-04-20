@@ -12,6 +12,11 @@
                     src.category.name.GetText(context.Items["lang"].ToString())
                 ));
 
+            CreateMap<MenuItem, ItemResponse>()
+                 .ForMember(dest => dest.name, opt => opt.MapFrom((src, dest, destMember, context) =>
+                    src.name.GetText(context.Items["lang"].ToString())
+                ));
+
             CreateMap<AddMenuItemDto, MenuItem>()
                 .ForMember(dest => dest.imageUrl, opt => opt.Ignore());
             

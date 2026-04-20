@@ -3,5 +3,6 @@
     public interface IMenuItemRepository : IGenericRepository<MenuItem>
     {
         public Task<PagedResult<MenuItem>> GetMenuItemsByRestaurantIdAsync(GetGeneralWithPaginationDto<string> dto);
+        public Task<List<MenuItem>> GetMenuItemsByRestaurantIdAsync(GetGeneralDto<string> dto);
     }
 }

@@ -8,5 +8,6 @@
 
         Task DeleteItem(int id);
         Task<PagedResult<GetMenuItemDto>> GetMenuItemsByRestaurantIdAsync(GetGeneralWithPaginationDto<string> dto);
+        Task<List<GetItemsbyCategoryResponse>> GetMenuItemsByCategoryAsync(GetGeneralDto<string> dto);
     }
 }

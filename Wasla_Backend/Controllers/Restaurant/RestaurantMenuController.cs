@@ -68,5 +68,12 @@
             var menuItems = await _menuItemService.GetMenuItemsByRestaurantIdAsync(dto);
             return Ok(ResponseHelper.Success(LocalizationKey.MenuItemsRetrievedSuccessfully, dto.lan, menuItems));
         }
+
+        [HttpGet("ItemsByCategory")]
+        public async Task<IActionResult> GetMenuItemsByCategory([FromQuery] GetGeneralDto<string> dto)
+        {
+            var menuItems = await _menuItemService.GetMenuItemsByCategoryAsync(dto);
+            return Ok(ResponseHelper.Success(LocalizationKey.MenuItemsRetrievedSuccessfully, dto.lan, menuItems));
+        }
     }
 }

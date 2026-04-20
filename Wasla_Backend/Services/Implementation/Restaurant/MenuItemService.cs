@@ -75,7 +75,7 @@
 
         public async Task<PagedResult<GetMenuItemDto>> GetMenuItemsByRestaurantIdAsync(GetGeneralWithPaginationDto<string> dto)
         {
-            var Items =  await _menuItemRepository.GetMenuItemsByRestaurantIdAsync(dto);
+            var Items = await _menuItemRepository.GetMenuItemsByRestaurantIdAsync(dto);
 
             var dataMapped = Items.Data.Select(item =>
             {
@@ -94,6 +94,27 @@
                 PageSize = Items.PageSize,
                 TotalCount = Items.TotalCount
             };
+        }
+
+        public async Task<List<GetItemsbyCategoryResponse>> GetMenuItemsByCategoryAsync(GetGeneralDto<string> dto)
+        {
+           var items = await _menuItemRepository.GetMenuItemsByRestaurantIdAsync(dto);
+            var groupedItems = items.GroupBy(i => i.category).Select(g => new GetItemsbyCategoryResponse
+            {
+                categoryId = g.Key.id,
+                categoryName = g.Key.name.GetText(dto.lan),
+
+                items = g.Select(item =>
+                {
+                    var itemMapped = _mapper.Map<ItemResponse>(item, opt =>
+                    {
+                        opt.Items["lang"] = dto.lan;
+                    });
+                    itemMapped.imageUrl = _fileUrlBuilderService.GetMediaUrl(item.imageUrl, MediaType.restaurantImage);
+                    return itemMapped;
+                }).ToList()
+            }).ToList();
+            return groupedItems;
         }
     }
 }
