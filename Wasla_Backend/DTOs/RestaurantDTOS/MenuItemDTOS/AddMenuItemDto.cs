@@ -8,6 +8,6 @@
         public IFormFile imageUrl { get; set; }
         public int? preparationTime { get; set; }
         public string restaurantId { get; set; }
-        public int? categoryId { get; set; }
+        public int categoryId { get; set; }
     }
 }

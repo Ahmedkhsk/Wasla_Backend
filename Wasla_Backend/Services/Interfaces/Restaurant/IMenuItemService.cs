@@ -2,5 +2,10 @@
 {
     public interface IMenuItemService
     {
+        Task AddItem(AddMenuItemDto dto);
+
+        Task UpdateItem(UpdateMenuItemDto dto);
+
+        Task DeleteItem(int id);
     }
 }
