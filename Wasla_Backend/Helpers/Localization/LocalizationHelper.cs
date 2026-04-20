@@ -1750,8 +1750,86 @@
                 ["ar"] = "تم إكمال الملف الشخصي بنجاح."
             },
             #endregion
+            
+            #region MenuItemCategory
 
+            [LocalizationKey.MenuItemCategoryCreatedSuccessfully] = new()
+            {
+                ["en"] = "Menu item category created successfully.",
+                ["ar"] = "تم إنشاء تصنيف العناصر بنجاح."
+            },
 
+            [LocalizationKey.MenuItemCategoryUpdatedSuccessfully] = new()
+            {
+                ["en"] = "Menu item category updated successfully.",
+                ["ar"] = "تم تحديث تصنيف العناصر بنجاح."
+            },
+
+            [LocalizationKey.MenuItemCategoryDeletedSuccessfully] = new()
+            {
+                ["en"] = "Menu item category deleted successfully.",
+                ["ar"] = "تم حذف تصنيف العناصر بنجاح."
+            },
+
+            [LocalizationKey.MenuItemCategoryRetrievedSuccessfully] = new()
+            {
+                ["en"] = "Menu item category retrieved successfully.",
+                ["ar"] = "تم جلب تصنيف العناصر بنجاح."
+            },
+
+            [LocalizationKey.MenuItemCategoriesRetrievedSuccessfully] = new()
+            {
+                ["en"] = "Menu item categories retrieved successfully.",
+                ["ar"] = "تم جلب تصنيفات العناصر بنجاح."
+            },
+
+            [LocalizationKey.MenuItemCategoryNotFound] = new()
+            {
+                ["en"] = "Menu item category not found.",
+                ["ar"] = "تصنيف العناصر غير موجود."
+            },
+
+            #endregion
+            
+            #region MenuItem
+
+            [LocalizationKey.MenuItemCreatedSuccessfully] = new()
+            {
+                ["en"] = "Menu item created successfully.",
+                ["ar"] = "تم إنشاء العنصر بنجاح."
+            },
+
+            [LocalizationKey.MenuItemUpdatedSuccessfully] = new()
+            {
+                ["en"] = "Menu item updated successfully.",
+                ["ar"] = "تم تحديث العنصر بنجاح."
+            },
+
+            [LocalizationKey.MenuItemDeletedSuccessfully] = new()
+            {
+                ["en"] = "Menu item deleted successfully.",
+                ["ar"] = "تم حذف العنصر بنجاح."
+            },
+
+            [LocalizationKey.MenuItemRetrievedSuccessfully] = new()
+            {
+                ["en"] = "Menu item retrieved successfully.",
+                ["ar"] = "تم جلب العنصر بنجاح."
+            },
+
+            [LocalizationKey.MenuItemsRetrievedSuccessfully] = new()
+            {
+                ["en"] = "Menu items retrieved successfully.",
+                ["ar"] = "تم جلب العناصر بنجاح."
+            },
+
+            [LocalizationKey.MenuItemNotFound] = new()
+            {
+                ["en"] = "Menu item not found.",
+                ["ar"] = "العنصر غير موجود."
+            },
+
+            #endregion
         };
 
         public static string GetLocalizedMessage(LocalizationKey key, string lan)

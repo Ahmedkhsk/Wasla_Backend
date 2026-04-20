@@ -37,7 +37,10 @@ namespace Wasla_Backend.Data
         public DbSet<TechnicianBooking> TechnicianBookings { get; set; }
         public DbSet<RestaurantCategory> RestaurantCategories { get; set; }
         public DbSet<Reservations> Reservations { get; set; }
-        
+        public DbSet<MenuItemCategory> MenuItemCategories { get; set; }
+        public DbSet<MenuItem> MenuItems { get; set; }
+
+
         public Context(DbContextOptions<Context> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -122,6 +125,25 @@ namespace Wasla_Backend.Data
                 });
             });
 
+            builder.Entity<MenuItem>(entity =>
+            {
+                entity.OwnsOne(d => d.name, sa =>
+                {
+                    sa.Property(p => p.English).HasColumnName("Name_English");
+                    sa.Property(p => p.Arabic).HasColumnName("Name_Arabic");
+                    sa.WithOwner();
+                });
+            });
+
+            builder.Entity<MenuItemCategory>(entity =>
+            {
+                entity.OwnsOne(d => d.name, sa =>
+                {
+                    sa.Property(p => p.English).HasColumnName("Name_English");
+                    sa.Property(p => p.Arabic).HasColumnName("Name_Arabic");
+                    sa.WithOwner();
+                });
+            });
 
             builder.Entity<Booking>()
                 .HasOne(b => b.serviceDay)
@@ -184,5 +206,6 @@ namespace Wasla_Backend.Data
             builder.Entity<Notification>().HasQueryFilter(n => !n.IsDeleted);
         
         }
+    
     }
 }

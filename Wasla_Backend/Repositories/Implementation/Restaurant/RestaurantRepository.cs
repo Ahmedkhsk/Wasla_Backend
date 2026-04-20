@@ -1,6 +1,6 @@
-﻿public class ResturantRepository : GenericRepository<Restaurant>, IRestaurantRepository
+﻿public class RestaurantRepository : GenericRepository<Restaurant>, IRestaurantRepository
 {
-    public ResturantRepository(Context context) : base(context)
+    public RestaurantRepository(Context context) : base(context)
     {
     }
 

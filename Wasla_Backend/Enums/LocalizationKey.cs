@@ -430,5 +430,21 @@
 
         ProfileCompletedSuccessfully,
         #endregion
+
+        #region MenuItemCategory
+
+        MenuItemCategoryCreatedSuccessfully,
+        MenuItemCategoryUpdatedSuccessfully,
+        MenuItemCategoryDeletedSuccessfully,
+        MenuItemCategoryRetrievedSuccessfully,
+        MenuItemCategoriesRetrievedSuccessfully,
+        MenuItemCategoryNotFound,
+
+        #endregion
+
+        #region MenuItem
+        MenuItemRetrievedSuccessfully,
+        MenuItemNotFound,
+        #endregion
     }
 }

@@ -14,5 +14,8 @@
             get => gallery == null ? new List<string>() : JsonSerializer.Deserialize<List<string>>(gallery);
             set => gallery = JsonSerializer.Serialize(value);
         }
+
+        public ICollection<MenuItem> items { get; set; }
+        public ICollection<MenuItemCategory> categories { get; set; }
     }
 }
