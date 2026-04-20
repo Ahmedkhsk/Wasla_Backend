@@ -7,7 +7,7 @@
         private readonly IFileService _fileService;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly IPostRepository _postRepository;
-        private readonly IResidentRepository _residentRepository;
+        private readonly IGenericRepository<ApplicationUser> _UserRepository;
 
         public CommentService(
             ICommentRepository commentRepository,
@@ -16,7 +16,7 @@
             IFileUrlBuilderService fileUrlBuilderService,
             IPostRepository postRepository
             ,
-            IResidentRepository residentRepository
+            IGenericRepository<ApplicationUser> UserRepository
 
         )
         {
@@ -25,7 +25,7 @@
             _fileService = fileService;
             _fileUrlBuilderService = fileUrlBuilderService;
             _postRepository = postRepository;
-            _residentRepository = residentRepository;
+            _UserRepository = UserRepository;
         }
 
         public async Task AddComment(AddCommentDto dto)
@@ -34,7 +34,7 @@
 
             if (post == null)
                 throw new NotFoundException(LocalizationKey.NoPostsFound);
-            var resident = await _residentRepository.GetByIdAsync(dto.userId);
+            var resident = await _UserRepository.GetByIdAsync(dto.userId);
             if (resident == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
             var comment = new Comment

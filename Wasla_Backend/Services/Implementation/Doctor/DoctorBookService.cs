@@ -223,7 +223,7 @@ namespace Wasla_Backend.Services.Implementation
                 var metadata = new Dictionary<string, string>
 {
     { "UserName", user.FullName ?? "User" },
-    { "Date", booking.bookingDate.ToString("dddd hh:mm tt") }
+    { "Date", dto.bookingDate.ToString() }
 };
 
                 var image = _fileUrlBuilderService.GetMediaUrl(user.ProfilePhoto, MediaType.userImage);
