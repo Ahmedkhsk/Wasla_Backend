@@ -61,5 +61,12 @@
             await _menuItemService.DeleteItem(dto.id);
             return Ok(ResponseHelper.Success(LocalizationKey.MenuItemDeletedSuccessfully, dto.lan));
         }
+
+        [HttpGet("Items")]
+        public async Task<IActionResult> GetMenuItemsByRestaurantId([FromQuery] GetGeneralWithPaginationDto<string> dto)
+        {
+            var menuItems = await _menuItemService.GetMenuItemsByRestaurantIdAsync(dto);
+            return Ok(ResponseHelper.Success(LocalizationKey.MenuItemsRetrievedSuccessfully, dto.lan, menuItems));
+        }
     }
 }

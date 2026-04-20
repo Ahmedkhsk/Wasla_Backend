@@ -7,5 +7,6 @@
         Task UpdateItem(UpdateMenuItemDto dto);
 
         Task DeleteItem(int id);
+        Task<PagedResult<GetMenuItemDto>> GetMenuItemsByRestaurantIdAsync(GetGeneralWithPaginationDto<string> dto);
     }
 }

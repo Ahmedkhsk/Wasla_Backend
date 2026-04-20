@@ -73,5 +73,27 @@
             await _menuItemRepository.SaveChangesAsync();
         }
 
+        public async Task<PagedResult<GetMenuItemDto>> GetMenuItemsByRestaurantIdAsync(GetGeneralWithPaginationDto<string> dto)
+        {
+            var Items =  await _menuItemRepository.GetMenuItemsByRestaurantIdAsync(dto);
+
+            var dataMapped = Items.Data.Select(item =>
+            {
+                var itemMapped = _mapper.Map<GetMenuItemDto>(item, opt =>
+                {
+                    opt.Items["lang"] = dto.lan;
+                });
+                itemMapped.imageUrl = _fileUrlBuilderService.GetMediaUrl(item.imageUrl, MediaType.restaurantImage);
+                return itemMapped;
+            }).ToList();
+
+            return new PagedResult<GetMenuItemDto>
+            {
+                Data = dataMapped,
+                PageNumber = Items.PageNumber,
+                PageSize = Items.PageSize,
+                TotalCount = Items.TotalCount
+            };
+        }
     }
 }
