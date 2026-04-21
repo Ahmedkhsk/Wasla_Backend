@@ -10,5 +10,6 @@
         public MultilingualText serviceName { get; set; }
         public GymBookingStatus bookingStatus { get; set; }
         public bool IsPaid { get; set; }
+        public string QrCode { get; set; }
     }
 }
