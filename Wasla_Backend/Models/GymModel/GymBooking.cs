@@ -16,6 +16,7 @@
         public GymBookingStatus BookingStatus { get; set; } = GymBookingStatus.PaymentPending;
         public DateTime BookingDate { get; set; } = DateTime.UtcNow;
         public GymServiceType GymServiceType { get; set; }
+        public string QrCode {  get; set; }
 
 
     }

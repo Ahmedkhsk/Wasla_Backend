@@ -59,7 +59,8 @@
          serviceName = b.Service.Name,
          DurationInMonths = b.Service.DurationInMonths,
          bookingStatus = b.BookingStatus,
-         IsPaid = b.IsPaid
+         IsPaid = b.IsPaid,
+         QrCode=b.QrCode
      })
      .ToListAsync();
 
@@ -79,7 +80,8 @@
                     serviceName = b.Service.Name,
                     DurationInMonths = b.Service.DurationInMonths,
                     bookingStatus = b.BookingStatus,
-                    IsPaid = b.IsPaid
+                    IsPaid = b.IsPaid,
+                    QrCode=b.QrCode
                 }).ToListAsync();
         }
 

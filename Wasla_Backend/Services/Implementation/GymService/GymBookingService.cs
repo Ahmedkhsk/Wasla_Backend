@@ -80,8 +80,7 @@ namespace Wasla_Backend.Services.Implementation.GymService
             gymBooking.ServiceProviderType = ServiceProviderType.Gym;
             gymBooking.Service = service;
 
-            await _gymBookingRepository.AddAsync(gymBooking);
-            await _gymBookingRepository.SaveChangesAsync();
+         
 
             var QrData = new QrCodeDto
             {
@@ -96,7 +95,11 @@ namespace Wasla_Backend.Services.Implementation.GymService
             };
 
             var qrcode = QRHelper.GenerateQRFile(QrData);
+            
             var filePath = await _fileService.AddFileAsync(qrcode, _fileUrlBuilderService.GetPath(MediaType.qrCode));
+            gymBooking.QrCode = filePath;
+            await _gymBookingRepository.AddAsync(gymBooking);
+            await _gymBookingRepository.SaveChangesAsync();
 
             Hangfire.BackgroundJob.Schedule(
                 () => CheckPayment(filePath, gymBooking.Id, gym.BusinessName, gymPhotoUrl, lan),
@@ -258,7 +261,9 @@ namespace Wasla_Backend.Services.Implementation.GymService
             if (resident == null)
                 throw new NotFoundException(LocalizationKey.ResidentNotFound);
 
-            return await _gymBookingRepository.PackagebookingOfResident(residentId);
+            var data= await _gymBookingRepository.PackagebookingOfResident(residentId);
+            data.ForEach(d => d.QrCode = _fileUrlBuilderService.GetMediaUrl(d.QrCode, MediaType.qrCode));
+            return data;
         }
 
         public async Task<List<BookingOfUser>> PackagebookingOfResidentAndStatus(string residentId, GymBookingStatus status)
@@ -267,7 +272,9 @@ namespace Wasla_Backend.Services.Implementation.GymService
             if (resident == null)
                 throw new NotFoundException(LocalizationKey.ResidentNotFound);
 
-            return await _gymBookingRepository.PackagebookingOfResidentAndStatus(residentId, status);
+            var data= await _gymBookingRepository.PackagebookingOfResidentAndStatus(residentId, status);
+            data.ForEach(d => d.QrCode = _fileUrlBuilderService.GetMediaUrl(d.QrCode, MediaType.qrCode));
+            return data;
         }
 
         public async Task<ChartsResponse> chartsResponse(string gymId)

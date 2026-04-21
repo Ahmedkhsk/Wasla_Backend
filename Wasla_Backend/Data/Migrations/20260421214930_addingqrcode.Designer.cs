@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wasla_Backend.Data;
 
@@ -11,9 +12,11 @@ using Wasla_Backend.Data;
 namespace Wasla_Backend.data
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20260421214930_addingqrcode")]
+    partial class addingqrcode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -711,60 +714,6 @@ namespace Wasla_Backend.data
                     b.ToTable("residentIdentities");
                 });
 
-            modelBuilder.Entity("Wasla_Backend.Models.Restaurant.Cart", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<string>("residentId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("restaurantId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("residentId");
-
-                    b.HasIndex("restaurantId");
-
-                    b.ToTable("Carts");
-                });
-
-            modelBuilder.Entity("Wasla_Backend.Models.Restaurant.CartItem", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<int>("cartId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("menuItemId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("cartId");
-
-                    b.HasIndex("menuItemId");
-
-                    b.ToTable("CartItems");
-                });
-
             modelBuilder.Entity("Wasla_Backend.Models.Restaurant.MenuItem", b =>
                 {
                     b.Property<int>("id")
@@ -821,97 +770,6 @@ namespace Wasla_Backend.data
                     b.HasIndex("restaurantId");
 
                     b.ToTable("MenuItemCategories");
-                });
-
-            modelBuilder.Entity("Wasla_Backend.Models.Restaurant.Order", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<string>("address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("createdAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("deliveryFee")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("notes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("paymentKey")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("paymentMethod")
-                        .HasColumnType("int");
-
-                    b.Property<int>("paymentStatus")
-                        .HasColumnType("int");
-
-                    b.Property<string>("paymobOrderId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("residentId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("restaurantId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("status")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("totalPrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("transactionId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("residentId");
-
-                    b.HasIndex("restaurantId");
-
-                    b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("Wasla_Backend.Models.Restaurant.OrderItem", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<int>("menuItemId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("orderId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("menuItemId");
-
-                    b.HasIndex("orderId");
-
-                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Restaurant.Reservations", b =>
@@ -1728,44 +1586,6 @@ namespace Wasla_Backend.data
                     b.Navigation("ServiceProvider");
                 });
 
-            modelBuilder.Entity("Wasla_Backend.Models.Restaurant.Cart", b =>
-                {
-                    b.HasOne("Wasla_Backend.Models.Resident", "resident")
-                        .WithMany()
-                        .HasForeignKey("residentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Wasla_Backend.Models.Restaurant.Restaurant", "restaurant")
-                        .WithMany()
-                        .HasForeignKey("restaurantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("resident");
-
-                    b.Navigation("restaurant");
-                });
-
-            modelBuilder.Entity("Wasla_Backend.Models.Restaurant.CartItem", b =>
-                {
-                    b.HasOne("Wasla_Backend.Models.Restaurant.Cart", "cart")
-                        .WithMany("items")
-                        .HasForeignKey("cartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Wasla_Backend.Models.Restaurant.MenuItem", "menuItem")
-                        .WithMany()
-                        .HasForeignKey("menuItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("cart");
-
-                    b.Navigation("menuItem");
-                });
-
             modelBuilder.Entity("Wasla_Backend.Models.Restaurant.MenuItem", b =>
                 {
                     b.HasOne("Wasla_Backend.Models.Restaurant.MenuItemCategory", "category")
@@ -1844,44 +1664,6 @@ namespace Wasla_Backend.data
                         .IsRequired();
 
                     b.Navigation("restaurant");
-                });
-
-            modelBuilder.Entity("Wasla_Backend.Models.Restaurant.Order", b =>
-                {
-                    b.HasOne("Wasla_Backend.Models.Resident", "resident")
-                        .WithMany()
-                        .HasForeignKey("residentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Wasla_Backend.Models.Restaurant.Restaurant", "restaurant")
-                        .WithMany()
-                        .HasForeignKey("restaurantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("resident");
-
-                    b.Navigation("restaurant");
-                });
-
-            modelBuilder.Entity("Wasla_Backend.Models.Restaurant.OrderItem", b =>
-                {
-                    b.HasOne("Wasla_Backend.Models.Restaurant.MenuItem", "menuItem")
-                        .WithMany()
-                        .HasForeignKey("menuItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Wasla_Backend.Models.Restaurant.Order", "order")
-                        .WithMany("items")
-                        .HasForeignKey("orderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("menuItem");
-
-                    b.Navigation("order");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Restaurant.Reservations", b =>
@@ -2284,17 +2066,7 @@ namespace Wasla_Backend.data
                     b.Navigation("messages");
                 });
 
-            modelBuilder.Entity("Wasla_Backend.Models.Restaurant.Cart", b =>
-                {
-                    b.Navigation("items");
-                });
-
             modelBuilder.Entity("Wasla_Backend.Models.Restaurant.MenuItemCategory", b =>
-                {
-                    b.Navigation("items");
-                });
-
-            modelBuilder.Entity("Wasla_Backend.Models.Restaurant.Order", b =>
                 {
                     b.Navigation("items");
                 });
