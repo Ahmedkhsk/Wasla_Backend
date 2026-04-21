@@ -407,12 +407,7 @@
         ReservationAlreadyCancelled,
         ReservationAlreadyCompleted,
 
-        OrderCreatedSuccessfully,
-        OrderRetrievedSuccessfully,
-        OrdersRetrievedSuccessfully,
-        OrderStatusUpdatedSuccessfully,
-
-        CartUpdatedSuccessfully,
+        
         ItemAddedToCartSuccessfully,
         ItemRemovedFromCartSuccessfully,
         CheckoutCompletedSuccessfully,
@@ -445,6 +440,50 @@
         #region MenuItem
         MenuItemRetrievedSuccessfully,
         MenuItemNotFound,
+        #endregion
+       
+        #region Cart
+
+        CartCreatedSuccessfully,
+        CartRetrievedSuccessfully,
+        CartClearedSuccessfully,
+        CartNotFound,
+        CartIsEmpty,
+        CartDifferentRestaurantNotAllowed,
+        CartItemAlreadyExists,
+        InvalidQuantity,
+
+
+        #endregion
+
+        #region CartItem
+
+        CartItemAddedSuccessfully,
+        CartItemUpdatedSuccessfully,
+        CartItemRemovedSuccessfully,
+        CartUpdatedSuccessfully,
+        CartItemNotFound,
+
+        #endregion
+
+        #region Order
+
+        OrderCreatedSuccessfully,
+        OrderRetrievedSuccessfully,
+        OrdersRetrievedSuccessfully,
+        OrderStatusUpdatedSuccessfully,
+        OrderCancelledSuccessfully,
+        OrderNotFound,
+
+        #endregion
+
+        #region OrderItem
+
+        OrderItemRetrievedSuccessfully,
+        OrderItemsRetrievedSuccessfully,
+        OrderItemNotFound,
+        OrderAlreadyPaid,
+        OrderCannotBeCancelled,
         #endregion
     }
 }

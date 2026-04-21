@@ -1830,6 +1830,146 @@
             },
 
             #endregion
+
+            #region Cart
+
+            [LocalizationKey.CartCreatedSuccessfully] = new()
+            {
+                ["en"] = "Cart created successfully.",
+                ["ar"] = "تم إنشاء السلة بنجاح."
+            },
+
+            [LocalizationKey.CartRetrievedSuccessfully] = new()
+            {
+                ["en"] = "Cart retrieved successfully.",
+                ["ar"] = "تم جلب السلة بنجاح."
+            },
+
+            [LocalizationKey.CartClearedSuccessfully] = new()
+            {
+                ["en"] = "Cart cleared successfully.",
+                ["ar"] = "تم تفريغ السلة بنجاح."
+            },
+
+            [LocalizationKey.CartNotFound] = new()
+            {
+                ["en"] = "Cart not found.",
+                ["ar"] = "السلة غير موجودة."
+            },
+
+            [LocalizationKey.CartIsEmpty] = new()
+            {
+                ["en"] = "Cart is empty.",
+                ["ar"] = "السلة فارغة."
+            },
+
+            #endregion
+
+            #region CartItem
+
+            [LocalizationKey.CartItemAddedSuccessfully] = new()
+            {
+                ["en"] = "Item added to cart successfully.",
+                ["ar"] = "تمت إضافة العنصر إلى السلة بنجاح."
+            },
+            [LocalizationKey.CartDifferentRestaurantNotAllowed] = new()
+            {
+                ["en"] = "You cannot add items from different restaurants.",
+                ["ar"] = "لا يمكنك إضافة عناصر من مطاعم مختلفة."
+            },
+
+            [LocalizationKey.InvalidQuantity] = new()
+            {
+                ["en"] = "Invalid quantity.",
+                ["ar"] = "الكمية غير صحيحة."
+            },
+
+            [LocalizationKey.CartItemUpdatedSuccessfully] = new()
+            {
+                ["en"] = "Cart item updated successfully.",
+                ["ar"] = "تم تحديث العنصر في السلة بنجاح."
+            },
+
+            [LocalizationKey.CartItemRemovedSuccessfully] = new()
+            {
+                ["en"] = "Item removed from cart successfully.",
+                ["ar"] = "تم حذف العنصر من السلة بنجاح."
+            },
+
+            [LocalizationKey.CartItemNotFound] = new()
+            {
+                ["en"] = "Cart item not found.",
+                ["ar"] = "العنصر غير موجود في السلة."
+            },
+
+            #endregion
+
+            #region Order
+
+            [LocalizationKey.OrderCreatedSuccessfully] = new()
+            {
+                ["en"] = "Order created successfully.",
+                ["ar"] = "تم إنشاء الطلب بنجاح."
+            },
+
+            [LocalizationKey.OrderRetrievedSuccessfully] = new()
+            {
+                ["en"] = "Order retrieved successfully.",
+                ["ar"] = "تم جلب الطلب بنجاح."
+            },
+
+            [LocalizationKey.OrdersRetrievedSuccessfully] = new()
+            {
+                ["en"] = "Orders retrieved successfully.",
+                ["ar"] = "تم جلب الطلبات بنجاح."
+            },
+
+            [LocalizationKey.OrderCancelledSuccessfully] = new()
+            {
+                ["en"] = "Order cancelled successfully.",
+                ["ar"] = "تم إلغاء الطلب بنجاح."
+            },
+
+            [LocalizationKey.OrderNotFound] = new()
+            {
+                ["en"] = "Order not found.",
+                ["ar"] = "الطلب غير موجود."
+            },
+
+            #endregion
+
+            #region OrderItem
+
+            [LocalizationKey.OrderItemRetrievedSuccessfully] = new()
+            {
+                ["en"] = "Order item retrieved successfully.",
+                ["ar"] = "تم جلب عنصر الطلب بنجاح."
+            },
+
+            [LocalizationKey.OrderItemsRetrievedSuccessfully] = new()
+            {
+                ["en"] = "Order items retrieved successfully.",
+                ["ar"] = "تم جلب عناصر الطلب بنجاح."
+            },
+
+            [LocalizationKey.OrderItemNotFound] = new()
+            {
+                ["en"] = "Order item not found.",
+                ["ar"] = "عنصر الطلب غير موجود."
+            },
+            
+            [LocalizationKey.OrderAlreadyPaid] = new()
+            {
+                ["en"] = "Order is already paid.",
+                ["ar"] = "تم دفع الطلب بالفعل."
+            },
+
+            [LocalizationKey.OrderCannotBeCancelled] = new()
+            {
+                ["en"] = "Order cannot be cancelled.",
+                ["ar"] = "لا يمكن إلغاء الطلب."
+            },
+            #endregion
         };
 
         public static string GetLocalizedMessage(LocalizationKey key, string lan)
