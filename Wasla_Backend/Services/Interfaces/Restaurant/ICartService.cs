@@ -4,5 +4,6 @@
     {
         public Task AddCart(AddCartItem dto);
         public Task RemoveCartItem(RemoveCartItemDto dto);
+        public Task<List<CartItemsResponse>> GetCartItems(GetCartItems dto);
     }
 }

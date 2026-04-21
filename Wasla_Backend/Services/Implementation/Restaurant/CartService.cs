@@ -83,5 +83,10 @@
                 await _cartRepo.SaveChangesAsync();
             }
         }
+        
+        public async Task<List<CartItemsResponse>> GetCartItems(GetCartItems dto)
+        {
+            return await GetCartItems(dto);
+        }
     }
 }
