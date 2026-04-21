@@ -1,5 +1,0 @@
-/chatHub
-OnConnectedAsync
-OnDisconnectedAsync
-Typing(string receiverId)
-StopTyping(string receiverId)
