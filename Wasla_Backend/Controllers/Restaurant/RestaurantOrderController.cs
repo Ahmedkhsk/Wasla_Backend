@@ -23,5 +23,12 @@
             await _cartService.RemoveCartItem(dto);
             return Ok(ResponseHelper.Success(LocalizationKey.CartItemRemovedSuccessfully, dto.lan));
         }
+
+        [HttpGet("cart-items")]
+        public async Task<IActionResult> GetCartItems([FromQuery] GetCartItems dto)
+        {
+            var cartItems = await _cartService.GetCartItems(dto);
+            return Ok(ResponseHelper.Success(LocalizationKey.CartRetrievedSuccessfully, dto.lan, cartItems));
+        }
     }
 }
