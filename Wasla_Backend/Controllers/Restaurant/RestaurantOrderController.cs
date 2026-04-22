@@ -1,14 +1,18 @@
-﻿namespace Wasla_Backend.Controllers.Restaurant
+﻿using Wasla_Backend.Models.Restaurant;
+
+namespace Wasla_Backend.Controllers.Restaurant
 {
     [Route("api/[controller]")]
     [ApiController]
     public class RestaurantOrderController : ControllerBase
     {
         private readonly ICartService _cartService;
+        private readonly IOrderService _orderService;
 
-        public RestaurantOrderController(ICartService cartService)
+        public RestaurantOrderController(ICartService cartService, IOrderService orderService)
         {
             _cartService = cartService;
+            _orderService = orderService;
         }
         [HttpPost("add-to-cart")]
         public async Task<IActionResult> AddToCart(AddCartItem dto, [FromQuery] LanDto lanDto)
@@ -29,6 +33,13 @@
         {
             var cartItems = await _cartService.GetCartItems(dto);
             return Ok(ResponseHelper.Success(LocalizationKey.CartRetrievedSuccessfully, dto.lan, cartItems));
+        }
+
+        [HttpPost("checkout")]
+        public async Task<IActionResult> Checkout(CheckoutDto dto, [FromQuery] LanDto lanDto)
+        {
+            var res = await _orderService.Checkout(dto);
+            return Ok(ResponseHelper.Success(LocalizationKey.OrderCreatedSuccessfully, lanDto.lan, res));
         }
     }
 }

@@ -3,11 +3,9 @@
     public class CreatePaymentDto
     {
         public string UserId { get; set; }  
-        public string ServiceProviderId { get; set; }
-        public int ServiceId { get; set; }
         public decimal Amount { get; set; }
         public PaymentMethodType PaymentMethod { get; set; }
-        public ServiceProviderType ServiceProviderType { get; set; }
-        public int BookingId { get; set; }
+        public int entityId { get; set; }
+        public EntityType entityType { get; set; }
     }
 }

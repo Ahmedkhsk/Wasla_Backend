@@ -12,63 +12,33 @@
             _context = context;
             _dateTimeHelper = dateTimeHelper;
         }
-        public async Task<Payment> GetPaymentByBookingIdAsync(int bookingId)
-        {
-            var payment = await _context.Payment
-                .FirstOrDefaultAsync(p => p.BookingId == bookingId);
 
-            if (payment == null)
-                throw new NotFoundException(LocalizationKey.PaymentMethodNotFound);
-
-            return payment;
-        }
-        public async Task<(Payment Payment, string RedirectUrl)> ProcessPaymentAsync(CreatePaymentDto createPaymentDto)
+        public async Task<(Payment payment, string redirectUrl)> ProcessPaymentAsync(CreatePaymentDto dto)
         {
-            if (string.IsNullOrEmpty(createPaymentDto.UserId))
+            if (string.IsNullOrEmpty(dto.UserId))
                 throw new BadRequestException(LocalizationKey.ResidentIdRequired);
 
-            var resident = await _context.Users
-                .FirstOrDefaultAsync(u => u.Id == createPaymentDto.UserId);
+            var resident = await _context.Users.FirstOrDefaultAsync(u => u.Id == dto.UserId)
+                ?? throw new NotFoundException(LocalizationKey.ResidentNotFound);
 
-            if (resident == null)
-                throw new NotFoundException(LocalizationKey.ResidentNotFound);
-
-            if (string.IsNullOrEmpty(createPaymentDto.ServiceProviderId))
-                throw new BadRequestException(LocalizationKey.ServiceProviderIdRequired);
-
-            var serviceProvider = await _context.Users
-                .FirstOrDefaultAsync(u => u.Id == createPaymentDto.ServiceProviderId);
-
-            if (serviceProvider == null)
-                throw new NotFoundException(LocalizationKey.ServiceProviderNotFound);
-
-            if (createPaymentDto.Amount <= 0)
+            if (dto.Amount <= 0)
                 throw new BadRequestException(LocalizationKey.AmountMustBeGreaterThanZero);
 
-            if (createPaymentDto.ServiceId <= 0)
-                throw new BadRequestException(LocalizationKey.ServiceIdRequired);
+            if (dto.entityType == EntityType.booking)
+            {
+                var booking = await _context.BaseBookings.FirstOrDefaultAsync(b => b.Id == dto.entityId)
+                    ?? throw new NotFoundException(LocalizationKey.BookingNotFound);
+            }
+            else if (dto.entityType == EntityType.order)
+            {
+                var order = await _context.Orders.FirstOrDefaultAsync(o => o.id == dto.entityId)
+                    ?? throw new NotFoundException(LocalizationKey.OrderNotFound);
+            }
 
-            var service = await _context.BaseServices
-                .FirstOrDefaultAsync(s => s.Id == createPaymentDto.ServiceId);
+            var merchantOrderId = $"{dto.entityType}_{dto.entityId}";
+            var amountCents = (int)(dto.Amount * 100);
 
-            if (service == null)
-                throw new NotFoundException(LocalizationKey.ServiceNotFound);
-
-            var booking = await _context.BaseBookings
-                .FirstOrDefaultAsync(b => b.Id == createPaymentDto.BookingId);
-
-            if (booking == null)
-                throw new NotFoundException(LocalizationKey.BookingNotFound);
-
-            using var httpClient = new HttpClient();
-
-            string secretKey = _configuration["Paymob:SecretKey"];
-            string publicKey = _configuration["Paymob:PublicKey"];
-
-            int specialReference = RandomNumberGenerator.GetInt32(1000000, 9999999);
-            var amountCents = (int)(createPaymentDto.Amount * 100);
-
-            var names = (resident.FullName ?? "Guest User").Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var names = (resident.FullName ?? "Guest User").Split(' ');
             var firstName = names.Length > 0 ? names[0] : "Guest";
             var lastName = names.Length > 1 ? names[^1] : "User";
 
@@ -87,130 +57,93 @@
                 country = "N/A"
             };
 
-            string baseUrl = _configuration["Paymob:BaseUrl"];
-
             var payload = new
             {
                 amount = amountCents,
                 currency = "EGP",
-                payment_methods = new[] { int.Parse(DetermineIntegrationId(createPaymentDto.PaymentMethod)) },
+                payment_methods = new[] { int.Parse(DetermineIntegrationId(dto.PaymentMethod)) },
                 billing_data = billingData,
-                customer = new { id = createPaymentDto.UserId },
-                special_reference = specialReference,
+                customer = new { id = dto.UserId },
                 expiration = 3600,
-                merchant_order_id = specialReference.ToString(),
-                callback = $"{baseUrl}/api/payment/callback",
-                post_url = $"{baseUrl}/api/payment/server-callback",
+                merchant_order_id = merchantOrderId,
+                callback = $"{_configuration["Paymob:BaseUrl"]}/api/payment/callback",
+                post_url = $"{_configuration["Paymob:BaseUrl"]}/api/payment/server-callback",
                 items = new[]
                 {
                 new
                 {
-                    name = $"🌟 Wasla Premium Service",
+                    name = dto.entityType == EntityType.order ? "Wasla Food Order" : "Wasla Booking",
                     amount = amountCents,
-                    description = $"✨ {resident.FullName}, your {service.Type} booking with {serviceProvider.FullName} is one step away! Complete your payment to confirm your spot. 🎯",
+                    description = "Payment via Wasla",
                     quantity = 1
                 }
             }
             };
 
-            var requestMessage = new HttpRequestMessage(HttpMethod.Post, "https://accept.paymob.com/v1/intention/");
-            requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Token", secretKey);
-            requestMessage.Content = JsonContent.Create(payload);
+            using var httpClient = new HttpClient();
 
-            var response = await httpClient.SendAsync(requestMessage);
-            var responseContent = await response.Content.ReadAsStringAsync();
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://accept.paymob.com/v1/intention/");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Token", _configuration["Paymob:SecretKey"]);
+            request.Content = JsonContent.Create(payload);
+
+            var response = await httpClient.SendAsync(request);
 
             if (!response.IsSuccessStatusCode)
                 throw new BadRequestException(LocalizationKey.PaymobApiFailed);
 
-            var resultJson = JsonDocument.Parse(responseContent);
-            var clientSecret = resultJson.RootElement.GetProperty("client_secret").GetString();
+            var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+            var clientSecret = json.RootElement.GetProperty("client_secret").GetString();
 
             var payment = new Payment
             {
-                ResidentId = createPaymentDto.UserId,
-                Resident = resident,
-                ServiceProviderId = createPaymentDto.ServiceProviderId,
-                ServiceId = createPaymentDto.ServiceId,
-                Amount = createPaymentDto.Amount,
-                PaymentMethod = createPaymentDto.PaymentMethod,
+                ResidentId = dto.UserId,
+                Amount = dto.Amount,
+                PaymentMethod = dto.PaymentMethod,
                 Status = PaymentStatus.Pending,
-                TransactionId = specialReference.ToString(),
+                TransactionId = null,
                 PaymentDate = _dateTimeHelper.Now,
-                ServiceType = createPaymentDto.ServiceProviderType,
-                BookingId = createPaymentDto.BookingId
+                entityId = dto.entityId,
+                entityType = dto.entityType
             };
 
             _context.Payment.Add(payment);
             await _context.SaveChangesAsync();
 
-            string redirectUrl = $"https://accept.paymob.com/unifiedcheckout/?publicKey={publicKey}&clientSecret={clientSecret}";
+            var redirectUrl = $"https://accept.paymob.com/unifiedcheckout/?publicKey={_configuration["Paymob:PublicKey"]}&clientSecret={clientSecret}";
 
             return (payment, redirectUrl);
         }
 
-        public async Task<Payment> UpdateOrderSuccess(string transactionId, string paymobTransactionId = null)
+        public async Task HandlePaymentCallback(string merchantOrderId, bool isSuccess, bool isRefunded, string transactionId)
         {
-            var payment = await _context.Payment
-                .Include(p => p.Resident)
-                .FirstOrDefaultAsync(p => p.TransactionId == transactionId);
+            var parts = merchantOrderId.Split('_');
+            var type = Enum.Parse<EntityType>(parts[0], true);
+            var id = int.Parse(parts[1]);
 
-            if (payment == null)
-                throw new NotFoundException(LocalizationKey.PaymentMethodNotFound);
-
-            payment.Status = PaymentStatus.Completed;
-            payment.PaymobTransactionId = paymobTransactionId; 
-
-            var booking = await _context.BaseBookings
-                .FirstOrDefaultAsync(b => b.Id == payment.BookingId);
-
-            if (booking != null)
-                booking.IsPaid = true;
-
-            await _context.SaveChangesAsync();
-            return payment;
+            if (type == EntityType.order)
+            {
+                if (isRefunded)
+                    await UpdateOrderRefunded(id);
+                else if (isSuccess)
+                    await UpdateOrderSuccess(id, transactionId);
+                else
+                    await UpdateOrderFailed(id);
+            }
+            else if (type == EntityType.booking)
+            {
+                if (isRefunded)
+                    await UpdateBookingRefunded(id);
+                else if (isSuccess)
+                    await UpdateBookingSuccess(id, transactionId);
+                else
+                    await UpdateBookingFailed(id);
+            }
         }
 
-        public async Task<Payment> UpdateOrderFailed(string transactionId)
+        public async Task<bool> RefundPaymentAsync(RefundDto dto)
         {
             var payment = await _context.Payment
-                .Include(p => p.Resident)
-                .FirstOrDefaultAsync(p => p.TransactionId == transactionId);
-
-            if (payment == null)
-                throw new NotFoundException(LocalizationKey.PaymentMethodNotFound);
-
-            payment.Status = PaymentStatus.Failed;
-            await _context.SaveChangesAsync();
-            return payment;
-        }
-
-        public async Task<Payment> UpdateOrderRefunded(string transactionId)
-        {
-            var payment = await _context.Payment
-                .Include(p => p.Resident)
-                .FirstOrDefaultAsync(p => p.TransactionId == transactionId);
-
-            if (payment == null)
-                throw new NotFoundException(LocalizationKey.PaymentMethodNotFound);
-
-            payment.Status = PaymentStatus.Refunded;
-
-            var booking = await _context.BaseBookings
-                .FirstOrDefaultAsync(b => b.Id == payment.BookingId);
-
-            if (booking != null)
-                booking.IsPaid = false;
-
-            await _context.SaveChangesAsync();
-            return payment;
-        }
-
-        public async Task<bool> RefundPaymentAsync(int bookingId, string lan = "en")
-        {
-            var payment = await _context.Payment
-                .FirstOrDefaultAsync(p => p.BookingId == bookingId
-                    && p.Status == PaymentStatus.Completed);
+                .FirstOrDefaultAsync(p => p.entityType == dto.entityType && p.entityId == dto.entityId && p.Status == PaymentStatus.Completed);
 
             if (payment == null)
                 throw new NotFoundException(LocalizationKey.PaymentMethodNotFound);
@@ -219,27 +152,136 @@
                 throw new BadRequestException(LocalizationKey.PaymobApiFailed);
 
             using var httpClient = new HttpClient();
-            string secretKey = _configuration["Paymob:SecretKey"];
 
-            var refundPayload = new
+            var payload = new
             {
                 transaction_id = payment.PaymobTransactionId,
                 amount_cents = (int)(payment.Amount * 100)
             };
 
-            var refundRequest = new HttpRequestMessage(HttpMethod.Post,
-                "https://accept.paymob.com/api/acceptance/void_refund/refund");
-            refundRequest.Headers.Authorization =
-                new AuthenticationHeaderValue("Token", secretKey);
-            refundRequest.Content = JsonContent.Create(refundPayload);
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://accept.paymob.com/api/acceptance/void_refund/refund");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Token", _configuration["Paymob:SecretKey"]);
+            request.Content = JsonContent.Create(payload);
 
-            var refundResponse = await httpClient.SendAsync(refundRequest);
+            var response = await httpClient.SendAsync(request);
 
-            if (!refundResponse.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
                 throw new BadRequestException(LocalizationKey.RefundFailed);
 
+            if (dto.entityType == EntityType.order)
+                await UpdateOrderRefunded(dto.entityId);
+            else
+                await UpdateBookingRefunded(dto.entityId);
 
             return true;
+        }
+
+        public async Task<Payment> GetPaymentStatusAsync(EntityType entityType, int entityId)
+        {
+            var payment = await _context.Payment
+                .FirstOrDefaultAsync(p => p.entityType == entityType && p.entityId == entityId);
+
+            if (payment == null)
+                throw new NotFoundException(LocalizationKey.PaymentMethodNotFound);
+
+            return payment;
+        }
+
+        private async Task UpdateOrderSuccess(int orderId, string transactionId)
+        {
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.id == orderId)
+                ?? throw new NotFoundException(LocalizationKey.OrderNotFound);
+
+            if (order.paymentStatus == PaymentStatus.Completed)
+                return;
+
+            order.paymentStatus = PaymentStatus.Completed;
+            order.status = OrderStatus.Paid;
+            order.transactionId = transactionId;
+
+            var cart = await _context.Carts
+                .Include(c => c.items)
+                .FirstOrDefaultAsync(c => c.residentId == order.residentId && c.restaurantId == order.restaurantId);
+
+            if (cart != null)
+            {
+                _context.CartItems.RemoveRange(cart.items);
+                _context.Carts.Remove(cart);
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task UpdateOrderFailed(int orderId)
+        {
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.id == orderId)
+                ?? throw new NotFoundException(LocalizationKey.OrderNotFound);
+
+            if (order.paymentStatus == PaymentStatus.Completed)
+                return;
+
+            order.paymentStatus = PaymentStatus.Failed;
+            order.status = OrderStatus.Cancelled;
+
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task UpdateOrderRefunded(int orderId)
+        {
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.id == orderId)
+                ?? throw new NotFoundException(LocalizationKey.OrderNotFound);
+
+            order.paymentStatus = PaymentStatus.Refunded;
+
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task UpdateBookingSuccess(int bookingId, string transactionId)
+        {
+            var payment = await _context.Payment
+                .FirstOrDefaultAsync(p => p.entityType == EntityType.booking && p.entityId == bookingId);
+
+            if (payment == null)
+                return;
+
+            payment.Status = PaymentStatus.Completed;
+            payment.PaymobTransactionId = transactionId;
+
+            var booking = await _context.BaseBookings.FirstOrDefaultAsync(b => b.Id == bookingId);
+            if (booking != null)
+                booking.IsPaid = true;
+
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task UpdateBookingFailed(int bookingId)
+        {
+            var payment = await _context.Payment
+                .FirstOrDefaultAsync(p => p.entityType == EntityType.booking && p.entityId == bookingId);
+
+            if (payment == null)
+                return;
+
+            payment.Status = PaymentStatus.Failed;
+
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task UpdateBookingRefunded(int bookingId)
+        {
+            var payment = await _context.Payment
+                .FirstOrDefaultAsync(p => p.entityType == EntityType.booking && p.entityId == bookingId);
+
+            if (payment == null)
+                return;
+
+            payment.Status = PaymentStatus.Refunded;
+
+            var booking = await _context.BaseBookings.FirstOrDefaultAsync(b => b.Id == bookingId);
+            if (booking != null)
+                booking.IsPaid = false;
+
+            await _context.SaveChangesAsync();
         }
 
         private string DetermineIntegrationId(PaymentMethodType paymentMethod)
@@ -255,12 +297,8 @@
 
         public string ComputeHmacSHA512(string data, string secret)
         {
-            var keyBytes = Encoding.UTF8.GetBytes(secret);
-            var dataBytes = Encoding.UTF8.GetBytes(data);
-
-            using var hmac = new HMACSHA512(keyBytes);
-            var hash = hmac.ComputeHash(dataBytes);
-            return BitConverter.ToString(hash).Replace("-", "").ToLower();
+            using var hmac = new HMACSHA512(Encoding.UTF8.GetBytes(secret));
+            return BitConverter.ToString(hmac.ComputeHash(Encoding.UTF8.GetBytes(data))).Replace("-", "").ToLower();
         }
     }
 }
