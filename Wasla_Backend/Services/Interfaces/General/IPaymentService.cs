@@ -1,23 +1,15 @@
-﻿
-
-using Wasla_Backend.Models.GeneralModel;
-
-namespace Wasla_Backend.Services.Interfaces.General
+﻿namespace Wasla_Backend.Services.Interfaces.General
 {
     public interface IPaymentService
     {
-        Task<(Payment Payment, string RedirectUrl)> ProcessPaymentAsync(CreatePaymentDto createPaymentDto);
+        Task<(Payment payment, string redirectUrl)> ProcessPaymentAsync(CreatePaymentDto dto);
 
-        Task<Payment> UpdateOrderSuccess(string transactionId, string paymobTransactionId = null);
+        Task HandlePaymentCallback(string merchantOrderId, bool isSuccess, bool isRefunded, string transactionId);
 
-        Task<Payment> UpdateOrderFailed(string transactionId);
+        Task<bool> RefundPaymentAsync(RefundDto dto);
 
-        Task<Payment> UpdateOrderRefunded(string transactionId);
-
-        Task<bool> RefundPaymentAsync(int bookingId, string lan = "en");
+        Task<Payment> GetPaymentStatusAsync(EntityType entityType, int entityId);
 
         string ComputeHmacSHA512(string data, string secret);
-        Task<Payment> GetPaymentByBookingIdAsync(int bookingId);
-
     }
 }

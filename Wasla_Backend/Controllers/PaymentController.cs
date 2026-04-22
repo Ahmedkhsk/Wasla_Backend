@@ -18,10 +18,10 @@ public class PaymentController : ControllerBase
         return Ok(ResponseHelper.Success(LocalizationKey.PaymentProcessedSuccessfully, lan, redirectUrl));
     }
 
-    [HttpPost("refund/{bookingId}")]
-    public async Task<IActionResult> Refund(int bookingId, string lan = "en")
+    [HttpPost("refund/{entityType}/{entityId}")]
+    public async Task<IActionResult> Refund(RefundDto dto, string lan = "en")
     {
-        var result = await _paymentService.RefundPaymentAsync(bookingId);
+        var result = await _paymentService.RefundPaymentAsync(dto);
         return Ok(ResponseHelper.Success(LocalizationKey.RefundProcessedSuccessfully, lan, result));
     }
 
@@ -33,10 +33,10 @@ public class PaymentController : ControllerBase
 
         string[] fields = new[]
         {
-            "amount_cents", "created_at", "currency", "error_occured", "has_parent_transaction",
-            "id", "integration_id", "is_3d_secure", "is_auth", "is_capture", "is_refunded",
-            "is_standalone_payment", "is_voided", "order", "owner", "pending",
-            "source_data.pan", "source_data.sub_type", "source_data.type", "success"
+            "amount_cents","created_at","currency","error_occured","has_parent_transaction",
+            "id","integration_id","is_3d_secure","is_auth","is_capture","is_refunded",
+            "is_standalone_payment","is_voided","order","owner","pending",
+            "source_data.pan","source_data.sub_type","source_data.type","success"
         };
 
         var concatenated = new StringBuilder();
@@ -76,10 +76,10 @@ public class PaymentController : ControllerBase
 
             string[] fields = new[]
             {
-                "amount_cents", "created_at", "currency", "error_occured", "has_parent_transaction",
-                "id", "integration_id", "is_3d_secure", "is_auth", "is_capture", "is_refunded",
-                "is_standalone_payment", "is_voided", "order.id", "owner", "pending",
-                "source_data.pan", "source_data.sub_type", "source_data.type", "success"
+                "amount_cents","created_at","currency","error_occured","has_parent_transaction",
+                "id","integration_id","is_3d_secure","is_auth","is_capture","is_refunded",
+                "is_standalone_payment","is_voided","order.id","owner","pending",
+                "source_data.pan","source_data.sub_type","source_data.type","success"
             };
 
             var concatenated = new StringBuilder();
@@ -88,6 +88,7 @@ public class PaymentController : ControllerBase
                 string[] parts = field.Split('.');
                 JsonElement current = obj;
                 bool found = true;
+
                 foreach (var part in parts)
                 {
                     if (current.ValueKind == JsonValueKind.Object && current.TryGetProperty(part, out var next))
@@ -112,7 +113,6 @@ public class PaymentController : ControllerBase
             if (!receivedHmac.Equals(calculatedHmac, StringComparison.OrdinalIgnoreCase))
                 return Unauthorized("Invalid HMAC");
 
-            // ✅ جيب الـ Paymob Transaction ID الحقيقي
             string paymobTransactionId = null;
             if (obj.TryGetProperty("id", out var idElement))
                 paymobTransactionId = idElement.ToString();
@@ -125,20 +125,12 @@ public class PaymentController : ControllerBase
                 merchantOrderId = merchantOrderIdElement.ToString();
             }
 
-            bool isSuccess = obj.TryGetProperty("success", out var successElement)
-                && successElement.GetBoolean();
-
-            bool isRefunded = obj.TryGetProperty("is_refunded", out var refundedElement)
-                && refundedElement.GetBoolean();
+            bool isSuccess = obj.TryGetProperty("success", out var successElement) && successElement.GetBoolean();
+            bool isRefunded = obj.TryGetProperty("is_refunded", out var refundedElement) && refundedElement.GetBoolean();
 
             if (!string.IsNullOrEmpty(merchantOrderId))
             {
-                if (isRefunded)
-                    await _paymentService.UpdateOrderRefunded(merchantOrderId);
-                else if (isSuccess)
-                    await _paymentService.UpdateOrderSuccess(merchantOrderId, paymobTransactionId);
-                else
-                    await _paymentService.UpdateOrderFailed(merchantOrderId);
+                await _paymentService.HandlePaymentCallback(merchantOrderId, isSuccess, isRefunded, paymobTransactionId);
             }
 
             return Ok();
@@ -149,10 +141,11 @@ public class PaymentController : ControllerBase
         }
     }
 
-    [HttpGet("status/{bookingId}")]
-    public async Task<IActionResult> GetPaymentStatus(int bookingId, string lan = "en")
+    [HttpGet("status/{entityType}/{entityId}")]
+    public async Task<IActionResult> GetPaymentStatus(EntityType entityType, int entityId, string lan = "en")
     {
-        var payment = await _paymentService.GetPaymentByBookingIdAsync(bookingId);
+        var payment = await _paymentService.GetPaymentStatusAsync(entityType, entityId);
+
         return Ok(ResponseHelper.Success(LocalizationKey.PaymentInitializedSuccessfully, lan, new
         {
             status = payment.Status.ToString(),
