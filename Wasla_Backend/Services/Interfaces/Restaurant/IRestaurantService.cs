@@ -6,5 +6,6 @@
         public Task UpdateRestaurant(UpdateRestaurantDto dto);
         public Task<PagedResult<GetAllRestaurantsResponse>> GetAll(GetGeneralWithPaginationDto<int> paginationParams);
         public Task<GetRestaurantResponse> GetRestaurant(GetGeneralDto<string> dto);
+        public Task<RestaurantCharts> GetCharts(string restaurantId);
     }
 }
