@@ -41,5 +41,19 @@ namespace Wasla_Backend.Controllers.Restaurant
             var res = await _orderService.Checkout(dto);
             return Ok(ResponseHelper.Success(LocalizationKey.OrderCreatedSuccessfully, lanDto.lan, res));
         }
+
+        [HttpGet("orders-restaurant")]
+        public async Task<IActionResult> OrdersRestaurant([FromQuery] GetGeneralWithPaginationDto<string> dto)
+        {
+            var orders = await _orderService.OrdersRestaurant(dto);
+            return Ok(ResponseHelper.Success(LocalizationKey.OrdersRetrievedSuccessfully, dto.lan, orders));
+        }
+
+        [HttpGet("orders-resident")]
+        public async Task<IActionResult> OrdersResident([FromQuery] GetGeneralWithPaginationDto<string> dto)
+        {
+            var orders = await _orderService.OrdersResident(dto);
+            return Ok(ResponseHelper.Success(LocalizationKey.OrdersRetrievedSuccessfully, dto.lan, orders));
+        }
     }
 }

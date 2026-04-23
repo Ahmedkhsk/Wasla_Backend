@@ -3,12 +3,12 @@
     public class OrderService : IOrderService
     {
         private readonly ICartRepository _cartRepo;
-        private readonly IGenericRepository<Order> _orderRepo;
+        private readonly IOrderRepository _orderRepo;
         private readonly IMapper _mapper;
         private readonly IPaymentService _paymentService;
         private readonly DateTimeHelper _dateTimeHelper;
 
-        public OrderService(ICartRepository cartRepo, IGenericRepository<Order> orderRepo
+        public OrderService(ICartRepository cartRepo, IOrderRepository orderRepo
             ,IMapper mapper,IPaymentService paymentService,DateTimeHelper dateTimeHelper)
         {
             _cartRepo = cartRepo;
@@ -74,6 +74,45 @@
             };
         }
 
+        public async Task<PagedResult<OrderRestaurantResponse>> OrdersRestaurant(GetGeneralWithPaginationDto<string> dto)
+        {
+            var orders = await _orderRepo.OrdersRestaurent(dto);
+
+            var mapped = orders.Data
+                .Select(o => _mapper.Map<OrderRestaurantResponse>(o, opt =>
+                {
+                    opt.Items["lang"] = dto.lan;
+                }))
+                .ToList();
+
+            return new PagedResult<OrderRestaurantResponse>
+            {
+                Data = mapped,
+                TotalCount = orders.TotalCount,
+                PageNumber = orders.PageNumber,
+                PageSize = orders.PageSize
+            };
+        }
+
+        public async Task<PagedResult<OrderResidentResponse>> OrdersResident(GetGeneralWithPaginationDto<string> dto)
+        {
+            var orders = await _orderRepo.OrdersResident(dto);
+
+            var mapped = orders.Data
+                .Select(o => _mapper.Map<OrderResidentResponse>(o, opt =>
+                {
+                    opt.Items["lang"] = dto.lan;
+                }))
+                .ToList();
+
+            return new PagedResult<OrderResidentResponse>
+            {
+                Data = mapped,
+                TotalCount = orders.TotalCount,
+                PageNumber = orders.PageNumber,
+                PageSize = orders.PageSize
+            };
+        }
 
     }
 }

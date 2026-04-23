@@ -17,13 +17,17 @@
                 .ForMember(dest => dest.id, opt => opt.Ignore())
                 .ForMember(dest => dest.orderId, opt => opt.Ignore());
 
-            CreateMap<Order, OrderResponse>()
+            CreateMap<Order, OrderRestaurantResponse>()
                 .ForMember(dest => dest.residentName, opt => opt.MapFrom(src => src.resident.FullName))
+                .ForMember(dest => dest.items, opt => opt.MapFrom(src => src.items));
+
+            CreateMap<Order, OrderResidentResponse>()
                 .ForMember(dest => dest.restaurantName, opt => opt.MapFrom(src => src.restaurant.FullName))
                 .ForMember(dest => dest.items, opt => opt.MapFrom(src => src.items));
 
             CreateMap<OrderItem, OrderItemsResponse>()
                 .ForMember(dest => dest.orderItemId, opt => opt.MapFrom(src => src.id))
+                
                 .ForMember(dest => dest.orderItemName, opt => opt.MapFrom((src, dest, destMember, context) =>
                     src.menuItem.name.GetText(context.Items["lang"].ToString())
                 ))

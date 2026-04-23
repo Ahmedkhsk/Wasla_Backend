@@ -1,11 +1,9 @@
 ﻿namespace Wasla_Backend.DTOs.RestaurantDTOS
 {
-    public class OrderResponse
+    public class OrderResidentResponse
     {
         public int id { get; set; }
-        public string residentId { get; set; }
         public string restaurantId { get; set; }
-        public string residentName { get; set; }
         public string restaurantName { get; set; }
         public decimal totalPrice { get; set; }
         public string address { get; set; }
