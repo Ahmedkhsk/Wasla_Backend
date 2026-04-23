@@ -8,12 +8,15 @@
         private readonly IMapper _mapper;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly IGenericRepository<RestaurantCategory> _restaurantCategoryRepo;
+        private readonly IReservationRepository _reservationRepository;
+        private readonly IOrderRepository _orderRepository;
 
         public RestaurantService
             (
             IRestaurantRepository restaurantRepository, IUserRepository userRepository,
             IFileService fileService, IMapper mapper, IFileUrlBuilderService fileUrlBuilderService,
-            IGenericRepository<RestaurantCategory> restaurantCategoryRepo
+            IGenericRepository<RestaurantCategory> restaurantCategoryRepo,
+            IReservationRepository reservationRepository, IOrderRepository orderRepository
             )
         {
             _restaurantRepository = restaurantRepository;
@@ -22,6 +25,8 @@
             _mapper = mapper;
             _fileUrlBuilderService = fileUrlBuilderService;
             _restaurantCategoryRepo = restaurantCategoryRepo;
+            _reservationRepository = reservationRepository;
+            _orderRepository = orderRepository;
         }
 
         public async Task CompleteProfile(CompleteRegisterRestaurantDto dto)
@@ -142,6 +147,23 @@
                 MediaType.restaurantImage
             )).ToList();
             return mapped;
+        }
+        
+        public async Task<RestaurantCharts> GetCharts(string restaurantId)
+        {
+            var user = await _restaurantRepository.GetByUserIdAsync(restaurantId);
+
+            if(user==null)
+                throw new NotFoundException(LocalizationKey.RestaurantNotFound);
+
+            return new RestaurantCharts
+            {
+                numOfOrders = await _orderRepository.CountOrders(user.Id, null),
+                numOfCompletedOrders = await _orderRepository.CountOrders(user.Id, OrderStatus.Delivered),
+                numberOfReservations = await _reservationRepository.CountReservations(user.Id),
+                totalAmount = (decimal)await _orderRepository.TotalAmountOfOrders(user.Id),
+                years = await _orderRepository.GetCollectedPriceByYear(user.Id)
+            };
         }
     }
 }

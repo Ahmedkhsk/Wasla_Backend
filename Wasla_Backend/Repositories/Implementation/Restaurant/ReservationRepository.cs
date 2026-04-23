@@ -29,5 +29,10 @@
 
             return await query.ToPagedResultAsync(dto.PageNumber, dto.PageSize);
         }
+
+        public async Task<int> CountReservations(string restaurantId)
+        {
+            return await _dbSet.Where(o => o.restaurantId == restaurantId&& o.status == Status.Completed).CountAsync();
+        }
     }
 }

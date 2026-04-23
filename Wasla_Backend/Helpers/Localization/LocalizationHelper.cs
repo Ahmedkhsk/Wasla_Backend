@@ -1513,6 +1513,12 @@
                 ["ar"] = "المطعم غير موجود."
             },
 
+            [LocalizationKey.RestaurantChartsRetrievedSuccessfully] = new()
+            {
+                ["en"] = "Restaurant charts retrieved successfully.",
+                ["ar"] = "تم استرجاع إحصائيات المطعم بنجاح."
+            },
+
             [LocalizationKey.RestaurantCreatedSuccessfully] = new()
             {
                 ["en"] = "Restaurant created successfully.",

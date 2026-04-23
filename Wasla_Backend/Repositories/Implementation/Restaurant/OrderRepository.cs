@@ -31,5 +31,44 @@
 
             return await query.ToPagedResultAsync(dto.PageNumber, dto.PageSize);
         }
+        public async Task<int> CountOrders(string restaurantId, OrderStatus? status)
+        {
+            var query = _dbSet.Where(o => o.restaurantId == restaurantId);
+
+            if (status.HasValue)
+                query = query.Where(o => o.status == status);
+
+            return await query.CountAsync();
+        }
+
+        public async Task<double> TotalAmountOfOrders(string restaurantId)
+        {
+            return await _dbSet
+                .Where(o => o.restaurantId == restaurantId && o.status == OrderStatus.Delivered && o.paymentStatus == PaymentStatus.Completed)
+                .SumAsync(o => (double)o.totalPrice);
+        }
+
+        public async Task<List<CollectedPerYearDto>> GetCollectedPriceByYear(string restaurantId)
+        {
+            return await _context.Orders
+                .Where(b => b.restaurantId == restaurantId
+                    && b.status == OrderStatus.Delivered&& b.paymentStatus == PaymentStatus.Completed)
+                .GroupBy(b => b.createdAt.Year)
+                .Select(yearGroup => new CollectedPerYearDto
+                {
+                    year = yearGroup.Key,
+                    months = yearGroup
+                        .GroupBy(b => b.createdAt.Month)
+                        .Select(monthGroup => new CollectedPerMonthDto
+                        {
+                            month = monthGroup.Key,
+                            amount = (double)monthGroup.Sum(b => b.totalPrice)
+                        })
+                        .OrderBy(m => m.month)
+                        .ToList()
+                })
+                .OrderBy(y => y.year)
+                .ToListAsync();
+        }
     }
 }

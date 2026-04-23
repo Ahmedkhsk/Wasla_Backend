@@ -1,6 +1,4 @@
-﻿
-
-namespace Wasla_Backend.Repositories.Implementation
+﻿namespace Wasla_Backend.Repositories.Implementation
 {
     public class ResidentRepository : GenericRepository<Resident>, IResidentRepository
     {
@@ -10,7 +8,7 @@ namespace Wasla_Backend.Repositories.Implementation
 
         public async Task<Resident> GetByEmail(string email)
         {
-           return await _context.Residents.FirstOrDefaultAsync(r => r.Email == email);
+            return await _context.Residents.FirstOrDefaultAsync(r => r.Email == email);
         }
     }
 }

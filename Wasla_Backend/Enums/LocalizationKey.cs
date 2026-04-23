@@ -381,7 +381,7 @@
         RestaurantCreatedSuccessfully,
         RestaurantUpdatedSuccessfully,
         RestaurantDeletedSuccessfully,
-
+        RestaurantChartsRetrievedSuccessfully,
         RestaurantRetrievedSuccessfully,
         RestaurantsRetrievedSuccessfully,
 

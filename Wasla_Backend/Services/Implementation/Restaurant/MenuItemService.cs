@@ -99,21 +99,28 @@
         public async Task<List<GetItemsbyCategoryResponse>> GetMenuItemsByCategoryAsync(GetGeneralDto<string> dto)
         {
            var items = await _menuItemRepository.GetMenuItemsByRestaurantIdAsync(dto);
-            var groupedItems = items.GroupBy(i => i.category).Select(g => new GetItemsbyCategoryResponse
-            {
-                categoryId = g.Key.id,
-                categoryName = g.Key.name.GetText(dto.lan),
-
-                items = g.Select(item =>
+            var groupedItems = items
+                .GroupBy(i => i.category.id)
+                .Select(g => new GetItemsbyCategoryResponse
                 {
-                    var itemMapped = _mapper.Map<ItemResponse>(item, opt =>
+                    categoryId = g.Key,
+                    categoryName = g.First().category.name.GetText(dto.lan),
+
+                    items = g.Select(item =>
                     {
-                        opt.Items["lang"] = dto.lan;
-                    });
-                    itemMapped.imageUrl = _fileUrlBuilderService.GetMediaUrl(item.imageUrl, MediaType.restaurantImage);
-                    return itemMapped;
-                }).ToList()
-            }).ToList();
+                        var itemMapped = _mapper.Map<ItemResponse>(item, opt =>
+                        {
+                            opt.Items["lang"] = dto.lan;
+                        });
+
+                        itemMapped.imageUrl = _fileUrlBuilderService
+                            .GetMediaUrl(item.imageUrl, MediaType.restaurantImage);
+
+                        return itemMapped;
+
+                    }).ToList()
+
+                }).ToList(); 
             return groupedItems;
         }
     }
