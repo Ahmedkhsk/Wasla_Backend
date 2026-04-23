@@ -5,6 +5,7 @@
         public OrderProfile()
         {
             CreateMap<Cart, Order>()
+                .ForMember(dest => dest.id, opt => opt.Ignore())
                 .ForMember(dest => dest.items, opt => opt.MapFrom(src => src.items))
                 .ForMember(dest => dest.totalPrice, opt => opt.Ignore())
                 .ForMember(dest => dest.deliveryFee, opt => opt.Ignore())
@@ -13,6 +14,7 @@
                 .ForMember(dest => dest.createdAt, opt => opt.Ignore());
 
             CreateMap<CartItem, OrderItem>()
+                .ForMember(dest => dest.id, opt => opt.Ignore())
                 .ForMember(dest => dest.orderId, opt => opt.Ignore());
 
             CreateMap<Order, OrderResponse>()

@@ -88,8 +88,10 @@
 
             var response = await httpClient.SendAsync(request);
 
+            
             if (!response.IsSuccessStatusCode)
                 throw new BadRequestException(LocalizationKey.PaymobApiFailed);
+            
 
             var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
             var clientSecret = json.RootElement.GetProperty("client_secret").GetString();
@@ -103,7 +105,8 @@
                 TransactionId = null,
                 PaymentDate = _dateTimeHelper.Now,
                 entityId = dto.entityId,
-                entityType = dto.entityType
+                entityType = dto.entityType,
+                
             };
 
             _context.Payment.Add(payment);

@@ -86,7 +86,7 @@
         
         public async Task<List<CartItemsResponse>> GetCartItems(GetCartItems dto)
         {
-            return await GetCartItems(dto);
+            return await _cartItemRepo.GetCartItems(dto);
         }
     }
 }

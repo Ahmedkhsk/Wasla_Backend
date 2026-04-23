@@ -26,7 +26,11 @@
                 throw new NotFoundException(LocalizationKey.CartIsEmpty);
 
             var order = _mapper.Map<Order>(cart);
-
+            
+            foreach (var item in order.items)
+            {
+                item.order = order;
+            }
             order.notes = dto.notes;
             order.address = dto.address;
             order.deliveryFee = 20;
