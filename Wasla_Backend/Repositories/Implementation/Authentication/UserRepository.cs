@@ -116,5 +116,10 @@ namespace Wasla_Backend.Repositories.Implementation
         {
             return await _userManager.GetUsersInRoleAsync(roleName);
         }
+
+        public string GetUserPhoto(string userId)
+        {
+            return _context.Users.FirstOrDefault(u => u.Id == userId).ProfilePhoto;
+        }
     }
 }

@@ -1,16 +1,20 @@
-﻿namespace Wasla_Backend.Services.Implementation.General
+﻿using Wasla_Backend.DTOs.PaymentDtos;
+
+namespace Wasla_Backend.Services.Implementation.General
 {
     public class PaymobService : IPaymentService
     {
         private readonly IConfiguration _configuration;
         private readonly Context _context;
         private readonly DateTimeHelper _dateTimeHelper;
+        private readonly IPaymentRepository _paymentRepository;
 
-        public PaymobService(IConfiguration configuration, Context context, DateTimeHelper dateTimeHelper)
+        public PaymobService(IConfiguration configuration, Context context, DateTimeHelper dateTimeHelper, IPaymentRepository paymentRepository)
         {
             _configuration = configuration;
             _context = context;
             _dateTimeHelper = dateTimeHelper;
+            _paymentRepository = paymentRepository;
         }
 
         public async Task<(Payment payment, string redirectUrl)> ProcessPaymentAsync(CreatePaymentDto dto)
@@ -302,6 +306,11 @@
         {
             using var hmac = new HMACSHA512(Encoding.UTF8.GetBytes(secret));
             return BitConverter.ToString(hmac.ComputeHash(Encoding.UTF8.GetBytes(data))).Replace("-", "").ToLower();
+        }
+
+        public async Task<List<UserPaymentDto>> GetAllPayment(string ResidentId)
+        {
+            return await _paymentRepository.GetAllPayment(ResidentId);
         }
     }
 }

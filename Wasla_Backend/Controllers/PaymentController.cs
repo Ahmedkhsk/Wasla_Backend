@@ -155,4 +155,10 @@ public class PaymentController : ControllerBase
             paymobTransactionId = payment.PaymobTransactionId
         }));
     }
+    [HttpGet("AllPayment/{ResidentId}")]
+    public async Task<IActionResult> GetAllPayment(string ResidentId,string lan="en")
+    {
+        var result = await _paymentService.GetAllPayment(ResidentId);
+        return Ok(ResponseHelper.Success(LocalizationKey.PaymentDetailsRetrievedSuccessfully, lan,result ));
+    }
 }

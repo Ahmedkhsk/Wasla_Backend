@@ -47,6 +47,7 @@
 
             _doctorRepository.Update(doctor);
             await _doctorRepository.SaveChangesAsync();
+            doctor.ProfilePhoto = _fileUrlBuilderService.GetMediaUrl(doctor.ProfilePhoto, MediaType.userImage);
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
                 doctor.Id,
                 NotificationType.doctorCompleteInfoScreen,

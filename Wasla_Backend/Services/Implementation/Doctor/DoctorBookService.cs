@@ -85,11 +85,13 @@ namespace Wasla_Backend.Services.Implementation
                 serviceProviderId = booking.serviceProviderId
             };
             await _hub.Clients.All.SendAsync("Bookingcanceled", bookhubdata);
+            var photo = _userRepository.GetUserPhoto(booking.serviceProviderId);
+            photo = _fileUrlBuilderService.GetMediaUrl(photo, MediaType.userImage);
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
     booking.userId,
     NotificationType.doctorCancelBookingScreen,
     booking.Id.ToString(),
-    null,   
+    photo,   
     "en",
     null    
 ));
@@ -121,11 +123,13 @@ namespace Wasla_Backend.Services.Implementation
                 serviceProviderId = booking.serviceProviderId
             };
             await _hub.Clients.All.SendAsync("BookingUpdated", bookhubdata);
-      Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
+            var photo = _userRepository.GetUserPhoto(booking.serviceProviderId);
+            photo = _fileUrlBuilderService.GetMediaUrl(photo, MediaType.userImage);
+            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
       booking.userId,
       NotificationType.doctorEditBookingScreen,
       booking.Id.ToString(),
-     null,
+     photo,
       "en",
       null 
   ));

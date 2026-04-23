@@ -112,11 +112,12 @@ namespace Wasla_Backend.Services.Implementation
     { "SenderName", sender.FullName ?? "User" }
 };
             var chatmessgaeId=string.Concat(chat.id, " , ", message.id);
+            var photo = _fileUrlBuilderService.GetMediaUrl(sender.ProfilePhoto, MediaType.userImage);
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
     receiver.Id,
     NotificationType.messageReceived,
     chatmessgaeId,
-    null,   
+    photo,   
     "en",
     metadata
 ));

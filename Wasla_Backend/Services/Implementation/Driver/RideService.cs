@@ -57,13 +57,13 @@
             {
                 { "DriverName", driver.FullName }
             };
-
+            var photo = _fileUrlBuilderService.GetMediaUrl(driver.ProfilePhoto, MediaType.userImage);
             BackgroundJob.Enqueue<NotificationFunction>(
                 x => x.sendNotification(
                     ride.ResidentId,
                     NotificationType.rideAccepted,
                     ride.Id.ToString(),
-                    _fileUrlBuilderService.GetMediaUrl(driver.ProfilePhoto, MediaType.userImage),
+                    photo,
                     lan,
                     metadata
                 ));

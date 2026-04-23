@@ -11,10 +11,13 @@ namespace Wasla_Backend.Services.Implementation
         private readonly IGenericRepository<ServiceProvider> _serviceProviderRepositpry;
         private readonly IHubContext<ReviewHub> _hub;
         private readonly ToxicityClassifier _toxicityClassifier;
+        private readonly IFileUrlBuilderService _fileUrlBuilderService;
 
         public ReviewService(IMapper mapper, IReviewRepository reviewRepository, IResidentRepository residentRepository,
             IUserRepository userRepository, IGenericRepository<ServiceProvider> serviceProviderRepositpry,
-            IHubContext<ReviewHub> hub, ToxicityClassifier toxicityClassifier)
+            IHubContext<ReviewHub> hub, ToxicityClassifier toxicityClassifier,IFileUrlBuilderService fileUrlBuilderService
+            
+            )
         {
             _reviewRepository = reviewRepository;
             _resididentRepository = residentRepository;
@@ -23,6 +26,7 @@ namespace Wasla_Backend.Services.Implementation
             _serviceProviderRepositpry = serviceProviderRepositpry;
             _hub = hub;
             _toxicityClassifier = toxicityClassifier;
+            _fileUrlBuilderService=fileUrlBuilderService;
         }
 
         public async Task AddReviewAsync(AddReviewDto review,string lan="en")
@@ -73,10 +77,11 @@ namespace Wasla_Backend.Services.Implementation
     { "UserName", user.FullName },
     { "Rating", review.rating.ToString("0.0") }
             };
+                var photo = _fileUrlBuilderService.GetMediaUrl(user.ProfilePhoto, MediaType.userImage);
 
                 Hangfire.BackgroundJob.Enqueue<NotificationFunction>(
                     x => x.sendNotification(
-                    serviceProvider.Id, NotificationType.reviewScreen, Review.Id.ToString(), user.ProfilePhoto, lan, metadata
+                    serviceProvider.Id, NotificationType.reviewScreen, Review.Id.ToString(), photo, lan, metadata
                         ));
             }
 

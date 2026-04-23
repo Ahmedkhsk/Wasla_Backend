@@ -10,9 +10,11 @@ namespace Wasla_Backend.Services.Implementation.technican
         private readonly ITechnicianRepository _technicianRepository;
         private readonly DateTimeHelper _dateTimeHelper ;
         private readonly IHubContext<BookingHub> _hub;
+        private readonly IUserRepository _userrepository;
         public TechnicianBookingService(ITechnicianBookingRepository technicianBookingRepository, IFileUrlBuilderService fileUrlBuilderService
             , IResidentRepository residentRepository, ITechnicianRepository technicianRepository, DateTimeHelper dateTimeHelper
-            , IHubContext<BookingHub> hub
+            , IHubContext<BookingHub> hub,IUserRepository userRepository
+
             )
         {
             _technicianBookingRepository = technicianBookingRepository;
@@ -21,6 +23,7 @@ namespace Wasla_Backend.Services.Implementation.technican
             _technicianRepository = technicianRepository;
             _dateTimeHelper = dateTimeHelper;
             _hub = hub;
+            _userrepository = userRepository;
         }
 
        
@@ -37,6 +40,7 @@ namespace Wasla_Backend.Services.Implementation.technican
                 () => _technicianBookingRepository.ChangeBookingStatus(bookingId, TechnicianBookingStatus.Done),
                 booking.BookingDate
             );
+            
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
     booking.ResidentId,
     NotificationType.technicianAcceptBooking,
@@ -62,22 +66,26 @@ namespace Wasla_Backend.Services.Implementation.technican
 
             if (isResident)
             {
+                var photo = _userrepository.GetUserPhoto(booking.ResidentId);
+                photo = _fileUrlBuilderService.GetMediaUrl(photo, MediaType.userImage);
                 Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
                     booking.TechnicianId,
                     NotificationType.technicianCancelBooking,
                     booking.Id.ToString(),
-                    null,
+                    photo,
                     "en",
                     null
                 ));
             }
             else
             {
-             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
+                var photo = _userrepository.GetUserPhoto(booking.TechnicianId);
+                photo = _fileUrlBuilderService.GetMediaUrl(photo, MediaType.userImage);
+                Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
                     booking.ResidentId,
                     NotificationType.userTechnicianBookingCancelled,
                     booking.Id.ToString(),
-                    null,
+                    photo,
                     "en",
                     null
                 ));
@@ -112,12 +120,14 @@ namespace Wasla_Backend.Services.Implementation.technican
 
             _technicianBookingRepository.Update(booking);
             await _technicianBookingRepository.SaveChangesAsync();
+            var photo=_userrepository.GetUserPhoto(booking.TechnicianId);
+            photo = _fileUrlBuilderService.GetMediaUrl(photo, MediaType.userImage);
 
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
                 booking.ResidentId,
                 NotificationType.technicianRejectBooking,
                 booking.Id.ToString(),
-                null,
+                photo,
                 "en",
                 null
             ));

@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Services.Interfaces.General
+﻿using Wasla_Backend.DTOs.PaymentDtos;
+
+namespace Wasla_Backend.Services.Interfaces.General
 {
     public interface IPaymentService
     {
@@ -11,5 +13,7 @@
         Task<Payment> GetPaymentStatusAsync(EntityType entityType, int entityId);
 
         string ComputeHmacSHA512(string data, string secret);
+        public Task<List<UserPaymentDto>> GetAllPayment(string ResidentId);
+
     }
 }

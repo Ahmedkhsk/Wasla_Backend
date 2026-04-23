@@ -14,6 +14,7 @@ namespace Wasla_Backend.Services.Implementation.GymService
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly IHubContext<BookingHub> _hub;
         private readonly Context _dbContext;
+        private readonly IUserRepository _userRepository;
 
         public GymBookingService(
             IGymBookingRepository gymBookingRepository,
@@ -25,7 +26,8 @@ namespace Wasla_Backend.Services.Implementation.GymService
             IFileUrlBuilderService fileUrlBuilderService,
             DateTimeHelper dateTimeHelper,
             IHubContext<BookingHub> hub,
-            Context dbContext
+            Context dbContext,
+            IUserRepository userRepository
         )
         {
             _gymBookingRepository = gymBookingRepository;
@@ -38,6 +40,7 @@ namespace Wasla_Backend.Services.Implementation.GymService
             _dateTimeHelper = dateTimeHelper;
             _hub = hub;
             _dbContext = dbContext;
+            _userRepository = userRepository;
         }
 
         public async Task<BookResponse> Book(GymBookDto gymBookDto, string lan)
@@ -147,11 +150,13 @@ namespace Wasla_Backend.Services.Implementation.GymService
 
             booking.BookingStatus = GymBookingStatus.Completed;
             await _gymBookingRepository.SaveChangesAsync();
+            var photo = _userRepository.GetUserPhoto(booking.GymId);
+            photo = _fileUrlBuilderService.GetMediaUrl(photo, MediaType.userImage);
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
     booking.ResidentId,
     NotificationType.gymPackageExpired,
     booking.ServiceId.ToString(),
-    null,
+    photo,
     "en",
     null
 ));
@@ -216,11 +221,12 @@ namespace Wasla_Backend.Services.Implementation.GymService
             await _gymBookingRepository.SaveChangesAsync();
             var userName = booking.Resident?.FullName ?? "User";
             var packageName = booking.Service?.Name.English ?? "Package";
+            var photourl = _fileUrlBuilderService.GetMediaUrl(booking.Resident.ProfilePhoto, MediaType.userImage);
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
     booking.GymId,
     NotificationType.gymBookingCancelled,
     booking.Id.ToString(),
-    null,
+    photourl,
     "en",
     new Dictionary<string, string>
     {
