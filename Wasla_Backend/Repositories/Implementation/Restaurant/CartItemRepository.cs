@@ -11,18 +11,13 @@
                 .FirstOrDefaultAsync(ci => ci.cartId == cartId);
         }
 
-        public async Task<List<CartItemsResponse>> GetCartItems(GetCartItems dto)
+        public async Task<List<CartItem>> GetCartItems(GetCartItems dto)
         {
             return await _context.CartItems
                 .Include(ci => ci.cart)
+                .Include(ci => ci.menuItem)
+                    .ThenInclude(ci => ci.category)
                 .Where(ci => ci.cart.residentId == dto.residentId && ci.cart.restaurantId == dto.restaurantId)
-                .Select(ci => new CartItemsResponse
-                {
-                    cartItemId = ci.id,
-                    menuItemId = ci.menuItemId,
-                    quantity = ci.quantity,
-                    totalPrice = ci.price * ci.quantity
-                })
                 .AsNoTracking()
                 .ToListAsync();
         }

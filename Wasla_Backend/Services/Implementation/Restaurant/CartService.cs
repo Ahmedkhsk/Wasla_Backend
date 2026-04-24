@@ -5,13 +5,15 @@
         private readonly ICartRepository _cartRepo;
         private readonly ICartItemRepository _cartItemRepo;
         private readonly IMenuItemRepository _menuItemRepository;
+        private readonly IFileUrlBuilderService _fileUrlBuilderService;
 
         public CartService(ICartRepository cartRepo, ICartItemRepository cartItemRepo,
-                           IMenuItemRepository menuItemRepository)
+                           IMenuItemRepository menuItemRepository, IFileUrlBuilderService fileUrlBuilderService)
         {
             _cartRepo = cartRepo;
             _cartItemRepo = cartItemRepo;
             _menuItemRepository = menuItemRepository;
+            _fileUrlBuilderService = fileUrlBuilderService;
         }
 
         public async Task AddCart(AddCartItem dto)
@@ -86,7 +88,18 @@
         
         public async Task<List<CartItemsResponse>> GetCartItems(GetCartItems dto)
         {
-            return await _cartItemRepo.GetCartItems(dto);
+            var cartItems = await _cartItemRepo.GetCartItems(dto);
+
+            return cartItems.Select( ci => new CartItemsResponse
+            {
+                cartItemId = ci.id,
+                menuItemId = ci.menuItemId,
+                menuItemCategoryName = ci.menuItem.category.name.GetText(dto.lan),
+                quantity = ci.quantity,
+                totalPrice = ci.price * ci.quantity,
+                menuItemName = ci.menuItem.name.GetText(dto.lan),
+                imageUrl =  _fileUrlBuilderService.GetMediaUrl(ci.menuItem.imageUrl,MediaType.restaurantImage) 
+            }).ToList();
         }
     }
 }
