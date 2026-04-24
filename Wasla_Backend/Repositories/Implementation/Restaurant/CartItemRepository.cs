@@ -4,11 +4,11 @@
     {
         public CartItemRepository(Context context):base(context) { }
 
-        public async Task<CartItem?> GetCartItemAsync(int cartId)
+        public async Task<CartItem?> GetCartItemAsync(int cartItemId)
         {
             return await _context.CartItems
                 .Include(c => c.cart)
-                .FirstOrDefaultAsync(ci => ci.cartId == cartId);
+                .FirstOrDefaultAsync(ci => ci.id == cartItemId);
         }
 
         public async Task<List<CartItem>> GetCartItems(GetCartItems dto)

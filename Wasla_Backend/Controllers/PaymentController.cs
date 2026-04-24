@@ -18,8 +18,8 @@ public class PaymentController : ControllerBase
         return Ok(ResponseHelper.Success(LocalizationKey.PaymentProcessedSuccessfully, lan, redirectUrl));
     }
 
-    [HttpPost("refund/{entityType}/{entityId}")]
-    public async Task<IActionResult> Refund(RefundDto dto, string lan = "en")
+    [HttpPost("refund")]
+    public async Task<IActionResult> Refund(EntityTypeDto dto, string lan = "en")
     {
         var result = await _paymentService.RefundPaymentAsync(dto);
         return Ok(ResponseHelper.Success(LocalizationKey.RefundProcessedSuccessfully, lan, result));
@@ -141,19 +141,21 @@ public class PaymentController : ControllerBase
         }
     }
 
-    [HttpGet("status/{entityType}/{entityId}")]
-    public async Task<IActionResult> GetPaymentStatus(EntityType entityType, int entityId, string lan = "en")
+    [HttpGet("status")]
+    public async Task<IActionResult> GetPaymentStatus([FromQuery] EntityTypeDto dto, string lan = "en")
     {
-        var payment = await _paymentService.GetPaymentStatusAsync(entityType, entityId);
+        var payment = await _paymentService.GetPaymentStatusAsync(dto.entityType, dto.entityId);
 
-        return Ok(ResponseHelper.Success(LocalizationKey.PaymentInitializedSuccessfully, lan, new
+        var response = new PaymentStatusResponse
         {
             status = payment.Status.ToString(),
             isPaid = payment.Status == PaymentStatus.Completed,
             paymentMethod = payment.PaymentMethod.ToString(),
             amount = payment.Amount,
             paymobTransactionId = payment.PaymobTransactionId
-        }));
+        };
+
+        return Ok(ResponseHelper.Success(LocalizationKey.PaymentInitializedSuccessfully, lan, response));
     }
     [HttpGet("AllPayment/{ResidentId}")]
     public async Task<IActionResult> GetAllPayment(string ResidentId,string lan="en")

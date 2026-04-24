@@ -5,6 +5,7 @@
         public int id { get; set; }
         public string residentId { get; set; }
         public string residentName { get; set; }
+        public string residentPhone { get; set; }
         public decimal totalPrice { get; set; }
         public string address { get; set; }
         public string? notes { get; set; }

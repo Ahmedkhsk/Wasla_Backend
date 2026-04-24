@@ -19,6 +19,7 @@
 
             CreateMap<Order, OrderRestaurantResponse>()
                 .ForMember(dest => dest.residentName, opt => opt.MapFrom(src => src.resident.FullName))
+                .ForMember(dest => dest.residentPhone, opt => opt.MapFrom(src => src.resident.Phone))
                 .ForMember(dest => dest.items, opt => opt.MapFrom(src => src.items));
 
             CreateMap<Order, OrderResidentResponse>()

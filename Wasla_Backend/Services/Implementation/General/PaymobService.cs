@@ -147,7 +147,7 @@ namespace Wasla_Backend.Services.Implementation.General
             }
         }
 
-        public async Task<bool> RefundPaymentAsync(RefundDto dto)
+        public async Task<bool> RefundPaymentAsync(EntityTypeDto dto)
         {
             var payment = await _context.Payment
                 .FirstOrDefaultAsync(p => p.entityType == dto.entityType && p.entityId == dto.entityId && p.Status == PaymentStatus.Completed);

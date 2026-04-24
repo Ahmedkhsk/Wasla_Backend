@@ -65,7 +65,7 @@
             order.status = OrderStatus.Preparing;
 
             _cartRepo.Delete(cart);
-
+            await _cartRepo.SaveChangesAsync();
             await _orderRepo.SaveChangesAsync();
 
             return new CheckoutResponse
