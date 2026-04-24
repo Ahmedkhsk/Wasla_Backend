@@ -25,9 +25,9 @@
         }
 
         [HttpPut("UpdateBookingStatus")]
-        public async Task<IActionResult> UpdateBookingStatus([FromQuery] int bookingId, [FromQuery] BookingStatus status, [FromQuery] string lan = "en")
+        public async Task<IActionResult> UpdateBookingStatus([FromQuery] int bookingId, [FromQuery] BookingStatus status,bool isResident, [FromQuery] string lan = "en")
         {
-            await _doctorBookService.UpdateBookingStatus(bookingId, status);
+            await _doctorBookService.UpdateBookingStatus(bookingId, status, isResident);
             return Ok(ResponseHelper.Success(LocalizationKey.BookingStatusUpdatedSuccessfully, lan));
         }
 

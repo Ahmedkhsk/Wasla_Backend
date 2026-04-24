@@ -46,7 +46,7 @@ namespace Wasla_Backend.Services.Implementation
             _mapper = mapper;
         }
 
-        public async Task UpdateBookingStatus(int bookingId, BookingStatus status)
+        public async Task UpdateBookingStatus(int bookingId, BookingStatus status,bool isResident)
         {
             var booking = await _bookingRepository.GetByIdWithIncludeAsync(bookingId);
 
@@ -85,11 +85,27 @@ namespace Wasla_Backend.Services.Implementation
                 serviceProviderId = booking.serviceProviderId
             };
             await _hub.Clients.All.SendAsync("Bookingcanceled", bookhubdata);
-            var photo = _userRepository.GetUserPhoto(booking.serviceProviderId);
+            string photo;
+            string TargetId;
+            NotificationType type;
+            if(isResident)
+            {
+               photo= _userRepository.GetUserPhoto(booking.ResidentId);
+                TargetId=booking.serviceProviderId;
+                type = NotificationType.residentCancelDoctorBooking;
+
+            }
+            else
+            {
+                photo = _userRepository.GetUserPhoto(booking.serviceProviderId);
+                TargetId = booking.ResidentId;
+                type = NotificationType.doctorCancelBookingScreen;
+
+            }
             photo = _fileUrlBuilderService.GetMediaUrl(photo, MediaType.userImage);
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
-    booking.ResidentId,
-    NotificationType.doctorCancelBookingScreen,
+    TargetId,
+    type,
     booking.Id.ToString(),
     photo,   
     "en",

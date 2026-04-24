@@ -27,6 +27,7 @@
         userTechnicianBookingCancelled,
         technicianCancelBooking,
         postCommented,
-        postReacted
+        postReacted,
+        residentCancelDoctorBooking
     }
 }
