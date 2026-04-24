@@ -28,6 +28,13 @@ namespace Wasla_Backend.Controllers.Restaurant
             return Ok(ResponseHelper.Success(LocalizationKey.CartItemRemovedSuccessfully, dto.lan));
         }
 
+        [HttpPut("quantity-cart-item")]
+        public async Task<IActionResult> UpdateCartItem([FromQuery] UpdateQuantityDto dto)
+        {
+            await _cartService.UpdateQuantity(dto);
+            return Ok(ResponseHelper.Success(LocalizationKey.CartItemUpdatedSuccessfully, dto.lan));
+        }
+
         [HttpGet("cart-items")]
         public async Task<IActionResult> GetCartItems([FromQuery] GetCartItems dto)
         {

@@ -59,6 +59,20 @@
             _menuItemRepository.Update(menuItem);
             await _menuItemRepository.SaveChangesAsync();
         }
+        
+        public async Task ChangeStatus(ChangeStatusItemMenuDto dto)
+        {
+            var restaurant = await _restaurantRepository.GetByUserIdAsync(dto.restaurantId);
+            if (restaurant == null)
+                throw new NotFoundException(LocalizationKey.RestaurantNotFound);
+
+            var menuItem = await _menuItemRepository.GetByIdAsync(dto.menuItemId);
+            if (menuItem == null)
+                throw new NotFoundException(LocalizationKey.MenuItemNotFound);
+            menuItem.isAvailable = !menuItem.isAvailable;
+            _menuItemRepository.Update(menuItem);
+            await _menuItemRepository.SaveChangesAsync();
+        }
 
         public async Task DeleteItem(int id)
         {

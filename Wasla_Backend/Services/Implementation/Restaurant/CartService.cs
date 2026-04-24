@@ -85,12 +85,12 @@
                 await _cartRepo.SaveChangesAsync();
             }
         }
-        
+
         public async Task<List<CartItemsResponse>> GetCartItems(GetCartItems dto)
         {
             var cartItems = await _cartItemRepo.GetCartItems(dto);
 
-            return cartItems.Select( ci => new CartItemsResponse
+            return cartItems.Select(ci => new CartItemsResponse
             {
                 cartItemId = ci.id,
                 menuItemId = ci.menuItemId,
@@ -98,8 +98,21 @@
                 quantity = ci.quantity,
                 totalPrice = ci.price * ci.quantity,
                 menuItemName = ci.menuItem.name.GetText(dto.lan),
-                imageUrl =  _fileUrlBuilderService.GetMediaUrl(ci.menuItem.imageUrl,MediaType.restaurantImage) 
+                imageUrl = _fileUrlBuilderService.GetMediaUrl(ci.menuItem.imageUrl, MediaType.restaurantImage)
             }).ToList();
+        }
+        public async Task UpdateQuantity(UpdateQuantityDto dto)
+        {
+            if (dto.quantity <= 0)
+                throw new BadRequestException(LocalizationKey.InvalidQuantity);
+            var item = await _cartItemRepo.GetCartItemAsync(dto.cartItemId);
+            if (item == null)
+                throw new NotFoundException(LocalizationKey.CartItemNotFound);
+            if (item.cart.residentId != dto.residentId)
+                throw new UnauthorizedAccessException();
+            item.quantity = dto.quantity;
+            _cartItemRepo.Update(item);
+            await _cartItemRepo.SaveChangesAsync();
         }
     }
 }

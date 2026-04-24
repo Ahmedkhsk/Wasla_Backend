@@ -23,7 +23,7 @@ namespace Wasla_Backend.Repositories.Implementation
         {
             return await _dbSet
                 .AsNoTracking()
-                .Where(m => m.restaurantId == dto.id)
+                .Where(m => m.restaurantId == dto.id && m.isAvailable)
                 .Include(m => m.category)
                 .ToListAsync();
         }

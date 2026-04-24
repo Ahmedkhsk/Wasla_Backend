@@ -55,6 +55,13 @@
             return Ok(ResponseHelper.Success(LocalizationKey.MenuItemUpdatedSuccessfully, lanDto.lan));
         }
 
+        [HttpPut("Item/Availability")]
+        public async Task<IActionResult> UpdateItemAvailability([FromQuery] ChangeStatusItemMenuDto dto)
+        {
+            await _menuItemService.ChangeStatus(dto);
+            return Ok(ResponseHelper.Success(LocalizationKey.MenuItemUpdatedSuccessfully, dto.lan));
+        }
+
         [HttpDelete("Item")]
         public async Task<IActionResult> DeleteItem([FromQuery] GetGeneralDto<int> dto)
         {
