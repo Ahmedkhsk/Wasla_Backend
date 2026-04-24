@@ -9,7 +9,7 @@
         {
             var entity = await _dbSet
                 .Include(s => s.ServiceDays)
-                .FirstOrDefaultAsync(s => s.id == id);
+                .FirstOrDefaultAsync(s => s.Id == id);
 
             if (entity == null)
                 return;
@@ -25,17 +25,17 @@
         public async Task<Service> GetServiceIncludeDaysAsync(int id)
             => await _context.Service
                 .Include(d => d.ServiceDays)
-                .FirstOrDefaultAsync(i => i.id == id && i.isDelete == false);
+                .FirstOrDefaultAsync(i => i.Id == id && i.IsDeleted == false);
         public async Task<IEnumerable<Service>> GetAllServicesAsync(string id)
             => await _context.Service
                 .Include(d => d.ServiceDays)
-                .Where(i => i.doctorId == id && i.isDelete == false)
+                .Where(i => i.ServiceProviderId == id && i.IsDeleted == false)
                 .ToListAsync();
 
         public async Task<Service> GetAllServiceAsync(int id)
             => await _context.Service
                 .Include(d => d.ServiceDays)
-                .FirstOrDefaultAsync(i => i.id == id && i.isDelete == false);
+                .FirstOrDefaultAsync(i => i.Id == id && i.IsDeleted == false);
 
     }
 }

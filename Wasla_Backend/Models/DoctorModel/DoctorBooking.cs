@@ -1,20 +1,15 @@
 ﻿namespace Wasla_Backend.Models
 {
     [Table("DoctorBookings")]
-    public class Booking
+    public class Booking : BaseBooking
     {
-        public int Id { get; set; }
-        public string userId { get; set; }
-
-        [ForeignKey("userId")]
-        public ApplicationUser user { get; set; }
+      
         public int serviceDayId { get; set; }
 
         [ForeignKey("serviceDayId")]
         public ServiceDay serviceDay { get; set; }
         public string serviceProviderId { get; set; }
         public double price { get; set; }
-        public ServiceProviderType serviceProviderType { get; set; }
         public BookingStatus bookingStatus { get; set; } = BookingStatus.upcoming;
         public WeekDayEnum newDayOfWeek { get; set; } = WeekDayEnum.none;
         public string? newStart { get; set; }

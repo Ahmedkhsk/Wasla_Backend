@@ -62,8 +62,8 @@ namespace Wasla_Backend.Services.Implementation
             if (status == BookingStatus.canceled && booking.serviceDay != null)
             {
                 booking.serviceDay.isBooking = false;
-                var countOfBookings = await _bookingRepository.CountBookingBYUserAndServiceProvider(booking.userId, booking.serviceProviderId);
-                if (countOfBookings == 1 && booking.serviceProviderType == ServiceProviderType.Doctor)
+                var countOfBookings = await _bookingRepository.CountBookingBYUserAndServiceProvider(booking.ResidentId, booking.serviceProviderId);
+                if (countOfBookings == 1 && booking.ServiceProviderType == ServiceProviderType.Doctor)
                 {
                     var doctor = await _doctorRepository.GetByIdAsync(booking.serviceProviderId);
                     if (doctor != null && doctor.numberOfpatients > 0)
@@ -81,14 +81,14 @@ namespace Wasla_Backend.Services.Implementation
             var bookhubdata = new BookHubData
             {
                 serviceId = booking.serviceDayId,
-                residentId = booking.userId,
+                residentId = booking.ResidentId,
                 serviceProviderId = booking.serviceProviderId
             };
             await _hub.Clients.All.SendAsync("Bookingcanceled", bookhubdata);
             var photo = _userRepository.GetUserPhoto(booking.serviceProviderId);
             photo = _fileUrlBuilderService.GetMediaUrl(photo, MediaType.userImage);
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
-    booking.userId,
+    booking.ResidentId,
     NotificationType.doctorCancelBookingScreen,
     booking.Id.ToString(),
     photo,   
@@ -119,14 +119,14 @@ namespace Wasla_Backend.Services.Implementation
             var bookhubdata = new BookHubData
             {
                 serviceId = booking.serviceDayId,
-                residentId = booking.userId,
+                residentId = booking.ResidentId,
                 serviceProviderId = booking.serviceProviderId
             };
             await _hub.Clients.All.SendAsync("BookingUpdated", bookhubdata);
             var photo = _userRepository.GetUserPhoto(booking.serviceProviderId);
             photo = _fileUrlBuilderService.GetMediaUrl(photo, MediaType.userImage);
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
-      booking.userId,
+      booking.ResidentId,
       NotificationType.doctorEditBookingScreen,
       booking.Id.ToString(),
      photo,
@@ -175,10 +175,10 @@ namespace Wasla_Backend.Services.Implementation
 
                 var booking = new Booking
                 {
-                    userId = dto.userId,
+                    ResidentId = dto.userId,
                     serviceProviderId = dto.serviceProviderId,
                     price = dto.price,
-                    serviceProviderType = dto.serviceProviderType,
+                    ServiceProviderType = dto.serviceProviderType,
                     bookingDate = dto.bookingDate,
                     bookingType = dto.bookingType,
                     images = savedImages,

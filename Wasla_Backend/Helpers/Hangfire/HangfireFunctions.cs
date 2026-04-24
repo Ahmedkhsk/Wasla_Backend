@@ -29,7 +29,7 @@ public class HangfireFunctions
         var hubData = new BookHubData
         {
             serviceId = booking.serviceDayId,
-            residentId = booking.userId,
+            residentId = booking.ResidentId,
             serviceProviderId = booking.serviceProviderId
         };
 
