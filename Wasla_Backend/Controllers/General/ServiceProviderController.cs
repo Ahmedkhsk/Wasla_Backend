@@ -13,15 +13,15 @@ namespace Wasla_Backend.Controllers.General
             _serviceProviderService = serviceProviderService;
         }
         [HttpGet("All")]
-        public async Task<IActionResult> GetAll(string lan = "en")
+        public async Task<IActionResult> GetAll( int pageNumber=1, int pageSize=5, string lan = "en")
         {
-            var serviceProviders = await _serviceProviderService.GetAll();
+            var serviceProviders = await _serviceProviderService.GetAll(pageNumber,pageSize);
             return Ok(ResponseHelper.Success(LocalizationKey.ServiceProvidersRetrievedSuccessfully, lan, serviceProviders));
         }
         [HttpGet("Search")]
-        public async Task<IActionResult> Search(string query, string lan = "en")
+        public async Task<IActionResult> Search(string query, int pageNumber=1, int pageSize=5, string lan = "en")
         {
-            var serviceProviders = await _serviceProviderService.Search(query);
+            var serviceProviders = await _serviceProviderService.Search(query,pageNumber,pageSize);
             return Ok(ResponseHelper.Success(LocalizationKey.ServiceProvidersRetrievedSuccessfully, lan, serviceProviders));
 
         }

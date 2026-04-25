@@ -1,11 +1,10 @@
 ﻿
 namespace Wasla_Backend.Repositories.Interfaces.General
 {
-    public interface IServiceProviderRepository : IGenericRepository<ServiceProvider>
+    public interface IServiceProviderRepository
     {
-        public Task<List<ServiceProviderInfoDto>> GetAll();
-        public Task<List<ServiceProviderInfoDto>> Search(string query);
+        Task<PagedResult<ServiceProviderInfoDto>> GetAll(int pageNumber, int pageSize);
 
-
+        Task<PagedResult<ServiceProviderInfoDto>> Search(string query, int pageNumber, int pageSize);
     }
 }

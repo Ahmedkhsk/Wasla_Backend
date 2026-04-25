@@ -9,18 +9,18 @@
             _serviceProviderRepository = serviceProviderRepository;
             _fileUrlBuilderService = fileUrlBuilderService;
         }
-        public async Task<List<ServiceProviderInfoDto>> GetAll()
+        public async Task<PagedResult<ServiceProviderInfoDto>> GetAll(int pageNumber, int pageSize)
         {
-            var data= await _serviceProviderRepository.GetAll();
-           data.ForEach(s=>s.Photo=_fileUrlBuilderService.GetMediaUrl(s.Photo, MediaType.userImage));
-            return data;
+            var result= await _serviceProviderRepository.GetAll(pageNumber, pageSize);
+            result.Data.ForEach(s=>s.Photo=_fileUrlBuilderService.GetMediaUrl(s.Photo, MediaType.userImage));
+            return result;
         }
 
-        public async Task<List<ServiceProviderInfoDto>> Search(string query)
+        public async Task<PagedResult<ServiceProviderInfoDto>> Search(string query,int pageNumber, int pageSize)
         {
-           var data= await _serviceProviderRepository.Search(query);
-            data.ForEach(s => s.Photo = _fileUrlBuilderService.GetMediaUrl(s.Photo, MediaType.userImage));
-            return data;
+           var result = await _serviceProviderRepository.Search(query, pageNumber,pageSize);
+            result.Data.ForEach(s => s.Photo = _fileUrlBuilderService.GetMediaUrl(s.Photo, MediaType.userImage));
+            return result;
         }
     }
 }

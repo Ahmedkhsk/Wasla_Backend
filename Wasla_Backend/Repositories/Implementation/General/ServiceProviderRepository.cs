@@ -1,15 +1,18 @@
-﻿
-namespace Wasla_Backend.Repositories.Implementation.General
+﻿namespace Wasla_Backend.Repositories.Implementation.General
 {
-    public class ServiceProviderRepository : GenericRepository<ServiceProvider>, IServiceProviderRepository
+    public class ServiceProviderRepository
+        : GenericRepository<ServiceProvider>, IServiceProviderRepository
     {
         public ServiceProviderRepository(Context context) : base(context)
         {
         }
 
-        public async Task<List<ServiceProviderInfoDto>> GetAll()
+     
+        public async Task<PagedResult<ServiceProviderInfoDto>> GetAll(
+            int pageNumber,
+            int pageSize)
         {
-            var data = await (
+            var query = (
                 from sp in _context.serviceProvider
 
                 join ur in _context.UserRoles
@@ -27,9 +30,17 @@ namespace Wasla_Backend.Repositories.Implementation.General
                     Sp = sp,
                     Role = r != null ? r.Name : null
                 }
-            ).ToListAsync();
+            );
 
-            return data.Select(x =>
+            var totalCount = await query.CountAsync();
+
+            var data = await query
+                .OrderByDescending(x => x.Sp.Rating)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var result = data.Select(x =>
             {
                 var sp = x.Sp;
 
@@ -48,13 +59,25 @@ namespace Wasla_Backend.Repositories.Implementation.General
                     Phone = phone,
                     Role = x.Role,
                     Photo = sp.ProfilePhoto
-
                 };
             }).ToList();
+
+            return new PagedResult<ServiceProviderInfoDto>
+            {
+                Data = result,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
         }
-        public async Task<List<ServiceProviderInfoDto>> Search(string query)
+
+       
+        public async Task<PagedResult<ServiceProviderInfoDto>> Search(
+            string queryText,
+            int pageNumber,
+            int pageSize)
         {
-            var data = await (
+            var query = (
                 from sp in _context.serviceProvider
 
                 join ur in _context.UserRoles
@@ -66,11 +89,10 @@ namespace Wasla_Backend.Repositories.Implementation.General
                 from r in rGroup.DefaultIfEmpty()
 
                 where (r == null || r.Name != "Admin") &&
-
                       (
-                          (sp.BusinessName != null && sp.BusinessName.Contains(query)) ||
-                          (sp.FullName != null && sp.FullName.Contains(query)) ||
-                          (sp.Description != null && sp.Description.Contains(query))
+                          (sp.BusinessName != null && sp.BusinessName.Contains(queryText)) ||
+                          (sp.FullName != null && sp.FullName.Contains(queryText)) ||
+                          (sp.Description != null && sp.Description.Contains(queryText))
                       )
 
                 select new
@@ -78,9 +100,17 @@ namespace Wasla_Backend.Repositories.Implementation.General
                     Sp = sp,
                     Role = r != null ? r.Name : null
                 }
-            ).ToListAsync();
+            );
 
-            return data.Select(x =>
+            var totalCount = await query.CountAsync();
+
+            var data = await query
+                .OrderByDescending(x => x.Sp.Rating)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var result = data.Select(x =>
             {
                 var sp = x.Sp;
 
@@ -101,6 +131,14 @@ namespace Wasla_Backend.Repositories.Implementation.General
                     Photo = sp.ProfilePhoto
                 };
             }).ToList();
+
+            return new PagedResult<ServiceProviderInfoDto>
+            {
+                Data = result,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
         }
     }
 }
