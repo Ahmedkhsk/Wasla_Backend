@@ -135,6 +135,18 @@ namespace Wasla_Backend.Services.Implementation
                     userBase = userBase,
                     details = new AdminTechnicianDetailsDto(technician)
                 },
+                DriverModel driver => new AdminUserDetailsResponseDto
+                {
+                    role = role.FirstOrDefault(),
+                    userBase = userBase,
+                    details = new AdminDriverDetailsDto(driver)
+                },
+                Restaurant restaurant => new AdminUserDetailsResponseDto
+                {
+                    role = role.FirstOrDefault(),
+                    userBase = userBase,
+                    details = new AdminRestaurantDetailsDto(restaurant)
+                },
             };
         }
     }
