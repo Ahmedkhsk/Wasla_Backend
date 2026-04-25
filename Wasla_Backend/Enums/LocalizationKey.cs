@@ -174,6 +174,7 @@
         SuccessToGetTopServiceProviders,
         ServiceProviderIdRequired,
         FetchChartSuccess,
+        ServiceProvidersRetrievedSuccessfully,
         #endregion
 
         #region Notifications

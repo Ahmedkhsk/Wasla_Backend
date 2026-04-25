@@ -1,5 +1,4 @@
-﻿using ServiceProvider = Wasla_Backend.Models.ServiceProvider;
-
+﻿
 namespace Wasla_Backend.Services.Implementation
 {
     public class ReviewService : IReviewService

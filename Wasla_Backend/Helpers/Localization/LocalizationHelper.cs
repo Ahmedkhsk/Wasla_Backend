@@ -788,7 +788,7 @@
                 ["en"] = "Refund processed successfully.",
                 ["ar"] = "تمت معالجة الاسترداد بنجاح."
             },
-            [LocalizationKey.PaymentDetailsRetrievedSuccessfully]=new()
+            [LocalizationKey.PaymentDetailsRetrievedSuccessfully] = new()
             {
                 ["en"] = "Payment details retrieved successfully.",
                 ["ar"] = "تم جلب تفاصيل الدفع بنجاح."
@@ -1139,7 +1139,7 @@
                 ["en"] = "Vehicle number already exists.",
                 ["ar"] = "رقم السيارة موجود بالفعل."
             },
-            
+
             [LocalizationKey.CarImagesAreRequired] = new()
             {
                 ["en"] = "Car images are required.",
@@ -1160,102 +1160,102 @@
                 ["en"] = "Driver profile fetched successfully.",
                 ["ar"] = "تم جلب ملف السائق بنجاح."
             },
-            [LocalizationKey.ChangeDriverStatusSuccess]=new()
+            [LocalizationKey.ChangeDriverStatusSuccess] = new()
             {
                 ["en"] = "Driver status changed successfully.",
                 ["ar"] = "تم تغيير حالة السائق بنجاح."
             },
-            [LocalizationKey.TrackingDriverSuccess]=new()
+            [LocalizationKey.TrackingDriverSuccess] = new()
             {
                 ["en"] = "Driver location tracked successfully.",
                 ["ar"] = "تم تتبع موقع السائق بنجاح."
             },
-            [LocalizationKey.GetDriverLocationSuccess]=new()
+            [LocalizationKey.GetDriverLocationSuccess] = new()
             {
                 ["en"] = "Driver location retrieved successfully.",
                 ["ar"] = "تم جلب موقع السائق بنجاح."
             },
-            [LocalizationKey.DriverLocationNotFound]=new()
+            [LocalizationKey.DriverLocationNotFound] = new()
             {
                 ["en"] = "Driver location not found.",
                 ["ar"] = "موقع السائق غير موجود."
             },
-            [LocalizationKey.GetTopNearestDriverSuccess]=new()
+            [LocalizationKey.GetTopNearestDriverSuccess] = new()
             {
                 ["en"] = "Top nearest drivers retrieved successfully.",
                 ["ar"] = "تم جلب أقرب السائقين بنجاح."
             },
-            [LocalizationKey.VehicleTypeNotSupported]=new()
+            [LocalizationKey.VehicleTypeNotSupported] = new()
             {
                 ["en"] = "Vehicle type not supported.",
                 ["ar"] = "نوع السيارة غير مدعوم."
             },
-            [LocalizationKey.EstimateRideSuccessfully]=new()
+            [LocalizationKey.EstimateRideSuccessfully] = new()
             {
                 ["en"] = "Ride estimated successfully.",
                 ["ar"] = "تم تقدير الرحلة بنجاح."
             },
-            [LocalizationKey.RequestRideSuccessfully]=new()
+            [LocalizationKey.RequestRideSuccessfully] = new()
             {
                 ["en"] = "Ride requested successfully.",
                 ["ar"] = "تم طلب الرحلة بنجاح."
             },
-            [LocalizationKey.ResidentHasActiveRide]=new()
+            [LocalizationKey.ResidentHasActiveRide] = new()
             {
                 ["en"] = "Resident already has an active ride.",
                 ["ar"] = "المقيم لديه رحلة نشطة بالفعل."
             },
-            [LocalizationKey.RideNotFound]=new()
+            [LocalizationKey.RideNotFound] = new()
             {
                 ["en"] = "Ride not found.",
                 ["ar"] = "الرحلة غير موجودة."
             },
-            [LocalizationKey.GetRideByIdSuccessfully]=new()
+            [LocalizationKey.GetRideByIdSuccessfully] = new()
             {
                 ["en"] = "Ride details retrieved successfully.",
                 ["ar"] = "تم جلب تفاصيل الرحلة بنجاح."
             },
-            [LocalizationKey.CannotCancelRide]=new()
+            [LocalizationKey.CannotCancelRide] = new()
             {
                 ["en"] = "Cannot cancel the ride at this stage.",
                 ["ar"] = "لا يمكن إلغاء الرحلة في هذه المرحلة."
             },
-            [LocalizationKey.SomeOneHadAcceptIt]=new()
+            [LocalizationKey.SomeOneHadAcceptIt] = new()
             {
                 ["en"] = "Someone has already accepted the ride request.",
                 ["ar"] = "لقد قام شخص ما بقبول طلب الرحلة بالفعل."
             },
-            [LocalizationKey.InvalidRideStatus]=new()
+            [LocalizationKey.InvalidRideStatus] = new()
             {
                 ["en"] = "Invalid ride status.",
                 ["ar"] = "حالة الرحلة غير صالحة."
             },
-            [LocalizationKey.AcceptRideSuccessfully]=new()
+            [LocalizationKey.AcceptRideSuccessfully] = new()
             {
                 ["en"] = "Ride accepted successfully.",
                 ["ar"] = "تم قبول الرحلة بنجاح."
             },
-            [LocalizationKey.CompleteRideSuccessfully]=new()
+            [LocalizationKey.CompleteRideSuccessfully] = new()
             {
                 ["en"] = "Ride completed successfully.",
                 ["ar"] = "تم إكمال الرحلة بنجاح."
             },
-            [LocalizationKey.CancelRideSuccessfully]=new()
+            [LocalizationKey.CancelRideSuccessfully] = new()
             {
                 ["en"] = "Ride cancelled successfully.",
                 ["ar"] = "تم إلغاء الرحلة بنجاح."
             },
-            [LocalizationKey.StartRideSuccessfully]=new()
+            [LocalizationKey.StartRideSuccessfully] = new()
             {
                 ["en"] = "Ride started successfully.",
                 ["ar"] = "تم بدء الرحلة بنجاح."
             },
-            [LocalizationKey.RideNotAcceptedYet]=new()
+            [LocalizationKey.RideNotAcceptedYet] = new()
             {
                 ["en"] = "Ride has not been accepted yet.",
                 ["ar"] = "لم يتم قبول الرحلة بعد."
             },
-            [LocalizationKey.GetUserRidesSuccessfully]=new()
+            [LocalizationKey.GetUserRidesSuccessfully] = new()
             {
                 ["en"] = "User rides retrieved successfully.",
                 ["ar"] = "تم جلب رحلات المستخدم بنجاح."
@@ -1265,17 +1265,17 @@
                 ["en"] = "Driver rides retrieved successfully.",
                 ["ar"] = "تم جلب رحلات السائق بنجاح."
             },
-            [LocalizationKey.RideCompleted]=new()
+            [LocalizationKey.RideCompleted] = new()
             {
                 ["en"] = "Ride has already been completed.",
                 ["ar"] = "تم إكمال الرحلة بالفعل."
             },
-            [LocalizationKey.GetDriverChartSuccessfully]=new()
+            [LocalizationKey.GetDriverChartSuccessfully] = new()
             {
                 ["en"] = "Driver chart fetched successfully.",
                 ["ar"] = "تم جلب مخطط السائق بنجاح."
             },
-            [LocalizationKey.UpdateDriverProfileSuccess]=new()
+            [LocalizationKey.UpdateDriverProfileSuccess] = new()
             {
                 ["en"] = "Driver profile updated successfully.",
                 ["ar"] = "تم تحديث ملف السائق بنجاح."
@@ -1453,17 +1453,17 @@
                 ["en"] = "Technician documents are required.",
                 ["ar"] = "وثائق الفني مطلوبة."
             },
-            [LocalizationKey.TechnicianSpecialtiesRetrievedSuccessfully]=new()
+            [LocalizationKey.TechnicianSpecialtiesRetrievedSuccessfully] = new()
             {
                 ["en"] = "Technician specialties retrieved successfully.",
                 ["ar"] = "تم جلب تخصصات الفني بنجاح."
             },
-            [LocalizationKey.TechniciansRetrievedSuccessfully]=new()
+            [LocalizationKey.TechniciansRetrievedSuccessfully] = new()
             {
                 ["en"] = "Technicians retrieved successfully.",
                 ["ar"] = "تم جلب الفنيين بنجاح."
             },
-            [LocalizationKey.GetBookingDetailsSuccessfully]=new()
+            [LocalizationKey.GetBookingDetailsSuccessfully] = new()
             {
                 ["en"] = "Booking details retrieved successfully.",
                 ["ar"] = "تم جلب تفاصيل الحجز بنجاح."
@@ -1478,27 +1478,27 @@
                 ["en"] = "Booking cancelled successfully.",
                 ["ar"] = "تم إلغاء الحجز بنجاح."
             },
-            [LocalizationKey.RejectBookingSuccessfully]=new()
+            [LocalizationKey.RejectBookingSuccessfully] = new()
             {
                 ["en"] = "Booking rejected successfully.",
                 ["ar"] = "تم رفض الحجز بنجاح."
             },
-            [LocalizationKey.GetTechnicianBookingsSuccessfully]=new()
+            [LocalizationKey.GetTechnicianBookingsSuccessfully] = new()
             {
                 ["en"] = "Technician bookings retrieved successfully.",
                 ["ar"] = "تم جلب حجوزات الفني بنجاح."
             },
-            [LocalizationKey.GetResidentBookingsSuccessfully]=new()
+            [LocalizationKey.GetResidentBookingsSuccessfully] = new()
             {
                 ["en"] = "Resident bookings retrieved successfully.",
                 ["ar"] = "تم جلب حجوزات المقيم بنجاح."
             },
-            [LocalizationKey.CreateBookingSuccessfully]=new()
+            [LocalizationKey.CreateBookingSuccessfully] = new()
             {
                 ["en"] = "Booking created successfully.",
                 ["ar"] = "تم إنشاء الحجز بنجاح."
             },
-            [LocalizationKey.TechnicianChartRetrievedSuccessfully]=new()
+            [LocalizationKey.TechnicianChartRetrievedSuccessfully] = new()
             {
                 ["en"] = "Technician chart fetched successfully.",
                 ["ar"] = "تم جلب مخطط الفني بنجاح."
@@ -1711,7 +1711,7 @@
             },
 
             #endregion
-           
+
             #region RestaurantCategory
 
             [LocalizationKey.RestaurantCategoryCreatedSuccessfully] = new()
@@ -1756,7 +1756,7 @@
                 ["ar"] = "تم إكمال الملف الشخصي بنجاح."
             },
             #endregion
-            
+
             #region MenuItemCategory
 
             [LocalizationKey.MenuItemCategoryCreatedSuccessfully] = new()
@@ -1796,7 +1796,7 @@
             },
 
             #endregion
-            
+
             #region MenuItem
 
             [LocalizationKey.MenuItemCreatedSuccessfully] = new()
@@ -1963,7 +1963,7 @@
                 ["en"] = "Order item not found.",
                 ["ar"] = "عنصر الطلب غير موجود."
             },
-            
+
             [LocalizationKey.OrderAlreadyPaid] = new()
             {
                 ["en"] = "Order is already paid.",
@@ -1976,6 +1976,11 @@
                 ["ar"] = "لا يمكن إلغاء الطلب."
             },
             #endregion
+            [LocalizationKey.ServiceProvidersRetrievedSuccessfully] = new()
+            {
+                ["en"] = "Service providers retrieved successfully.",
+                ["ar"] = "تم جلب مزودي الخدمة بنجاح."
+            },
         };
 
         public static string GetLocalizedMessage(LocalizationKey key, string lan)

@@ -68,6 +68,7 @@ global using Wasla_Backend.DTOs.HubsDto;
 global using Wasla_Backend.DTOs.FavouritsDTOS;
 global using Wasla_Backend.DTOs.ChartDTOS;
 global using Wasla_Backend.DTOs.GymDTOS;
+global using Wasla_Backend.DTOs.ServiceProviderDtos;
 global using Wasla_Backend.DTOs.UserEventDTOS;
 global using Wasla_Backend.DTOs.NotificationDTOS;
 global using Wasla_Backend.DTOs.SoicalDTOS;
@@ -90,6 +91,8 @@ global using RideDispatchJobModel = Wasla_Backend.Models.Driver.RideDispatchJob;
 global using Wasla_Backend.Models.technician;
 global using Wasla_Backend.Models.Driver;
 global using Wasla_Backend.Models.Restaurant;
+global using ServiceProvider = Wasla_Backend.Models.ServiceProvider;
+ 
 #endregion
 
 #region Project - Repositories
