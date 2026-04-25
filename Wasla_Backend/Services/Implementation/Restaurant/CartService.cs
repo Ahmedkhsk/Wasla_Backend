@@ -78,12 +78,6 @@
 
             _cartItemRepo.Delete(item);
             await _cartItemRepo.SaveChangesAsync();
-
-            if (!item.cart.items.Any())
-            {
-                _cartRepo.Delete(item.cart);
-                await _cartRepo.SaveChangesAsync();
-            }
         }
 
         public async Task<List<CartItemsResponse>> GetCartItems(GetCartItems dto)
