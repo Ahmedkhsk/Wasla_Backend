@@ -117,6 +117,17 @@
 
     TitleEn = "Booking Cancelled ❌",
     BodyEn = "Doctor has cancelled your booking"
+}
+  ,
+  new NotificationTemplate
+{
+    Type = NotificationType.residentCancelDoctorBooking,
+
+    TitleAr = "تم إلغاء الحجز ❌",
+    BodyAr = "قام الساكن بإلغاء حجزك",
+
+    TitleEn = "Booking Cancelled ❌",
+    BodyEn = "Resident has cancelled your booking"
 },
   new NotificationTemplate
 {

@@ -31,10 +31,12 @@
 
             var service = new Service
             {
-                doctorId = dto.doctorId,
+                ServiceProviderId = dto.doctorId,
                 serviceName = dto.serviceName,
                 description = dto.description,
-                price = dto.price
+                price = dto.price,
+                Type=ServiceProviderType.Doctor
+
             };
 
             await _doctorServiceRepository.AddAsync(service);
@@ -45,7 +47,7 @@
                 var serviceDays = dto.serviceDays
                     .SelectMany(day => dto.timeSlots.Select(slot => new ServiceDay
                     {
-                        serviceId = service.id,
+                        serviceId = service.Id,
                         dayOfWeek = day.dayOfWeek,
                         start = slot.start,
                         end = slot.end
@@ -59,7 +61,7 @@
             var serviceHubData = new ServiceHubData
             {
                 serviceProviderId = dto.doctorId,
-                serviceId = service.id
+                serviceId = service.Id
             };
             await _hub.Clients.All.SendAsync("ServiceAdded", serviceHubData);
         }
@@ -80,7 +82,7 @@
             service.description = dto.description;
             service.price = dto.price;
 
-            var oldDays = await _serviceDayRepo.FindAsync(x => x.serviceId == service.id);
+            var oldDays = await _serviceDayRepo.FindAsync(x => x.serviceId == service.Id);
             if (oldDays.Any())
             {
                 _serviceDayRepo.RemoveRange(oldDays);
@@ -92,7 +94,7 @@
                 var newDays = dto.serviceDays
                     .SelectMany(day => dto.timeSlots.Select(slot => new ServiceDay
                     {
-                        serviceId = service.id,
+                        serviceId = service.Id,
                         dayOfWeek = day.dayOfWeek,
                         start = slot.start,
                         end = slot.end
@@ -110,8 +112,8 @@
 
             var serviceHubData = new ServiceHubData
             {
-                serviceProviderId = service.doctorId,
-                serviceId = service.id
+                serviceProviderId = service.ServiceProviderId,
+                serviceId = service.Id
             };
             await _hub.Clients.All.SendAsync("ServiceUpdated", serviceHubData);
         }
@@ -126,7 +128,7 @@
 
             return services.Select(service => new ServiceResponse
             {
-                id = service.id,
+                id = service.Id,
                 serviceNameArabic = service.serviceName.Arabic,
                 serviceNameEnglish = service.serviceName.English,
                 descriptionArabic = service.description.Arabic,
@@ -160,14 +162,14 @@
             if (service.ServiceDays.Any(s => s.isBooking))
                 throw new BadRequestException(LocalizationKey.CannotDeleteServiceWithExistingBookings);
 
-            service.isDelete = true;
+            service.IsDeleted = true;
             _doctorServiceRepository.Update(service);
             await _doctorServiceRepository.SaveChangesAsync();
 
             var serviceHubData = new ServiceHubData
             {
-                serviceProviderId = service.doctorId,
-                serviceId = service.id
+                serviceProviderId = service.ServiceProviderId,
+                serviceId = service.Id
             };
             await _hub.Clients.All.SendAsync("ServiceDeleted", serviceHubData);
         }

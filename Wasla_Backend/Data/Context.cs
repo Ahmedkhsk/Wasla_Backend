@@ -64,6 +64,9 @@ namespace Wasla_Backend.Data
             builder.Entity<ride>().ToTable("Rides");
             builder.Entity<Technician>().ToTable("Technicians");
             builder.Entity<TechnicianBooking>().ToTable("TechnicianBookings");
+            builder.Entity<Service>().ToTable("DoctorServices");
+            builder.Entity<Booking>().ToTable("DoctorBookings");
+
 
 
             builder.Entity<BaseBooking>()
