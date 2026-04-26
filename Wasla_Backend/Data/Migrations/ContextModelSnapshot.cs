@@ -359,7 +359,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("senderId");
 
-                    b.ToTable("Chats", (string)null);
+                    b.ToTable("Chats");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.ChatModel.ChatMessage", b =>
@@ -412,7 +412,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("chatId");
 
-                    b.ToTable("Messages", (string)null);
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.ContactUs", b =>
@@ -437,7 +437,7 @@ namespace Wasla_Backend.data
 
                     b.HasKey("id");
 
-                    b.ToTable("ContactUs", (string)null);
+                    b.ToTable("ContactUs");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.DoctorSpecialization", b =>
@@ -450,7 +450,7 @@ namespace Wasla_Backend.data
 
                     b.HasKey("Id");
 
-                    b.ToTable("DoctorSpecializations", (string)null);
+                    b.ToTable("DoctorSpecializations");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Driver.RideDispatchJob", b =>
@@ -474,7 +474,7 @@ namespace Wasla_Backend.data
 
                     b.HasKey("Id");
 
-                    b.ToTable("RideDispatchJobs", (string)null);
+                    b.ToTable("RideDispatchJobs");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Favourites", b =>
@@ -505,7 +505,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Favorite", (string)null);
+                    b.ToTable("Favorite");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.GeneralModel.Notification", b =>
@@ -547,7 +547,7 @@ namespace Wasla_Backend.data
 
                     b.HasKey("Id");
 
-                    b.ToTable("Notifications", (string)null);
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.GeneralModel.Payment", b =>
@@ -629,7 +629,7 @@ namespace Wasla_Backend.data
 
                     b.HasKey("Id");
 
-                    b.ToTable("RefreshTokens", (string)null);
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.ResidentIdentity", b =>
@@ -653,7 +653,7 @@ namespace Wasla_Backend.data
 
                     b.HasKey("Id");
 
-                    b.ToTable("residentIdentities", (string)null);
+                    b.ToTable("residentIdentities");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Restaurant.Cart", b =>
@@ -678,7 +678,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("restaurantId");
 
-                    b.ToTable("Carts", (string)null);
+                    b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Restaurant.CartItem", b =>
@@ -707,7 +707,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("menuItemId");
 
-                    b.ToTable("CartItems", (string)null);
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Restaurant.MenuItem", b =>
@@ -746,7 +746,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("restaurantId");
 
-                    b.ToTable("MenuItems", (string)null);
+                    b.ToTable("MenuItems");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Restaurant.MenuItemCategory", b =>
@@ -765,7 +765,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("restaurantId");
 
-                    b.ToTable("MenuItemCategories", (string)null);
+                    b.ToTable("MenuItemCategories");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Restaurant.Order", b =>
@@ -823,7 +823,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("restaurantId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Restaurant.OrderItem", b =>
@@ -852,7 +852,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("orderId");
 
-                    b.ToTable("OrderItems", (string)null);
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Restaurant.Reservations", b =>
@@ -889,7 +889,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("userId");
 
-                    b.ToTable("Reservations", (string)null);
+                    b.ToTable("Reservations");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Restaurant.RestaurantCategory", b =>
@@ -902,7 +902,7 @@ namespace Wasla_Backend.data
 
                     b.HasKey("id");
 
-                    b.ToTable("RestaurantCategories", (string)null);
+                    b.ToTable("RestaurantCategories");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Reviews", b =>
@@ -941,7 +941,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Review", (string)null);
+                    b.ToTable("Review");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.ServiceDay", b =>
@@ -973,7 +973,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("serviceId");
 
-                    b.ToTable("ServiceDay", (string)null);
+                    b.ToTable("ServiceDay");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Social.Comment", b =>
@@ -1012,7 +1012,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("userId");
 
-                    b.ToTable("Comments", (string)null);
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Social.Post", b =>
@@ -1046,7 +1046,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("userId");
 
-                    b.ToTable("Posts", (string)null);
+                    b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Social.Reaction", b =>
@@ -1077,7 +1077,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("userId");
 
-                    b.ToTable("Reactions", (string)null);
+                    b.ToTable("Reactions");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Social.Report", b =>
@@ -1108,7 +1108,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("userId");
 
-                    b.ToTable("Reports", (string)null);
+                    b.ToTable("Reports");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.UserEvent", b =>
@@ -1137,7 +1137,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("serviceProviderId");
 
-                    b.ToTable("UserEvents", (string)null);
+                    b.ToTable("UserEvents");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Resident", b =>
@@ -1172,7 +1172,7 @@ namespace Wasla_Backend.data
                     b.Property<float>("Rating")
                         .HasColumnType("real");
 
-                    b.ToTable("ServiceProvider", (string)null);
+                    b.ToTable("serviceProvider");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Booking", b =>
@@ -1543,7 +1543,7 @@ namespace Wasla_Backend.data
 
                             b1.HasKey("ApplicationRoleId");
 
-                            b1.ToTable("AspNetRoles", (string)null);
+                            b1.ToTable("AspNetRoles");
 
                             b1.WithOwner()
                                 .HasForeignKey("ApplicationRoleId");
@@ -1624,7 +1624,7 @@ namespace Wasla_Backend.data
 
                             b1.HasKey("DoctorSpecializationId");
 
-                            b1.ToTable("DoctorSpecializations", (string)null);
+                            b1.ToTable("DoctorSpecializations");
 
                             b1.WithOwner()
                                 .HasForeignKey("DoctorSpecializationId");
@@ -1744,7 +1744,7 @@ namespace Wasla_Backend.data
 
                             b1.HasKey("MenuItemid");
 
-                            b1.ToTable("MenuItems", (string)null);
+                            b1.ToTable("MenuItems");
 
                             b1.WithOwner()
                                 .HasForeignKey("MenuItemid");
@@ -1783,7 +1783,7 @@ namespace Wasla_Backend.data
 
                             b1.HasKey("MenuItemCategoryid");
 
-                            b1.ToTable("MenuItemCategories", (string)null);
+                            b1.ToTable("MenuItemCategories");
 
                             b1.WithOwner()
                                 .HasForeignKey("MenuItemCategoryid");
@@ -1871,7 +1871,7 @@ namespace Wasla_Backend.data
 
                             b1.HasKey("RestaurantCategoryid");
 
-                            b1.ToTable("RestaurantCategories", (string)null);
+                            b1.ToTable("RestaurantCategories");
 
                             b1.WithOwner()
                                 .HasForeignKey("RestaurantCategoryid");
@@ -2091,7 +2091,7 @@ namespace Wasla_Backend.data
 
                             b1.HasKey("PackageId");
 
-                            b1.ToTable("Packages", (string)null);
+                            b1.ToTable("Packages");
 
                             b1.WithOwner()
                                 .HasForeignKey("PackageId");
@@ -2114,7 +2114,7 @@ namespace Wasla_Backend.data
 
                             b1.HasKey("PackageId");
 
-                            b1.ToTable("Packages", (string)null);
+                            b1.ToTable("Packages");
 
                             b1.WithOwner()
                                 .HasForeignKey("PackageId");
@@ -2156,7 +2156,7 @@ namespace Wasla_Backend.data
 
                             b1.HasKey("ServiceId");
 
-                            b1.ToTable("DoctorServices", (string)null);
+                            b1.ToTable("DoctorServices");
 
                             b1.WithOwner()
                                 .HasForeignKey("ServiceId");
@@ -2179,7 +2179,7 @@ namespace Wasla_Backend.data
 
                             b1.HasKey("ServiceId");
 
-                            b1.ToTable("DoctorServices", (string)null);
+                            b1.ToTable("DoctorServices");
 
                             b1.WithOwner()
                                 .HasForeignKey("ServiceId");

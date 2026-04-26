@@ -12,8 +12,8 @@ using Wasla_Backend.Data;
 namespace Wasla_Backend.data
 {
     [DbContext(typeof(Context))]
-    [Migration("20260424185637_GenralizeDoctorServiceAndBooking")]
-    partial class GenralizeDoctorServiceAndBooking
+    [Migration("20260426041556_updateDB")]
+    partial class updateDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -293,7 +293,7 @@ namespace Wasla_Backend.data
 
                     b.HasIndex("ResidentId");
 
-                    b.ToTable("BaseBookings");
+                    b.ToTable("BaseBookings", (string)null);
 
                     b.UseTptMappingStrategy();
                 });
@@ -1175,7 +1175,7 @@ namespace Wasla_Backend.data
                     b.Property<float>("Rating")
                         .HasColumnType("real");
 
-                    b.ToTable("ServiceProvider");
+                    b.ToTable("serviceProvider");
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Booking", b =>

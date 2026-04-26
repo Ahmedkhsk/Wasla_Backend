@@ -1,4 +1,5 @@
-﻿using Wasla_Backend.Models.Restaurant;
+﻿using Microsoft.EntityFrameworkCore;
+using Wasla_Backend.Models.Restaurant;
 using Notification = Wasla_Backend.Models.GeneralModel.Notification;
 
 namespace Wasla_Backend.Data
@@ -67,7 +68,8 @@ namespace Wasla_Backend.Data
             builder.Entity<TechnicianBooking>().ToTable("TechnicianBookings");
             builder.Entity<Service>().ToTable("DoctorServices");
             builder.Entity<Booking>().ToTable("DoctorBookings");
-
+            builder.Entity<BaseBooking>().ToTable("BaseBookings");
+            builder.Entity<Booking>().ToTable("DoctorBookings");
 
 
             builder.Entity<BaseBooking>()
