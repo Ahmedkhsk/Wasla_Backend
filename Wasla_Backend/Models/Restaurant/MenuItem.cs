@@ -22,5 +22,6 @@
         [ForeignKey("category")]
         public int? categoryId { get; set; }
         public MenuItemCategory category { get; set; }
+        public bool isDeleted { get; set; } = false;
     }
 }

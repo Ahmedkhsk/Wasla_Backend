@@ -79,11 +79,8 @@
             var menuItem = await _menuItemRepository.GetByIdAsync(id);
             if (menuItem == null)
                 throw new NotFoundException(LocalizationKey.MenuItemNotFound);
-
-            _fileService.DeleteFile(menuItem.imageUrl,
-                    _fileUrlBuilderService.GetPath(MediaType.restaurantImage));
-
-            _menuItemRepository.Delete(menuItem);
+            menuItem.isDeleted = true;
+            _menuItemRepository.Update(menuItem);
             await _menuItemRepository.SaveChangesAsync();
         }
 

@@ -12,7 +12,7 @@ namespace Wasla_Backend.Repositories.Implementation
         {
             var query = _dbSet
                 .AsNoTracking()
-                .Where(m => m.restaurantId == dto.id)
+                .Where(m => m.restaurantId == dto.id && !m.isDeleted)
                 .Include(m => m.category)
                 .AsQueryable();
 
@@ -23,14 +23,9 @@ namespace Wasla_Backend.Repositories.Implementation
         {
             return await _dbSet
                 .AsNoTracking()
-                .Where(m => m.restaurantId == dto.id && m.isAvailable)
+                .Where(m => m.restaurantId == dto.id && m.isAvailable && !m.isDeleted)
                 .Include(m => m.category)
                 .ToListAsync();
         }
-
-
-
-
-
     }
 }

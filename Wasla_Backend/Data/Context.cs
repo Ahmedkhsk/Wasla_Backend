@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Wasla_Backend.Models.Restaurant;
-using Notification = Wasla_Backend.Models.GeneralModel.Notification;
+﻿using Notification = Wasla_Backend.Models.GeneralModel.Notification;
 
 namespace Wasla_Backend.Data
 {

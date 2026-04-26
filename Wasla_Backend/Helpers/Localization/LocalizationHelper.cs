@@ -1765,6 +1765,12 @@
                 ["ar"] = "تم إنشاء تصنيف العناصر بنجاح."
             },
 
+            [LocalizationKey.CategoryHasItems] = new()
+            {
+                ["en"] = "Cannot delete category because it contains menu items.",
+                ["ar"] = "لا يمكن حذف الفئة لأنها تحتوي على عناصر."
+            },
+
             [LocalizationKey.MenuItemCategoryUpdatedSuccessfully] = new()
             {
                 ["en"] = "Menu item category updated successfully.",
@@ -1803,6 +1809,12 @@
             {
                 ["en"] = "Menu item created successfully.",
                 ["ar"] = "تم إنشاء العنصر بنجاح."
+            },
+
+            [LocalizationKey.MenuItemsNotAvailable] = new()
+            {
+                ["en"] = "Some items in your cart are no longer available.",
+                ["ar"] = "بعض العناصر في سلة التسوق لم تعد متاحة."
             },
 
             [LocalizationKey.MenuItemUpdatedSuccessfully] = new()
@@ -1976,6 +1988,7 @@
                 ["ar"] = "لا يمكن إلغاء الطلب."
             },
             #endregion
+            
             [LocalizationKey.ServiceProvidersRetrievedSuccessfully] = new()
             {
                 ["en"] = "Service providers retrieved successfully.",

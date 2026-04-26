@@ -25,6 +25,15 @@
             if (cart == null || !cart.items.Any())
                 throw new NotFoundException(LocalizationKey.CartIsEmpty);
 
+            var invalidItems = cart.items
+                    .Where(x => x.menuItem.isDeleted)
+                    .ToList();
+
+            if (invalidItems.Any())
+            {
+                throw new BadRequestException(LocalizationKey.MenuItemsNotAvailable);
+            }
+
             var order = _mapper.Map<Order>(cart);
             
             foreach (var item in order.items)

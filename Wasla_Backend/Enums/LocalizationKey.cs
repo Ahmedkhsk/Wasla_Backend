@@ -435,14 +435,16 @@
         MenuItemCategoryRetrievedSuccessfully,
         MenuItemCategoriesRetrievedSuccessfully,
         MenuItemCategoryNotFound,
+        CategoryHasItems,
 
         #endregion
 
         #region MenuItem
         MenuItemRetrievedSuccessfully,
         MenuItemNotFound,
+        MenuItemsNotAvailable,
         #endregion
-       
+
         #region Cart
 
         CartCreatedSuccessfully,

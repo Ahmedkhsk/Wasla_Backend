@@ -4,12 +4,15 @@
     {
         private readonly IMenuItemCategoryRepository _menuItemCategoryRepo;
         private readonly IRestaurantRepository _restaurantRepository;
+        private readonly IMenuItemRepository _menuItemRepository;
 
-        public MenuItemCategoryService(IMenuItemCategoryRepository MenuItemCategoryRepo,
-                                       IRestaurantRepository restaurantRepository)
+        public MenuItemCategoryService
+            (IMenuItemCategoryRepository MenuItemCategoryRepo,
+            IRestaurantRepository restaurantRepository,IMenuItemRepository menuItemRepository)
         {
             _menuItemCategoryRepo = MenuItemCategoryRepo;
             _restaurantRepository = restaurantRepository;
+            _menuItemRepository = menuItemRepository;
         }
 
         public async Task AddCategory(AddMenuItemCategoryDto dto)
@@ -47,7 +50,13 @@
 
             if (category == null)
                 throw new NotFoundException(LocalizationKey.MenuItemCategoryNotFound);
-            
+
+            var hasItems = await _menuItemRepository.AnyAsync(x => x.categoryId == id);
+
+            if (hasItems)
+                throw new BadRequestException(LocalizationKey.CategoryHasItems);
+
+
             _menuItemCategoryRepo.Delete(category);
             await _menuItemCategoryRepo.SaveChangesAsync();
         }
