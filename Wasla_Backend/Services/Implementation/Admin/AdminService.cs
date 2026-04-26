@@ -8,17 +8,20 @@ namespace Wasla_Backend.Services.Implementation
         private readonly IUserRepository _userRepository;
         private readonly IGenericRepository<ContactUs> _contatUsRepository;
         private readonly IRoleRepository _roleRepository;
+        private readonly EmailSenderHelper _emailSenderHelper;
 
         public AdminService(
             IBookingRepository bookingRepository,
             IUserRepository userRepository,
             IGenericRepository<ContactUs> contatUsRepository,
-            IRoleRepository roleRepository)
+            IRoleRepository roleRepository,
+            EmailSenderHelper emailSenderHelper)
         {
             _bookingRepository = bookingRepository;
             _userRepository = userRepository;
             _contatUsRepository = contatUsRepository;
             _roleRepository = roleRepository;
+            _emailSenderHelper = emailSenderHelper;
         }
 
         public async Task<AdminChartResponse> GetCollectedCountBookingsPerYear()
@@ -45,6 +48,12 @@ namespace Wasla_Backend.Services.Implementation
 
             if (!result.Succeeded)
                 throw new BadRequestException(LocalizationKey.FailedToChangeUserStatus);
+            if(changeUserStsatus.status == UserStatus.Active)
+            {
+                var emailSubject = "Account Activated";
+                var emailBody = $"Dear {user.FullName},\n\nYour account has been Activated. You can now log in and start using our services.\n\nBest regards,\nWasla Team";
+                await _emailSenderHelper.SendEmailAsync(user.Email, emailSubject, emailBody);
+            }
         }
 
         public async Task AddContact(ContactUsDto contactUsDto)
