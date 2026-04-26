@@ -32,6 +32,7 @@
             app.MapHub<ReviewHub>("/reviewHub");
             app.MapHub<ChatHub>("/chatHub");
             app.MapHub<RideHub>("/rideHub");
+            app.MapHub<OrderHub>("/orderHub");
 
             app.MapControllers();
 

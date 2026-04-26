@@ -45,7 +45,9 @@ public static class AuthenticationConfiguration
                          path.StartsWithSegments("/serviceHub") ||
                          path.StartsWithSegments("/rideHub") ||
                          path.StartsWithSegments("/reviewHub") ||
-                         path.StartsWithSegments("/chatHub")))
+                         path.StartsWithSegments("/chatHub") ||
+                         path.StartsWithSegments("/orderHub")) 
+                         )
                     {
                         context.Token = accessToken;
                         Console.WriteLine("Token assigned to context.Token ✔");

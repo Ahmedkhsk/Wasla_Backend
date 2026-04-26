@@ -10,6 +10,7 @@
         {
             return await _context.Carts
                 .Include(c => c.items)
+                    .ThenInclude(i => i.menuItem)
                 .FirstOrDefaultAsync(c => c.residentId == residentId && c.restaurantId == restaurantId);
         }
 

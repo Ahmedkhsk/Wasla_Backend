@@ -154,6 +154,7 @@ global using Wasla_Backend.Hubs.BookingHubs;
 global using Wasla_Backend.Hubs.ServiceHubs;
 global using Wasla_Backend.Hubs.ReviewHubs;
 global using Wasla_Backend.Hubs.DriverHubs;
+global using Wasla_Backend.Hubs.RestaurantHubs;
 #endregion
 
 #region Project - Data

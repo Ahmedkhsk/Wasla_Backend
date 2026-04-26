@@ -477,7 +477,9 @@
         OrderStatusUpdatedSuccessfully,
         OrderCancelledSuccessfully,
         OrderNotFound,
-
+        InvalidOrderStatus, 
+        OrderMarkedAsDeliveredSuccessfully, 
+        OrderMarkedAsPreparingSuccessfully,
         #endregion
 
         #region OrderItem

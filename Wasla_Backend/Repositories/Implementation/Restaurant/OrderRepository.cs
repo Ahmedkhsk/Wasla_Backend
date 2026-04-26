@@ -5,6 +5,15 @@
         public OrderRepository(Context context) : base(context)
         {
         }
+        public async Task<Order?> GetOrderDetails(int orderId)
+        {
+            return await _dbSet
+                .Where(r => r.id == orderId)
+                .Include(r => r.items)
+                    .ThenInclude(i => i.menuItem)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+        }
 
         public async Task<PagedResult<Order>> OrdersRestaurent(GetGeneralWithPaginationDto<string> dto)
         {

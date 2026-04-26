@@ -1929,6 +1929,22 @@
                 ["en"] = "Order created successfully.",
                 ["ar"] = "تم إنشاء الطلب بنجاح."
             },
+            [LocalizationKey.OrderMarkedAsPreparingSuccessfully] = new()
+            {
+                ["en"] = "Order marked as preparing successfully.",
+                ["ar"] = "تم تحديث حالة الطلب إلى قيد التحضير بنجاح."
+            },
+
+            [LocalizationKey.OrderMarkedAsDeliveredSuccessfully] = new()
+            {
+                ["en"] = "Order marked as delivered successfully.",
+                ["ar"] = "تم تحديث حالة الطلب إلى تم التوصيل بنجاح."
+            },
+            [LocalizationKey.InvalidOrderStatus] = new()
+            {
+                ["en"] = "Invalid order status.",
+                ["ar"] = "حالة الطلب غير صحيحة."
+            },
 
             [LocalizationKey.OrderRetrievedSuccessfully] = new()
             {
