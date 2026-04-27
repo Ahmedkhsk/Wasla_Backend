@@ -16,7 +16,6 @@
             app.UseMiddleware<ExceptionMiddleware>();
             app.UseMiddleware<RateLimitingMiddleware>();
 
-
             app.UseSwagger();
 
             app.UseSwaggerUI(c =>
@@ -35,6 +34,13 @@
             app.MapHub<OrderHub>("/orderHub");
 
             app.MapControllers();
+
+            RecurringJob.AddOrUpdate<HangfireFunctions>(
+            "check-reservations-status",
+            x => x.CheckReservationsStatus(),
+            Cron.Minutely
+            );
+
 
             return app;
         }

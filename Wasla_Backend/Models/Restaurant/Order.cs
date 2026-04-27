@@ -1,6 +1,6 @@
 ﻿namespace Wasla_Backend.Models.Restaurant
 {
-    public class Order
+    public class Order  
     {
         public int id { get; set; }
 

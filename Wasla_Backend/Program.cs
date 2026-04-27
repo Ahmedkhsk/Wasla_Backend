@@ -1,5 +1,4 @@
-﻿
-namespace Wasla_Backend
+﻿namespace Wasla_Backend
 {
     public class Program
     {
