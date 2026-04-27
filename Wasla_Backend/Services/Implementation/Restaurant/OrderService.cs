@@ -63,7 +63,7 @@ namespace Wasla_Backend.Services.Implementation
                     Amount = order.totalPrice,
                     entityId = order.id,
                     entityType = EntityType.order,
-                    UserId = order.residentId,
+                    UserId = order.residentId,              
                     PaymentMethod = dto.paymentMethod
                 });
 

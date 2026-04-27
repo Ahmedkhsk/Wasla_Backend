@@ -39,7 +39,6 @@ namespace Wasla_Backend.Services.Implementation.General
                     ?? throw new NotFoundException(LocalizationKey.OrderNotFound);
             }
 
-            var merchantOrderId = $"{dto.entityType}_{dto.entityId}";
             var amountCents = (int)(dto.Amount * 100);
 
             var names = (resident.FullName ?? "Guest User").Split(' ');
@@ -69,19 +68,18 @@ namespace Wasla_Backend.Services.Implementation.General
                 billing_data = billingData,
                 customer = new { id = dto.UserId },
                 expiration = 3600,
-                merchant_order_id = merchantOrderId,
                 callback = $"{_configuration["Paymob:BaseUrl"]}/api/payment/callback",
                 post_url = $"{_configuration["Paymob:BaseUrl"]}/api/payment/server-callback",
                 items = new[]
                 {
-                new
-                {
-                    name = dto.entityType == EntityType.order ? "Wasla Food Order" : "Wasla Booking",
-                    amount = amountCents,
-                    description = "Payment via Wasla",
-                    quantity = 1
-                }
+            new
+            {
+                name = dto.entityType == EntityType.order ? "Wasla Order" : "Wasla Booking",
+                amount = amountCents,
+                description = "Payment via Wasla",
+                quantity = 1
             }
+        }
             };
 
             using var httpClient = new HttpClient();
@@ -92,13 +90,14 @@ namespace Wasla_Backend.Services.Implementation.General
 
             var response = await httpClient.SendAsync(request);
 
-            
             if (!response.IsSuccessStatusCode)
                 throw new BadRequestException(LocalizationKey.PaymobApiFailed);
-            
 
-            var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+            var jsonString = await response.Content.ReadAsStringAsync();
+            var json = JsonDocument.Parse(jsonString);
+
             var clientSecret = json.RootElement.GetProperty("client_secret").GetString();
+            var intentionOrderId = json.RootElement.GetProperty("intention_order_id").GetInt64().ToString();
 
             var payment = new Payment
             {
@@ -106,11 +105,11 @@ namespace Wasla_Backend.Services.Implementation.General
                 Amount = dto.Amount,
                 PaymentMethod = dto.PaymentMethod,
                 Status = PaymentStatus.Pending,
+                PaymobOrderId = intentionOrderId,
                 TransactionId = null,
                 PaymentDate = _dateTimeHelper.Now,
                 entityId = dto.entityId,
                 entityType = dto.entityType,
-                
             };
 
             _context.Payment.Add(payment);
@@ -121,32 +120,44 @@ namespace Wasla_Backend.Services.Implementation.General
             return (payment, redirectUrl);
         }
 
-        public async Task HandlePaymentCallback(string merchantOrderId, bool isSuccess, bool isRefunded, string transactionId)
+        public async Task HandlePaymentCallbackByPaymobOrderId(string paymobOrderId, bool isSuccess, bool isRefunded, string transactionId)
         {
-            var parts = merchantOrderId.Split('_');
-            var type = Enum.Parse<EntityType>(parts[0], true);
-            var id = int.Parse(parts[1]);
+            var payment = await _context.Payment
+                .FirstOrDefaultAsync(p => p.PaymobOrderId == paymobOrderId);
 
-            if (type == EntityType.order)
+            if (payment == null)
+                return;
+
+            if (payment.Status == PaymentStatus.Completed)
+                return;
+
+            if (payment.entityType == EntityType.order)
             {
                 if (isRefunded)
-                    await UpdateOrderRefunded(id);
+                    await UpdateOrderRefunded(payment.entityId);
                 else if (isSuccess)
-                    await UpdateOrderSuccess(id, transactionId);
+                    await UpdateOrderSuccess(payment.entityId, transactionId);
                 else
-                    await UpdateOrderFailed(id);
+                    await UpdateOrderFailed(payment.entityId);
             }
-            else if (type == EntityType.booking)
+            else
             {
                 if (isRefunded)
-                    await UpdateBookingRefunded(id);
+                    await UpdateBookingRefunded(payment.entityId);
                 else if (isSuccess)
-                    await UpdateBookingSuccess(id, transactionId);
+                    await UpdateBookingSuccess(payment.entityId, transactionId);
                 else
-                    await UpdateBookingFailed(id);
+                    await UpdateBookingFailed(payment.entityId);
             }
+
+            payment.Status = isRefunded ? PaymentStatus.Refunded
+                : isSuccess ? PaymentStatus.Completed
+                : PaymentStatus.Failed;
+
+            payment.TransactionId = transactionId;
+
+            await _context.SaveChangesAsync();
         }
-
         public async Task<bool> RefundPaymentAsync(EntityTypeDto dto)
         {
             var payment = await _context.Payment
@@ -206,6 +217,7 @@ namespace Wasla_Backend.Services.Implementation.General
             order.status = OrderStatus.Paid;
             order.transactionId = transactionId;
 
+            
             var cart = await _context.Carts
                 .Include(c => c.items)
                 .FirstOrDefaultAsync(c => c.residentId == order.residentId && c.restaurantId == order.restaurantId);
@@ -216,6 +228,7 @@ namespace Wasla_Backend.Services.Implementation.General
                 _context.Carts.Remove(cart);
             }
 
+            _context.Orders.Update(order);
             await _context.SaveChangesAsync();
         }
 

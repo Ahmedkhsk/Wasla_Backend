@@ -16,6 +16,7 @@
         [ForeignKey("Service")]
         public int? ServiceId { get; set; }
         public decimal Amount { get; set; }
+        public string? PaymobOrderId { get; set; }
         public DateTime PaymentDate { get; set; }
         public PaymentMethodType PaymentMethod { get; set; }
         public string? TransactionId { get; set; }
