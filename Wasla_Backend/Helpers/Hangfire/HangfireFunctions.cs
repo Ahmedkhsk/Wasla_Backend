@@ -2,12 +2,15 @@
 {
     private readonly Context _db;
     private readonly IHubContext<OrderHub> _hubOrder;
+    private readonly DateTimeHelper _dateTimeHelper;
     private readonly IHubContext<BookingHub> _hubBooking;
 
-    public HangfireFunctions(Context db, IHubContext<BookingHub> hubBooking, IHubContext<OrderHub> hubOrder)
+    public HangfireFunctions(Context db, IHubContext<BookingHub> hubBooking, IHubContext<OrderHub> hubOrder,
+        DateTimeHelper dateTimeHelper)
     {
         _db = db;
         _hubOrder = hubOrder;
+        _dateTimeHelper = dateTimeHelper;
         _hubBooking = hubBooking;
     }
 
@@ -52,5 +55,27 @@
 
         await _hubOrder.Clients.Group(order.residentId)
             .SendAsync("OrderStatusChanged", order.id, order.status);
+    }
+
+    public async Task CheckReservationsStatus()
+    {
+        var now = _dateTimeHelper.Now;
+        
+        var nowDate = DateOnly.FromDateTime(now);
+        var nowTime = TimeOnly.FromDateTime(now);
+
+        await _db.Reservations
+            .Where(r => r.status == Status.Pending &&
+                (r.reservationDate < nowDate ||
+                (r.reservationDate == nowDate && r.reservationTime <= nowTime)))
+            .ExecuteUpdateAsync(s => s.SetProperty(r => r.status, Status.Canceled));
+
+        await _db.Reservations
+            .Where(r => r.status == Status.Accepted &&
+                (r.reservationDate < nowDate ||
+                (r.reservationDate == nowDate && r.reservationTime <= nowTime)))
+            .ExecuteUpdateAsync(s => s.SetProperty(r => r.status, Status.Completed));
+
+        await _db.SaveChangesAsync();
     }
 }
