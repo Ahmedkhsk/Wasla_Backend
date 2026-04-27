@@ -100,13 +100,23 @@ public class PaymentController : ControllerBase
                     }
                 }
 
-                concatenated.Append(found ? current.ToString() : "");
+                if (!found)
+                {
+                    concatenated.Append("");
+                    continue;
+                }
+
+                var value = current.ValueKind == JsonValueKind.True ? "true"
+                    : current.ValueKind == JsonValueKind.False ? "false"
+                    : current.ToString();
+
+                concatenated.Append(value);
             }
 
             var calculatedHmac = _paymentService.ComputeHmacSHA512(concatenated.ToString(), secret);
 
-            //if (!receivedHmac.Equals(calculatedHmac, StringComparison.OrdinalIgnoreCase))
-            //    return Unauthorized();
+            if (!receivedHmac.Equals(calculatedHmac, StringComparison.OrdinalIgnoreCase))
+                return Unauthorized();
 
             var transactionId = obj.GetProperty("id").ToString();
             var isSuccess = obj.TryGetProperty("success", out var successElement) && successElement.GetBoolean();
@@ -121,7 +131,6 @@ public class PaymentController : ControllerBase
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"💥 ERROR IN CALLBACK: {ex.Message}");
             return StatusCode(500);
         }
     }
