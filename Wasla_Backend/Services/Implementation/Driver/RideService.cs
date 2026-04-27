@@ -44,6 +44,8 @@
             var driver = await _driverRepository.GetByIdAsync(driverId);
             if (driver == null)
                 throw new NotFoundException(LocalizationKey.DriverNotFound);
+            if(ride.Status != RideStatus.Pending)
+                throw new BadRequestException(LocalizationKey.RideNotAvailable);
 
             var affectedRows = await _rideRepository.UpdateRideStatusAsync(rideId, RideStatus.Accepted, driverId);
             if (affectedRows == 0)
@@ -78,6 +80,8 @@
             var ride = await _rideRepository.GetByIdAsync(rideId);
             if (ride == null)
                 throw new NotFoundException(LocalizationKey.RideNotFound);
+            if(ride.Status == RideStatus.Cancelled)
+                throw new BadRequestException(LocalizationKey.RideAlreadyCancelled);
 
             if (ride.DriverId != null && ride.Driver == null)
                 await _context.Entry(ride).Reference(r => r.Driver).LoadAsync();

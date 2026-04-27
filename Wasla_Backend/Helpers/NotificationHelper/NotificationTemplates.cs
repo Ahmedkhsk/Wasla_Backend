@@ -269,7 +269,26 @@ new NotificationTemplate
     TitleEn = "New Reaction ❤️",
     BodyEn = "{UserName} reacted to your post"
 },
+new NotificationTemplate
+{
+    Type = NotificationType.restaurantReservationAccepted,
 
+    TitleAr = "تم قبول الحجز 🍽️",
+    BodyAr = "تم تأكيد حجزك في {RestaurantName} يوم {Date}",
+
+    TitleEn = "Reservation Accepted 🍽️",
+    BodyEn = "Your reservation at {RestaurantName} on {Date} has been confirmed"
+},
+new NotificationTemplate
+{
+    Type = NotificationType.restaurantNewReservation,
+
+    TitleAr = "طلب حجز جديد 🍽️",
+    BodyAr = "{UserName} طلب حجز يوم {Date} لعدد {Persons} أشخاص",
+
+    TitleEn = "New Reservation Request 🍽️",
+    BodyEn = "{UserName} requested a reservation on {Date} for {Persons} persons"
+},
 
 
     };

@@ -28,6 +28,9 @@
         technicianCancelBooking,
         postCommented,
         postReacted,
-        residentCancelDoctorBooking
+        residentCancelDoctorBooking,
+        restaurantReservationAccepted,
+        restaurantNewReservation,
+
     }
 }

@@ -1280,6 +1280,16 @@
                 ["en"] = "Driver profile updated successfully.",
                 ["ar"] = "تم تحديث ملف السائق بنجاح."
             },
+            [LocalizationKey.RideNotAvailable]=new()
+            {
+                ["en"] = "No ride available at the moment.",
+                ["ar"] = "لا توجد رحلة متاحة في الوقت الحالي."
+            },
+            [LocalizationKey.RideAlreadyCancelled]=new()
+            {
+                ["en"] = "Ride has already been cancelled.",
+                ["ar"] = "تم إلغاء الرحلة بالفعل."
+            },
 
             #endregion
 

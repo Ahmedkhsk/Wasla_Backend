@@ -34,5 +34,13 @@
         {
             return await _dbSet.Where(o => o.restaurantId == restaurantId&& o.status == Status.Completed).CountAsync();
         }
+
+        public async Task<Reservations> GetWithResidentAndRestaurant(int reservationId)
+        {
+            return await _dbSet.Where(r => r.id == reservationId)
+                .Include(r => r.user)
+                .Include(r => r.restaurants)
+                .FirstOrDefaultAsync();
+        }
     }
 }

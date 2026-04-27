@@ -16,5 +16,7 @@
         [ForeignKey("restaurantId")]
         public Restaurant restaurants { get; set; }
 
+        public string? QRCode { get; set; }
+
     }
 }

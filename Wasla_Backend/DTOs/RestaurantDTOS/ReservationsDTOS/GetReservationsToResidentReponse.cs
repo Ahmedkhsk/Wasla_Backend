@@ -11,5 +11,6 @@
         public DateOnly reservationDate { get; set; }
         public TimeOnly reservationTime { get; set; }
         public Status status { get; set; }
+        public string? QRCode { get; set; }
     }
 }

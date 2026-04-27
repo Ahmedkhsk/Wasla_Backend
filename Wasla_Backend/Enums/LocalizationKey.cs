@@ -342,6 +342,8 @@
         RideCompleted,
         GetDriverChartSuccessfully,
         UpdateDriverProfileSuccess,
+        RideNotAvailable,
+        RideAlreadyCancelled,
     #endregion
 
         #region ChatAndUserKeys
