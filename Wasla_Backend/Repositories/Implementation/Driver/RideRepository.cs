@@ -116,6 +116,7 @@ namespace Wasla_Backend.Repositories.Implementation.driver
         {
            return await _context.rides
                 .Where(r => r.ResidentId == residentId)
+                .OrderByDescending(r => r.RideDate)
                 .Include(r => r.Driver)
                 .Select(r => new UserRideDto
                 {
@@ -137,6 +138,7 @@ namespace Wasla_Backend.Repositories.Implementation.driver
         {
             return await _context.rides
                 .Where(r => r.DriverId == driverId )
+                .OrderByDescending(r => r.RideDate)
                 .Include(r => r.Resident)
                 .Select(r => new DriverRideDto
                 {
