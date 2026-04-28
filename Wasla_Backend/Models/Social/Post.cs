@@ -10,6 +10,7 @@
             get => fileJson == null ? new List<string>() : JsonSerializer.Deserialize<List<string>>(fileJson);
             set => fileJson = JsonSerializer.Serialize(value);
         }
+
         public ICollection<Comment> comments { get; set; }
     }
 }

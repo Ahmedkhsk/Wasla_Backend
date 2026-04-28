@@ -7,10 +7,9 @@
 
         [ForeignKey("userId")]
         public ApplicationUser user { get; set; }
-
+        public bool isHidden { get; set; } = false;
         public string? content { get; set; }
         public DateTime createdAt { get; set; }
         public DateTime updatedAt { get; set; }
-        public bool isHidden { get; set; } = false;
     }
 }

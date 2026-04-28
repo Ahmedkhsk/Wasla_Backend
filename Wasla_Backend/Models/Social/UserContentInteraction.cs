@@ -8,6 +8,9 @@
         public ReactionTargetType targetType { get; set; }
         public DateTime createdAt { get; set; }
 
+        [ForeignKey("targetId")]
+        public Social target { get; set; }
+
         [ForeignKey("userId")]
         public ApplicationUser user { get; set; }
     }

@@ -1,4 +1,6 @@
-﻿using Notification = Wasla_Backend.Models.GeneralModel.Notification;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
+using Notification = Wasla_Backend.Models.GeneralModel.Notification;
 
 namespace Wasla_Backend.Data
 {
@@ -44,6 +46,7 @@ namespace Wasla_Backend.Data
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<ServiceProvider> serviceProvider { get; set; }
+        public DbSet<Social> Socials { get; set; }
 
 
         public Context(DbContextOptions<Context> options) : base(options) { }
@@ -69,6 +72,8 @@ namespace Wasla_Backend.Data
             builder.Entity<BaseBooking>().ToTable("BaseBookings");
             builder.Entity<Booking>().ToTable("DoctorBookings");
 
+            builder.Entity<Social>()
+                .HasQueryFilter(s => !s.isHidden);
 
             builder.Entity<BaseBooking>()
                 .HasOne(b => b.Resident)
@@ -76,6 +81,7 @@ namespace Wasla_Backend.Data
                 .HasForeignKey(b => b.ResidentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            
             
             builder.Entity<GymBooking>()
                 .HasOne(b => b.Gym)

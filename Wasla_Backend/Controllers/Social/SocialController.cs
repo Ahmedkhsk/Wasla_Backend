@@ -111,17 +111,24 @@
         }
 
         [HttpPost("Report")]
-        public async Task<IActionResult> Report(AddReportDto dto)
+        public async Task<IActionResult> Report(AddReportDto dto , [FromQuery] LanDto lanDto)
         {
             await _reportService.AddReport(dto);
-            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToReport, dto.lan));
+            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToReport, lanDto.lan));
         }
 
-        //[HttpPut("Hide")]
-        //public async Task<IActionResult> HidePostOrComment(HidePostOrCommentDto dto, string lan = "en")
-        //{
-        //    await _postService.HidePostOrComment(dto);
-        //    return Ok(ResponseHelper.Success(LocalizationKey.SuccessToHide, lan));
-        //}
+        [HttpPut("Toggle_Hide")]
+        public async Task<IActionResult> HidePostOrComment([FromQuery] GetGeneralDto<int> dto)
+        {
+            await _reportService.ChangeStatus(dto.id);
+            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToToggleContent, dto.lan));
+        }
+
+        [HttpGet("Reports")]
+        public async Task<IActionResult> GetReports([FromQuery] PaginationParams dto)
+        {
+            var reports = await _reportService.GetReports(dto);
+            return Ok(ResponseHelper.Success(LocalizationKey.SuccessToGetReports, dto.lan, reports));
+        }
     }
 }

@@ -2,6 +2,8 @@
 {
     public interface IReportService
     {
-        public Task AddReport(AddReportDto dto);
+        Task AddReport(AddReportDto dto);
+        Task ChangeStatus(int taegetId);
+        Task<PagedResult<GetReports>> GetReports(PaginationParams paginationParams);
     }
 }

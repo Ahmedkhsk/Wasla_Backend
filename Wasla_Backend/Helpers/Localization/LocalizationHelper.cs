@@ -1125,6 +1125,23 @@
                 ["en"] = "Profile information retrieved successfully.",
                 ["ar"] = "تم جلب معلومات الملف الشخصي بنجاح."
             },
+            [LocalizationKey.SuccessToReport] = new()
+            {
+                ["en"] = "Reported successfully.",
+                ["ar"] = "تم الإبلاغ بنجاح."
+            },
+
+            [LocalizationKey.SuccessToToggleContent] = new()
+            {
+                ["en"] = "Content visibility updated successfully.",
+                ["ar"] = "تم تحديث حالة ظهور المحتوى بنجاح."
+            },
+
+            [LocalizationKey.SuccessToGetReports] = new()
+            {
+                ["en"] = "Reports retrieved successfully.",
+                ["ar"] = "تم جلب البلاغات بنجاح."
+            },
             #endregion
 
             #region Driver

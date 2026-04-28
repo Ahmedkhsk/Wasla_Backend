@@ -240,9 +240,12 @@
         SuccessToGetInformationProfile,
         FailedToDeletePost,
         SuccessToGetPost,
+        SuccessToToggleContent,
         SuccessToGetPosts,
         NoPostsFound,
         PostNotFound,
+        SuccessToHideContent,
+        SuccessToGetReports,
         UnauthorizedToModifyPost,
         #endregion
 
