@@ -59,7 +59,8 @@
         [HttpGet("Users")]
         public async Task<IActionResult> GetUserChats([FromQuery] PaginationParams pagination)
         {
-            var result = await _chatService.getUsers(pagination);
+            var id = User.GetUserId();
+            var result = await _chatService.getUsers(id,pagination);
             return Ok(ResponseHelper.Success(LocalizationKey.SuccessToGetUsers, pagination.lan, result));
         }
 

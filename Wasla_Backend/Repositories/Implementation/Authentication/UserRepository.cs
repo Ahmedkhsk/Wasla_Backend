@@ -37,7 +37,7 @@ namespace Wasla_Backend.Repositories.Implementation
         public async Task<IEnumerable<ApplicationUser>> GetAll()
             => await _userManager.Users.ToListAsync();
 
-        public async Task<PagedResult<GetUsersDto>> GetUsers(PaginationParams pagination)
+        public async Task<PagedResult<GetUsersDto>> GetUsers(string userId, PaginationParams pagination)
         {
             var query = _userManager.Users.AsQueryable();
 
@@ -71,7 +71,10 @@ namespace Wasla_Backend.Repositories.Implementation
                     id = user.Id,
                     name = user.FullName,
                     image = _fileUrlBuilderService.GetMediaUrl(user.ProfilePhoto, MediaType.userImage),
-                    bio = user.bio
+                    bio = user.bio,
+                    chatId = _context.Chats.Where(c => c.receiverId == user.Id && c.senderId == userId || c.senderId == user.Id && c.receiverId == userId)
+                        .Select(c => c.id)
+                        .FirstOrDefault()
                 }).ToList()
             };
         }

@@ -250,9 +250,9 @@ namespace Wasla_Backend.Services.Implementation
                 });
         }
 
-        public async Task<PagedResult<GetUsersDto>> getUsers(PaginationParams pagination)
+        public async Task<PagedResult<GetUsersDto>> getUsers(string id, PaginationParams pagination)
         {
-            return await _userRepository.GetUsers(pagination);
+            return await _userRepository.GetUsers(id, pagination);
         }
 
         public async Task<PagedResult<GetChats>> GetChats(GetGeneralWithPaginationDto<string> pagination)

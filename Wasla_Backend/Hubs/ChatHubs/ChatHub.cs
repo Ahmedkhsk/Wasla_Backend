@@ -66,13 +66,12 @@
     public async Task Typing(string receiverId)
     {
         var senderId = Context.UserIdentifier;
-        await Clients.User(receiverId).SendAsync("UserTyping", senderId);
+        await Clients.User(receiverId).SendAsync("UserTyping", new { senderId });
     }
 
     public async Task StopTyping(string receiverId)
     {
         var senderId = Context.UserIdentifier;
-        await Clients.User(receiverId).SendAsync("UserStopTyping", senderId);
+        await Clients.User(receiverId).SendAsync("UserStopTyping", new { senderId });
     }
-
 }

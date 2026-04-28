@@ -56,8 +56,11 @@
                     chatId = x.chat.id,
                     receiverId = x.lastMessage.receiverId,
                     senderId = x.lastMessage.senderId,
-                    
-                    UnreadMessageCount = x.chat.messages.Count(m => m.senderId != pagination.id && !m.isRead),
+
+                    UnreadMessageCount = x.chat.messages.Count(m =>
+                        m.senderId != pagination.id &&
+                        !m.isRead),
+
                     isEdit = x.lastMessage.isEdited,
                     isMine = x.lastMessage.senderId == pagination.id,
                     messageId = x.lastMessage.id,
@@ -67,7 +70,11 @@
                     type = x.lastMessage.type,
                     audio = x.lastMessage.audio,
                     files = x.lastMessage.files,
-                    
+
+                    lastSeenReciver = x.chat.receiverId == pagination.id
+                        ? x.chat.receiver.lastSeen
+                        : x.chat.sender.lastSeen,
+
                     name = x.chat.senderId == pagination.id
                         ? x.chat.receiver.FullName
                         : x.chat.sender.FullName,
@@ -80,7 +87,6 @@
 
             return await resultQuery.ToPagedResultAsync(pagination.PageNumber, pagination.PageSize);
         }
-        
         public async Task<Chat?> GetChatByIdAsync(int id)
         {
             return await _dbSet
@@ -88,47 +94,50 @@
                 .FirstOrDefaultAsync(c => c.id == id);
         }
 
-        public async Task<ChatResponse?> GetChatByUsingUserId(GetChatDto dto)
-        {
+            public async Task<ChatResponse?> GetChatByUsingUserId(GetChatDto dto)
+            {
             var chat = await _context.Chats
-                .Where(c =>
-                    (c.senderId == dto.senderId && c.receiverId == dto.receiverId) ||
-                    (c.senderId == dto.receiverId && c.receiverId == dto.senderId))
-                .FirstOrDefaultAsync();
+                 .Include(c => c.sender)
+                 .Include(c => c.receiver)
+                 .Where(c =>
+                     (c.senderId == dto.senderId && c.receiverId == dto.receiverId) ||
+                     (c.senderId == dto.receiverId && c.receiverId == dto.senderId))
+                 .FirstOrDefaultAsync();
 
             if (chat == null)
-                return null;
+                    return null;
 
-            var deletedAt = chat.senderId == dto.senderId
-                ? chat.senderDeletedAt
-                : chat.receiverDeletedAt;
+                var deletedAt = chat.senderId == dto.senderId
+                    ? chat.senderDeletedAt
+                    : chat.receiverDeletedAt;
 
-            var messagesQuery = _context.Messages
-                .Where(m => m.chatId == chat.id)
-                .Where(m => deletedAt == null || m.sentAt > deletedAt)
-                .OrderByDescending(m => m.sentAt)
-                .Select(m => new ChatMessageResponse
+                var messagesQuery = _context.Messages
+                    .Where(m => m.chatId == chat.id)
+                    .Where(m => deletedAt == null || m.sentAt > deletedAt)
+                    .OrderByDescending(m => m.sentAt)
+                    .Select(m => new ChatMessageResponse
+                    {
+                        messageText = m.messageText,
+                        audio = m.audio,
+                        type = m.type,
+                        senderId = m.senderId,
+                        receiverId = m.receiverId,
+                        isMine = m.senderId == dto.senderId,
+                        messageId = m.id,
+                        sentAt = m.sentAt,
+                        readAt = m.readAt,
+                        isEdited = m.isEdited,
+                        files = m.files
+                    });
+
+                return new ChatResponse
                 {
-                    messageText = m.messageText,
-                    audio = m.audio,
-                    type = m.type,
-                    senderId = m.senderId,
-                    receiverId = m.receiverId,
-                    isMine = m.senderId == dto.senderId,
-                    messageId = m.id,
-                    sentAt = m.sentAt,
-                    readAt = m.readAt,
-                    isEdited = m.isEdited,
-                    files = m.files
-                });
-
-            return new ChatResponse
-            {
-                chatId = chat.id,
-                senderId = dto.senderId,
-                receiverId = dto.receiverId,
-                messages = await messagesQuery.ToPagedResultAsync(dto.PageNumber, dto.PageSize)
-            };
+                    chatId = chat.id,
+                    senderId = dto.senderId,
+                    receiverId = dto.receiverId,
+                    lastSeenReciver = chat.receiverId == dto.senderId ? chat.receiver.lastSeen : chat.sender.lastSeen,
+                    messages = await messagesQuery.ToPagedResultAsync(dto.PageNumber, dto.PageSize)
+                };
+            }
         }
-    }
 }

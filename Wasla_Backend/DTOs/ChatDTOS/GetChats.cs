@@ -17,6 +17,6 @@
         public List<string>? files { get; set; }
         public DateTime? sentAt { get; set; }
         public DateTime? readAt { get; set; }
-
+        public DateTime? lastSeenReciver { get; set; }
     }
 }
