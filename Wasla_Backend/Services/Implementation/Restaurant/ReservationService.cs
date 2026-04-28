@@ -12,11 +12,12 @@ namespace Wasla_Backend.Services.Implementation
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly IMapper _mapper;
         private readonly IFileService _fileService;
+        private readonly DateTimeHelper _dateTimeHelper;
 
         public ReservationService(
             IReservationRepository reservationsRepository, IRestaurantRepository restaurantRepository,
             IResidentRepository residentRepository,IFileUrlBuilderService fileUrlBuilderService,
-            IMapper mapper, IFileService fileService)
+            IMapper mapper, IFileService fileService , DateTimeHelper dateTimeHelper)
         {
             _reservationsRepository = reservationsRepository;
             _restaurantRepository = restaurantRepository;
@@ -24,6 +25,7 @@ namespace Wasla_Backend.Services.Implementation
             _fileUrlBuilderService = fileUrlBuilderService;
             _mapper = mapper;
             _fileService = fileService;
+            _dateTimeHelper = dateTimeHelper;
         }
 
         public async Task AddReservatio(AddReservationDto dto)
@@ -50,25 +52,32 @@ namespace Wasla_Backend.Services.Implementation
 
             await _reservationsRepository.AddAsync(reservation);
             await _reservationsRepository.SaveChangesAsync();
+
+            
+            BackgroundJob.Schedule<HangfireFunctions>(
+                x => x.CheckReservationStatus(reservation.id),
+                _dateTimeHelper.CalculateDelay(reservation.reservationDate, reservation.reservationTime)
+            );
+
             var metadata = new Dictionary<string, string>
 {
-    { "UserName", resident.FullName ?? "User" },
-    { "Date", dto.reservationDate.ToString() },
-    { "Persons", dto.numberOfPersons.ToString() }
-};
-            var UserImage = _fileUrlBuilderService.GetMediaUrl(
-                resident.ProfilePhoto,
-                MediaType.userImage
-            );
-            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
-    reservation.restaurantId,
-    NotificationType.restaurantNewReservation,
-    reservation.id.ToString(),
-    UserImage,
-    "en",
-    metadata
-));
-        }
+                    { "UserName", resident.FullName ?? "User" },
+                    { "Date", dto.reservationDate.ToString() },
+                    { "Persons", dto.numberOfPersons.ToString() }
+                };
+                            var UserImage = _fileUrlBuilderService.GetMediaUrl(
+                                resident.ProfilePhoto,
+                                MediaType.userImage
+                            );
+                            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
+                    reservation.restaurantId,
+                    NotificationType.restaurantNewReservation,
+                    reservation.id.ToString(),
+                    UserImage,
+                    "en",
+                    metadata
+                ));
+                  }
 
         public async Task ChangeStatus(int reservationId , Status status)
         {
@@ -106,22 +115,20 @@ namespace Wasla_Backend.Services.Implementation
                 );
                 var metadata = new Dictionary<string, string>
 {
-    { "RestaurantName", reservation.restaurants.BusinessName ?? "Restaurant" },
-    { "Date", reservation.reservationDate.ToString() }
-};
+                    { "RestaurantName", reservation.restaurants.BusinessName ?? "Restaurant" },
+                    { "Date", reservation.reservationDate.ToString() }
+                };
                 Hangfire.BackgroundJob.Enqueue<NotificationFunction>( x => x.sendNotification(
-    reservation.userId,
-    NotificationType.restaurantReservationAccepted,
-   QrPath,
-    RestaurantImage,
-    "en",
-    metadata
-));
+                reservation.userId,
+                NotificationType.restaurantReservationAccepted,
+               QrPath,
+                RestaurantImage,
+                "en",
+                metadata
+            ));
             }
             _reservationsRepository.Update(reservation);
             await _reservationsRepository.SaveChangesAsync();
-
-
         }
 
         public async Task<PagedResult<GetReservationsToRestaurantResponse>> GetRestaurantReservations(GetGeneralWithPaginationDto<string> dto)

@@ -57,25 +57,20 @@
             .SendAsync("OrderStatusChanged", order.id, order.status);
     }
 
-    public async Task CheckReservationsStatus()
+
+    public async Task CheckReservationStatus(int reservationId)
     {
-        var now = _dateTimeHelper.Now;
         
-        var nowDate = DateOnly.FromDateTime(now);
-        var nowTime = TimeOnly.FromDateTime(now);
-
         await _db.Reservations
-            .Where(r => r.status == Status.Pending &&
-                (r.reservationDate < nowDate ||
-                (r.reservationDate == nowDate && r.reservationTime <= nowTime)))
-            .ExecuteUpdateAsync(s => s.SetProperty(r => r.status, Status.Canceled));
-
-        await _db.Reservations
-            .Where(r => r.status == Status.Accepted &&
-                (r.reservationDate < nowDate ||
-                (r.reservationDate == nowDate && r.reservationTime <= nowTime)))
-            .ExecuteUpdateAsync(s => s.SetProperty(r => r.status, Status.Completed));
-
-        await _db.SaveChangesAsync();
+            .Where(r =>
+                r.id == reservationId &&
+                (r.status == Status.Pending || r.status == Status.Accepted))
+            .ExecuteUpdateAsync(s => s
+                .SetProperty(r => r.status,
+                    r => r.status == Status.Pending
+                        ? Status.Canceled
+                        : Status.Completed
+                )
+            );
     }
 }

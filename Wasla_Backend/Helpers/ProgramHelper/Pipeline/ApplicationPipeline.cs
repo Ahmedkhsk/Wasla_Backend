@@ -35,13 +35,6 @@
 
             app.MapControllers();
 
-            RecurringJob.AddOrUpdate<HangfireFunctions>(
-            "check-reservations-status",
-            x => x.CheckReservationsStatus(),
-            Cron.Minutely
-            );
-
-
             return app;
         }
     }
