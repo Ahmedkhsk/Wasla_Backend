@@ -1307,6 +1307,13 @@
                 ["en"] = "Ride has already been cancelled.",
                 ["ar"] = "تم إلغاء الرحلة بالفعل."
             },
+            [LocalizationKey.DriverOnTrip]=
+            new()
+            {
+                ["en"] = "Driver is currently on a trip.",
+                ["ar"] = "السائق في رحلة حالياً."
+            },
+            
 
             #endregion
 

@@ -14,6 +14,7 @@ namespace Wasla_Backend.Services.Interfaces.Driver
         public Task<List<UserRideDto>> GetUserRides(string residentId);
         public Task<List<DriverRideDto>> GetDriverRides(string driverId);
         public Task<DriverChartDto> GetDriverChart(string driverId);
+        public Task CheckRideAcceptance(int rideId);
 
 
     }

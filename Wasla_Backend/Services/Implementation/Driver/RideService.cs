@@ -44,7 +44,9 @@
             var driver = await _driverRepository.GetByIdAsync(driverId);
             if (driver == null)
                 throw new NotFoundException(LocalizationKey.DriverNotFound);
-            if(ride.Status != RideStatus.Pending)
+            if(driver.DriverStatus== DriverStatus.OnTrip)
+                throw new BadRequestException(LocalizationKey.DriverOnTrip);
+            if (ride.Status != RideStatus.Pending)
                 throw new BadRequestException(LocalizationKey.RideNotAvailable);
 
             var affectedRows = await _rideRepository.UpdateRideStatusAsync(rideId, RideStatus.Accepted, driverId);
@@ -121,6 +123,19 @@
                 ));
 
             return ride.Id;
+        }
+
+        public async Task CheckRideAcceptance(int rideId)
+        {
+            var ride=await _rideRepository.GetByIdAsync(rideId);
+            if (ride == null)
+                throw new NotFoundException(LocalizationKey.RideNotFound);
+            if(ride.DriverId ==null)
+            {
+                ride.Status = RideStatus.Cancelled;
+                await _rideRepository.SaveChangesAsync();
+            }
+
         }
 
         public async Task<int> CompleteRide(int rideId, string lan)
@@ -315,6 +330,10 @@
                         metadata
                     ));
             }
+            Hangfire.BackgroundJob.Schedule<DriverFunctions>(
+                x => x.CheckRideAcceptance(ride.Id),
+                TimeSpan.FromMinutes(4)
+            );
 
             return ride.Id;
         }

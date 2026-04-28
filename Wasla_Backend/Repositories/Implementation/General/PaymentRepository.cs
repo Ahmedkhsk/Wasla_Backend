@@ -11,7 +11,9 @@ namespace Wasla_Backend.Repositories.Implementation.General
 
         public async Task<List<UserPaymentDto>> GetAllPayment(string ResidentId)
         {
-            return await _context.Payment.Where(p => p.ResidentId == ResidentId).Select(p => new UserPaymentDto
+            return await _context.Payment.Where(p => p.ResidentId == ResidentId)
+                .OrderByDescending(p=>p.PaymentDate)
+                .Select(p => new UserPaymentDto
             {
                 ServiceProviderName = p.ServiceProvider.FullName,
                 TotalAmount=(double)p.Amount,

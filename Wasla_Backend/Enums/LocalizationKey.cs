@@ -347,6 +347,7 @@
         UpdateDriverProfileSuccess,
         RideNotAvailable,
         RideAlreadyCancelled,
+        DriverOnTrip,
     #endregion
 
         #region ChatAndUserKeys
