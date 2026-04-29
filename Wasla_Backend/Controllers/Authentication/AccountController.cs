@@ -8,11 +8,48 @@ namespace Wasla_Backend.Controllers
     {
         private readonly IUserService _userService;
         private readonly Context _context;
+        private readonly IConfiguration _configuration;
 
-        public AccountController(IUserService userService, Context context)
+        public AccountController(IUserService userService, Context context,IConfiguration configuration)
         {
             _userService = userService;
             _context = context;
+            _configuration = configuration;
+        }
+
+        [AllowAnonymous]
+        [HttpPost("validate-token")]
+        public IActionResult ValidateToken([FromBody] TokenDto dto, [FromQuery] LanDto lanDto)
+        {
+            if (string.IsNullOrEmpty(dto.token))
+                return Ok(ResponseHelper.Success(LocalizationKey.InvalidToken, lanDto.lan, false));
+
+            try
+            {
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.UTF8.GetBytes(_configuration["JWT:SecretKey"]);
+
+                tokenHandler.ValidateToken(dto.token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+
+                    ValidateIssuer = true,
+                    ValidIssuer = _configuration["JWT:Issuer"],
+
+                    ValidateAudience = true,
+                    ValidAudience = _configuration["JWT:Audience"],
+
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.FromMinutes(1)
+                }, out _);
+
+                return Ok(ResponseHelper.Success(LocalizationKey.TokenValid, lanDto.lan, true));
+            }
+            catch
+            {
+                return Ok(ResponseHelper.Success(LocalizationKey.InvalidToken, lanDto.lan, false));
+            }
         }
 
         [HttpPost("login")]

@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Services.Implementation
+﻿using Wasla_Backend.Helpers.MlHelper;
+
+namespace Wasla_Backend.Services.Implementation
 {
     public class CommentService : ICommentService
     {
@@ -8,15 +10,16 @@
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly IPostRepository _postRepository;
         private readonly IGenericRepository<ApplicationUser> _UserRepository;
+        private readonly ToxicityClassifier _toxicityClassifier;
 
         public CommentService(
             ICommentRepository commentRepository,
             DateTimeHelper dateTimeHelper,
             IFileService fileService,
             IFileUrlBuilderService fileUrlBuilderService,
-            IPostRepository postRepository
-            ,
-            IGenericRepository<ApplicationUser> UserRepository
+            IPostRepository postRepository,
+            IGenericRepository<ApplicationUser> UserRepository,
+            ToxicityClassifier toxicityClassifier
 
         )
         {
@@ -26,6 +29,7 @@
             _fileUrlBuilderService = fileUrlBuilderService;
             _postRepository = postRepository;
             _UserRepository = UserRepository;
+            _toxicityClassifier = toxicityClassifier;
         }
 
         public async Task AddComment(AddCommentDto dto)
@@ -37,6 +41,14 @@
             var resident = await _UserRepository.GetByIdAsync(dto.userId);
             if (resident == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
+
+            if (dto.content != null)
+            {
+                var isToxic = _toxicityClassifier.IsBadWord(dto.content);
+                if (isToxic)
+                    throw new BadRequestException(LocalizationKey.CommentContentIsInappropriate);
+            }
+
             var comment = new Comment
             {
                 content = dto.content,
@@ -77,13 +89,20 @@
                 throw new NotFoundException(LocalizationKey.CommentNotFound);
 
             if (dto.content != null)
+            {
+                var isToxic = _toxicityClassifier.IsBadWord(dto.content);
+                if (isToxic)
+                    throw new BadRequestException(LocalizationKey.CommentContentIsInappropriate);
+
                 comment.content = dto.content;
+            }
 
             comment.file = await _fileService.ReplaceFileAsync(
                 comment.file,
                 dto.file,
                 _fileUrlBuilderService.GetPath(MediaType.postFile)
             );
+
             comment.createdAt = _dateTimeHelper.Now;
 
             _commentRepository.Update(comment);

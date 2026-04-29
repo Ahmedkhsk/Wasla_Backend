@@ -245,6 +245,11 @@
                 ["en"] = "Invalid refresh token.",
                 ["ar"] = "رمز التحديث غير صالح."
             },
+            [LocalizationKey.TokenValid] = new()
+            {
+                ["en"] = "Token is valid.",
+                ["ar"] = "التوكين صالح."
+            },
             [LocalizationKey.TokenRefreshSuccess] = new()
             {
                 ["en"] = "Token refreshed successfully.",
@@ -1141,6 +1146,16 @@
             {
                 ["en"] = "Reports retrieved successfully.",
                 ["ar"] = "تم جلب البلاغات بنجاح."
+            },
+            [LocalizationKey.PostContentIsInappropriate] = new()
+            {
+                ["en"] = "Post content is inappropriate.",
+                ["ar"] = "محتوى المنشور غير لائق."
+            },
+            [LocalizationKey.CommentContentIsInappropriate] = new()
+            {
+                ["en"] = "Comment content is inappropriate.",
+                ["ar"] = "محتوى التعليق غير لائق."
             },
             #endregion
 

@@ -10,6 +10,8 @@
         private readonly IFileService _fileService;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly ICommentRepository _commentRepository;
+        private readonly ToxicityClassifier _toxicityClassifier;
+
 
         public PostService(
             IPostRepository postRepository,
@@ -19,7 +21,8 @@
             IReactionRepository reactionRepository,
             IFileService fileService,
             IFileUrlBuilderService fileUrlBuilderService,
-            ICommentRepository commentRepository
+            ICommentRepository commentRepository,
+            ToxicityClassifier toxicityClassifier
         )
         {
             _postRepository = postRepository;
@@ -30,6 +33,7 @@
             _fileService = fileService;
             _fileUrlBuilderService = fileUrlBuilderService;
             _commentRepository = commentRepository;
+            _toxicityClassifier = toxicityClassifier;
         }
 
         public async Task AddPost(AddPostDto dto)
@@ -37,6 +41,13 @@
             var user = await _userRepository.GetUserByIdAsync(dto.userId);
             if (user == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
+
+            if (dto.content != null)
+            {
+                var isToxic = _toxicityClassifier.IsBadWord(dto.content);
+                if (isToxic)
+                    throw new BadRequestException(LocalizationKey.PostContentIsInappropriate);
+            }
 
             var post = _mapper.Map<Post>(dto);
             post.createdAt = _dateTimeHelper.Now;
@@ -56,6 +67,13 @@
             var post = await _postRepository.GetByIdAsync(dto.id);
             if (post == null)
                 throw new NotFoundException(LocalizationKey.PostNotFound);
+
+            if(dto.content != null)
+            {
+                var isToxic = _toxicityClassifier.IsBadWord(dto.content);
+                if (isToxic)
+                    throw new BadRequestException(LocalizationKey.PostContentIsInappropriate);
+            }
 
             var existingFileNames = _fileService.ExtractFileNames(dto.files.existingFiles);
 
