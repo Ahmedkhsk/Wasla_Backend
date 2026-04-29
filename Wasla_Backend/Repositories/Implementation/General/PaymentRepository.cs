@@ -135,7 +135,7 @@ namespace Wasla_Backend.Repositories.Implementation.General
             await _context.SaveChangesAsync();
         }
 
-        public async Task<PaymentStatusResponse> GetPaymentStatusAsync(EntityType entityType, int entityId)
+        public async Task<PaymentStatusResponse?> GetPaymentStatusAsync(EntityType entityType, int entityId)
         {
             return await _context.Payment
                 .Where(p => p.entityType == entityType && p.entityId == entityId)
@@ -146,9 +146,8 @@ namespace Wasla_Backend.Repositories.Implementation.General
                     paymentMethod = p.PaymentMethod.ToString(),
                     amount = p.Amount,
                     paymobTransactionId = p.PaymobTransactionId
-                };
-        })
-                .FirstOrDefaultAsync() ?? Task.FromResult(new PaymentStatusResponse { Status = PaymentStatus.Pending });
+                }).FirstOrDefaultAsync()
+                ;
         }
     }
 }
