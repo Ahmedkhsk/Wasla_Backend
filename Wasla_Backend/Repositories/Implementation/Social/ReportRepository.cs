@@ -9,6 +9,7 @@
         public async Task<PagedResult<GetReports>> GetReports(PaginationParams paginationParams)
         {
             var query = _dbSet
+                .IgnoreQueryFilters()
                 .AsNoTracking()
                 .AsQueryable();
 
@@ -24,6 +25,10 @@
                     targetId = group.Key.targetId,
                     targetType = group.Key.targetType,
 
+                    content = group.Select(x => x.target.content).FirstOrDefault(),
+                    createdAt = group.Select(x => x.target.createdAt).FirstOrDefault(),
+                    updatedAt = group.Select(x => x.target.updatedAt).FirstOrDefault(),
+
                     countReports = group.Count(),
 
                     reports = group.Select(r => new ReportResponse
@@ -32,7 +37,7 @@
                         reason = r.reason,
                         userReportId = r.userId,
                         userNameReport = r.user.FullName,
-                        userReportProfile = r.user.ProfilePhoto, 
+                        userReportProfile = r.user.ProfilePhoto,
                         createdAt = r.createdAt
                     }).ToList(),
                 })
