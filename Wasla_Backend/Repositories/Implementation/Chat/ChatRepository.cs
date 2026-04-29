@@ -58,9 +58,11 @@
                     senderId = x.lastMessage.senderId,
 
                     UnreadMessageCount = x.chat.messages.Count(m =>
-                        m.senderId != pagination.id &&
-                        !m.isRead),
-
+                            m.senderId != pagination.id &&
+                            !m.isRead &&
+                            (x.chat.receiverId == pagination.id
+                                ? x.chat.receiverDeletedAt == null || m.sentAt > x.chat.receiverDeletedAt
+                                : x.chat.senderDeletedAt == null || m.sentAt > x.chat.senderDeletedAt)),
                     isEdit = x.lastMessage.isEdited,
                     isMine = x.lastMessage.senderId == pagination.id,
                     messageId = x.lastMessage.id,
