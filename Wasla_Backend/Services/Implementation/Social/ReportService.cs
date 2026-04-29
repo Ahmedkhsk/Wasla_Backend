@@ -57,7 +57,7 @@ namespace Wasla_Backend.Services.Implementation
             {
                 if (r.targetType == ReactionTargetType.post)
                 {
-                    var post = await _postRepository.GetByIdAsync(r.targetId);
+                    var post = await _postRepository.GetPostByIdIgnoreQF(r.targetId);
                     if (post != null)
                     {
                         r.images = post.files?
@@ -67,7 +67,7 @@ namespace Wasla_Backend.Services.Implementation
                 }
                 else if (r.targetType == ReactionTargetType.comment)
                 {
-                    var comment = await _commentRepository.GetByIdAsync(r.targetId);
+                    var comment = await _commentRepository.GetCommentByIdIgnoreQF(r.targetId);
                     if (comment != null)
                     {
                         r.image = _fileUrlBuilderService

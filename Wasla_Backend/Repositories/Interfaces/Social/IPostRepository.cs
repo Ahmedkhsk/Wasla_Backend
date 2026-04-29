@@ -2,6 +2,7 @@
 {
     public interface IPostRepository : IGenericRepository<Post>
     {
+        public Task<Post> GetPostByIdIgnoreQF(int postId);
         public Task<PagedResult<Post>> GetPostsGeneral(PaginationParams paginationParams);
         public Task<PagedResult<Post>> GetPostsByUserId(string userId, int pageNumber, int pageSize);
         public Task<PagedResult<PostGeneralResponse>> GetPostsByUsingReactionType(GetPostsByUsingReactionTypeDto dto);

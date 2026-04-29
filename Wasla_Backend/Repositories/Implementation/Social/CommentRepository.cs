@@ -9,6 +9,13 @@
             _fileUrlBuilderService = fileUrlBuilderService;
         }
 
+        public async Task<Comment> GetCommentByIdIgnoreQF(int commentId)
+        {
+            return await _dbSet
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(c => c.id == commentId);
+        }
+
         public async Task<Dictionary<int, int>> GetCommentCountsForPosts(List<int> postIds)
         {
             return await _context.Comments

@@ -9,6 +9,7 @@
         public async Task<PagedResult<GetReports>> GetReports(PaginationParams paginationParams)
         {
             var query = _dbSet
+                .Include(r => r.target)
                 .IgnoreQueryFilters()
                 .AsNoTracking()
                 .AsQueryable();

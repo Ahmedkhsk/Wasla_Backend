@@ -9,6 +9,13 @@
             _fileUrlBuilderService = fileUrlBuilderService;
         }
 
+        public async Task<Post> GetPostByIdIgnoreQF(int postId)
+        {
+            return await _dbSet
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(p => p.id == postId);
+        }
+
         public async Task<PagedResult<Post>> GetPostsGeneral(PaginationParams paginationParams)
         {
             var query = _dbSet
