@@ -15,8 +15,7 @@ namespace Wasla_Backend.Repositories.Implementation.General
             => await _context.Payment
                 .FirstOrDefaultAsync(p =>
                     p.entityType == entityType &&
-                    p.entityId == entityId &&
-                    (status == null || p.Status == status));
+                    p.entityId == entityId );
 
         public async Task<List<UserPaymentDto>> GetAllPaymentsByResidentAsync(string residentId)
             => await _context.Payment
@@ -31,6 +30,7 @@ namespace Wasla_Backend.Repositories.Implementation.General
                     Status = p.Status,
                     ServiceType = p.ServiceType,
                     entityType = p.entityType,
+                    EntityId = p.entityId,
                 })
                 .ToListAsync();
 

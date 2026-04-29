@@ -73,6 +73,8 @@ namespace Wasla_Backend.Services.Implementation.General
                                   : isSuccess ? PaymentStatus.Completed
                                                : PaymentStatus.Failed;
             payment.TransactionId = transactionId;
+            payment.PaymobTransactionId = transactionId;
+
 
             await _paymentRepository.SaveChangesAsync();
         }
@@ -199,8 +201,12 @@ namespace Wasla_Backend.Services.Implementation.General
             request.Content = JsonContent.Create(payload);
 
             var response = await httpClient.SendAsync(request);
+            var responseBody = await response.Content.ReadAsStringAsync();
+
             if (!response.IsSuccessStatusCode)
-                throw new BadRequestException(LocalizationKey.RefundFailed);
+            {
+               Console.WriteLine($"Paymob Error: {responseBody}");
+            }
         }
 
         private string BuildRedirectUrl(string clientSecret)
