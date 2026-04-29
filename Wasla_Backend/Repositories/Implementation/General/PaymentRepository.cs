@@ -92,6 +92,10 @@ namespace Wasla_Backend.Repositories.Implementation.General
                 ?? throw new NotFoundException(LocalizationKey.OrderNotFound);
 
             order.paymentStatus = PaymentStatus.Refunded;
+            
+            var payment = await GetByEntityAsync(EntityType.order, orderId);
+            if (payment != null)
+                payment.Status = PaymentStatus.Refunded;
 
             await _context.SaveChangesAsync();
         }
