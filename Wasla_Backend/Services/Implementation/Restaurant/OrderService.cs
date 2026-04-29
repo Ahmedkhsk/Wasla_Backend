@@ -9,10 +9,12 @@ namespace Wasla_Backend.Services.Implementation
         private readonly IPaymentService _paymentService;
         private readonly DateTimeHelper _dateTimeHelper;
         private readonly IHubContext<OrderHub> _hub;
+        private readonly IFileUrlBuilderService _fileUrlBuilderService;  
+        private readonly IUserRepository _userRepository;
 
         public OrderService(ICartRepository cartRepo, IOrderRepository orderRepo
             ,IMapper mapper,IPaymentService paymentService,DateTimeHelper dateTimeHelper,
-            IHubContext<OrderHub> hubContext)
+            IHubContext<OrderHub> hubContext,IFileUrlBuilderService fileUrlBuilderService,IUserRepository userRepository)
         {
             _cartRepo = cartRepo;
             _orderRepo = orderRepo;
@@ -20,6 +22,8 @@ namespace Wasla_Backend.Services.Implementation
             _paymentService = paymentService;
             _dateTimeHelper = dateTimeHelper;
             _hub = hubContext;
+            _fileUrlBuilderService = fileUrlBuilderService;
+            _userRepository = userRepository;
         }
 
         public async Task<CheckoutResponse> Checkout(CheckoutDto dto)
@@ -112,6 +116,16 @@ namespace Wasla_Backend.Services.Implementation
                 x => x.MarkOrderOnTheWay(order.id),
                 TimeSpan.FromMinutes(prepTime)
             );
+            var photo= _userRepository.GetUserPhoto(order.restaurantId);
+            var RestaurantPhoto =  _fileUrlBuilderService.GetMediaUrl(photo, MediaType.userImage);
+            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
+    order.residentId,
+    NotificationType.orderStartedPreparing,
+    order.id.ToString(),
+    RestaurantPhoto,
+    "en",
+    null
+));
         }
 
         public async Task MarkOrderDelivered(int orderId)

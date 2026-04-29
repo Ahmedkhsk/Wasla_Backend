@@ -289,6 +289,16 @@ new NotificationTemplate
     TitleEn = "New Reservation Request 🍽️",
     BodyEn = "{UserName} requested a reservation on {Date} for {Persons} persons"
 },
+new NotificationTemplate
+{
+    Type = NotificationType.orderStartedPreparing,
+
+    TitleAr = "جاري تحضير طلبك 👨‍🍳",
+    BodyAr = "بدأ المطعم في تحضير طلبك",
+
+    TitleEn = "Order is Being Prepared 👨‍🍳",
+    BodyEn = "The restaurant has started preparing your order"
+},
 
 
     };
