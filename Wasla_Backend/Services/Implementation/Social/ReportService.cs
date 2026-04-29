@@ -51,32 +51,32 @@ namespace Wasla_Backend.Services.Implementation
         {
             var reports = await _reportRepository.GetReports(paginationParams);
 
-            var dataMapped = await Task.WhenAll(
-                reports.Data.Select(async r =>
-                {
-                    if (r.targetType == ReactionTargetType.post)
-                    {
-                        var post = await _postRepository.GetByIdAsync(r.targetId);
-                        if (post != null)
-                        {
-                            r.images = post.files?
-                                .Select(m => _fileUrlBuilderService.GetMediaUrl(m, MediaType.postFile))
-                                .ToList();
-                        }
-                    }
-                    else if (r.targetType == ReactionTargetType.comment)
-                    {
-                        var comment = await _commentRepository.GetByIdAsync(r.targetId);
-                        if (comment != null)
-                        {
-                            r.image = _fileUrlBuilderService
-                                .GetMediaUrl(comment.file, MediaType.postFile);
-                        }
-                    }
+            var dataMapped = new List<GetReports>();
 
-                    return r;
-                })
-            );
+            foreach (var r in reports.Data)
+            {
+                if (r.targetType == ReactionTargetType.post)
+                {
+                    var post = await _postRepository.GetByIdAsync(r.targetId);
+                    if (post != null)
+                    {
+                        r.images = post.files?
+                            .Select(m => _fileUrlBuilderService.GetMediaUrl(m, MediaType.postFile))
+                            .ToList();
+                    }
+                }
+                else if (r.targetType == ReactionTargetType.comment)
+                {
+                    var comment = await _commentRepository.GetByIdAsync(r.targetId);
+                    if (comment != null)
+                    {
+                        r.image = _fileUrlBuilderService
+                            .GetMediaUrl(comment.file, MediaType.postFile);
+                    }
+                }
+
+                dataMapped.Add(r);
+            }
 
             return new PagedResult<GetReports>
             {
