@@ -19,6 +19,7 @@
         {
             var query = _dbSet
                 .Where(r => r.restaurantId == dto.id)
+                .OrderByDescending(r=>r.createdAt)
                 .Include(r => r.resident)
                 .Include(r => r.items)
                     .ThenInclude(i => i.menuItem)
@@ -32,6 +33,7 @@
         {
             var query = _dbSet
                 .Where(r => r.residentId == dto.id)
+                .OrderByDescending(r=>r.createdAt)
                 .Include(r => r.restaurant)
                 .Include(r => r.items)
                     .ThenInclude(i => i.menuItem)

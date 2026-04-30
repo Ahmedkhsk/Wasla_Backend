@@ -26,6 +26,7 @@ namespace Wasla_Backend.Repositories.Implementation
             var query = _context.Booking
                 .Where(b => b.serviceProviderId == doctorId
                     && b.ServiceProviderType == ServiceProviderType.Doctor)
+                .OrderByDescending(b => b.bookingDate)
                 .Include(b => b.serviceDay)
                     .ThenInclude(sd => sd.service)
                 .Include(b => b.Resident)
@@ -59,7 +60,8 @@ namespace Wasla_Backend.Repositories.Implementation
                     bookingType = b.bookingType,
                     phone = b.Resident.Phone,
                     price = (decimal)b.price,
-                    bookingImages = b.images
+                    bookingImages = b.images,
+                    isPaid=b.IsPaid
                 })
                 .ToListAsync();
         }
@@ -101,6 +103,8 @@ namespace Wasla_Backend.Repositories.Implementation
         {
             var bookingDetails = await _context.Booking
                 .Where(b => b.ResidentId == userId)
+                .OrderByDescending(b => b.bookingDate)
+
                 .Include(b => b.serviceDay)
                     .ThenInclude(sd => sd.service)
                         .ThenInclude(s => s.ServiceProvider)
@@ -126,7 +130,9 @@ namespace Wasla_Backend.Repositories.Implementation
                         ? b.serviceDay.service.serviceName.Arabic
                         : b.serviceDay.service.serviceName.English,
 
-                    Price = b.price
+                    Price = b.price,
+                    isPaid = b.IsPaid
+
                 })
                 .ToListAsync();
 

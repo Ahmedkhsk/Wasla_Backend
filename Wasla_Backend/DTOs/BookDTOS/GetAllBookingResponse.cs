@@ -10,6 +10,7 @@
         public BookingStatus status { get; set; }
         public string start { get; set; }
         public string end { get; set; }
+        public bool isPaid { get; set; }
         public WeekDayEnum day { get; set; }
         public BookingType bookingType { get; set; }
         public string phone { get; set; }

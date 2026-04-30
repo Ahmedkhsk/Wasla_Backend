@@ -8,7 +8,11 @@
 
         public async Task<List<BookingOfGym>> PackagebookingOfGym(string gymId)
         {
-            return await _context.GymBooking.AsNoTracking().Where(b => b.GymId == gymId).Include(b=>b.Resident).Include(b=>b.Service)
+            return await _context.GymBooking.AsNoTracking()
+                .Where(b => b.GymId == gymId)
+                .OrderByDescending(b => b.BookingDate)
+                .Include(b=>b.Resident)
+                .Include(b=>b.Service)
                 .Select(b => new BookingOfGym
                 {
                   bookingId=b.Id,
@@ -25,7 +29,9 @@
 
         public async Task<List<BookingOfGym>> PackagebookingOfGymAndStatus(string gymId, GymBookingStatus status)
         {
-            return await _context.GymBooking.AsNoTracking().Where(b => b.GymId == gymId && b.BookingStatus==status)
+            return await _context.GymBooking.AsNoTracking()
+                .Where(b => b.GymId == gymId && b.BookingStatus==status)
+                .OrderByDescending(b => b.BookingDate)
                 .Include(b => b.Resident)
                 .Include(b => b.Service)
                 .Select(b => new BookingOfGym
@@ -48,6 +54,7 @@
             return await _context.GymBooking
      .AsNoTracking()
      .Where(b => b.ResidentId == residentId)
+     .OrderByDescending(b => b.BookingDate)
      .Include(b => b.Gym)
      .Include(b => b.Service)
      .Select(b => new BookingOfUser
@@ -69,7 +76,10 @@
 
         public async Task<List<BookingOfUser>> PackagebookingOfResidentAndStatus(string residentId, GymBookingStatus status)
         {
-            return await _context.GymBooking.AsNoTracking().Where(b => b.ResidentId == residentId && b.BookingStatus == status).Include(b => b.Gym)
+            return await _context.GymBooking.AsNoTracking()
+                .Where(b => b.ResidentId == residentId && b.BookingStatus == status)
+                .OrderByDescending(b => b.BookingDate)
+                .Include(b => b.Gym)
                 .Include(b => b.Service)
                 .Select(b => new BookingOfUser
                 {
@@ -89,6 +99,7 @@
         {
             return await _context.GymBooking
                 .Where(b => b.Service.Id == serviceId && b.BookingStatus != GymBookingStatus.Cancelled)
+                .OrderByDescending(b => b.BookingDate)
                 .Select(b => b.Resident)
                 .Distinct()
                 .Select(r => new UserPackageResponse

@@ -37,6 +37,7 @@ namespace Wasla_Backend.Repositories.Implementation.technician
         public async Task<List<TechnicianBookingOfResident>> GetByResidentIdAndSpecialization(string residentId, TechnicianSpecialty specialization)
         {
             return await _context.TechnicianBookings.Where(tb => tb.ResidentId == residentId&&tb.Specialty==specialization)
+                .OrderByDescending(tb => tb.BookingDate)
               .Select(tb => new TechnicianBookingOfResident
               {
                   BookingId = tb.Id,
@@ -57,6 +58,7 @@ namespace Wasla_Backend.Repositories.Implementation.technician
         public async Task<List<TechnicianBookingOfResident>> technicianBookingOfResidents(string residentId)
         {
             return await _context.TechnicianBookings.Where(tb=>tb.ResidentId==residentId)
+                .OrderByDescending(tb => tb.BookingDate)
                 .Select(tb => new TechnicianBookingOfResident
             {
                 BookingId = tb.Id,
@@ -73,6 +75,7 @@ namespace Wasla_Backend.Repositories.Implementation.technician
         public async Task<List<BookingDetailsForTechnicianDto>> technicianBookingOfTechnician(string technicianId)
         {
             return await _context.TechnicianBookings.Where(tb => tb.TechnicianId == technicianId)
+                .OrderByDescending(tb => tb.BookingDate)
                 .Select(tb => new BookingDetailsForTechnicianDto
                 {
                     BookingId = tb.Id,

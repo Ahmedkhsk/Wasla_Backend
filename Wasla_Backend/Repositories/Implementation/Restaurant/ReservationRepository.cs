@@ -12,7 +12,7 @@
             var query = _dbSet
                 .Where(r => r.restaurantId == dto.id)
                 .Include(r => r.user)
-                .OrderByDescending(r => r.id)
+                .OrderByDescending(r => r.reservationDate)
                 .AsNoTracking();
 
             return await query.ToPagedResultAsync(dto.PageNumber, dto.PageSize);
@@ -23,7 +23,7 @@
             var query = _dbSet
                 .Where(r => r.userId == dto.id)
                 .Include(r => r.restaurants)
-                .OrderByDescending(r => r.id)
+                .OrderByDescending(r => r.reservationDate)
                 .AsNoTracking()
                 .AsQueryable();
 

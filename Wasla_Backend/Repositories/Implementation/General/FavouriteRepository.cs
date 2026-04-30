@@ -23,6 +23,7 @@ namespace Wasla_Backend.Repositories.Implementation
             var data = await db.Favorite
                 .Include(f => f.ServiceProvider)
                 .Where(f => f.UserId == residentId)
+                .OrderByDescending(f=>f.CreatedAt)
                 .ToListAsync();
 
             var result = data.Select(f => new ServiceProviderFavourite
@@ -59,6 +60,8 @@ namespace Wasla_Backend.Repositories.Implementation
             var data = await db.Favorite
                 .Include(f => f.ServiceProvider)
                 .Where(f => f.UserId == residentId && f.ServiceType == serviceType)
+                .OrderByDescending(f => f.CreatedAt)
+
                 .ToListAsync();  
 
             var result = data.Select(f => new ServiceProviderFavourite

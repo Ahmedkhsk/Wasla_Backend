@@ -21,6 +21,7 @@ namespace Wasla_Backend.Repositories.Implementation
             return await _context.Review.Include(r => r.User)
                 .AsNoTracking()
                 .Where(r =>r.Rating == rating&&r.ServiceProviderId==serviceProviderId)
+                .OrderByDescending(r => r.CreatedAt)
                 .Select(r => new ReviewResponseDto
                 {
                     reviewId = r.Id,
@@ -39,6 +40,7 @@ namespace Wasla_Backend.Repositories.Implementation
             return await _context.Review.Include(r => r.User)
                 .AsNoTracking()
                 .Where(r => r.ServiceProviderId == serviceProviderId)
+                .OrderByDescending(r => r.CreatedAt)
                 .Select(r => new ReviewResponseDto
                 {
                     reviewId = r.Id,

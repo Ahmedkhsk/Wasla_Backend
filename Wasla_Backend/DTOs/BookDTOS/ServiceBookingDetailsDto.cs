@@ -12,5 +12,6 @@
         public string ServiceProviderProfilePhoto { get; set; }
         public string ServiceName { get; set; }
         public double Price { get; set; }
+        public bool isPaid { get; set; }
     }
 }
