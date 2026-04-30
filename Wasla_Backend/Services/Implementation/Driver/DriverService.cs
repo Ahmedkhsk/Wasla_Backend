@@ -195,7 +195,7 @@
         public Task TrackingDriver(TrackingDriverDto trackingDriver)
         {
             var key = $"TrackingDriver_{trackingDriver.DriverId}";
-            _cacheManager.Set(key, trackingDriver, TimeSpan.FromMinutes(30));
+            _cacheManager.Set(key, trackingDriver, TimeSpan.FromMinutes(5));
             return Task.CompletedTask;
         }
     }

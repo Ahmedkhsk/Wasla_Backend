@@ -26,9 +26,9 @@
         }
 
         [HttpPut("cancel/{bookingId}")]
-        public async Task<IActionResult> Cancel(int bookingId, string lan = "en")
+        public async Task<IActionResult> Cancel(int bookingId,bool isResident, string lan = "en")
         {
-            var data = await _gymBookingService.Cancel(bookingId);
+            var data = await _gymBookingService.Cancel(bookingId,isResident);
             await _hub.Clients.All.SendAsync("BookingCancelled", data);
             return Ok(ResponseHelper.Success(LocalizationKey.BookingCancelledSuccessfully, lan, data));
         }

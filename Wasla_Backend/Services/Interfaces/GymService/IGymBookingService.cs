@@ -3,7 +3,7 @@
     public interface IGymBookingService
     {
         public Task<BookResponse> Book(GymBookDto gymBookDto, string lan);
-        public Task<BookHubData> Cancel(int bookingId);
+        public Task<BookHubData> Cancel(int bookingId,bool isResident);
         public Task<List<BookingOfGym>> PackageBookingOFGym(string gymId);
         public Task<List<BookingOfGym>> PackagebookingOfGymAndStatus(string gymId, GymBookingStatus status);
         public Task<List<BookingOfUser>> PackagebookingOfResident(string residentId);

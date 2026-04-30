@@ -108,10 +108,13 @@ namespace Wasla_Backend.Services.Implementation.GymService
             await _gymBookingRepository.AddAsync(gymBooking);
             await _gymBookingRepository.SaveChangesAsync();
 
-            Hangfire.BackgroundJob.Schedule(
+            if (gymBooking.isPaymentOnline)
+            {
+                Hangfire.BackgroundJob.Schedule(
                 () => CheckPayment(filePath, gymBooking.Id, gym.BusinessName, gymPhotoUrl, lan),
                 TimeSpan.FromSeconds(100)
             );
+            }
 
             var expiryDate = gymBooking.BookingDate.AddMonths(durationInMonths);
             var delay = expiryDate - _dateTimeHelper.Now;
@@ -212,22 +215,25 @@ namespace Wasla_Backend.Services.Implementation.GymService
             }
         }
 
-        public async Task<BookHubData> Cancel(int bookingId)
+        public async Task<BookHubData> Cancel(int bookingId, bool isResident)
         {
             var booking = await _gymBookingRepository.GetByIdAsync(bookingId);
             if (booking == null)
                 throw new NotFoundException(LocalizationKey.BookingNotFound);
             await _dbContext.Entry(booking).Reference(x => x.Resident).LoadAsync();
             await _dbContext.Entry(booking).Reference(x => x.Service).LoadAsync();
+            await _dbContext.Entry(booking).Reference(x => x.Gym).LoadAsync();
 
             booking.BookingStatus = GymBookingStatus.Cancelled;
             _gymBookingRepository.Update(booking);
             await _gymBookingRepository.SaveChangesAsync();
-            var userName = booking.Resident?.FullName ?? "User";
+            var userName =  isResident ? booking.Resident.FullName : booking.Gym.BusinessName;
             var packageName = booking.Service?.Name.English ?? "Package";
-            var photourl = _fileUrlBuilderService.GetMediaUrl(booking.Resident.ProfilePhoto, MediaType.userImage);
+           var photo= isResident ? booking.Resident.ProfilePhoto : booking.Gym.ProfilePhoto;
+            var photourl = _fileUrlBuilderService.GetMediaUrl(photo, MediaType.userImage);
+            var targetId = isResident ? booking.GymId : booking.ResidentId;
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
-    booking.GymId,
+   targetId,
     NotificationType.gymBookingCancelled,
     booking.Id.ToString(),
     photourl,
