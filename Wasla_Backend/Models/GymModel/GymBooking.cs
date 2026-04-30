@@ -17,6 +17,8 @@
         public DateTime BookingDate { get; set; } = DateTime.UtcNow;
         public GymServiceType GymServiceType { get; set; }
         public string QrCode {  get; set; }
+        public bool isPaymentOnline { get; set; }
+
 
 
     }

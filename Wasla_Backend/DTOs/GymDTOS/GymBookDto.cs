@@ -5,5 +5,7 @@
         public string gymId { get; set; }
         public int serviceId { get; set; }
         public string residentId { get; set; }
+        public bool isPaymentOnline { get; set; }
+
     }
 }

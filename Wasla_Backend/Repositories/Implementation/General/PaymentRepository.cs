@@ -112,6 +112,7 @@ namespace Wasla_Backend.Repositories.Implementation.General
             var booking = await _context.BaseBookings.FirstOrDefaultAsync(b => b.Id == bookingId);
             if (booking != null)
                 booking.IsPaid = true;
+           
 
             await _context.SaveChangesAsync();
         }

@@ -17,6 +17,7 @@
         public DateOnly bookingDate { get; set; }
         public BookingType bookingType { get; set; }
         public string? imagesJson { get; set; }
+        public bool isPaymentOnline { get; set; } 
 
         [NotMapped]
         public List<string> images

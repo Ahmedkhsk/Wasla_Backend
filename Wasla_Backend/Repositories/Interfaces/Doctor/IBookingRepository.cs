@@ -20,6 +20,7 @@
         public Task<List<Booking>> GetBookingsForResidentAsync(string residentId);
         public Task<int>CountBookingBYUserAndServiceProvider(string userId, string serviceProviderId);
         public Task<bool> HasBookingSameDay(string userId, string ServiceProviderId, DateOnly date);
+        public Task<Booking> GetWithService(int bookingId);
 
     }
 }

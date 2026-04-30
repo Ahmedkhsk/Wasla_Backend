@@ -15,6 +15,7 @@ namespace Wasla_Backend.Services.Implementation
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly IHubContext<BookingHub> _hub;
         private readonly IMapper _mapper;
+        private readonly IPaymentService _paymentService;
         private readonly ILogger<DoctorBookService> _logger = LoggerFactory.Create(builder =>
         {
             builder.AddConsole();
@@ -31,7 +32,8 @@ namespace Wasla_Backend.Services.Implementation
             IFileService fileService,
             IFileUrlBuilderService fileUrlBuilderService,
             IHubContext<BookingHub> hub,
-            IMapper mapper
+            IMapper mapper,
+            IPaymentService paymentService
         )
         {
             _bookingRepository = bookingRepository;
@@ -44,9 +46,10 @@ namespace Wasla_Backend.Services.Implementation
             _fileUrlBuilderService = fileUrlBuilderService;
             _hub = hub;
             _mapper = mapper;
+            _paymentService = paymentService;
         }
 
-        public async Task UpdateBookingStatus(int bookingId, BookingStatus status,bool isResident)
+        public async Task UpdateBookingStatus(int bookingId, BookingStatus status, bool isResident)
         {
             var booking = await _bookingRepository.GetByIdWithIncludeAsync(bookingId);
 
@@ -88,10 +91,10 @@ namespace Wasla_Backend.Services.Implementation
             string photo;
             string TargetId;
             NotificationType type;
-            if(isResident)
+            if (isResident)
             {
-               photo= _userRepository.GetUserPhoto(booking.ResidentId);
-                TargetId=booking.serviceProviderId;
+                photo = _userRepository.GetUserPhoto(booking.ResidentId);
+                TargetId = booking.serviceProviderId;
                 type = NotificationType.residentCancelDoctorBooking;
 
             }
@@ -107,10 +110,19 @@ namespace Wasla_Backend.Services.Implementation
     TargetId,
     type,
     booking.Id.ToString(),
-    photo,   
+    photo,
     "en",
-    null    
+    null
 ));
+            if (booking.isPaymentOnline)
+            { 
+                var entityTypeDto = new EntityTypeDto
+                {
+                    entityId = booking.Id,
+                    entityType = EntityType.booking
+                };
+                await _paymentService.RefundPaymentAsync(entityTypeDto);
+            }
         }
 
         public async Task UpdateBooking(UpdateBookingDto updateBookingDto)
@@ -147,7 +159,7 @@ namespace Wasla_Backend.Services.Implementation
       booking.Id.ToString(),
      photo,
       "en",
-      null 
+      null
   ));
         }
 
@@ -198,7 +210,8 @@ namespace Wasla_Backend.Services.Implementation
                     bookingDate = dto.bookingDate,
                     bookingType = dto.bookingType,
                     images = savedImages,
-                    serviceDayId = dto.serviceDayId
+                    serviceDayId = dto.serviceDayId,
+                    isPaymentOnline = dto.isPaymentOnline
                 };
 
                 serviceDay.isBooking = true;
@@ -248,7 +261,7 @@ namespace Wasla_Backend.Services.Implementation
 
                 var image = _fileUrlBuilderService.GetMediaUrl(user.ProfilePhoto, MediaType.userImage);
 
-                
+
 
                 Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
                     serviceProvider.Id,
@@ -258,15 +271,41 @@ namespace Wasla_Backend.Services.Implementation
                     "en",
                     metadata
                 ));
+                Hangfire.BackgroundJob.Schedule(() => CheckPayment(booking.Id), TimeSpan.FromSeconds(100));
 
                 return booking.Id;
-                
+
             }
             finally
             {
                 _bookingLock.Release();
             }
 
+        }
+        public async Task CheckPayment(int bookingId)
+        {
+            var booking = await _bookingRepository.GetWithService(bookingId);
+            if (booking == null)
+                return;
+            if (!booking.IsPaid)
+            {
+                booking.bookingStatus = BookingStatus.canceled;
+
+                if (booking.serviceDay != null)
+                {
+                    booking.serviceDay.isBooking = false;
+                    _serviceDayRepository.Update(booking.serviceDay);
+                }
+                _bookingRepository.Update(booking);
+                await _bookingRepository.SaveChangesAsync();
+                var bookhubdata = new BookHubData
+                {
+                    serviceId = booking.serviceDayId,
+                    residentId = booking.ResidentId,
+                    serviceProviderId = booking.serviceProviderId
+                };
+                await _hub.Clients.All.SendAsync("Bookingcanceled", bookhubdata);
+            }
         }
     }
 }

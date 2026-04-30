@@ -10,6 +10,7 @@
         public DateOnly bookingDate { get; set; }
         public BookingType bookingType { get; set; }
         public ServiceProviderType serviceProviderType { get; set; }
+        public bool isPaymentOnline { get; set; }
         public List<IFormFile>? images { get; set; }
     }
 }

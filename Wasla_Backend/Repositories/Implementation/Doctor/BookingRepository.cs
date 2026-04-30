@@ -234,5 +234,13 @@ namespace Wasla_Backend.Repositories.Implementation
             return await _context.Booking.AnyAsync(b => b.ResidentId == userId && b.bookingDate == date
             && b.bookingStatus != BookingStatus.canceled && b.serviceProviderId == ServiceProviderId);
         }
+
+        public async Task<Booking> GetWithService(int bookingId)
+        {
+            return await _context.Booking
+                .Include(b => b.serviceDay)
+                    .ThenInclude(sd => sd.service)
+                .FirstOrDefaultAsync(b => b.Id == bookingId);
+        }
     }
 }

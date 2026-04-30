@@ -8,6 +8,7 @@
         [ForeignKey("ResidentId")]
         public ApplicationUser Resident { get; set; }
         public ServiceProviderType ServiceProviderType { get; set; }
+
         public bool IsPaid { get; set; } = false;
 
     }

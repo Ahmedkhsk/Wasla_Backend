@@ -15,6 +15,7 @@ namespace Wasla_Backend.Services.Implementation.GymService
         private readonly IHubContext<BookingHub> _hub;
         private readonly Context _dbContext;
         private readonly IUserRepository _userRepository;
+        private readonly IPaymentService _paymentService;
 
         public GymBookingService(
             IGymBookingRepository gymBookingRepository,
@@ -27,7 +28,8 @@ namespace Wasla_Backend.Services.Implementation.GymService
             DateTimeHelper dateTimeHelper,
             IHubContext<BookingHub> hub,
             Context dbContext,
-            IUserRepository userRepository
+            IUserRepository userRepository,
+            IPaymentService paymentService
         )
         {
             _gymBookingRepository = gymBookingRepository;
@@ -41,6 +43,7 @@ namespace Wasla_Backend.Services.Implementation.GymService
             _hub = hub;
             _dbContext = dbContext;
             _userRepository = userRepository;
+            _paymentService = paymentService;
         }
 
         public async Task<BookResponse> Book(GymBookDto gymBookDto, string lan)
@@ -65,6 +68,7 @@ namespace Wasla_Backend.Services.Implementation.GymService
 
             var gymBooking = _mapper.Map<GymBooking>(gymBookDto);
             gymBooking.BookingDate = _dateTimeHelper.Now;
+            gymBooking.isPaymentOnline =gymBookDto.isPaymentOnline;
 
             int durationInMonths;
 
@@ -106,7 +110,7 @@ namespace Wasla_Backend.Services.Implementation.GymService
 
             Hangfire.BackgroundJob.Schedule(
                 () => CheckPayment(filePath, gymBooking.Id, gym.BusinessName, gymPhotoUrl, lan),
-                TimeSpan.FromMinutes(1)
+                TimeSpan.FromSeconds(100)
             );
 
             var expiryDate = gymBooking.BookingDate.AddMonths(durationInMonths);
@@ -241,6 +245,15 @@ namespace Wasla_Backend.Services.Implementation.GymService
                 serviceProviderId = booking.GymId,
                 residentId = booking.ResidentId
             };
+            if(booking.isPaymentOnline)
+            {
+                var entityTypeDto = new EntityTypeDto
+                {
+                    entityId = booking.Id,
+                    entityType = EntityType.booking
+                };
+                await _paymentService.RefundPaymentAsync(entityTypeDto);
+            }
         }
 
         public async Task<List<BookingOfGym>> PackageBookingOFGym(string gymId)
