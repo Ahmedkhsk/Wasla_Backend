@@ -9,19 +9,23 @@ namespace Wasla_Backend.Services.Implementation
         private readonly IGenericRepository<ContactUs> _contatUsRepository;
         private readonly IRoleRepository _roleRepository;
         private readonly EmailSenderHelper _emailSenderHelper;
+        private readonly IFileUrlBuilderService _fileUrlBuilderService;
 
         public AdminService(
             IBookingRepository bookingRepository,
             IUserRepository userRepository,
             IGenericRepository<ContactUs> contatUsRepository,
             IRoleRepository roleRepository,
-            EmailSenderHelper emailSenderHelper)
+            EmailSenderHelper emailSenderHelper,
+            IFileUrlBuilderService fileUrlBuilderService
+            )
         {
             _bookingRepository = bookingRepository;
             _userRepository = userRepository;
             _contatUsRepository = contatUsRepository;
             _roleRepository = roleRepository;
             _emailSenderHelper = emailSenderHelper;
+            _fileUrlBuilderService = fileUrlBuilderService;
         }
 
         public async Task<AdminChartResponse> GetCollectedCountBookingsPerYear()
@@ -115,48 +119,70 @@ namespace Wasla_Backend.Services.Implementation
                 throw new NotFoundException(LocalizationKey.UserNotFound);
 
             var role = await _roleRepository.GetUserRolesAsync(user);
-
             var userBase = new AdminUserBaseDetailsDto(user);
+            userBase.profilePhoto =  _fileUrlBuilderService.GetMediaUrl(userBase.profilePhoto, MediaType.userImage);
+            var roleName = role.FirstOrDefault();
 
             return user switch
             {
-                Doctor doctor => new AdminUserDetailsResponseDto
-                {
-                    role = role.FirstOrDefault(),
-                    userBase = userBase,
-                    details = new AdminDoctorDetailsDto(doctor)
-                },
-                Resident resident => new AdminUserDetailsResponseDto
-                {
-                    role = role.FirstOrDefault(),
-                    userBase = userBase,
-                    details = new AdminResidentDetailsDto(resident)
-                },
-                Gym gym => new AdminUserDetailsResponseDto
-                {
-                    role = role.FirstOrDefault(),
-                    userBase = userBase,
-                    details = new AdminGymDetailsDto(gym)
-                },
-                Technician technician => new AdminUserDetailsResponseDto
-                {
-                    role = role.FirstOrDefault(),
-                    userBase = userBase,
-                    details = new AdminTechnicianDetailsDto(technician)
-                },
-                DriverModel driver => new AdminUserDetailsResponseDto
-                {
-                    role = role.FirstOrDefault(),
-                    userBase = userBase,
-                    details = new AdminDriverDetailsDto(driver)
-                },
-                Restaurant restaurant => new AdminUserDetailsResponseDto
-                {
-                    role = role.FirstOrDefault(),
-                    userBase = userBase,
-                    details = new AdminRestaurantDetailsDto(restaurant)
-                },
+                Doctor doctor => BuildDoctorDetails(doctor, userBase, roleName),
+                Resident resident => BuildResidentDetails(resident, userBase, roleName),
+                Gym gym => BuildGymDetails(gym, userBase, roleName),
+                Technician tech => BuildTechnicianDetails(tech, userBase, roleName),
+                DriverModel driver => BuildDriverDetails(driver, userBase, roleName),
+                Restaurant rest => BuildRestaurantDetails(rest, userBase, roleName),
+                _ => throw new NotFoundException(LocalizationKey.UserNotFound)
             };
+        }
+
+        // ----------------------------------------------------------------
+
+        private AdminUserDetailsResponseDto BuildDoctorDetails(
+            Doctor doctor, AdminUserBaseDetailsDto userBase, string? role)
+        {
+            var details = new AdminDoctorDetailsDto(doctor);
+            details.CV = _fileUrlBuilderService.GetMediaUrl(details.CV, MediaType.doctorCV);
+            return new AdminUserDetailsResponseDto { role = role, userBase = userBase, details = details };
+        }
+
+        private AdminUserDetailsResponseDto BuildResidentDetails(
+            Resident resident, AdminUserBaseDetailsDto userBase, string? role)
+        {
+            var details = new AdminResidentDetailsDto(resident);
+
+            return new AdminUserDetailsResponseDto { role = role, userBase = userBase, details = details };
+        }
+
+        private AdminUserDetailsResponseDto BuildGymDetails(
+            Gym gym, AdminUserBaseDetailsDto userBase, string? role)
+        {
+            var details = new AdminGymDetailsDto(gym);
+            details.images = details.images.Select(img => _fileUrlBuilderService.GetMediaUrl(img, MediaType.gymImage)).ToList();
+            return new AdminUserDetailsResponseDto { role = role, userBase = userBase, details = details };
+        }
+
+        private AdminUserDetailsResponseDto BuildTechnicianDetails(
+            Technician tech, AdminUserBaseDetailsDto userBase, string? role)
+        {
+            var details = new AdminTechnicianDetailsDto(tech);
+            details.documents = details.documents.Select(doc => _fileUrlBuilderService.GetMediaUrl(doc, MediaType.TechnicianDocument)).ToList();
+            return new AdminUserDetailsResponseDto { role = role, userBase = userBase, details = details };
+        }
+
+        private AdminUserDetailsResponseDto BuildDriverDetails(
+            DriverModel driver, AdminUserBaseDetailsDto userBase, string? role)
+        {
+            var details = new AdminDriverDetailsDto(driver);
+            details.CarImages = details.CarImages?.Select(img => _fileUrlBuilderService.GetMediaUrl(img, MediaType.DriverCarImage)).ToList();
+            return new AdminUserDetailsResponseDto { role = role, userBase = userBase, details = details };
+        }
+
+        private AdminUserDetailsResponseDto BuildRestaurantDetails(
+            Restaurant rest, AdminUserBaseDetailsDto userBase, string? role)
+        {
+            var details = new AdminRestaurantDetailsDto(rest);
+            details.images = details.images.Select(img => _fileUrlBuilderService.GetMediaUrl(img, MediaType.restaurantImage)).ToList();
+            return new AdminUserDetailsResponseDto { role = role, userBase = userBase, details = details };
         }
     }
 }
