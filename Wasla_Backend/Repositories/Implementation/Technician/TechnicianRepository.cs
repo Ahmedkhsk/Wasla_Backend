@@ -98,19 +98,19 @@ namespace Wasla_Backend.Repositories.Implementation.technician
                 .Distinct()
                 .CountAsync();
 
-            var totalAmount = await bookingquery.SumAsync(r => r.Price);
+            var totalAmount = await bookingquery.SumAsync(r => r.price);
 
             var years = await bookingquery
-                .GroupBy(r => r.BookingDate.Year)
+                .GroupBy(r => r.Date.Year)
                 .Select(yearGroup => new CollectedPerYearDto
                 {
                     year = yearGroup.Key,
                     months = yearGroup
-                        .GroupBy(r => r.BookingDate.Month)
+                        .GroupBy(r => r.Date.Month)
                         .Select(monthGroup => new CollectedPerMonthDto
                         {
                             month = monthGroup.Key,
-                            amount = monthGroup.Sum(r => r.Price)
+                            amount = monthGroup.Sum(r => r.price)
                         })
                         .OrderBy(m => m.month)
                         .ToList()

@@ -292,9 +292,9 @@
                 PickupLongitude = requestRideDto.PickupLongitude,
                 DropoffLatitude = requestRideDto.DropoffLatitude,
                 DropoffLongitude = requestRideDto.DropoffLongitude,
-                RideDate = _dateTimeHelper.Now,
+                Date = _dateTimeHelper.Now,
                 Status = RideStatus.Pending,
-                Price = estimateResult.EstimatedPrice,
+                price = estimateResult.EstimatedPrice,
                 Distance = estimateResult.Distance,
                 ServiceProviderType = ServiceProviderType.Driver,
                 PickUpPlace = requestRideDto.PickUpPlace,
@@ -317,7 +317,7 @@
                 var metadata = new Dictionary<string, string>
                 {
                     { "Distance", ride.Distance.ToString("0.0") },
-                    { "Price", ride.Price.ToString("0.0") }
+                    { "Price", ride.price.ToString("0.0") }
                 };
 
                 Hangfire.BackgroundJob.Enqueue<NotificationFunction>(

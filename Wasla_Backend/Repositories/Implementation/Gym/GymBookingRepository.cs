@@ -10,7 +10,7 @@
         {
             return await _context.GymBooking.AsNoTracking()
                 .Where(b => b.GymId == gymId)
-                .OrderByDescending(b => b.BookingDate)
+                .OrderByDescending(b => b.Date)
                 .Include(b=>b.Resident)
                 .Include(b=>b.Service)
                 .Select(b => new BookingOfGym
@@ -18,8 +18,8 @@
                   bookingId=b.Id,
                   name=b.Resident.FullName,
                   imageUrl=b.Resident.ProfilePhoto,
-                  bookingTime = b.BookingDate,
-                  price = b.price,
+                  bookingTime = b.Date,
+                  price =(decimal) b.price,
                   serviceName=b.Service.Name,
                   DurationInMonths= b.Service.DurationInMonths,
                   bookingStatus=b.BookingStatus
@@ -31,7 +31,7 @@
         {
             return await _context.GymBooking.AsNoTracking()
                 .Where(b => b.GymId == gymId && b.BookingStatus==status)
-                .OrderByDescending(b => b.BookingDate)
+                .OrderByDescending(b => b.Date)
                 .Include(b => b.Resident)
                 .Include(b => b.Service)
                 .Select(b => new BookingOfGym
@@ -39,9 +39,9 @@
                     bookingId = b.Id,
                     name = b.Resident.FullName,
                     imageUrl = b.Resident.ProfilePhoto,
-                    bookingTime = b.BookingDate,
+                    bookingTime = b.Date,
                     serviceName = b.Service.Name,
-                    price = b.price,
+                    price = (decimal)b.price,
                     DurationInMonths = b.Service.DurationInMonths,
                     bookingStatus = b.BookingStatus
 
@@ -54,7 +54,7 @@
             return await _context.GymBooking
      .AsNoTracking()
      .Where(b => b.ResidentId == residentId)
-     .OrderByDescending(b => b.BookingDate)
+     .OrderByDescending(b => b.Date)
      .Include(b => b.Gym)
      .Include(b => b.Service)
      .Select(b => new BookingOfUser
@@ -62,12 +62,13 @@
          bookingId = b.Id,
          GymName = b.Gym.BusinessName,
          imageUrl = b.Gym.ProfilePhoto,
-         bookingTime = b.BookingDate,
+         bookingTime = b.Date,
          serviceName = b.Service.Name,
          DurationInMonths = b.Service.DurationInMonths,
          bookingStatus = b.BookingStatus,
          IsPaid = b.IsPaid,
-         QrCode=b.QrCode
+         QrCode=b.QrCode,
+         Price=b.price
      })
      .ToListAsync();
 
@@ -78,7 +79,7 @@
         {
             return await _context.GymBooking.AsNoTracking()
                 .Where(b => b.ResidentId == residentId && b.BookingStatus == status)
-                .OrderByDescending(b => b.BookingDate)
+                .OrderByDescending(b => b.Date)
                 .Include(b => b.Gym)
                 .Include(b => b.Service)
                 .Select(b => new BookingOfUser
@@ -86,12 +87,13 @@
                     bookingId = b.Id,
                     GymName = b.Gym.FullName,
                     imageUrl = b.Gym.ProfilePhoto,
-                    bookingTime = b.BookingDate,
+                    bookingTime = b.Date,
                     serviceName = b.Service.Name,
                     DurationInMonths = b.Service.DurationInMonths,
                     bookingStatus = b.BookingStatus,
                     IsPaid = b.IsPaid,
-                    QrCode=b.QrCode
+                    QrCode=b.QrCode,
+                    Price = b.price
                 }).ToListAsync();
         }
 
@@ -99,7 +101,7 @@
         {
             return await _context.GymBooking
                 .Where(b => b.Service.Id == serviceId && b.BookingStatus != GymBookingStatus.Cancelled)
-                .OrderByDescending(b => b.BookingDate)
+                .OrderByDescending(b => b.Date)
                 .Select(b => b.Resident)
                 .Distinct()
                 .Select(r => new UserPackageResponse
@@ -119,7 +121,7 @@
                 .CountAsync();
         
         public async Task<decimal> GetTotalAmount(string id)
-            => await _context.GymBooking.Where(i => i.GymId == id)
+            => (decimal)await _context.GymBooking.Where(i => i.GymId == id)
                 .SumAsync(d => d.price);
 
         public async Task<int> GetNumberOfBookings(string id)
@@ -127,13 +129,13 @@
 
         public async Task<List<CollectedPerYearDto>> GetCollectedPriceByYear(string id)
             => await _context.GymBooking.Where(i => i.GymId == id)
-                .GroupBy(b => b.BookingDate.Year)
+                .GroupBy(b => b.Date.Year)
                 .Select
                 (
                     yearGroub => new CollectedPerYearDto
                     {
                         year = yearGroub.Key,
-                        months = yearGroub.GroupBy(b => b.BookingDate.Month)
+                        months = yearGroub.GroupBy(b => b.Date.Month)
                                  .Select(
                                     monthGroub => new CollectedPerMonthDto
                                     {

@@ -34,9 +34,9 @@ namespace Wasla_Backend.Repositories.Implementation.driver
 
                     r.PickUpPlace,
                     r.DropOffPlace,
-                    r.Price,
+                    r.price,
                     r.Distance,
-                    r.PickupLatitude, r.PickupLongitude,r.RideDate
+                    r.PickupLatitude, r.PickupLongitude,r.Date
                 })
                 .FirstOrDefaultAsync();
 
@@ -51,8 +51,8 @@ namespace Wasla_Backend.Repositories.Implementation.driver
                 DropOffPlace = raw.DropOffPlace,
                 PickUpLatitude=raw.PickupLatitude,
                 PickUpLongitude = raw.PickupLongitude,
-                PickUpTime=raw.RideDate,
-                Price = raw.Price,
+                PickUpTime=raw.Date,
+                Price = raw.price,
                 Distance = raw.Distance
             };
         }
@@ -86,8 +86,8 @@ namespace Wasla_Backend.Repositories.Implementation.driver
                     FirstCarImage = r.Driver.images.FirstOrDefault(),
                     r.PickUpPlace,
                     r.DropOffPlace,
-                    r.Price,
-                    r.RideDate
+                    r.price,
+                    r.Date
                 })
                 .FirstOrDefaultAsync();
 
@@ -107,8 +107,8 @@ namespace Wasla_Backend.Repositories.Implementation.driver
                 DriverImage = _fileUrlBuilderService.GetMediaUrl(raw.ProfilePhoto, MediaType.userImage),
                 PickUpPlace = raw.PickUpPlace,
                 DropOffPlace = raw.DropOffPlace,
-                Price = raw.Price,
-                startRide = raw.RideDate
+                Price = raw.price,
+                startRide = raw.Date
             };
         }
 
@@ -116,7 +116,7 @@ namespace Wasla_Backend.Repositories.Implementation.driver
         {
            return await _context.rides
                 .Where(r => r.ResidentId == residentId)
-                .OrderByDescending(r => r.RideDate)
+                .OrderByDescending(r => r.Date)
                 .Include(r => r.Driver)
                 .Select(r => new UserRideDto
                 {
@@ -126,8 +126,8 @@ namespace Wasla_Backend.Repositories.Implementation.driver
                     DriverPhone = r.Driver.PhoneNumber,
                     PickUpPlace = r.PickUpPlace,
                     DropOffPlace = r.DropOffPlace,
-                    Price = r.Price,
-                    RideDate = r.RideDate,
+                    Price = r.price,
+                    RideDate = r.Date,
                     Status = r.Status.ToString()
 
                 })
@@ -138,7 +138,7 @@ namespace Wasla_Backend.Repositories.Implementation.driver
         {
             return await _context.rides
                 .Where(r => r.DriverId == driverId )
-                .OrderByDescending(r => r.RideDate)
+                .OrderByDescending(r => r.Date)
                 .Include(r => r.Resident)
                 .Select(r => new DriverRideDto
                 {
@@ -148,8 +148,8 @@ namespace Wasla_Backend.Repositories.Implementation.driver
                     ResidentImage = _fileUrlBuilderService.GetMediaUrl(r.Resident.ProfilePhoto, MediaType.userImage),
                     PickUpPlace = r.PickUpPlace,
                     DropOffPlace = r.DropOffPlace,
-                    RideDate = r.RideDate,
-                    Price = r.Price,
+                    RideDate = r.Date,
+                    Price = r.price,
                     Distance = r.Distance,
                     Status = r.Status.ToString()
                 })
@@ -169,19 +169,19 @@ namespace Wasla_Backend.Repositories.Implementation.driver
                 .Distinct()
                 .CountAsync();
 
-            var totalAmount = await ridesQuery.SumAsync(r => r.Price);
+            var totalAmount = await ridesQuery.SumAsync(r => r.price);
 
             var years = await ridesQuery
-                .GroupBy(r => r.RideDate.Year)
+                .GroupBy(r => r.Date.Year)
                 .Select(yearGroup => new CollectedPerYearDto
                 {
                     year = yearGroup.Key,
                     months = yearGroup
-                        .GroupBy(r => r.RideDate.Month)
+                        .GroupBy(r => r.Date.Month)
                         .Select(monthGroup => new CollectedPerMonthDto
                         {
                             month = monthGroup.Key,
-                            amount = monthGroup.Sum(r => r.Price)
+                            amount = monthGroup.Sum(r => r.price)
                         })
                         .OrderBy(m => m.month)
                         .ToList()

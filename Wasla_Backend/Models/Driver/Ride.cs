@@ -19,13 +19,11 @@
 
         public double DropoffLongitude { get; set; }
 
-        public double Price { get; set; }
 
         public double Distance { get; set; }
 
         public RideStatus Status { get; set; } = RideStatus.Pending;
 
-        public DateTime RideDate { get; set; }
 
     }
 }

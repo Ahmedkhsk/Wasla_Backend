@@ -9,12 +9,10 @@
         [ForeignKey("serviceDayId")]
         public ServiceDay serviceDay { get; set; }
         public string serviceProviderId { get; set; }
-        public double price { get; set; }
         public BookingStatus bookingStatus { get; set; } = BookingStatus.upcoming;
         public WeekDayEnum newDayOfWeek { get; set; } = WeekDayEnum.none;
         public string? newStart { get; set; }
         public string? newEnd { get; set; }
-        public DateOnly bookingDate { get; set; }
         public BookingType bookingType { get; set; }
         public string? imagesJson { get; set; }
         public bool isPaymentOnline { get; set; } 

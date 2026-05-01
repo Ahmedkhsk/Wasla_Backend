@@ -11,5 +11,6 @@
         public GymBookingStatus bookingStatus { get; set; }
         public bool IsPaid { get; set; }
         public string QrCode { get; set; }
+        public double Price { get; set; }
     }
 }

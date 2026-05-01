@@ -26,7 +26,7 @@ namespace Wasla_Backend.Repositories.Implementation
             var query = _context.Booking
                 .Where(b => b.serviceProviderId == doctorId
                     && b.ServiceProviderType == ServiceProviderType.Doctor)
-                .OrderByDescending(b => b.bookingDate)
+                .OrderByDescending(b => b.Date)
                 .Include(b => b.serviceDay)
                     .ThenInclude(sd => sd.service)
                 .Include(b => b.Resident)
@@ -41,7 +41,7 @@ namespace Wasla_Backend.Repositories.Implementation
                 .Select(b => new GetAllBookingResponse
                 {
                     bookingId = b.Id,
-                    date = b.bookingDate.ToString(),
+                    date = b.Date.ToString(),
                     start = !string.IsNullOrWhiteSpace(b.newStart)
                             ? b.newStart
                             : b.serviceDay.start,
@@ -103,7 +103,7 @@ namespace Wasla_Backend.Repositories.Implementation
         {
             var bookingDetails = await _context.Booking
                 .Where(b => b.ResidentId == userId)
-                .OrderByDescending(b => b.bookingDate)
+                .OrderByDescending(b => b.Date)
 
                 .Include(b => b.serviceDay)
                     .ThenInclude(sd => sd.service)
@@ -120,7 +120,7 @@ namespace Wasla_Backend.Repositories.Implementation
                     day = !(b.newDayOfWeek == WeekDayEnum.none)
                             ? b.newDayOfWeek
                             : b.serviceDay.dayOfWeek,
-                    date = b.bookingDate.ToString(),
+                    date = b.Date.ToString(),
                     status = b.bookingStatus,
 
                     ServiceProviderName = b.serviceDay.service.ServiceProvider.FullName,
@@ -163,12 +163,12 @@ namespace Wasla_Backend.Repositories.Implementation
             return await _context.Booking
                 .Where(b => b.serviceProviderId == doctorId
                     && b.ServiceProviderType == ServiceProviderType.Doctor && b.bookingStatus == BookingStatus.completed)
-                .GroupBy(b => b.bookingDate.Year)
+                .GroupBy(b => b.Date.Year)
                 .Select(yearGroup => new CollectedPerYearDto
                 {
                     year = yearGroup.Key,
                     months = yearGroup
-                        .GroupBy(b => b.bookingDate.Month)
+                        .GroupBy(b => b.Date.Month)
                         .Select(monthGroup => new CollectedPerMonthDto
                         {
                             month = monthGroup.Key,
@@ -185,12 +185,12 @@ namespace Wasla_Backend.Repositories.Implementation
         {
             return await _context.Booking
                 .Where(b => b.bookingStatus == BookingStatus.completed)
-                .GroupBy(b => b.bookingDate.Year)
+                .GroupBy(b => b.Date.Year)
                 .Select(yearGroup => new CollectedPerYearDto
                 {
                     year = yearGroup.Key,
                     months = yearGroup
-                        .GroupBy(b => b.bookingDate.Month)
+                        .GroupBy(b => b.Date.Month)
                         .Select(monthGroup => new CollectedPerMonthDto
                         {
                             month = monthGroup.Key,
@@ -235,9 +235,9 @@ namespace Wasla_Backend.Repositories.Implementation
                 .CountAsync();
         }
 
-        public async Task<bool> HasBookingSameDay(string userId, string ServiceProviderId, DateOnly date)
+        public async Task<bool> HasBookingSameDay(string userId, string ServiceProviderId, DateTime date)
         {
-            return await _context.Booking.AnyAsync(b => b.ResidentId == userId && b.bookingDate == date
+            return await _context.Booking.AnyAsync(b => b.ResidentId == userId && b.Date == date
             && b.bookingStatus != BookingStatus.canceled && b.serviceProviderId == ServiceProviderId);
         }
 

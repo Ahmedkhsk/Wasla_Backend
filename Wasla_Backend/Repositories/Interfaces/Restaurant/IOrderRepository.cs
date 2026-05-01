@@ -8,5 +8,6 @@
         public Task<int> CountOrders(string restaurantId, OrderStatus? status);
         public Task<List<CollectedPerYearDto>> GetCollectedPriceByYear(string restaurantId);
         public Task<double> TotalAmountOfOrders(string restaurantId);
+        public Task<List<BookingData>> GetBookingPerUser(string residentId);
     }
 }

@@ -28,8 +28,8 @@ namespace Wasla_Backend.Repositories.Implementation.technician
                     ResidentImage = tb.Resident.ProfilePhoto,
                     Latitude = tb.Resident.Latitude,
                     Longitude = tb.Resident.Longitude,
-                    price = tb.Price,
-                    BookingDate = tb.BookingDate,
+                    price = tb.price,
+                    BookingDate = tb.Date,
                     Status = tb.Status
                 }).FirstOrDefaultAsync();
         }
@@ -37,15 +37,15 @@ namespace Wasla_Backend.Repositories.Implementation.technician
         public async Task<List<TechnicianBookingOfResident>> GetByResidentIdAndSpecialization(string residentId, TechnicianSpecialty specialization)
         {
             return await _context.TechnicianBookings.Where(tb => tb.ResidentId == residentId&&tb.Specialty==specialization)
-                .OrderByDescending(tb => tb.BookingDate)
+                .OrderByDescending(tb => tb.Date)
               .Select(tb => new TechnicianBookingOfResident
               {
                   BookingId = tb.Id,
                   TechnicianName = tb.Technician.FullName,
                   TechnicianPhone = tb.Technician.Phone,
                   TechnicianImage = tb.Technician.ProfilePhoto,
-                  price = tb.Price,
-                  BookingDate = tb.BookingDate,
+                  price = tb.price,
+                  BookingDate = tb.Date,
                   Status = tb.Status
               }).ToListAsync();
         }
@@ -58,15 +58,15 @@ namespace Wasla_Backend.Repositories.Implementation.technician
         public async Task<List<TechnicianBookingOfResident>> technicianBookingOfResidents(string residentId)
         {
             return await _context.TechnicianBookings.Where(tb=>tb.ResidentId==residentId)
-                .OrderByDescending(tb => tb.BookingDate)
+                .OrderByDescending(tb => tb.Date)
                 .Select(tb => new TechnicianBookingOfResident
             {
                 BookingId = tb.Id,
                 TechnicianName = tb.Technician.FullName,
                 TechnicianPhone = tb.Technician.Phone,
                 TechnicianImage = tb.Technician.ProfilePhoto,
-                price = tb.Price,
-                BookingDate = tb.BookingDate,
+                price = tb.price,
+                BookingDate = tb.Date,
                 Status = tb.Status,
                 TechnicianSpeciality = tb.Specialty
                 }).ToListAsync();
@@ -75,7 +75,7 @@ namespace Wasla_Backend.Repositories.Implementation.technician
         public async Task<List<BookingDetailsForTechnicianDto>> technicianBookingOfTechnician(string technicianId)
         {
             return await _context.TechnicianBookings.Where(tb => tb.TechnicianId == technicianId)
-                .OrderByDescending(tb => tb.BookingDate)
+                .OrderByDescending(tb => tb.Date)
                 .Select(tb => new BookingDetailsForTechnicianDto
                 {
                     BookingId = tb.Id,
@@ -84,8 +84,8 @@ namespace Wasla_Backend.Repositories.Implementation.technician
                     ResidentImage = tb.Resident.ProfilePhoto,
                     Latitude = tb.Resident.Latitude,
                     Longitude = tb.Resident.Longitude,
-                    price = tb.Price,
-                    BookingDate = tb.BookingDate,
+                    price = tb.price,
+                    BookingDate = tb.Date,
                     Status = tb.Status
                 }).ToListAsync();
         }

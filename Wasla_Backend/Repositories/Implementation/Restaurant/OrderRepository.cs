@@ -1,4 +1,5 @@
-﻿namespace Wasla_Backend.Repositories.Implementation
+﻿
+namespace Wasla_Backend.Repositories.Implementation
 {
     public class OrderRepository : GenericRepository<Order>, IOrderRepository
     {
@@ -79,6 +80,17 @@
                         .ToList()
                 })
                 .OrderBy(y => y.year)
+                .ToListAsync();
+        }
+
+        public async Task<List<BookingData>> GetBookingPerUser(string residentId)
+        {
+            return await _context.Orders.Where(o => o.residentId == residentId&&o.status==OrderStatus.Paid)
+                .Select(o => new BookingData
+                {
+                    Date = o.createdAt,
+                    Price =(double)o.totalPrice,
+                })
                 .ToListAsync();
         }
     }

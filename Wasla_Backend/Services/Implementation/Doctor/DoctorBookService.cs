@@ -207,7 +207,7 @@ namespace Wasla_Backend.Services.Implementation
                     serviceProviderId = dto.serviceProviderId,
                     price = dto.price,
                     ServiceProviderType = dto.serviceProviderType,
-                    bookingDate = dto.bookingDate,
+                    Date = dto.bookingDate,
                     bookingType = dto.bookingType,
                     images = savedImages,
                     serviceDayId = dto.serviceDayId,
@@ -243,7 +243,7 @@ namespace Wasla_Backend.Services.Implementation
 
                 if (TimeOnly.TryParse(endString, out var endTime))
                 {
-                    var endDateTime = booking.bookingDate.ToDateTime(endTime);
+                    var endDateTime = booking.Date;
                     if (endTime <= TimeOnly.Parse(booking.serviceDay.start))
                         endDateTime = endDateTime.AddDays(1);
 

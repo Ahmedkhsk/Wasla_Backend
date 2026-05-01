@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wasla_Backend.Data;
 
@@ -11,9 +12,11 @@ using Wasla_Backend.Data;
 namespace Wasla_Backend.data
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20260430212507_PriceGeneralize")]
+    partial class PriceGeneralize
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -275,9 +278,6 @@ namespace Wasla_Backend.data
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsPaid")
                         .HasColumnType("bit");
@@ -1165,6 +1165,9 @@ namespace Wasla_Backend.data
                 {
                     b.HasBaseType("Wasla_Backend.Models.BaseModel.BaseBooking");
 
+                    b.Property<DateOnly>("bookingDate")
+                        .HasColumnType("date");
+
                     b.Property<int>("bookingStatus")
                         .HasColumnType("int");
 
@@ -1228,6 +1231,9 @@ namespace Wasla_Backend.data
                     b.Property<double>("PickupLongitude")
                         .HasColumnType("float");
 
+                    b.Property<DateTime>("RideDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -1239,6 +1245,9 @@ namespace Wasla_Backend.data
             modelBuilder.Entity("Wasla_Backend.Models.GymModel.GymBooking", b =>
                 {
                     b.HasBaseType("Wasla_Backend.Models.BaseModel.BaseBooking");
+
+                    b.Property<DateTime>("BookingDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("BookingStatus")
                         .HasColumnType("int");
@@ -1276,6 +1285,9 @@ namespace Wasla_Backend.data
             modelBuilder.Entity("Wasla_Backend.Models.technician.TechnicianBooking", b =>
                 {
                     b.HasBaseType("Wasla_Backend.Models.BaseModel.BaseBooking");
+
+                    b.Property<DateTime>("BookingDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");

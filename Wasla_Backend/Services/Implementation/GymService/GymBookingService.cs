@@ -67,7 +67,7 @@ namespace Wasla_Backend.Services.Implementation.GymService
                 throw new BadRequestException(LocalizationKey.PackageAlreadyBooked);
 
             var gymBooking = _mapper.Map<GymBooking>(gymBookDto);
-            gymBooking.BookingDate = _dateTimeHelper.Now;
+            gymBooking.Date = _dateTimeHelper.Now;
             gymBooking.isPaymentOnline =gymBookDto.isPaymentOnline;
 
             int durationInMonths;
@@ -75,13 +75,13 @@ namespace Wasla_Backend.Services.Implementation.GymService
             if (service.type == GymServiceType.Package)
             {
                 durationInMonths = service.DurationInMonths;
-                gymBooking.price = service.Price;
+                gymBooking.price =(double) service.Price;
             }
             else
             {
                 durationInMonths = service.DurationInMonths;
                 var discountValue = service.Price * (service.Precentage / 100m);
-                gymBooking.price = service.Price - discountValue;
+                gymBooking.price = (double)(service.Price - discountValue);
             }
 
             gymBooking.ServiceProviderType = ServiceProviderType.Gym;
@@ -96,8 +96,8 @@ namespace Wasla_Backend.Services.Implementation.GymService
                 residentPhoto = resident.ProfilePhoto,
                 gymName = gym.BusinessName,
                 serviceName = service.Name.GetText(lan),
-                bookingTime = gymBooking.BookingDate,
-                expiryDate = gymBooking.BookingDate.AddMonths(durationInMonths),
+                bookingTime = gymBooking.Date,
+                expiryDate = gymBooking.Date.AddMonths(durationInMonths),
                 bookingStatus = gymBooking.BookingStatus
             };
 
@@ -116,7 +116,7 @@ namespace Wasla_Backend.Services.Implementation.GymService
             );
             }
 
-            var expiryDate = gymBooking.BookingDate.AddMonths(durationInMonths);
+            var expiryDate = gymBooking.Date.AddMonths(durationInMonths);
             var delay = expiryDate - _dateTimeHelper.Now;
             if (delay < TimeSpan.Zero)
                 delay = TimeSpan.Zero;
@@ -336,7 +336,7 @@ namespace Wasla_Backend.Services.Implementation.GymService
                 return QrValidationResult.Invalid("BookingExpired");
 
             var now = _dateTimeHelper.Now;
-            var expiryDate = booking.BookingDate.AddMonths(booking.Service.DurationInMonths);
+            var expiryDate = booking.Date.AddMonths(booking.Service.DurationInMonths);
 
             if (now > expiryDate)
                 return QrValidationResult.Invalid("QrExpired");
