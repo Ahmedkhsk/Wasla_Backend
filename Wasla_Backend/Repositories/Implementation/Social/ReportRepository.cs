@@ -6,6 +6,11 @@
         {
         }
 
+        public async Task<Report?> GetReportByUserIdAndTargetId(string userId, int targetId)
+        {
+            return await _dbSet
+                .FirstOrDefaultAsync(r => r.userId == userId && r.targetId == targetId);
+        }
         public async Task<PagedResult<GetReports>> GetReports(PaginationParams paginationParams)
         {
             var query = _dbSet

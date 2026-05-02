@@ -3,7 +3,7 @@
     public interface IReportService
     {
         Task AddReport(AddReportDto dto);
-        Task ChangeStatus(int taegetId);
+        Task ChangeStatus(ToggleHideDto dto, string adminId);
         Task<PagedResult<GetReports>> GetReports(PaginationParams paginationParams);
     }
 }

@@ -33,7 +33,7 @@
             {
                 var newReaction = new Reaction
                 {
-                    targetId = dto.targetId,
+                    targetId = dto.targetId,    
                     targetType = dto.targetType,
                     reactionType = dto.reactionType,
                     userId = dto.userId,
@@ -47,9 +47,9 @@
                 {
                     var image=_fileUrlBuilderService.GetMediaUrl(user.ProfilePhoto,MediaType.userImage);
                     var metadata = new Dictionary<string, string>
-            {
-                { "UserName", user.FullName ?? "User" }
-            };
+                        {
+                            { "UserName", user.FullName ?? "User" }
+                        };
 
                     Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
                         post.userId,

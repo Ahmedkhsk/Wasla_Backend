@@ -119,6 +119,16 @@
     BodyEn = "Doctor has cancelled your booking"
 }
   ,
+ new NotificationTemplate
+{
+    Type = NotificationType.SocialHidden,
+
+    TitleAr = "تم إخفاء المحتوى 🚫",
+    BodyAr = "{ActorName} قام بإخفاء {TargetTypeAr} الخاص بك بسبب: {Reason}",
+
+    TitleEn = "Content Hidden 🚫",
+    BodyEn = "{ActorName} hid your {TargetTypeEn} due to: {Reason}"
+},
   new NotificationTemplate
 {
     Type = NotificationType.residentCancelDoctorBooking,

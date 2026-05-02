@@ -1,4 +1,5 @@
 ﻿using Wasla_Backend.Repositories.Implementation;
+using Wasla_Backend.Repositories.Interfaces;
 
 namespace Wasla_Backend.Services.Implementation
 {
@@ -10,10 +11,11 @@ namespace Wasla_Backend.Services.Implementation
         private readonly IPostRepository _postRepository;
         private readonly ICommentRepository _commentRepository;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
+        private readonly IUserRepository _userRepository;
 
         public ReportService(IReportRepository reportRepository, DateTimeHelper dateTimeHelper,
             ISocialRepository socialRepository, IPostRepository postRepository,
-            ICommentRepository commentRepository, IFileUrlBuilderService fileUrlBuilderService)
+            ICommentRepository commentRepository, IFileUrlBuilderService fileUrlBuilderService,IUserRepository userRepository)
         {
             _reportRepository = reportRepository;
             _dateTimeHelper = dateTimeHelper;
@@ -21,6 +23,7 @@ namespace Wasla_Backend.Services.Implementation
             _postRepository = postRepository;
             _commentRepository = commentRepository;
             _fileUrlBuilderService = fileUrlBuilderService;
+            _userRepository = userRepository;
         }
 
         public async Task AddReport(AddReportDto dto)
@@ -36,15 +39,54 @@ namespace Wasla_Backend.Services.Implementation
             await _reportRepository.AddAsync(report);
             await _reportRepository.SaveChangesAsync();
         }
-
-        public async Task ChangeStatus(int taegetId)
+        public async Task ChangeStatus(ToggleHideDto dto, string adminId)
         {
-            var target = await _socialRepository.GetSocialById(taegetId);
+            var target = await _socialRepository.GetSocialById(dto.id);
             if (target == null)
                 throw new NotFoundException(LocalizationKey.PostNotFound);
-            
+
             target.isHidden = !target.isHidden;
-            await _reportRepository.SaveChangesAsync();
+
+            await _socialRepository.SaveChangesAsync();
+
+            if (target.isHidden && !string.IsNullOrWhiteSpace(dto.reason))
+            {
+                var user = await _userRepository.GetUserByIdAsync(adminId);
+                if(user == null)
+                    throw new NotFoundException(LocalizationKey.UserNotFound);
+
+                if (target.userId != adminId)
+                {
+                    var image = !string.IsNullOrEmpty(user.ProfilePhoto)
+                        ? _fileUrlBuilderService.GetMediaUrl(user.ProfilePhoto, MediaType.userImage)
+                        : _fileUrlBuilderService.GetMediaUrl(defaultImage.defaultImageName, MediaType.userImage);
+
+                    var report = await _reportRepository
+                        .GetReportByUserIdAndTargetId(target.userId, target.id);
+
+                    var targetType = report?.targetType ?? ReactionTargetType.post;
+
+                    var metadata = new Dictionary<string, string>
+                        {
+                            { "ActorName", user.FullName ?? "User" },
+                            { "Reason", dto.reason ?? string.Empty },
+                            { "TargetTypeEn", targetType.ToString() },
+                            { "TargetTypeAr", targetType == ReactionTargetType.post ? "المنشور" : "التعليق" },
+                            { "TargetId", target.id.ToString() }
+                        };
+
+                    Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x =>
+                        x.sendNotification(
+                            target.userId,
+                            NotificationType.SocialHidden,
+                            target.id.ToString(),
+                            image,
+                            dto.lan,
+                            metadata
+                        )
+                    );
+                }
+            }
         }
 
         public async Task<PagedResult<GetReports>> GetReports(PaginationParams paginationParams)

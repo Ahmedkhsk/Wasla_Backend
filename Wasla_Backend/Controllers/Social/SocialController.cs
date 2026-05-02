@@ -118,9 +118,11 @@
         }
 
         [HttpPut("Toggle_Hide")]
-        public async Task<IActionResult> HidePostOrComment([FromQuery] GetGeneralDto<int> dto)
+        public async Task<IActionResult> HidePostOrComment([FromQuery] ToggleHideDto dto)
         {
-            await _reportService.ChangeStatus(dto.id);
+            var userId = User.GetUserId();
+
+            await _reportService.ChangeStatus(dto,userId);
             return Ok(ResponseHelper.Success(LocalizationKey.SuccessToToggleContent, dto.lan));
         }
 
