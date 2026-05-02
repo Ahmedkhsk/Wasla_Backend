@@ -17,6 +17,8 @@
                 entityId = context.OrderId,
                 entityType = EntityType.order,
                 UserId = context.UserId,
+                ServiceProviderId = context.ServiceProviderId,
+                ServiceType = ServiceProviderType.Restaurant,
                 PaymentMethod = PaymentMethodType.Card
             });
 

@@ -70,7 +70,8 @@ namespace Wasla_Backend.Services.Implementation
             {
                 Amount = order.totalPrice,
                 OrderId = order.id,
-                UserId = order.residentId
+                UserId = order.residentId,
+                ServiceProviderId = order.restaurantId
             });
 
             order.paymentStatus = result.status;
