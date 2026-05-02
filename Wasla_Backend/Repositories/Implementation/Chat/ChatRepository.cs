@@ -20,8 +20,12 @@
             var query = _dbSet
                 .Where(c => c.senderId == pagination.id || c.receiverId == pagination.id)
                 .Where(c =>
-                    (c.senderId == pagination.id && c.deletedBySenderId == null) ||
-                    (c.receiverId == pagination.id && c.deletedByReceiverId == null)
+                    (c.senderId == pagination.id &&
+                     (c.deletedBySenderId == null ||
+                      c.messages.Any(m => m.sentAt > c.senderDeletedAt))) ||
+                    (c.receiverId == pagination.id &&
+                     (c.deletedByReceiverId == null ||
+                      c.messages.Any(m => m.sentAt > c.receiverDeletedAt)))
                 );
 
             if (!string.IsNullOrWhiteSpace(pagination.search))
@@ -47,11 +51,17 @@
                 {
                     chat = c,
                     lastMessage = c.messages
+                        .Where(m =>
+                            (c.senderId == pagination.id
+                                ? c.senderDeletedAt == null || m.sentAt > c.senderDeletedAt
+                                : c.receiverDeletedAt == null || m.sentAt > c.receiverDeletedAt)
+                        )
                         .OrderByDescending(m => m.sentAt)
                         .FirstOrDefault()
                 })
                 .Where(x => x.lastMessage != null)
-                .Select(x => new GetChats
+ 
+               .Select(x => new GetChats
                 {
                     chatId = x.chat.id,
                     receiverId = x.lastMessage.receiverId,
