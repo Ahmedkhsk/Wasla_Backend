@@ -172,3 +172,7 @@ global using Wasla_Backend.Enums;
 #region Project - Exceptions
 global using Wasla_Backend.Exceptions;
 #endregion
+
+#region Project - Strategies
+global using Wasla_Backend.Strategies.Payment;
+#endregion

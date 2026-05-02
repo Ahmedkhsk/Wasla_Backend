@@ -6,20 +6,26 @@ namespace Wasla_Backend.Services.Implementation
         private readonly ICartRepository _cartRepo;
         private readonly IOrderRepository _orderRepo;
         private readonly IMapper _mapper;
-        private readonly IPaymentService _paymentService;
+        private readonly IPaymentStrategyFactory _paymentStrategyFactory;
         private readonly DateTimeHelper _dateTimeHelper;
         private readonly IHubContext<OrderHub> _hub;
-        private readonly IFileUrlBuilderService _fileUrlBuilderService;  
+        private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly IUserRepository _userRepository;
 
-        public OrderService(ICartRepository cartRepo, IOrderRepository orderRepo
-            ,IMapper mapper,IPaymentService paymentService,DateTimeHelper dateTimeHelper,
-            IHubContext<OrderHub> hubContext,IFileUrlBuilderService fileUrlBuilderService,IUserRepository userRepository)
+        public OrderService(
+            ICartRepository cartRepo,
+            IOrderRepository orderRepo,
+            IMapper mapper,
+            IPaymentStrategyFactory paymentStrategyFactory,
+            DateTimeHelper dateTimeHelper,
+            IHubContext<OrderHub> hubContext,
+            IFileUrlBuilderService fileUrlBuilderService,
+            IUserRepository userRepository)
         {
             _cartRepo = cartRepo;
             _orderRepo = orderRepo;
             _mapper = mapper;
-            _paymentService = paymentService;
+            _paymentStrategyFactory = paymentStrategyFactory;
             _dateTimeHelper = dateTimeHelper;
             _hub = hubContext;
             _fileUrlBuilderService = fileUrlBuilderService;
@@ -34,24 +40,22 @@ namespace Wasla_Backend.Services.Implementation
                 throw new NotFoundException(LocalizationKey.CartIsEmpty);
 
             var invalidItems = cart.items
-                    .Where(x => x.menuItem.isDeleted)
-                    .ToList();
+                .Where(x => x.menuItem.isDeleted)
+                .ToList();
 
             if (invalidItems.Any())
-            {
                 throw new BadRequestException(LocalizationKey.MenuItemsNotAvailable);
-            }
 
             var order = _mapper.Map<Order>(cart);
-            
+
             foreach (var item in order.items)
             {
                 item.order = order;
             }
+
             order.notes = dto.notes;
             order.address = dto.address;
             order.deliveryFee = 20;
-
             order.totalPrice = cart.items.Sum(x => x.price * x.quantity) + order.deliveryFee;
             order.status = OrderStatus.Pending;
             order.paymentMethod = dto.paymentMethod;
@@ -60,25 +64,26 @@ namespace Wasla_Backend.Services.Implementation
             await _orderRepo.AddAsync(order);
             await _orderRepo.SaveChangesAsync();
 
-            if (dto.paymentMethod != PaymentMethodType.CashCollection)
-            {
-                var (_, paymentUrl) = await _paymentService.ProcessPaymentAsync(new CreatePaymentDto
-                {
-                    Amount = order.totalPrice,
-                    entityId = order.id,
-                    entityType = EntityType.order,
-                    UserId = order.residentId,              
-                    PaymentMethod = dto.paymentMethod
-                });
+            var strategy = _paymentStrategyFactory.Create(dto.paymentMethod);
 
+            var result = await strategy.Pay(new PaymentContext
+            {
+                Amount = order.totalPrice,
+                OrderId = order.id,
+                UserId = order.residentId
+            });
+
+            order.paymentStatus = result.status;
+
+            if (!string.IsNullOrEmpty(result.paymentUrl))
+            {
                 return new CheckoutResponse
                 {
                     orderId = order.id,
-                    paymentKey = paymentUrl
+                    paymentKey = result.paymentUrl
                 };
             }
 
-            order.paymentStatus = PaymentStatus.Completed;
             order.status = OrderStatus.Paid;
 
             _cartRepo.Delete(cart);
@@ -90,7 +95,6 @@ namespace Wasla_Backend.Services.Implementation
                 orderId = order.id
             };
         }
-
         public async Task StartPreparingOrder(int orderId)
         {
             var order = await _orderRepo.GetOrderDetails(orderId);

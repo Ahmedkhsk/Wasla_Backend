@@ -11,6 +11,9 @@
             services.AddSingleton<CacheManager>();
             services.AddScoped<FileValidator>();
             services.AddSingleton<UserConnectionHelper>();
+            services.AddScoped<PaymobPaymentStrategy>();
+            services.AddScoped<CashPaymentStrategy>();
+            services.AddScoped<IPaymentStrategyFactory, PaymentStrategyFactory>();
 
             return services;
         }
