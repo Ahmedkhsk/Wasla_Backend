@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualBasic;
-
-namespace Wasla_Backend.Services.Implementation
+﻿namespace Wasla_Backend.Services.Implementation
 {
     public class ChatService : IChatService
     {
@@ -34,6 +32,7 @@ namespace Wasla_Backend.Services.Implementation
         public async Task AddMessage(AddMessageDto dto)
         {
             var chat = await _chatRepository.GetChatByParticipantsAsync(dto.senderId, dto.reciverId);
+            
             if (chat == null)
             {
                 chat = new Chat
@@ -43,19 +42,6 @@ namespace Wasla_Backend.Services.Implementation
                 };
                 await _chatRepository.AddAsync(chat);
                 await _chatRepository.SaveChangesAsync();
-            }
-            else
-            {
-                if (chat.senderId == dto.senderId)
-                {
-                    chat.deletedBySenderId = null;
-                    chat.senderDeletedAt = null;
-                }
-                else
-                {
-                    chat.deletedByReceiverId = null;
-                    chat.receiverDeletedAt = null;
-                }
             }
 
             var message = new ChatMessage
