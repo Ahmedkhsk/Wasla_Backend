@@ -20,7 +20,7 @@ namespace Wasla_Backend.Repositories.Implementation.technician
 
         public async Task<TechnicianProfileDto> GetProfileById(string id)
         {
-           return await _context.Technicians.Where(t => t.Id == id)
+           return await _context.Technicians.Where(t => t.Id == id).AsNoTracking()
                 .Select(t => new TechnicianProfileDto
                 {
                     Email = t.Email,
@@ -32,7 +32,9 @@ namespace Wasla_Backend.Repositories.Implementation.technician
                     Description = t.Description,
                     Latitude = t.Latitude,
                     Longitude = t.Longitude,
-
+                    NumberOfReviews = t.Reviews.Count(),
+                    BookingCount = _context.TechnicianBookings.Count(tb => tb.TechnicianId == t.Id&&tb.Status==TechnicianBookingStatus.Done),
+                    NumberOfResident = _context.TechnicianBookings.Where(tb => tb.TechnicianId == t.Id && tb.Status == TechnicianBookingStatus.Done).Select(tb => tb.ResidentId).Distinct().Count(),
                     Specialty = t.Specialty,
                     Rate = t.Rating,
                     ProfilePhotoUrl=t.ProfilePhoto,

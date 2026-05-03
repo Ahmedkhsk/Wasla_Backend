@@ -93,7 +93,7 @@
 
         public async Task<DoctorChartDto> GetDoctorChart(string doctorId)
         {
-            var doctor = await _doctorRepository.GetById(doctorId);
+            var doctor = await _doctorRepository.GetByIdAsync(doctorId);
             if (doctor == null)
                 throw new NotFoundException(LocalizationKey.DoctorNotFound);
 
@@ -109,7 +109,7 @@
 
         public async Task<List<GetAllBookingResponse>> GetAllBookingOfDoctors(string docId, BookingStatus status, string lan)
         {
-            var doctor = await _doctorRepository.GetById(docId);
+            var doctor = await _doctorRepository.GetByIdAsync(docId);
             if (doctor == null)
                 throw new BadRequestException(LocalizationKey.DoctorNotFound);
 
@@ -121,23 +121,12 @@
 
         public async Task<DoctorProfileResponse> GetDoctorProfile(string id, string lan)
         {
-            var doctor = await _doctorRepository.GetById(id);
-            if (doctor == null)
-                throw new NotFoundException(LocalizationKey.DoctorNotFound);
-
-            var doctorProfileResponse = _mapper.Map<DoctorProfileResponse>(doctor, opt =>
-            {
-                opt.Items["lan"] = lan;
-            });
-
-            doctorProfileResponse.numberOfpatients = await _bookingRepository.GetNumberOfPatientByDoctorId(doctor.Id);
-
-            return doctorProfileResponse;
+            return await _doctorRepository.GetDoctorProfileById(id);
         }
 
         public async Task UpdateDoctorProfile(UpdateDoctorDto updateDoctorDto)
         {
-            var doctor = await _doctorRepository.GetById(updateDoctorDto.userId);
+            var doctor = await _doctorRepository.GetByIdAsync(updateDoctorDto.userId);
             if (doctor == null)
                 throw new NotFoundException(LocalizationKey.DoctorNotFound);
 
@@ -177,7 +166,7 @@
 
         public async Task<AllDoctorDataDto> GetDoctorData(string doctorId, string lan)
         {
-            var doc = await _doctorRepository.GetById(doctorId);
+            var doc = await _doctorRepository.GetByIdAsync(doctorId);
             if (doc == null)
                 throw new NotFoundException(LocalizationKey.DoctorNotFound);
 

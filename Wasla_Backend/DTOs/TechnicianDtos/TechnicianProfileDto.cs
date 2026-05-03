@@ -15,5 +15,8 @@
         public List<string> DocumentsUrls { get; set; }
         public double Rate { get; set; }
         public bool IsAvailable { get; set; }
+        public int NumberOfReviews { get; set; }
+        public int NumberOfResident { get; set; }
+        public int BookingCount { get; set; }
     }
 }

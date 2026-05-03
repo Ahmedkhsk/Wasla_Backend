@@ -8,6 +8,8 @@
         public string vehicleNumber { get; set; }
         public int drivingExperienceYears { get; set; }
         public int tripsCount { get; set; }
+        public int ReviewsCount { get; set; }
+        public int NumberOfPassengers { get; set; }
         public VehicleType vehicleType { get; set; }
         public float rate { get; set; }
         public string birthDay { get; set; }

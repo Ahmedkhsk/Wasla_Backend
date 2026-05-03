@@ -33,7 +33,7 @@ namespace Wasla_Backend.Repositories.Implementation.Drivers
         public async Task<DriverProfileDTO> GetDriverProfileByIdAsync(string id)
         {
             return await _context.Drivers
-                .Where(d => d.Id == id)
+                .Where(d => d.Id == id).AsNoTracking()
                 .Select(d => new DriverProfileDTO
                 {
                    
@@ -52,7 +52,9 @@ namespace Wasla_Backend.Repositories.Implementation.Drivers
                     birthDay=d.BirthDay,
                     carImages=d.images,
                     driverFiles = d.DriverFiles,
-                    status = d.DriverStatus.ToString()
+                    status = d.DriverStatus.ToString(),
+                    ReviewsCount = _context.Review.Count(r => r.ServiceProviderId == id),
+                    NumberOfPassengers=_context.rides.Where(r=>r.DriverId==id&&r.Status==RideStatus.Completed).Select(r=>r.Id).Distinct().Count()
 
 
                 }).AsNoTracking()

@@ -40,7 +40,7 @@ namespace Wasla_Backend.Repositories.Implementation.Gyms
         {
     
             Console.WriteLine($"count of review second is {_context.Review.Where(r=>r.ServiceProviderId==id).Count()}"); 
-            return _context.Gyms.Where(g => g.Id == id).Select(g => new GymProfileDto
+            return _context.Gyms.Where(g => g.Id == id).AsNoTracking().Select(g => new GymProfileDto
             {
                 id = g.Id,
                 email = g.Email,
@@ -50,6 +50,8 @@ namespace Wasla_Backend.Repositories.Implementation.Gyms
                 phones = g.phones,
                 profilePhoto = g.ProfilePhoto,
                 photos = g.images,
+               BookingCount=_context.GymBooking.Where(b => b.GymId == id&&b.BookingStatus!=GymBookingStatus.Cancelled).Count(),
+                NumberOfResidents = _context.GymBooking.Where(b => b.GymId == id && b.BookingStatus != GymBookingStatus.Cancelled).Select(b => b.ResidentId).Distinct().Count(),
 
                 ReviewsCount = _context.Review.Where(r => r.ServiceProviderId == id).Count(),
                 rating = g.Rating

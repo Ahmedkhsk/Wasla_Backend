@@ -23,12 +23,32 @@
                 .OfType<Doctor>()
                 .FirstOrDefaultAsync(d => d.Email == email);
         }
-        public async Task<Doctor> GetById(string id)
+        public async Task<DoctorProfileResponse> GetDoctorProfileById(string id)
         {
-            return await _userManager.Users
-                .OfType<Doctor>()
-                .Include(d => d.Specialization)
-                .FirstOrDefaultAsync(d => d.Id == id);
+          return await _context.Doctors.Where(d=>d.Id==id).AsNoTracking().Select(d=> new DoctorProfileResponse
+          {
+             email= d.Email,
+              fullName = d.FullName,
+              specializationName = d.Specialization!.Specialization.GetText("en"),
+              experienceYears = d.ExperienceYears,
+              universityName = d.UniversityName,
+              hospitalname = d.hospitalname,
+              numberOfpatients = d.numberOfpatients,
+              BookingCount = _context.Booking
+                .Count(b => b.serviceProviderId == d.Id
+                         && b.bookingStatus == BookingStatus.completed),
+              ReviewsCount = d.Reviews.Count(),
+              graduationYear = d.GraduationYear,
+              birthDay = d.BirthDay,
+              phone = d.Phone,
+              latitude = d.Latitude,
+              longitude = d.Longitude,
+              description = d.Description,
+              image = d.ProfilePhoto,
+              cv = d.CV,
+              rating = d.Rating
+
+          }).FirstOrDefaultAsync();  
         }
 
         public async Task<IEnumerable<Doctor>> GetBySpecialist(int specialistId)

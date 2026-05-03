@@ -7,6 +7,9 @@
         public string ownerName { get; set; }
         public string email { get; set; }
         public string description { get; set; }
+        public int NumberOfResidents { get; set; }
+        public int BookingCount { get; set; }
+
         public List<string> phones { get; set; }
         public string profilePhoto { get; set; }
         public List<string> photos { get; set; }
