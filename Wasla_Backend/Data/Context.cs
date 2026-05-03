@@ -47,6 +47,8 @@ namespace Wasla_Backend.Data
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<ServiceProvider> serviceProvider { get; set; }
         public DbSet<Social> Socials { get; set; }
+        public DbSet<SuperAdmin> SuperAdmins { get; set; }
+        public DbSet<Admin> Admins { get; set; }
 
 
         public Context(DbContextOptions<Context> options) : base(options) { }
@@ -71,6 +73,8 @@ namespace Wasla_Backend.Data
             builder.Entity<Booking>().ToTable("DoctorBookings");
             builder.Entity<BaseBooking>().ToTable("BaseBookings");
             builder.Entity<Booking>().ToTable("DoctorBookings");
+            builder.Entity<SuperAdmin>().ToTable("SuperAdmins");
+            builder.Entity<Admin>().ToTable("Admins");
 
             builder.Entity<Social>()
                 .HasQueryFilter(s => !s.isHidden);
@@ -219,7 +223,8 @@ namespace Wasla_Backend.Data
                 .HasForeignKey(r => r.ServiceProviderId)
                 .OnDelete(DeleteBehavior.Restrict); 
             builder.Entity<Notification>().HasQueryFilter(n => !n.IsDeleted);
-        
+            builder.Entity<ApplicationUser>().HasQueryFilter(u => !u.IsDeleted);
+
         }
     
     }

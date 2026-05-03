@@ -135,6 +135,31 @@
                 ["en"] = "User event created successfully.",
                 ["ar"] = "تم إنشاء حدث المستخدم بنجاح."
             },
+            [LocalizationKey.AdminAddedSuccessfully] = new()
+            {
+                ["en"] = "Admin added successfully.",
+                ["ar"] = "تمت إضافة المشرف بنجاح."
+            },
+            [LocalizationKey.AdminsRetrievedSuccessfully] = new()
+            {
+                ["en"] = "Admins retrieved successfully.",
+                ["ar"] = "تم جلب المشرفين بنجاح."
+            },
+            [LocalizationKey.AdminRemovedSuccessfully] = new()
+            {
+                ["en"] = "Admin removed successfully.",
+                ["ar"] = "تمت إزالة المشرف بنجاح."
+            },
+            [LocalizationKey.AdminStatusUpdatedSuccessfully] = new()
+            {
+                ["en"] = "Admin status updated successfully.",
+                ["ar"] = "تم تحديث حالة المشرف بنجاح."
+            },
+            [LocalizationKey.FailedToDeleteAdmin] = new()
+            {
+                ["en"] = "Failed to delete admin.",
+                ["ar"] = "فشل في حذف المشرف."
+            },
             #endregion
 
             #region Password

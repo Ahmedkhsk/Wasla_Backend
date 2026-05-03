@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wasla_Backend.Data;
 
@@ -11,9 +12,11 @@ using Wasla_Backend.Data;
 namespace Wasla_Backend.data
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20260502222914_SuperAdmin")]
+    partial class SuperAdmin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -191,9 +194,6 @@ namespace Wasla_Backend.data
                         .HasColumnType("nvarchar(1)");
 
                     b.Property<bool>("IsCompleteRegistration")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsVerified")
@@ -1129,13 +1129,6 @@ namespace Wasla_Backend.data
                     b.ToTable("UserEvents");
                 });
 
-            modelBuilder.Entity("Wasla_Backend.Models.Admin", b =>
-                {
-                    b.HasBaseType("Wasla_Backend.Models.ApplicationUser");
-
-                    b.ToTable("Admins", (string)null);
-                });
-
             modelBuilder.Entity("Wasla_Backend.Models.Resident", b =>
                 {
                     b.HasBaseType("Wasla_Backend.Models.ApplicationUser");
@@ -1169,13 +1162,6 @@ namespace Wasla_Backend.data
                         .HasColumnType("real");
 
                     b.ToTable("serviceProvider");
-                });
-
-            modelBuilder.Entity("Wasla_Backend.Models.SuperAdmin", b =>
-                {
-                    b.HasBaseType("Wasla_Backend.Models.ApplicationUser");
-
-                    b.ToTable("SuperAdmins", (string)null);
                 });
 
             modelBuilder.Entity("Wasla_Backend.Models.Booking", b =>
@@ -1981,15 +1967,6 @@ namespace Wasla_Backend.data
                     b.Navigation("serviceProvider");
                 });
 
-            modelBuilder.Entity("Wasla_Backend.Models.Admin", b =>
-                {
-                    b.HasOne("Wasla_Backend.Models.ApplicationUser", null)
-                        .WithOne()
-                        .HasForeignKey("Wasla_Backend.Models.Admin", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Wasla_Backend.Models.Resident", b =>
                 {
                     b.HasOne("Wasla_Backend.Models.ApplicationUser", null)
@@ -2004,15 +1981,6 @@ namespace Wasla_Backend.data
                     b.HasOne("Wasla_Backend.Models.ApplicationUser", null)
                         .WithOne()
                         .HasForeignKey("Wasla_Backend.Models.ServiceProvider", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Wasla_Backend.Models.SuperAdmin", b =>
-                {
-                    b.HasOne("Wasla_Backend.Models.ApplicationUser", null)
-                        .WithOne()
-                        .HasForeignKey("Wasla_Backend.Models.SuperAdmin", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

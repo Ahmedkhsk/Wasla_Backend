@@ -115,6 +115,9 @@ namespace Wasla_Backend.Repositories.Implementation
                 .ToListAsync();
         }
 
+        public async Task<IdentityResult> DeleteUserAsync(ApplicationUser user)
+    => await _userManager.DeleteAsync(user);
+
         public async Task<IEnumerable<ApplicationUser>> GetUsersByRoleAsync(string roleName)
         {
             return await _userManager.GetUsersInRoleAsync(roleName);

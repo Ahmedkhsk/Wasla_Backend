@@ -68,10 +68,11 @@ namespace Wasla_Backend.Services.Implementation.General
             if (user == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
             var notifications =await _notificationRepository.GetNotificationsByUserIdAsync(userId,pageNumber,pageSize,lan);
+            var count = await _notificationRepository.CountAllNotificationByuserId(userId);
             return new PagedResult<NotificationResponseDto>
             {
                 Data = notifications.ToList(),
-                TotalCount =notifications.Count(),
+                TotalCount = count,
                 PageNumber = pageNumber,
                 PageSize = pageSize
             };

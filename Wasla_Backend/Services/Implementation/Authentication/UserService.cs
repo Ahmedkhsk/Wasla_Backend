@@ -126,8 +126,9 @@
         public async Task<LoginResponse> LoginAsync(LoginDto model)
         {
             var user = await _userRepository.GetUserByEmailAsync(model.Email);
-            if (user == null)
+            if (user == null||user.IsDeleted)
                 throw new NotFoundException(LocalizationKey.EmailNotFound);
+          
 
             var isPasswordValid = await _userManager.CheckPasswordAsync(user, model.Password);
             if (!isPasswordValid)
