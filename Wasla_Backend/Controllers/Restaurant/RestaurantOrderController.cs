@@ -49,6 +49,13 @@ namespace Wasla_Backend.Controllers.Restaurant
             return Ok(ResponseHelper.Success(LocalizationKey.OrderCreatedSuccessfully, lanDto.lan, res));
         }
 
+        [HttpPut("cancel-order")]
+        public async Task<IActionResult> CancelOrder([FromQuery] CancleOrderDto dto)
+        {
+            await _orderService.CancelOrder(dto);
+            return Ok(ResponseHelper.Success(LocalizationKey.OrderCancelledSuccessfully, dto.lan));
+        }
+
         [HttpPut("start-preparing-order")]
         public async Task<IActionResult> StartPreparingOrder([FromQuery] GetGeneralDto<int> dto)
         {

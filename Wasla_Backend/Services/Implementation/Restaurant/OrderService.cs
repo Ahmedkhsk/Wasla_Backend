@@ -1,5 +1,4 @@
-﻿
-namespace Wasla_Backend.Services.Implementation
+﻿namespace Wasla_Backend.Services.Implementation
 {
     public class OrderService : IOrderService
     {
@@ -11,6 +10,7 @@ namespace Wasla_Backend.Services.Implementation
         private readonly IHubContext<OrderHub> _hub;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly IUserRepository _userRepository;
+        private readonly IPaymentService _paymentService;
 
         public OrderService(
             ICartRepository cartRepo,
@@ -20,7 +20,8 @@ namespace Wasla_Backend.Services.Implementation
             DateTimeHelper dateTimeHelper,
             IHubContext<OrderHub> hubContext,
             IFileUrlBuilderService fileUrlBuilderService,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            IPaymentService paymentService)
         {
             _cartRepo = cartRepo;
             _orderRepo = orderRepo;
@@ -30,6 +31,7 @@ namespace Wasla_Backend.Services.Implementation
             _hub = hubContext;
             _fileUrlBuilderService = fileUrlBuilderService;
             _userRepository = userRepository;
+            _paymentService = paymentService;
         }
 
         public async Task<CheckoutResponse> Checkout(CheckoutDto dto)
@@ -110,9 +112,11 @@ namespace Wasla_Backend.Services.Implementation
 
             _orderRepo.Update(order);
             await _orderRepo.SaveChangesAsync();
-            
-            await _hub.Clients.Group(order.residentId)
-                .SendAsync("OrderStatusChanged", order.id, order.status);
+
+            await _hub.Clients.Users(
+                        order.residentId,
+                        order.restaurantId
+                    ).SendAsync("OrderStatusChanged", order.id, order.status);
 
             var prepTime = order.items
                 .Max(i => i.menuItem.preparationTime ?? 10);
@@ -124,14 +128,14 @@ namespace Wasla_Backend.Services.Implementation
             var photo= _userRepository.GetUserPhoto(order.restaurantId);
             var RestaurantPhoto =  _fileUrlBuilderService.GetMediaUrl(photo, MediaType.userImage);
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
-    order.residentId,
-    NotificationType.orderStartedPreparing,
-    order.id.ToString(),
-    RestaurantPhoto,
-    "en",
-    null
-));
-        }
+                order.residentId,
+                NotificationType.orderStartedPreparing,
+                order.id.ToString(),
+                RestaurantPhoto,
+                "en",
+                null
+            ));
+         }
 
         public async Task MarkOrderDelivered(int orderId)
         {
@@ -148,10 +152,61 @@ namespace Wasla_Backend.Services.Implementation
             _orderRepo.Update(order);
             await _orderRepo.SaveChangesAsync();
 
-            await _hub.Clients.Group(order.residentId)
-                 .SendAsync("OrderStatusChanged", order.id, order.status);
+            await _hub.Clients.Users(
+                order.residentId,
+                order.restaurantId
+            ).SendAsync("OrderStatusChanged", order.id, order.status);
         }
-       
+
+        public async Task CancelOrder(CancleOrderDto dto)
+        {
+            var order = await _orderRepo.GetOrderWithIncludeUsers(dto.orderId);
+
+            if (order == null)
+                throw new NotFoundException(LocalizationKey.OrderNotFound);
+
+            if (order.status != OrderStatus.Pending && order.status != OrderStatus.Paid)
+                throw new BadRequestException(LocalizationKey.InvalidOrderStatus);
+
+            order.status = OrderStatus.Cancelled;
+
+            _orderRepo.Update(order);
+            await _orderRepo.SaveChangesAsync();
+
+            var userName = dto.isResident ? order.resident.FullName : order.restaurant.FullName;
+            var targetId = dto.isResident ? order.restaurantId : order.residentId;
+            var photo = dto.isResident ? order.restaurant.ProfilePhoto : order.resident.ProfilePhoto;
+            var photoUrl = _fileUrlBuilderService.GetMediaUrl(photo, MediaType.userImage);
+
+            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
+                targetId,
+                NotificationType.orderCancelled,
+                order.id.ToString(),
+                photoUrl,
+                "en",
+                new Dictionary<string, string>
+                {
+                    { "UserName", userName },
+                }
+            ));
+
+            if (order.paymentStatus == PaymentStatus.Completed && order.paymentMethod == PaymentMethodType.Card)
+            {
+                var entityTypeDto = new EntityTypeDto
+                {
+                    entityId = order.id,
+                    entityType = EntityType.order
+                };
+
+                await _paymentService.RefundPaymentAsync(entityTypeDto);
+            }
+
+            await _hub.Clients.Users(
+                order.residentId,
+                order.restaurantId
+            ).SendAsync("OrderStatusChanged", order.id, order.status);
+        }
+
         public async Task<PagedResult<OrderRestaurantResponse>> OrdersRestaurant(GetGeneralWithPaginationDto<string> dto)
         {
             var orders = await _orderRepo.OrdersRestaurent(dto);

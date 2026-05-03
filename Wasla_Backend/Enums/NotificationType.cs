@@ -32,6 +32,7 @@
         restaurantReservationAccepted,
         restaurantNewReservation,
         orderStartedPreparing,
-        SocialHidden
+        SocialHidden,
+        orderCancelled
     }
 }

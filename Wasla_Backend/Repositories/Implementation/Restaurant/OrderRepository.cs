@@ -16,6 +16,15 @@ namespace Wasla_Backend.Repositories.Implementation
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<Order?> GetOrderWithIncludeUsers(int orderId)
+        {
+            return await _dbSet
+                .Where(r => r.id == orderId)
+                .Include(r => r.resident)
+                .Include(r => r.restaurant)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<PagedResult<Order>> OrdersRestaurent(GetGeneralWithPaginationDto<string> dto)
         {
             var query = _dbSet
