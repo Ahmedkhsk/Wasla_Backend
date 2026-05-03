@@ -7,6 +7,8 @@ namespace Wasla_Backend.Repositories.Interfaces.General
         Task<Payment?> GetByPaymobOrderIdAsync(string paymobOrderId);
         Task<Payment?> GetByEntityAsync(EntityType entityType, int entityId, PaymentStatus? status = null);
         Task<List<UserPaymentDto>> GetAllPaymentsByResidentAsync(string residentId);
+        Task<List<serviceProviderPaymentDto>> GetAllPaymentsByServiceProviderAsync(string serviceProviderId);
+
 
         Task<ApplicationUser?> GetUserByIdAsync(string userId);
         Task<BaseBooking?> GetBookingByIdAsync(int bookingId);

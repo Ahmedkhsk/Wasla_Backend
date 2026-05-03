@@ -9,5 +9,7 @@ namespace Wasla_Backend.Services.Interfaces.General
         Task<bool> RefundPaymentAsync(EntityTypeDto dto);
         Task<PaymentStatusResponse> GetPaymentStatusAsync(EntityType entityType, int entityId);
         Task<List<UserPaymentDto>> GetAllPaymentsAsync(string residentId);
+        Task<List<serviceProviderPaymentDto>> GetAllPaymentsByServiceProviderAsync(string serviceProviderId);
+
     }
 }

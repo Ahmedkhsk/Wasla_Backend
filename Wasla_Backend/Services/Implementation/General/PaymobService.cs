@@ -249,5 +249,10 @@ namespace Wasla_Backend.Services.Implementation.General
                 PaymentMethodType.CashCollection => _configuration["Paymob:CashCollectionIntegrationId"],
                 _ => throw new BadRequestException(LocalizationKey.InvalidPaymentMethod)
             };
+
+        public Task<List<serviceProviderPaymentDto>> GetAllPaymentsByServiceProviderAsync(string serviceProviderId)
+        {
+            return _paymentRepository.GetAllPaymentsByServiceProviderAsync(serviceProviderId);
+        }
     }
 }

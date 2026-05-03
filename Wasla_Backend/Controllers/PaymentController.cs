@@ -88,5 +88,11 @@ public class PaymentController : ControllerBase
         var result = await _paymentService.GetAllPaymentsAsync(residentId);
         return Ok(ResponseHelper.Success(LocalizationKey.PaymentDetailsRetrievedSuccessfully, lan, result));
     }
+    [HttpGet("AllPaymentByServiceProvider/{serviceProviderId}")]
+    public async Task<IActionResult> GetAllPaymentByServiceProvider(string serviceProviderId, string lan = "en")
+    {
+        var result = await _paymentService.GetAllPaymentsByServiceProviderAsync(serviceProviderId);
+        return Ok(ResponseHelper.Success(LocalizationKey.PaymentDetailsRetrievedSuccessfully, lan, result));
+    }
 
 }

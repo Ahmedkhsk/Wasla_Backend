@@ -154,5 +154,24 @@ namespace Wasla_Backend.Repositories.Implementation.General
                 }).FirstOrDefaultAsync()
                 ;
         }
+
+        public async Task<List<serviceProviderPaymentDto>> GetAllPaymentsByServiceProviderAsync(string serviceProviderId)
+        {
+            return await _context.Payment
+                .Where(p => p.ServiceProviderId == serviceProviderId)
+                .OrderByDescending(p => p.PaymentDate)
+                .Select(p => new serviceProviderPaymentDto
+                {
+                    ResidentName = p.Resident.FullName,
+                    TotalAmount = (double)p.Amount,
+                    PaymentDate = p.PaymentDate,
+                    PaymentMethod = p.PaymentMethod,
+                    Status = p.Status,
+                    ServiceType = p.ServiceType,
+                    entityType = p.entityType,
+                    EntityId = p.entityId,
+                })
+                .ToListAsync();
+        }
     }
 }
