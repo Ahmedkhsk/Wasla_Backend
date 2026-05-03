@@ -1,6 +1,4 @@
 ﻿using Wasla_Backend.Repositories.Implementation;
-using Wasla_Backend.Repositories.Interfaces;
-
 namespace Wasla_Backend.Services.Implementation
 {
     public class ReportService : IReportService
@@ -39,19 +37,19 @@ namespace Wasla_Backend.Services.Implementation
             await _reportRepository.AddAsync(report);
             await _reportRepository.SaveChangesAsync();
         }
-        public async Task ChangeStatus(ToggleHideDto dto, string adminId)
+
+        public async Task ChangeStatus(ToggleHideDto dto)
         {
             var target = await _socialRepository.GetSocialById(dto.id);
             if (target == null)
                 throw new NotFoundException(LocalizationKey.PostNotFound);
 
-            var wasHidden = target.isHidden;
             target.isHidden = !target.isHidden;
             await _socialRepository.SaveChangesAsync();
 
-            if (!wasHidden && target.isHidden && !string.IsNullOrWhiteSpace(dto.reason) && target.userId != adminId)
+            if (!string.IsNullOrWhiteSpace(dto.reason))
             {
-                var user = await _userRepository.GetUserByIdAsync(adminId);
+                var user = await _userRepository.GetUserByIdAsync(dto.adminId);
                 if (user == null)
                     throw new NotFoundException(LocalizationKey.UserNotFound);
 
@@ -59,17 +57,11 @@ namespace Wasla_Backend.Services.Implementation
                     ? _fileUrlBuilderService.GetMediaUrl(user.ProfilePhoto, MediaType.userImage)
                     : _fileUrlBuilderService.GetMediaUrl(defaultImage.defaultImageName, MediaType.userImage);
 
-                var report = await _reportRepository.GetReportByUserIdAndTargetId(target.userId, target.id);
-                var targetType = report?.targetType ?? ReactionTargetType.post;
-
                 var metadata = new Dictionary<string, string>
-        {
-            { "ActorName", user.FullName ?? "User" },
-            { "Reason", dto.reason },
-            { "TargetTypeEn", targetType.ToString() },
-            { "TargetTypeAr", targetType == ReactionTargetType.post ? "المنشور" : "التعليق" },
-            { "TargetId", target.id.ToString() }
-        };
+                {
+                    { "ActorName", user.FullName ?? "User" },
+                    { "Reason", dto.reason },
+                };
 
                 Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x =>
                     x.sendNotification(

@@ -24,11 +24,13 @@
             },
             new NotificationTemplate
             {
-                Type    = NotificationType.SocialHidden,
+                Type = NotificationType.SocialHidden,
+
                 TitleAr = "تم إخفاء المحتوى 🚫",
-                BodyAr  = "{ActorName} قام بإخفاء {TargetTypeAr} الخاص بك بسبب: {Reason}",
+                BodyAr = "{ActorName} قام بإخفاء المحتوى الخاص بك بسبب: {Reason}",
+
                 TitleEn = "Content Hidden 🚫",
-                BodyEn  = "{ActorName} hid your {TargetTypeEn} due to: {Reason}"
+                BodyEn = "{ActorName} hid your content due to: {Reason}"
             },
             new NotificationTemplate
             {

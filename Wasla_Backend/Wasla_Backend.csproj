@@ -38,8 +38,13 @@
 
   <ItemGroup>
     <Folder Include="Properties\PublishProfiles\" />
+    <Folder Include="wwwroot\assets\ai\models\" />
     <Folder Include="wwwroot\assets\cv\doctor\" />
     <Folder Include="wwwroot\assets\ai\models\" />
+    <Folder Include="wwwroot\assets\files\driver\" />
+    <Folder Include="wwwroot\assets\files\technician\" />
+    <Folder Include="wwwroot\assets\images\driver\" />
+    <Folder Include="wwwroot\assets\qrcodes\" />
   </ItemGroup>
 
   <ItemGroup>
