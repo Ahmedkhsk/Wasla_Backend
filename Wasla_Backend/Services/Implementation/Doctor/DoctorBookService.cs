@@ -154,13 +154,13 @@ namespace Wasla_Backend.Services.Implementation
             var photo = _userRepository.GetUserPhoto(booking.serviceProviderId);
             photo = _fileUrlBuilderService.GetMediaUrl(photo, MediaType.userImage);
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
-      booking.ResidentId,
-      NotificationType.doctorEditBookingScreen,
-      booking.Id.ToString(),
-     photo,
-      "en",
-      null
-  ));
+              booking.ResidentId,
+              NotificationType.doctorEditBookingScreen,
+              booking.Id.ToString(),
+             photo,
+              "en",
+              null
+          ));
         }
 
         public async Task<List<ServiceBookingDetailsDto>> GetBookingDetailsForUserAsync(string userId, string language)

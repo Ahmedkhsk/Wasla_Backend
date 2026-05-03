@@ -6,6 +6,6 @@
         public WeekDayEnum newDayOfWeek { get; set; }
         public string newStart { get; set; }
         public string newEnd { get; set; }
-        public DateOnly bookingDate { get; set; }
+        public DateTime bookingDate { get; set; }
     }
 }

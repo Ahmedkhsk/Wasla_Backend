@@ -4,7 +4,8 @@
     {
         public BookingProfile() 
         {
-            CreateMap<UpdateBookingDto, Booking>();
+            CreateMap<UpdateBookingDto, Booking>()
+                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.bookingDate));
         }    
     }
 }
