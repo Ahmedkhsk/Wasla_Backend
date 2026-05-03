@@ -13,6 +13,8 @@
                 "restaurant" => new Restaurant(),
                 "gym" => new Gym(),
                 "technician" => new Technician(),
+                "admin" => new Admin(),
+                "superadmin" => new SuperAdmin(),
                 _ => throw new NotFoundException(LocalizationKey.RoleNotFound)
             };
         }

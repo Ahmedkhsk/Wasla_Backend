@@ -17,6 +17,7 @@
         public DateTime? lastSeen { get; set; }
         public bool isOnline { get; set; }
         public string? bio { get; set; } = "Hey there! I'm using Wasla.";
+        public bool IsDeleted { get; set; } = false;
         public override string? UserName
         {
             get => Email;

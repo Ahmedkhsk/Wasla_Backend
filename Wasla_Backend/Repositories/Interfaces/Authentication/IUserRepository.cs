@@ -13,6 +13,7 @@
         public Task<List<ApplicationUser>> GetUsersByIdsAsync(List<string> ids);
         public Task<UserProfileReponse> GetUserProfile(string userId);
         public string GetUserPhoto(string userId);
+        Task<IdentityResult> DeleteUserAsync(ApplicationUser user);
 
     }
 }

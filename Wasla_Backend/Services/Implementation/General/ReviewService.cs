@@ -11,11 +11,13 @@ namespace Wasla_Backend.Services.Implementation
         private readonly IHubContext<ReviewHub> _hub;
         private readonly ToxicityClassifier _toxicityClassifier;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
+        private readonly DateTimeHelper _dateTimeHelper;
 
         public ReviewService(IMapper mapper, IReviewRepository reviewRepository, IResidentRepository residentRepository,
             IUserRepository userRepository, IGenericRepository<ServiceProvider> serviceProviderRepositpry,
-            IHubContext<ReviewHub> hub, ToxicityClassifier toxicityClassifier,IFileUrlBuilderService fileUrlBuilderService
-            
+            IHubContext<ReviewHub> hub, ToxicityClassifier toxicityClassifier,IFileUrlBuilderService fileUrlBuilderService,
+            DateTimeHelper dateTimeHelper
+
             )
         {
             _reviewRepository = reviewRepository;
@@ -26,6 +28,7 @@ namespace Wasla_Backend.Services.Implementation
             _hub = hub;
             _toxicityClassifier = toxicityClassifier;
             _fileUrlBuilderService=fileUrlBuilderService;
+            _dateTimeHelper = dateTimeHelper;
         }
 
         public async Task AddReviewAsync(AddReviewDto review,string lan="en")
@@ -58,6 +61,7 @@ namespace Wasla_Backend.Services.Implementation
             _mapper.Map(review, Review);
             Review.ReviewerName = user.FullName;
             Review.User = user;
+            Review.CreatedAt = _dateTimeHelper.Now;
 
             await _reviewRepository.AddAsync(Review);
             await _reviewRepository.SaveChangesAsync();

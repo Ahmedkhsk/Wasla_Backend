@@ -9,5 +9,6 @@ namespace Wasla_Backend.Repositories.Interfaces.General
         public Task MarkAllAsSeenByUserIdAsync(string userId);
         public Task DeleteNotificationByNotificationIdAsync(int notificationId);
         public Task<int>CountNotificationByuserId(string userId);
+        public Task<int> CountAllNotificationByuserId(string userId);
     }
 }

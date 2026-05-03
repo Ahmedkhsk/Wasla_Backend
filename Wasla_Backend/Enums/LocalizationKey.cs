@@ -17,6 +17,7 @@
         UserNotLoggedIn,
         Usernotloggedin,
         UserLoggedOutSuccess,
+        FailedToDeleteAdmin,
         #endregion
 
         #region Registration & Verification
@@ -39,6 +40,10 @@
         InvalidNationalId,
         CompleteDataSuccess,
         CompleteResidentRegisterSuccess,
+        AdminAddedSuccessfully,
+        AdminsRetrievedSuccessfully,
+        AdminRemovedSuccessfully,
+        AdminStatusUpdatedSuccessfully,
         #endregion
 
         #region User & Profile
