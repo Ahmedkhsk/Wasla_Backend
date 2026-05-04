@@ -1,6 +1,6 @@
 ﻿namespace Wasla_Backend.Helpers.Time
 {
-    public class DateTimeHelper
+    public class DateTimeHelper : IDateTimeHelper
     {
         private readonly TimeZoneInfo _timeZone;
 

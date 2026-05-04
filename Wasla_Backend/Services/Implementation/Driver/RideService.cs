@@ -5,7 +5,7 @@
         private readonly IRideRepository _rideRepository;
         private readonly IResidentRepository _residentRepository;
         private readonly IMapper _mapper;
-        private readonly DateTimeHelper _dateTimeHelper;
+        private readonly IDateTimeHelper _dateTimeHelper;
         private readonly IDriverService _driverService;
         private readonly IDriverRepository _driverRepository;
         private readonly IHubContext<RideHub> _hub;

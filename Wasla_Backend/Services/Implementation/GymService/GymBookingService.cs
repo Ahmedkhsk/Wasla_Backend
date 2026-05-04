@@ -8,7 +8,7 @@ namespace Wasla_Backend.Services.Implementation.GymService
         private readonly IPackageRepository _packageRepository;
         private readonly IGymRepository _gymRepository;
         private readonly IResidentRepository _residentRepository;
-        private readonly DateTimeHelper _dateTimeHelper;
+        private readonly IDateTimeHelper _dateTimeHelper;
         private readonly IMapper _mapper;
         private readonly IFileService _fileService;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;

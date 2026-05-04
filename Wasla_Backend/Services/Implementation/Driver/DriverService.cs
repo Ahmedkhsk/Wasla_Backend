@@ -4,7 +4,7 @@
     {
         private readonly IDriverRepository _driverRepository;
         private readonly IMapper _mapper;
-        private readonly CacheManager _cacheManager;
+        private readonly ICacheManager _cacheManager;
         private readonly IFileService _fileService;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
 

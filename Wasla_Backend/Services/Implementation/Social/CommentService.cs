@@ -5,7 +5,7 @@ namespace Wasla_Backend.Services.Implementation
     public class CommentService : ICommentService
     {
         private readonly ICommentRepository _commentRepository;
-        private readonly DateTimeHelper _dateTimeHelper;
+        private readonly IDateTimeHelper _dateTimeHelper;
         private readonly IFileService _fileService;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly IPostRepository _postRepository;

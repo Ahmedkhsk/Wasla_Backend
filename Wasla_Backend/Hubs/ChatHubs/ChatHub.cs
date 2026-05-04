@@ -2,7 +2,7 @@
 {
     private readonly UserConnectionHelper _connectionManager;
     private readonly IUserRepository _userRepository;
-    private readonly DateTimeHelper _dateTimeHelper;
+    private readonly IDateTimeHelper _dateTimeHelper;
 
     public ChatHub(
         UserConnectionHelper connectionManager,

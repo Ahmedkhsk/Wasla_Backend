@@ -5,7 +5,7 @@ namespace Wasla_Backend.Repositories.Implementation.General
 {
     public class NotificationRepository : GenericRepository<Notification>, INotificationRepository
     {
-        private readonly DateTimeHelper _dateTimeHelper;
+        private readonly IDateTimeHelper _dateTimeHelper;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
 
         public NotificationRepository(

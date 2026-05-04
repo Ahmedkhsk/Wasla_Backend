@@ -8,7 +8,7 @@ namespace Wasla_Backend.Services.Implementation
         private readonly IUserRepository _userRepository;
         private readonly IGenericRepository<ContactUs> _contatUsRepository;
         private readonly IRoleRepository _roleRepository;
-        private readonly EmailSenderHelper _emailSenderHelper;
+        private readonly IEmailSenderHelper _emailSenderHelper;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
 
         public AdminService(

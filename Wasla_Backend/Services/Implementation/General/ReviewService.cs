@@ -11,7 +11,7 @@ namespace Wasla_Backend.Services.Implementation
         private readonly IHubContext<ReviewHub> _hub;
         private readonly ToxicityClassifier _toxicityClassifier;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
-        private readonly DateTimeHelper _dateTimeHelper;
+        private readonly IDateTimeHelper _dateTimeHelper;
 
         public ReviewService(IMapper mapper, IReviewRepository reviewRepository, IResidentRepository residentRepository,
             IUserRepository userRepository, IGenericRepository<ServiceProvider> serviceProviderRepositpry,

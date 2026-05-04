@@ -4,7 +4,7 @@ namespace Wasla_Backend.Services.Implementation
     public class ReportService : IReportService
     {
         private readonly IReportRepository _reportRepository;
-        private readonly DateTimeHelper _dateTimeHelper;
+        private readonly IDateTimeHelper _dateTimeHelper;
         private readonly ISocialRepository _socialRepository;
         private readonly IPostRepository _postRepository;
         private readonly ICommentRepository _commentRepository;

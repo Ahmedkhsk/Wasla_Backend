@@ -2,11 +2,14 @@
 {
     private readonly Context _db;
     private readonly IHubContext<OrderHub> _hubOrder;
-    private readonly DateTimeHelper _dateTimeHelper;
+    private readonly IDateTimeHelper _dateTimeHelper;
     private readonly IHubContext<BookingHub> _hubBooking;
 
     public HangfireFunctions(Context db, IHubContext<BookingHub> hubBooking, IHubContext<OrderHub> hubOrder,
-        DateTimeHelper dateTimeHelper)
+        DateTimeHelper dateTimeHelper
+
+        
+        )
     {
         _db = db;
         _hubOrder = hubOrder;

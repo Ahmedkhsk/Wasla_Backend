@@ -4,7 +4,7 @@
     {
         private readonly IPostRepository _postRepository;
         private readonly IMapper _mapper;
-        private readonly DateTimeHelper _dateTimeHelper;
+        private readonly IDateTimeHelper _dateTimeHelper;
         private readonly IUserRepository _userRepository;
         private readonly IReactionRepository _reactionRepository;
         private readonly IFileService _fileService;

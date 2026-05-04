@@ -6,7 +6,7 @@ namespace Wasla_Backend.Services.Implementation.General
     {
         private readonly IConfiguration _configuration;
         private readonly IPaymentRepository _paymentRepository;
-        private readonly DateTimeHelper _dateTimeHelper;
+        private readonly IDateTimeHelper _dateTimeHelper;
 
         public PaymobService(
             IConfiguration configuration,

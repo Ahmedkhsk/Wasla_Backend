@@ -1,6 +1,6 @@
 ﻿namespace Wasla_Backend.Helpers.EmailSender
 {
-    public class EmailSenderHelper
+    public class EmailSenderHelper : IEmailSenderHelper
     {
         private readonly EmailSettings _emailSettings;
 

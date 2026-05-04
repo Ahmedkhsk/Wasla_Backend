@@ -1,6 +1,6 @@
 ﻿namespace Wasla_Backend.Helpers.Cashing
 {
-    public class CacheManager
+    public class CacheManager : ICacheManager
     {
         private readonly IMemoryCache _cache;
 

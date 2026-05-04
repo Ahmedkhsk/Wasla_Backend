@@ -12,7 +12,7 @@ namespace Wasla_Backend.Services.Implementation
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly IMapper _mapper;
         private readonly IFileService _fileService;
-        private readonly DateTimeHelper _dateTimeHelper;
+        private readonly IDateTimeHelper _dateTimeHelper;
 
         public ReservationService(
             IReservationRepository reservationsRepository, IRestaurantRepository restaurantRepository,

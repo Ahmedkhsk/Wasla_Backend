@@ -3,7 +3,7 @@
     public class UserEventService : IUserEventService
     {
         private readonly IUserEventRepository _userEventRepository;
-        private readonly DateTimeHelper _dateTimeHelper;
+        private readonly IDateTimeHelper _dateTimeHelper;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 

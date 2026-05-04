@@ -4,11 +4,11 @@
     {
         public static IServiceCollection AddHelpers(this IServiceCollection services)
         {
-            services.AddScoped<TokenHelper>();
+            services.AddScoped<ITokenHelper, TokenHelper>();
             services.AddScoped<IUserFactory, UserFactory>();
-            services.AddTransient<EmailSenderHelper>();
-            services.AddSingleton<DateTimeHelper>();
-            services.AddSingleton<CacheManager>();
+            services.AddTransient<IEmailSenderHelper,EmailSenderHelper>();
+            services.AddSingleton<IDateTimeHelper,DateTimeHelper>();
+            services.AddSingleton<ICacheManager,CacheManager>();
             services.AddScoped<FileValidator>();
             services.AddSingleton<UserConnectionHelper>();
             services.AddScoped<PaymobPaymentStrategy>();

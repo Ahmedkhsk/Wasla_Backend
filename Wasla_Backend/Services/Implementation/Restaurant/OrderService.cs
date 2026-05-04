@@ -6,7 +6,7 @@
         private readonly IOrderRepository _orderRepo;
         private readonly IMapper _mapper;
         private readonly IPaymentStrategyFactory _paymentStrategyFactory;
-        private readonly DateTimeHelper _dateTimeHelper;
+        private readonly IDateTimeHelper _dateTimeHelper;
         private readonly IHubContext<OrderHub> _hub;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly IUserRepository _userRepository;

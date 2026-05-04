@@ -7,7 +7,7 @@
         private readonly IUserRepository _userRepository;
         private readonly IFileService _fileService;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
-        private readonly DateTimeHelper _dateTimeHelper;
+        private readonly IDateTimeHelper _dateTimeHelper;
         private readonly IHubContext<ChatHub> _hubContext;
 
         public ChatService(

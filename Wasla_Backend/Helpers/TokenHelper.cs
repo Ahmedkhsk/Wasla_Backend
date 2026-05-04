@@ -1,6 +1,6 @@
 ﻿namespace Wasla_Backend.Helpers
 {
-    public class TokenHelper
+    public class TokenHelper : ITokenHelper
     {
         private readonly JwtSettings _jwtSettings;
 

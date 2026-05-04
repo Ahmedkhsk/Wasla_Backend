@@ -3,7 +3,7 @@
     public class ReactionService : IReactionService
     {
         private readonly IReactionRepository _reactionReepository;
-        private readonly DateTimeHelper _dateTimeHelper;
+        private readonly IDateTimeHelper _dateTimeHelper;
         private readonly IUserRepository _userRepository;
         private readonly IPostRepository _postRepository;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;

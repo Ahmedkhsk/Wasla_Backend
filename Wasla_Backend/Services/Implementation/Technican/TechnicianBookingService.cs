@@ -8,7 +8,7 @@ namespace Wasla_Backend.Services.Implementation.technican
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly IResidentRepository _residentRepository;
         private readonly ITechnicianRepository _technicianRepository;
-        private readonly DateTimeHelper _dateTimeHelper ;
+        private readonly IDateTimeHelper _dateTimeHelper ;
         private readonly IHubContext<BookingHub> _hub;
         private readonly IUserRepository _userrepository;
         public TechnicianBookingService(ITechnicianBookingRepository technicianBookingRepository, IFileUrlBuilderService fileUrlBuilderService

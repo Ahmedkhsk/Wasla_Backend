@@ -6,13 +6,13 @@
         private readonly IUserRepository _userRepository;
         private readonly IRoleRepository _roleRepository;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
-        private readonly EmailSenderHelper _emailSender;
+        private readonly IEmailSenderHelper _emailSender;
         private readonly IMapper _mapper;
-        private readonly TokenHelper _TokenHelper;
+        private readonly ITokenHelper _TokenHelper;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly DateTimeHelper _dateTimeHelper;
-        private readonly CacheManager _cacheManager;
+        private readonly IDateTimeHelper _dateTimeHelper;
+        private readonly ICacheManager _cacheManager;
         private readonly IFileService _fileService;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
 
