@@ -13,7 +13,7 @@ namespace Wasla_Backend.Services.Implementation.GymService
         private readonly IFileService _fileService;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly IHubContext<BookingHub> _hub;
-        private readonly Context _dbContext;
+        private readonly IEntityLoader _EntityLoader;
         private readonly IUserRepository _userRepository;
         private readonly IPaymentService _paymentService;
 
@@ -27,7 +27,7 @@ namespace Wasla_Backend.Services.Implementation.GymService
             IFileUrlBuilderService fileUrlBuilderService,
             IDateTimeHelper dateTimeHelper,
             IHubContext<BookingHub> hub,
-            Context dbContext,
+           IEntityLoader loader,
             IUserRepository userRepository,
             IPaymentService paymentService
         )
@@ -41,7 +41,7 @@ namespace Wasla_Backend.Services.Implementation.GymService
             _fileUrlBuilderService = fileUrlBuilderService;
             _dateTimeHelper = dateTimeHelper;
             _hub = hub;
-            _dbContext = dbContext;
+            _EntityLoader = loader; 
             _userRepository = userRepository;
             _paymentService = paymentService;
         }
@@ -228,9 +228,9 @@ namespace Wasla_Backend.Services.Implementation.GymService
             var booking = await _gymBookingRepository.GetByIdAsync(bookingId);
             if (booking == null)
                 throw new NotFoundException(LocalizationKey.BookingNotFound);
-            await _dbContext.Entry(booking).Reference(x => x.Resident).LoadAsync();
-            await _dbContext.Entry(booking).Reference(x => x.Service).LoadAsync();
-            await _dbContext.Entry(booking).Reference(x => x.Gym).LoadAsync();
+            await _EntityLoader.LoadReferenceAsync(booking, b => b.Resident);
+            await _EntityLoader.LoadReferenceAsync(booking, b => b.Gym);
+            await _EntityLoader.LoadReferenceAsync(booking, b => b.Service);
 
             booking.BookingStatus = GymBookingStatus.Cancelled;
             _gymBookingRepository.Update(booking);

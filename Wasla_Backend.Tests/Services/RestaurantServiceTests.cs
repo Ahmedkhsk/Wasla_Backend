@@ -344,27 +344,15 @@ namespace Wasla_Backend.Tests.Services
         [Test]
         public async Task GetRestaurant_ValidId_ReturnsMappedResponse()
         {
-
             var restaurant = TestDataBuilder.BuildRestaurant();
-
-            restaurant.restaurantCategory= new RestaurantCategory
-            {
-                name = new MultilingualText
-                {
-                    English = "Fast Food",
-                    Arabic = "وجبات سريعة"
-                }
-            };
             var dto = new GetGeneralDto<string> { id = restaurant.Id, lan = "en" };
 
             _mocks.RestaurantRepo.Setup(r => r.GetByUserIdAsync(dto.id)).ReturnsAsync(restaurant);
             _mocks.FileUrlBuilder.Setup(f => f.GetMediaUrl(restaurant.ProfilePhoto, MediaType.userImage)).Returns("url/photo.jpg");
             _mocks.FileUrlBuilder.Setup(f => f.GetMediaUrl(It.IsAny<string>(), MediaType.restaurantImage)).Returns("url/img.jpg");
 
-             
             var result = await _sut.GetRestaurant(dto);
 
-             
             Assert.That(result, Is.Not.Null);
             result.profile.Should().Be("url/photo.jpg");
             result.gallery.Should().HaveCount(restaurant.images.Count);

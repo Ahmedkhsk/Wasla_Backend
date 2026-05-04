@@ -36,6 +36,8 @@ global using System.Drawing;
 global using System.Drawing.Imaging;
 global using Microsoft.AspNetCore.Authorization;
 global using System.Collections.Concurrent;
+global using System.Linq.Expressions;
+
 
 #endregion
 

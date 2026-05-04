@@ -19,6 +19,15 @@ using Wasla_Backend.DTOs;
 using Wasla_Backend.Helpers.Localization;
 using Wasla_Backend.Mappings;
 using Wasla_Backend.Enums;
+using Microsoft.AspNetCore.SignalR;
+using Wasla_Backend.Hubs.RestaurantHubs;
+using Wasla_Backend.Services.Interfaces.General;
+using Wasla_Backend.Strategies.Payment;
+using Wasla_Backend.Hubs.DriverHubs;
+using Wasla_Backend.Repositories.Interfaces.driver;
+using Wasla_Backend.Repositories.Interfaces.Driver;
+using Wasla_Backend.Repositories.Interfaces.General;
+using Wasla_Backend.Services.Interfaces.Driver;
 
 namespace Wasla_Backend.Tests.Helpers
 {
@@ -52,6 +61,20 @@ namespace Wasla_Backend.Tests.Helpers
         public Mock<IFileUrlBuilderService> FileUrlBuilderService { get; } = new();
         public Mock<ICartRepository> CartRepo { get; } = new();
         public Mock<ICartItemRepository> CartItemRepo { get; } = new();
+        public Mock<IMenuItemRepository> MenuItemRepo { get; } = new();
+        public Mock<IPaymentStrategyFactory> PaymentStrategyFactory { get; } = new();
+        public Mock<IPaymentStrategy> PaymentStrategy { get; } = new();
+        public Mock<IPaymentService> PaymentService { get; } = new();
+        public Mock<IHubContext<OrderHub>> HubContext { get; } = new();
+        public Mock<IHubClients> HubClients { get; } = new();
+        public Mock<IClientProxy> ClientProxy { get; } = new();
+        public Mock<IRideRepository> RideRepo { get; } = new();
+        public Mock<IDriverRepository> DriverRepo { get; } = new();
+        public Mock<IDriverService> DriverService { get; } = new();
+        public Mock<IEntityLoader> EntityLoader { get; } = new();
+        public Mock<IHubContext<RideHub>> RideHubContext { get; } = new();
+        public Mock<IHubClients> RideHubClients { get; } = new();
+        public Mock<ISingleClientProxy> SingleClient { get; } = new();
 
         private static Mock<UserManager<ApplicationUser>> MockUserManager()
         {

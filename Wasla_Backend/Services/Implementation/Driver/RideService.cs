@@ -9,8 +9,9 @@
         private readonly IDriverService _driverService;
         private readonly IDriverRepository _driverRepository;
         private readonly IHubContext<RideHub> _hub;
-        private readonly Context _context;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
+        private readonly IEntityLoader _entityLoader;
+
 
         public RideService(
             IRideRepository rideRepository,
@@ -20,8 +21,8 @@
             IDriverService driverService,
             IDriverRepository driverRepository,
             IHubContext<RideHub> hub,
-            Context context,
-            IFileUrlBuilderService fileUrlBuilderService
+            IFileUrlBuilderService fileUrlBuilderService,
+            IEntityLoader entityLoader
         )
         {
             _rideRepository = rideRepository;
@@ -31,7 +32,7 @@
             _driverService = driverService;
             _driverRepository = driverRepository;
             _hub = hub;
-            _context = context;
+            _entityLoader = entityLoader;
             _fileUrlBuilderService = fileUrlBuilderService;
         }
 
@@ -86,10 +87,10 @@
                 throw new BadRequestException(LocalizationKey.RideAlreadyCancelled);
 
             if (ride.DriverId != null && ride.Driver == null)
-                await _context.Entry(ride).Reference(r => r.Driver).LoadAsync();
+                await _entityLoader.LoadReferenceAsync(ride, r => r.Driver);
 
             if (ride.Resident == null)
-                await _context.Entry(ride).Reference(r => r.Resident).LoadAsync();
+                await _entityLoader.LoadReferenceAsync(ride, r => r.Resident);
 
             ride.Status = RideStatus.Cancelled;
 
@@ -148,9 +149,9 @@
                 throw new BadRequestException(LocalizationKey.InvalidRideStatus);
 
             ride.Status = RideStatus.Completed;
-          
 
-            await _context.Entry(ride).Reference(r => r.Driver).LoadAsync();
+
+            await _entityLoader.LoadReferenceAsync(ride, r => r.Driver);
             if (ride.Driver != null)
             {
                 ride.Driver.DriverStatus = DriverStatus.Online;

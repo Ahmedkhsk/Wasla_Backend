@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Helpers.ProgramHelper.DependencyInjection
+﻿using Wasla_Backend.Repositories.Implementation.General;
+
+namespace Wasla_Backend.Helpers.ProgramHelper.DependencyInjection
 {
     public static class RepositoriesDI
     {
@@ -6,6 +8,7 @@
         {
 
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IEntityLoader, EntityLoader>();
 
             services.Scan(scan => scan
                 .FromAssemblyOf<IUserRepository>()
