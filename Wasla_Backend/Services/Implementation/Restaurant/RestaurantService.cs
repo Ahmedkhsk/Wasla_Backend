@@ -132,12 +132,15 @@
             var restaurant = await _restaurantRepository.GetByUserIdAsync(dto.id);
             if (restaurant == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
-            
+
+            var numberofOrders = await _orderRepository.CountOrders(restaurant.Id, OrderStatus.Delivered);
+
             var mapped = _mapper.Map<GetRestaurantResponse>(restaurant, opt =>
             {
                 opt.Items["lang"] = dto.lan;
             });
 
+            mapped.numberOfCompletedOrders = numberofOrders;
             mapped.profile = _fileUrlBuilderService.GetMediaUrl(
                 restaurant.ProfilePhoto,
                 MediaType.userImage
