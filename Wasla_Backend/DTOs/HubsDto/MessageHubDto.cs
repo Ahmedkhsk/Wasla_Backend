@@ -9,6 +9,9 @@
         public string receiverId { get; set; }
         public string nameReceiver { get; set; }
         public string profileReceiver { get; set; }
+        public string nameSender { get; set; }
+        public string profileSender { get; set; }
+
         public string? messageText { get; set; }
 
         public string? audio { get; set; }
