@@ -20,14 +20,14 @@
             IUserFactory userFactory,
             IUserRepository userRepository,
             IRoleRepository roleRepository,
-            EmailSenderHelper emailSender,
+            IEmailSenderHelper emailSender,
             IMapper mapper,
-            TokenHelper tokenHelper,
+            ITokenHelper tokenHelper,
             UserManager<ApplicationUser> userManager,
             IRefreshTokenRepository refreshTokenRepository,
             IHttpContextAccessor httpContextAccessor,
-            DateTimeHelper dateTimeHelper,
-            CacheManager cacheManager,
+            IDateTimeHelper dateTimeHelper,
+            ICacheManager cacheManager,
             IFileService fileService,
             IFileUrlBuilderService fileUrlBuilderService
         )
