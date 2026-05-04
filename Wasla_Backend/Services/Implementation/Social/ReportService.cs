@@ -11,7 +11,7 @@ namespace Wasla_Backend.Services.Implementation
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly IUserRepository _userRepository;
 
-        public ReportService(IReportRepository reportRepository, DateTimeHelper dateTimeHelper,
+        public ReportService(IReportRepository reportRepository, IDateTimeHelper dateTimeHelper,
             ISocialRepository socialRepository, IPostRepository postRepository,
             ICommentRepository commentRepository, IFileUrlBuilderService fileUrlBuilderService,IUserRepository userRepository)
         {

@@ -14,7 +14,7 @@ namespace Wasla_Backend.Services.Implementation
 
         public CommentService(
             ICommentRepository commentRepository,
-            DateTimeHelper dateTimeHelper,
+            IDateTimeHelper dateTimeHelper,
             IFileService fileService,
             IFileUrlBuilderService fileUrlBuilderService,
             IPostRepository postRepository,

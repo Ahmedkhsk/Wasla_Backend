@@ -16,7 +16,7 @@
             IUserRepository userRepository,
             IFileService fileService,
             IFileUrlBuilderService fileUrlBuilderService,
-            DateTimeHelper dateTimeHelper,
+            IDateTimeHelper dateTimeHelper,
             IHubContext<ChatHub> hubContext
         )
         {
@@ -78,6 +78,8 @@
                 senderId = message.senderId,
                 profileReceiver = _fileUrlBuilderService.GetMediaUrl(receiver.ProfilePhoto, MediaType.userImage),
                 nameReceiver = receiver.FullName,
+                nameSender = sender.FullName,
+                profileSender = _fileUrlBuilderService.GetMediaUrl(sender.ProfilePhoto, MediaType.userImage),
                 receiverId = message.receiverId,
                 messageText = message.messageText,
                 audio = _fileUrlBuilderService.GetMediaUrl(message.audio, MediaType.chatFile),

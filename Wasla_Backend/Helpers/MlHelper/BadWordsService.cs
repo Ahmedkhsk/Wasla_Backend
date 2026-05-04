@@ -8,7 +8,7 @@
 
         public BadWordsService(IWebHostEnvironment env)
         {
-            var path = Path.Combine(env.ContentRootPath, "bad words.txt");
+            var path = Path.Combine(env.ContentRootPath, "badwords.txt");
 
             if (!FileIO.Exists(path))
                 throw new Exception("badwords.txt not found");

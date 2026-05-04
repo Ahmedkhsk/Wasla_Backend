@@ -16,7 +16,7 @@
         public PostService(
             IPostRepository postRepository,
             IMapper mapper,
-            DateTimeHelper dateTimeHelper,
+            IDateTimeHelper dateTimeHelper,
             IUserRepository userRepository,
             IReactionRepository reactionRepository,
             IFileService fileService,

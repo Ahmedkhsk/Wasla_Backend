@@ -11,7 +11,7 @@
         public DriverService(
             IDriverRepository driverRepository,
             IMapper mapper,
-            CacheManager cacheManager,
+            ICacheManager cacheManager,
             IFileService fileService,
             IFileUrlBuilderService fileUrlBuilderService
         )

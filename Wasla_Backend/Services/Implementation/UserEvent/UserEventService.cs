@@ -8,7 +8,7 @@
         private readonly IMapper _mapper;
 
         public UserEventService(IUserEventRepository userEventRepository,
-                                DateTimeHelper dateTimeHelper,
+                                IDateTimeHelper dateTimeHelper,
                                 IUserRepository userRepository,
                                 IMapper mapper)
         {

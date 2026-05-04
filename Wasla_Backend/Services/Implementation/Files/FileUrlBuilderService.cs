@@ -25,6 +25,7 @@
                 MediaType.DriverCarImage => _settings.Paths.DriverCarImages,
                 MediaType.chatFile => _settings.Paths.ChatFiles,
                 MediaType.TechnicianDocument => _settings.Paths.TechnicianDocuments,
+                MediaType.bannerImage => _settings.Paths.BannerImages,
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }

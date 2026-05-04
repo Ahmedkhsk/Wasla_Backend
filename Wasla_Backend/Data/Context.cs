@@ -49,6 +49,7 @@ namespace Wasla_Backend.Data
         public DbSet<Social> Socials { get; set; }
         public DbSet<SuperAdmin> SuperAdmins { get; set; }
         public DbSet<Admin> Admins { get; set; }
+        public DbSet<Banner> Banners { get; set; }
 
 
         public Context(DbContextOptions<Context> options) : base(options) { }

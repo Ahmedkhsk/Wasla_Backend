@@ -17,7 +17,7 @@ namespace Wasla_Backend.Services.Implementation
         public ReservationService(
             IReservationRepository reservationsRepository, IRestaurantRepository restaurantRepository,
             IResidentRepository residentRepository,IFileUrlBuilderService fileUrlBuilderService,
-            IMapper mapper, IFileService fileService , DateTimeHelper dateTimeHelper)
+            IMapper mapper, IFileService fileService , IDateTimeHelper dateTimeHelper)
         {
             _reservationsRepository = reservationsRepository;
             _restaurantRepository = restaurantRepository;

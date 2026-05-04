@@ -10,7 +10,7 @@ namespace Wasla_Backend.Repositories.Implementation.General
 
         public NotificationRepository(
             Context context,
-            DateTimeHelper dateTimeHelper,
+            IDateTimeHelper dateTimeHelper,
             IFileUrlBuilderService fileUrlBuilderService
         ) : base(context)
         {
