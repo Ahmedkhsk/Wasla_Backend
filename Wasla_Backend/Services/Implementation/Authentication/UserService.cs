@@ -11,7 +11,7 @@
         private readonly ITokenHelper _TokenHelper;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly DateTimeHelper _dateTimeHelper;
+        private readonly IDateTimeHelper _dateTimeHelper;
         private readonly ICacheManager _cacheManager;
         private readonly IFileService _fileService;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
@@ -26,7 +26,7 @@
             UserManager<ApplicationUser> userManager,
             IRefreshTokenRepository refreshTokenRepository,
             IHttpContextAccessor httpContextAccessor,
-            DateTimeHelper dateTimeHelper,
+            IDateTimeHelper dateTimeHelper,
             ICacheManager cacheManager,
             IFileService fileService,
             IFileUrlBuilderService fileUrlBuilderService

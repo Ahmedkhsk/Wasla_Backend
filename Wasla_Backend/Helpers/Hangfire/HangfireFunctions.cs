@@ -6,7 +6,7 @@
     private readonly IHubContext<BookingHub> _hubBooking;
 
     public HangfireFunctions(Context db, IHubContext<BookingHub> hubBooking, IHubContext<OrderHub> hubOrder,
-        DateTimeHelper dateTimeHelper
+        IDateTimeHelper dateTimeHelper
 
         
         )

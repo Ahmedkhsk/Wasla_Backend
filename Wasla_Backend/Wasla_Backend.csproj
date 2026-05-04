@@ -48,7 +48,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="bad words.txt">
+    <None Update="badwords.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="toxicity_model.zip">

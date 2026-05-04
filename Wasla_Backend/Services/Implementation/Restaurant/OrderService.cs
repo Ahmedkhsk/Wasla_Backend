@@ -17,7 +17,7 @@
             IOrderRepository orderRepo,
             IMapper mapper,
             IPaymentStrategyFactory paymentStrategyFactory,
-            DateTimeHelper dateTimeHelper,
+            IDateTimeHelper dateTimeHelper,
             IHubContext<OrderHub> hubContext,
             IFileUrlBuilderService fileUrlBuilderService,
             IUserRepository userRepository,

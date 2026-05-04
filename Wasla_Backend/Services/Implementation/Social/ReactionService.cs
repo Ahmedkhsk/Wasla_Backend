@@ -8,7 +8,7 @@
         private readonly IPostRepository _postRepository;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
 
-        public ReactionService(IReactionRepository reactionReepository,DateTimeHelper dateTimeHelper,IUserRepository userRepository
+        public ReactionService(IReactionRepository reactionReepository,IDateTimeHelper dateTimeHelper,IUserRepository userRepository
             , IPostRepository postRepository, IFileUrlBuilderService fileUrlBuilderService
             ) 
         {

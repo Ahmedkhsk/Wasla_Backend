@@ -16,7 +16,7 @@ namespace Wasla_Backend.Services.Implementation
         public ReviewService(IMapper mapper, IReviewRepository reviewRepository, IResidentRepository residentRepository,
             IUserRepository userRepository, IGenericRepository<ServiceProvider> serviceProviderRepositpry,
             IHubContext<ReviewHub> hub, ToxicityClassifier toxicityClassifier,IFileUrlBuilderService fileUrlBuilderService,
-            DateTimeHelper dateTimeHelper
+            IDateTimeHelper dateTimeHelper
 
             )
         {

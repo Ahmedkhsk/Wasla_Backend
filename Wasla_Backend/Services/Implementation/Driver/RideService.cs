@@ -16,7 +16,7 @@
             IRideRepository rideRepository,
             IResidentRepository residentRepository,
             IMapper mapper,
-            DateTimeHelper dateTimeHelper,
+            IDateTimeHelper dateTimeHelper,
             IDriverService driverService,
             IDriverRepository driverRepository,
             IHubContext<RideHub> hub,

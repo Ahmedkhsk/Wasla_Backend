@@ -25,7 +25,7 @@ namespace Wasla_Backend.Services.Implementation.GymService
             IMapper mapper,
             IFileService fileService,
             IFileUrlBuilderService fileUrlBuilderService,
-            DateTimeHelper dateTimeHelper,
+            IDateTimeHelper dateTimeHelper,
             IHubContext<BookingHub> hub,
             Context dbContext,
             IUserRepository userRepository,

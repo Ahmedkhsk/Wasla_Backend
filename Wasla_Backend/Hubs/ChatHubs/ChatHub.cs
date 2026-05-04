@@ -7,7 +7,7 @@
     public ChatHub(
         UserConnectionHelper connectionManager,
         IUserRepository userRepository,
-        DateTimeHelper dateTimeHelper)
+        IDateTimeHelper dateTimeHelper)
     {
         _connectionManager = connectionManager;
         _userRepository = userRepository;

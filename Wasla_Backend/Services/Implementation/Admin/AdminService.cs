@@ -16,7 +16,7 @@ namespace Wasla_Backend.Services.Implementation
             IUserRepository userRepository,
             IGenericRepository<ContactUs> contatUsRepository,
             IRoleRepository roleRepository,
-            EmailSenderHelper emailSenderHelper,
+            IEmailSenderHelper emailSenderHelper,
             IFileUrlBuilderService fileUrlBuilderService
             )
         {

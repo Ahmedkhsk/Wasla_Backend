@@ -16,7 +16,7 @@
             IUserRepository userRepository,
             IFileService fileService,
             IFileUrlBuilderService fileUrlBuilderService,
-            DateTimeHelper dateTimeHelper,
+            IDateTimeHelper dateTimeHelper,
             IHubContext<ChatHub> hubContext
         )
         {

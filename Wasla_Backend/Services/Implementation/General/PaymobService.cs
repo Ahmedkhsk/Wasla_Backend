@@ -11,7 +11,7 @@ namespace Wasla_Backend.Services.Implementation.General
         public PaymobService(
             IConfiguration configuration,
             IPaymentRepository paymentRepository,
-            DateTimeHelper dateTimeHelper)
+            IDateTimeHelper dateTimeHelper)
         {
             _configuration = configuration;
             _paymentRepository = paymentRepository;

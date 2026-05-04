@@ -12,7 +12,7 @@ namespace Wasla_Backend.Services.Implementation.General
         private readonly IDateTimeHelper _dateTimeHelper ;
         private readonly IFirebaseService _firebaseService;
         public NotificationService(INotificationRepository notificationRepository, IGenericRepository<ApplicationUser> userRepository,
-            DateTimeHelper dateTimeHelper ,IFirebaseService firebaseService)
+            IDateTimeHelper dateTimeHelper ,IFirebaseService firebaseService)
         {
             _notificationRepository = notificationRepository;
             _userRepository = userRepository;
