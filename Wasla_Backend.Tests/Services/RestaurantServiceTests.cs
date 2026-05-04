@@ -12,6 +12,7 @@ using Wasla_Backend.Enums;
 using Wasla_Backend.Exceptions;
 using MockFactory = Wasla_Backend.Tests.Helpers.MockFactory;
 using Wasla_Backend.DTOs.ChartDTOS;
+using Wasla_Backend.Helpers.Localization;
 
 namespace Wasla_Backend.Tests.Services
 {
@@ -343,8 +344,17 @@ namespace Wasla_Backend.Tests.Services
         [Test]
         public async Task GetRestaurant_ValidId_ReturnsMappedResponse()
         {
-             
+
             var restaurant = TestDataBuilder.BuildRestaurant();
+
+            restaurant.restaurantCategory= new RestaurantCategory
+            {
+                name = new MultilingualText
+                {
+                    English = "Fast Food",
+                    Arabic = "وجبات سريعة"
+                }
+            };
             var dto = new GetGeneralDto<string> { id = restaurant.Id, lan = "en" };
 
             _mocks.RestaurantRepo.Setup(r => r.GetByUserIdAsync(dto.id)).ReturnsAsync(restaurant);

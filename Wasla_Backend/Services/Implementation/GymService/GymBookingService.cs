@@ -69,6 +69,14 @@ namespace Wasla_Backend.Services.Implementation.GymService
             var gymBooking = _mapper.Map<GymBooking>(gymBookDto);
             gymBooking.Date = _dateTimeHelper.Now;
             gymBooking.isPaymentOnline =gymBookDto.isPaymentOnline;
+            if(gymBookDto.isPaymentOnline)
+            {
+                gymBooking.BookingStatus = GymBookingStatus.PaymentPending;
+            }
+            else
+            {
+                gymBooking.BookingStatus = GymBookingStatus.Active;
+            }
 
             int durationInMonths;
 

@@ -43,6 +43,15 @@ namespace Wasla_Backend.Tests.Helpers
         public Mock<IHttpContextAccessor> HttpContextAccessor { get; } = new();
         public Mock<IUserFactory> UserFactory { get; } = new();
         public Mock<UserManager<ApplicationUser>> UserManager { get; } = MockUserManager();
+        public Mock<IResidentRepository> ResidentRepo { get; } = new();
+        public Mock<IMenuItemCategoryRepository> MenuItemCategoryRepo { get; } = new();
+        public Mock<IRestaurantRepository> RestaurantRepository { get; } = new();
+        public Mock<IMenuItemRepository> MenuItemRepository { get; } = new();
+        public Mock<IMenuItemCategoryRepository> MenuItemCategoryRepository { get; } = new();
+        public Mock<IMapper> Mapper { get; } = new();
+        public Mock<IFileUrlBuilderService> FileUrlBuilderService { get; } = new();
+        public Mock<ICartRepository> CartRepo { get; } = new();
+        public Mock<ICartItemRepository> CartItemRepo { get; } = new();
 
         private static Mock<UserManager<ApplicationUser>> MockUserManager()
         {
@@ -56,6 +65,7 @@ namespace Wasla_Backend.Tests.Helpers
         {
             var config = new MapperConfigurationExpression();
             config.AddProfile<RestaurantProfile>();
+            config.AddProfile<ReservationProfile>();
             var mapperConfig = new MapperConfiguration(config);
             return mapperConfig.CreateMapper();
         }
@@ -145,5 +155,64 @@ namespace Wasla_Backend.Tests.Helpers
             PageSize = 10,
             TotalCount = count,
         };
+        public static AddReservationDto BuildAddReservationDto()
+        {
+            return new AddReservationDto
+            {
+                restaurantId = "rest-1",
+                userId = "user-1",
+                numberOfPersons = 2,
+                reservationDate = DateOnly.FromDateTime(DateTime.Now),
+                reservationTime = TimeOnly.FromDateTime(DateTime.Now)
+            };
+        }
+
+        public static Resident BuildResident(string id = "user-1")
+        {
+            return new Resident
+            {
+                Id = id,
+                FullName = "Test Resident"
+            };
+        }
+
+        public static Reservations BuildReservation()
+        {
+            return new Reservations
+            {
+                id = 1,
+                userId = "user-1",
+                restaurantId = "rest-1",
+                status = Status.Pending
+            };
+        }
+
+        public static AddMenuItemDto BuildAddMenuItemDto()
+        {
+            return new AddMenuItemDto
+            {
+                restaurantId = "r1",
+                categoryId = 1,
+                imageUrl = null
+            };
+        }
+
+        public static UpdateMenuItemDto BuildUpdateMenuItemDto()
+        {
+            return new UpdateMenuItemDto
+            {
+                id = 1,
+                imageUrl = null
+            };
+        }
+
+        public static ChangeStatusItemMenuDto BuildChangeStatusDto()
+        {
+            return new ChangeStatusItemMenuDto
+            {
+                restaurantId = "r1",
+                menuItemId = 1
+            };
+        }
     }
 }
