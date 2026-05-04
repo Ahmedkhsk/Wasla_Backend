@@ -13,6 +13,7 @@
         MLModel,
         DriverFilePath,
         DriverCarImage,
-        TechnicianDocument
+        TechnicianDocument,
+        bannerImage,
     }
 }

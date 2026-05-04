@@ -910,6 +910,26 @@
                 ["en"] = "An unexpected error occurred. Please try again later.",
                 ["ar"] = "حدث خطأ غير متوقع. يرجى المحاولة لاحقًا."
             },
+            [LocalizationKey.SuccessToCreateBanner] = new()
+            {
+                ["en"] = "Banner created successfully.",
+                ["ar"] = "تم إنشاء البانر بنجاح."
+            },
+            [LocalizationKey.SuccessToGetBanners] = new()
+            {
+                ["en"] = "Banners retrieved successfully.",
+                ["ar"] = "تم جلب البانرز بنجاح."
+            },
+            [LocalizationKey.ServiceProvidersRetrievedSuccessfully] = new()
+            {
+                ["en"] = "Service providers retrieved successfully.",
+                ["ar"] = "تم جلب مزودي الخدمة بنجاح."
+            },
+            [LocalizationKey.InvalidImage] = new()
+            {
+                ["en"] = "Invalid image.",
+                ["ar"] = "الصورة غير صالحة."
+            },
             [LocalizationKey.TooManyRequests] = new()
             {
                 ["en"] = "Too many requests. Please try again later.",
@@ -2079,11 +2099,6 @@
             },
             #endregion
             
-            [LocalizationKey.ServiceProvidersRetrievedSuccessfully] = new()
-            {
-                ["en"] = "Service providers retrieved successfully.",
-                ["ar"] = "تم جلب مزودي الخدمة بنجاح."
-            },
         };
 
         public static string GetLocalizedMessage(LocalizationKey key, string lan)

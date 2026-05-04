@@ -59,6 +59,9 @@
         UserBlockedDueToViolations,
         FailedToChangeUserStatus,
         SuccessToChangeUserStatus,
+        InvalidImage,
+        SuccessToGetBanners,
+        SuccessToCreateBanner,
         #endregion
 
         #region Password
