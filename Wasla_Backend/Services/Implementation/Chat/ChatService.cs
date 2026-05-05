@@ -99,12 +99,12 @@
 {
     { "SenderName", sender.FullName ?? "User" }
 };
-            var chatmessgaeId=string.Concat(chat.id, " , ", message.id);
+            var refernce=string.Concat(receiver.FullName, " , ",_fileUrlBuilderService.GetMediaUrl(receiver.ProfilePhoto,MediaType.userImage));
             var photo = _fileUrlBuilderService.GetMediaUrl(sender.ProfilePhoto, MediaType.userImage);
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
     receiver.Id,
     NotificationType.messageReceived,
-    chatmessgaeId,
+    refernce,
     photo,   
     "en",
     metadata

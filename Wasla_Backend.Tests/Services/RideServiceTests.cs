@@ -104,7 +104,6 @@ namespace Wasla_Backend.Tests.Services
         [Test]
         public async Task AcceptRide_RaceCondition_ThrowsBadRequestException()
         {
-            // affectedRows == 0 يعني حد تاني سبقه
             var ride = BuildRide(status: RideStatus.Pending);
             var driver = BuildDriver(status: DriverStatus.Online);
 
