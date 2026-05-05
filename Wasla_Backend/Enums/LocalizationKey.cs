@@ -242,6 +242,8 @@
         #region Posts
         SuccessToCreatePost,
         SuccessToReport,
+        ReportDeleted,
+        ReportNotFound,
         FailedToCreatePost,
         SuccessToUpdatePost,
         FailedToUpdatePost,

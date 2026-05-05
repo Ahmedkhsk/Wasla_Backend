@@ -38,6 +38,16 @@ namespace Wasla_Backend.Services.Implementation
             await _reportRepository.SaveChangesAsync();
         }
 
+        public async Task DeleteReport(int reportId)
+        {
+            var report = await _reportRepository.GetByIdAsync(reportId);
+            if (report == null)
+                throw new NotFoundException(LocalizationKey.ReportNotFound);
+            _reportRepository.Delete(report);
+            await _reportRepository.SaveChangesAsync();
+        }
+
+
         public async Task ChangeStatus(ToggleHideDto dto)
         {
             var target = await _socialRepository.GetSocialById(dto.id);

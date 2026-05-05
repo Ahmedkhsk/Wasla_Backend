@@ -1073,6 +1073,16 @@
                 ["en"] = "Post not found.",
                 ["ar"] = "المنشور غير موجود."
             },
+            [LocalizationKey.ReportNotFound] = new()
+            {
+                ["en"] = "Report not found.",
+                ["ar"] = "البلاغ غير موجود."
+            },
+            [LocalizationKey.ReportDeleted] = new()
+            {
+                ["en"] = "Report deleted successfully.",
+                ["ar"] = "تم حذف البلاغ بنجاح."
+            },
             [LocalizationKey.SuccessToMarkAsRead] = new()
             {
                 ["en"] = "Marked as read successfully.",
