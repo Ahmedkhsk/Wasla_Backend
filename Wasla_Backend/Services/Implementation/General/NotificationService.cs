@@ -33,22 +33,25 @@ namespace Wasla_Backend.Services.Implementation.General
             var userTopic = $"User_{userId}";
             await _firebaseService.SendToTopicAsync(userTopic, title, body, referenceId, type);
 
-            var metadataJson = metadata != null
+            if(type!=NotificationType.messageReceived)
+            {
+                var metadataJson = metadata != null
                 ? JsonConvert.SerializeObject(metadata)
                 : null;
 
-            var notification = new Notification
-            {
-                UserId = userId,
-                Type = type,
-                ReferenceId = referenceId,
-                MetadataJson = metadataJson,
-                CreatedAt = _dateTimeHelper.Now,
-                ImageUrl = imageUrl
-            };
+                var notification = new Notification
+                {
+                    UserId = userId,
+                    Type = type,
+                    ReferenceId = referenceId,
+                    MetadataJson = metadataJson,
+                    CreatedAt = _dateTimeHelper.Now,
+                    ImageUrl = imageUrl
+                };
 
-            await _notificationRepository.AddAsync(notification);
-            await _notificationRepository.SaveChangesAsync();
+                await _notificationRepository.AddAsync(notification);
+                await _notificationRepository.SaveChangesAsync();
+            }
         }
 
         public async Task DeleteNotificationByNotificationIdAsync(int notificationId)
