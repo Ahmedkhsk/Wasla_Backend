@@ -6,10 +6,12 @@ namespace Wasla_Backend.Repositories.Implementation
         : GenericRepository<UserEvent>, IUserEventRepository
     {
         private readonly Context _context;
+        private readonly IFileUrlBuilderService _fileUrlBuilderService;
 
-        public UserEventRepository(Context context) : base(context)
+        public UserEventRepository(Context context , IFileUrlBuilderService fileUrlBuilderService) : base(context)
         {
             _context = context;
+            _fileUrlBuilderService = fileUrlBuilderService;
         }
 
         public async Task<List<ServiceProviderEventResponse>> GetTopServiceProvidersAsync(string userId, int top)
@@ -33,7 +35,7 @@ namespace Wasla_Backend.Repositories.Implementation
                 id = x.Id,
                 name = x.Provider.BusinessName ?? x.Provider.FullName,
                 description = x.Provider.Description,
-                image = x.Provider.ProfilePhoto,
+                image = _fileUrlBuilderService.GetMediaUrl(x.Provider.ProfilePhoto,MediaType.userImage),
                 rating = x.Provider.Rating,
                 roleName = _context.UserRoles
                     .Where(ur => ur.UserId == x.Id)
@@ -76,7 +78,7 @@ namespace Wasla_Backend.Repositories.Implementation
                 id = x.Id,
                 name = x.Provider.BusinessName ?? x.Provider.FullName,
                 description = x.Provider.Description,
-                image = x.Provider.ProfilePhoto,
+                image = _fileUrlBuilderService.GetMediaUrl(x.Provider.ProfilePhoto, MediaType.userImage),
                 rating = x.Provider.Rating,
                 roleName = roles.FirstOrDefault(r => r.UserId == x.Id)?.Name
             }).ToList();
@@ -112,7 +114,7 @@ namespace Wasla_Backend.Repositories.Implementation
                 id = x.Id,
                 name = x.Provider.BusinessName ?? x.Provider.FullName,
                 description = x.Provider.Description,
-                image = x.Provider.ProfilePhoto,
+                image = _fileUrlBuilderService.GetMediaUrl(x.Provider.ProfilePhoto, MediaType.userImage),
                 rating = x.Provider.Rating,
                 roleName = roles.FirstOrDefault(r => r.UserId == x.Id)?.Name
             }).ToList();

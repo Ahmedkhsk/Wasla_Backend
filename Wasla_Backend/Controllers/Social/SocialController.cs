@@ -124,6 +124,13 @@
             return Ok(ResponseHelper.Success(LocalizationKey.SuccessToToggleContent, dto.lan));
         }
 
+        [HttpDelete("Report")]
+        public async Task<IActionResult> DeleteReport([FromQuery] GetGeneralDto<int> dto)
+        {
+            await _reportService.DeleteReport(dto.id);
+            return Ok(ResponseHelper.Success(LocalizationKey.ReportDeleted, dto.lan));
+        }
+
         [HttpGet("Reports")]
         public async Task<IActionResult> GetReports([FromQuery] PaginationParams dto)
         {
