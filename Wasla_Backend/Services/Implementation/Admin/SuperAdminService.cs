@@ -1,16 +1,22 @@
-﻿namespace Wasla_Backend.Services.Implementation
+﻿using Wasla_Backend.Repositories.Interfaces.Authentication;
+
+namespace Wasla_Backend.Services.Implementation
 {
     public class SuperAdminService : ISuperAdminService
     {
         private readonly IUserRepository _userRepository;
         private readonly IRoleRepository _roleRepository;
+        private readonly IAdminRepository _adminRepository;
 
         public SuperAdminService(
             IUserRepository userRepository,
-            IRoleRepository roleRepository)
+            IRoleRepository roleRepository,
+            IAdminRepository adminRepository
+            )
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
+            _adminRepository = adminRepository;
         }
 
         public async Task AddAdminAsync(AddAdminDto dto)
@@ -41,16 +47,7 @@
 
         public async Task<IEnumerable<AdminResponseDto>> GetAllAdminsAsync()
         {
-            var admins = await _userRepository.GetUsersByRoleAsync("admin");
-
-            return admins.Where(a=>!a.IsDeleted).Select(a => new AdminResponseDto
-            {
-                Id = a.Id,
-                FullName = a.FullName,
-                Email = a.Email,
-                Phone = a.Phone,
-                Status = a.Status
-            });
+           return await _adminRepository.GetAllAdminsAsync();
         }
 
         public async Task RemoveAdminAsync(string adminId)
