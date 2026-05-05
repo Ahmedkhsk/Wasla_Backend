@@ -69,8 +69,11 @@
             await _messageRepository.AddAsync(message);
             await _messageRepository.SaveChangesAsync();
 
+           
             var receiver = await _userRepository.GetUserByIdAsync(dto.reciverId);
             var sender = await _userRepository.GetUserByIdAsync(dto.senderId);
+            var senderImage = _fileUrlBuilderService.GetMediaUrl(sender.ProfilePhoto, MediaType.userImage);
+
             var messageDto = new MessageHubDto
             {
                 id = message.id,
@@ -79,7 +82,7 @@
                 profileReceiver = _fileUrlBuilderService.GetMediaUrl(receiver.ProfilePhoto, MediaType.userImage),
                 nameReceiver = receiver.FullName,
                 nameSender = sender.FullName,
-                profileSender = _fileUrlBuilderService.GetMediaUrl(sender.ProfilePhoto, MediaType.userImage),
+                profileSender = senderImage,
                 receiverId = message.receiverId,
                 messageText = message.messageText,
                 audio = _fileUrlBuilderService.GetMediaUrl(message.audio, MediaType.chatFile),
@@ -93,13 +96,13 @@
             };
 
             await _hubContext.Clients
-                .Users(new List<string> { message.senderId, message.receiverId })
+                .Users(new List<string> { message.senderId, message.receiverId})
                 .SendAsync("ReceiveMessage", messageDto);
             var metadata = new Dictionary<string, string>
-{
-    { "SenderName", sender.FullName ?? "User" }
-};
-            var refernce=string.Concat(sender.FullName, " , ",sender.Id);
+            {
+                { "SenderName", sender.FullName ?? "User" }
+            };
+            var refernce=string.Concat(sender.FullName, " , ",sender.Id , " , " , senderImage);
             var photo = _fileUrlBuilderService.GetMediaUrl(sender.ProfilePhoto, MediaType.userImage);
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
     receiver.Id,

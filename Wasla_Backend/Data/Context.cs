@@ -83,8 +83,6 @@ namespace Wasla_Backend.Data
             builder.Entity<Social>()
                 .HasQueryFilter(p => !p.isDeleted);
 
-            builder.Entity<ApplicationUser>()
-                    .HasQueryFilter(u => u.Status == UserStatus.Active);
             
             builder.Entity<BaseBooking>()
                 .HasOne(b => b.Resident)
