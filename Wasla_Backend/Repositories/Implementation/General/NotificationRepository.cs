@@ -82,7 +82,7 @@ namespace Wasla_Backend.Repositories.Implementation.General
         public async Task<int> CountNotificationByuserId(string userId)
         {
             return await _context.Notifications
-                .Where(n => n.UserId == userId && !n.IsSeen &&
+                .Where(n => n.UserId == userId && !n.IsSeen && n.Type!=NotificationType.messageReceived &&
                             (n.LastSeenAt == null || n.CreatedAt > n.LastSeenAt))
                 .CountAsync();
         }
@@ -90,7 +90,7 @@ namespace Wasla_Backend.Repositories.Implementation.General
         public async Task<int> CountAllNotificationByuserId(string userId)
         {
             return await _context.Notifications
-                .Where(n => n.UserId == userId && !n.IsDeleted)
+                .Where(n => n.UserId == userId && !n.IsDeleted && n.Type != NotificationType.messageReceived)
                 .CountAsync();
         }
     }
