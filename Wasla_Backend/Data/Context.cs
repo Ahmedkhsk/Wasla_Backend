@@ -80,6 +80,9 @@ namespace Wasla_Backend.Data
             builder.Entity<Social>()
                 .HasQueryFilter(s => !s.isHidden);
 
+            builder.Entity<Social>()
+                .HasQueryFilter(p => !p.isDeleted);
+
             builder.Entity<ApplicationUser>()
                     .HasQueryFilter(u => u.Status == UserStatus.Active);
             

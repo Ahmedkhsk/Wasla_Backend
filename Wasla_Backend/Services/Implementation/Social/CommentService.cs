@@ -1,4 +1,5 @@
 ﻿using Wasla_Backend.Helpers.MlHelper;
+using Wasla_Backend.Models.Social;
 
 namespace Wasla_Backend.Services.Implementation
 {
@@ -97,6 +98,8 @@ namespace Wasla_Backend.Services.Implementation
                 comment.content = dto.content;
             }
 
+            comment.updatedAt = _dateTimeHelper.Now;
+
             comment.file = await _fileService.ReplaceFileAsync(
                 comment.file,
                 dto.file,
@@ -115,9 +118,9 @@ namespace Wasla_Backend.Services.Implementation
             if (comment == null)
                 throw new NotFoundException(LocalizationKey.CommentNotFound);
 
-            _fileService.DeleteFile(comment.file, _fileUrlBuilderService.GetPath(MediaType.postFile));
+            comment.isDeleted = true;
 
-            _commentRepository.Delete(comment);
+            _commentRepository.Update(comment);
             await _commentRepository.SaveChangesAsync();
         }
 

@@ -79,6 +79,8 @@
 
             _mapper.Map(dto, post);
 
+            post.updatedAt = _dateTimeHelper.Now;
+            
             post.files = await _fileService.ReplaceFilesAsync(
                 post.files,
                 existingFileNames,
@@ -96,9 +98,9 @@
             if (post == null)
                 throw new NotFoundException(LocalizationKey.PostNotFound);
 
-            _fileService.DeleteFiles(post.files, _fileUrlBuilderService.GetPath(MediaType.postFile));
+            post.isDeleted = true;
 
-            _postRepository.Delete(post);
+            _postRepository.Update(post);
             await _postRepository.SaveChangesAsync();
         }
 

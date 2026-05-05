@@ -7,6 +7,8 @@
 
         [ForeignKey("userId")]
         public ApplicationUser user { get; set; }
+
+        public bool isDeleted { get; set; } = false;
         public bool isHidden { get; set; } = false;
         public string? content { get; set; }
         public DateTime createdAt { get; set; }
