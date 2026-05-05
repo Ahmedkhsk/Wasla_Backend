@@ -7,6 +7,7 @@
     public async Task<PagedResult<Restaurant>> GetAllRestaurants(GetGeneralWithPaginationDto<int> dto)
     {
         var query = _dbSet
+                        .Where(Status => Status.Status == UserStatus.Active)
                         .AsNoTracking()
                         .AsQueryable();
         

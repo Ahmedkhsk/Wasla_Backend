@@ -13,6 +13,7 @@
         {
             return await _context.Doctors
                 .AsNoTracking()
+                .Where(d => d.Status == UserStatus.Active)
                 .OrderByDescending(d => d.Rating)
                 .ToListAsync();
         }
@@ -20,12 +21,13 @@
         public async Task<Doctor> GetByEmail(string email)
         {
             return await _userManager.Users
+                .Where(d => d.Status == UserStatus.Active)
                 .OfType<Doctor>()
                 .FirstOrDefaultAsync(d => d.Email == email);
         }
         public async Task<DoctorProfileResponse> GetDoctorProfileById(string id)
         {
-          return await _context.Doctors.Where(d=>d.Id==id).AsNoTracking().Select(d=> new DoctorProfileResponse
+          return await _context.Doctors.Where(d=>d.Id==id && d.Status == UserStatus.Active).AsNoTracking().Select(d=> new DoctorProfileResponse
           {
              email= d.Email,
               fullName = d.FullName,
@@ -55,7 +57,7 @@
         {
             return await _context.Doctors
                 .AsNoTracking()
-                .Where(d => d.SpecializationId == specialistId)
+                .Where(d => d.SpecializationId == specialistId && d.Status == UserStatus.Active)
                 .OrderByDescending(d=>d.Rating)
                 .ToListAsync();
         }
@@ -64,7 +66,7 @@
         {
          var doctor = await _context.Doctors
          .AsNoTracking()
-         .Where(d => d.Id == doctorId)
+         .Where(d => d.Id == doctorId && d.Status == UserStatus.Active)
          .Select(d => new AllDoctorDataDto
          {
              Id = d.Id,
@@ -93,7 +95,7 @@
         {
             var specialization = await _context.Doctors
                 .AsNoTracking()
-                .Where(d => d.Id == doctorId)
+                .Where(d => d.Id == doctorId && d.Status == UserStatus.Active)
                 .Select(d => d.Specialization!.Specialization)
                 .FirstOrDefaultAsync();
 

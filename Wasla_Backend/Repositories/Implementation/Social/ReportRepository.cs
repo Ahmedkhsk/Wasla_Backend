@@ -14,7 +14,9 @@
         public async Task<PagedResult<GetReports>> GetReports(PaginationParams paginationParams)
         {
             var query = _dbSet
+                .Include(r => r.user)
                 .Include(r => r.target)
+                .Where(r => r.user.Status == UserStatus.Active)
                 .IgnoreQueryFilters()
                 .AsNoTracking()
                 .AsQueryable();

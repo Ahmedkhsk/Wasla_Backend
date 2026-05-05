@@ -30,6 +30,7 @@ namespace Wasla_Backend.Services.Implementation
 
         public async Task<AdminChartResponse> GetCollectedCountBookingsPerYear()
         {
+
             return new AdminChartResponse
             {
                 completedBookingsCount = await _bookingRepository.CountBookings(BookingStatus.completed),
@@ -135,8 +136,7 @@ namespace Wasla_Backend.Services.Implementation
             };
         }
 
-        // ----------------------------------------------------------------
-
+        
         private AdminUserDetailsResponseDto BuildDoctorDetails(
             Doctor doctor, AdminUserBaseDetailsDto userBase, string? role)
         {

@@ -14,7 +14,7 @@
         {
             var query = (
                 from sp in _context.serviceProvider
-
+                where sp.Status == 0
                 join ur in _context.UserRoles
                     on sp.Id equals ur.UserId into urGroup
                 from ur in urGroup.DefaultIfEmpty()
@@ -79,9 +79,10 @@
         {
             var query = (
                 from sp in _context.serviceProvider
-
+                where sp.Status == 0
                 join ur in _context.UserRoles
                     on sp.Id equals ur.UserId into urGroup
+                    where sp.Status == 0
                 from ur in urGroup.DefaultIfEmpty()
 
                 join r in _context.Roles

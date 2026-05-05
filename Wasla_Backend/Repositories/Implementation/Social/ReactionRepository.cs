@@ -10,22 +10,26 @@
         }
 
         public async Task<Reaction?> GetReaction(ToggleReactionDto dto)
-            => await _context.Reactions.AsNoTracking().FirstOrDefaultAsync(r =>
+            => await _context.Reactions.Include(u=>u.user).AsNoTracking().FirstOrDefaultAsync(r =>
                 r.targetId == dto.targetId &&
                 r.targetType == dto.targetType &&
                 r.reactionType == dto.reactionType &&
-                r.userId == dto.userId);
+                r.userId == dto.userId&&
+                r.user.Status == UserStatus.Active);
 
         public async Task<int> GetReactionCount(int targetId, ReactionTargetType type, ReactionType reactionType)
-            => await _context.Reactions.CountAsync(r =>
+            => await _context.Reactions
+                .Include(u => u.user)
+                .CountAsync(r =>
                 r.targetId == targetId &&
                 r.targetType == type &&
-                r.reactionType == reactionType);
+                r.reactionType == reactionType &&
+                r.user.Status == UserStatus.Active);
 
         public async Task<GetReactionsResponse> GetReactionsResponse(int targetId, ReactionTargetType type, ReactionType reactionType)
         {
             var reactions = await _context.Reactions
-                .Where(r => r.targetId == targetId && r.targetType == type && r.reactionType == reactionType)
+                .Where(r => r.targetId == targetId && r.targetType == type && r.reactionType == reactionType&&r.user.Status == UserStatus.Active)
                 .Include(r => r.user)
                 .Select(r => new
                 {
@@ -55,7 +59,8 @@
             return await _context.Reactions
                 .Where(r => postIds.Contains(r.targetId) &&
                             r.targetType == targetType &&
-                            r.reactionType == reactionType)
+                            r.reactionType == reactionType && r.user.Status == UserStatus.Active)
+                .Include(r => r.user)
                 .GroupBy(r => r.targetId)
                 .Select(g => new { PostId = g.Key, Count = g.Count() })
                 .ToDictionaryAsync(x => x.PostId, x => x.Count);
@@ -67,7 +72,9 @@
             return await _context.Reactions
                 .Where(r => r.targetType == targetType &&
                             r.reactionType == reactionType &&
-                            r.userId == userId)
+                            r.userId == userId &&
+                            r.user.Status == UserStatus.Active)
+                .Include(r => r.user)
                 .CountAsync();
         }
 
@@ -75,11 +82,13 @@
             string userId, List<int> postIds, ReactionTargetType type, ReactionType reactionType)
         {
             return await _context.Reactions
+                .Include(r => r.user)
                 .Where(r =>
                     r.userId == userId &&
                     r.targetType == type &&
                     postIds.Contains(r.targetId) &&
-                    r.reactionType == reactionType)
+                    r.reactionType == reactionType &&
+                    r.user.Status == UserStatus.Active)
                 .Select(r => r.targetId)
                 .ToHashSetAsync();
         }

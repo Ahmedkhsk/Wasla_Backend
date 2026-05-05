@@ -19,7 +19,7 @@ namespace Wasla_Backend.Repositories.Implementation.Drivers
 
         public async Task<List<string>> GetAllOnlineDriversIds(VehicleType vehicleType)
         {
-            return await _context.Drivers.Where(d => d.DriverStatus == DriverStatus.Online&&d.VehicleType==vehicleType)
+            return await _context.Drivers.Where(d => d.DriverStatus == DriverStatus.Online&&d.VehicleType==vehicleType&&d.Status == UserStatus.Active)
                 .AsNoTracking()
                 .Select(d => d.Id)
                 .ToListAsync();
@@ -27,13 +27,13 @@ namespace Wasla_Backend.Repositories.Implementation.Drivers
 
         public async Task<DriverModel> GetDriverByGmailAsync(string Gmail)
         {
-            return await _context.Drivers.FirstOrDefaultAsync(d => d.Email == Gmail);
+            return await _context.Drivers.FirstOrDefaultAsync(d => d.Email == Gmail&& d.Status == UserStatus.Active);
         }
 
         public async Task<DriverProfileDTO> GetDriverProfileByIdAsync(string id)
         {
             return await _context.Drivers
-                .Where(d => d.Id == id).AsNoTracking()
+                .Where(d => d.Id == id && d.Status == UserStatus.Active).AsNoTracking()
                 .Select(d => new DriverProfileDTO
                 {
                    

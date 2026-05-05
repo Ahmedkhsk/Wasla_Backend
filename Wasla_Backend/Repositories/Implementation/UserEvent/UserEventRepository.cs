@@ -12,78 +12,111 @@ namespace Wasla_Backend.Repositories.Implementation
             _context = context;
         }
 
-        public async Task<List<ServiceProviderEventResponse>>  GetTopServiceProvidersAsync(string userId, int top)
+        public async Task<List<ServiceProviderEventResponse>> GetTopServiceProvidersAsync(string userId, int top)
         {
-            return await _context.UserEvents
-                .Where(x => x.userId == userId)
+            var query = await _context.UserEvents
+                .Include(x => x.serviceProvider)
+                .Where(x => x.userId == userId && x.serviceProvider.Status == UserStatus.Active)
                 .GroupBy(x => x.serviceProviderId)
-                .OrderByDescending(g => g.Count())
-                .Take(top)
-                .Select(g => new ServiceProviderEventResponse
+                .Select(g => new
                 {
-                    id = g.Key,
-                    name = g.First().serviceProvider.FullName,
-                    description = g.First().serviceProvider.Description,
-                    image = g.First().serviceProvider.ProfilePhoto,
-                    rating = g.First().serviceProvider.Rating,
-                    roleName = _context.UserRoles
-                                .Where(ur => ur.UserId == g.Key)
-                                .Join(_context.Roles,
-                                      ur => ur.RoleId,
-                                      r => r.Id,
-                                      (ur, r) => r.Name)
-                                .FirstOrDefault()
+                    Id = g.Key,
+                    Count = g.Count(),
+                    Provider = g.First().serviceProvider
                 })
+                .OrderByDescending(x => x.Count)
+                .Take(top)
                 .ToListAsync();
+
+            var result = query.Select(x => new ServiceProviderEventResponse
+            {
+                id = x.Id,
+                name = x.Provider.BusinessName ?? x.Provider.FullName,
+                description = x.Provider.Description,
+                image = x.Provider.ProfilePhoto,
+                rating = x.Provider.Rating,
+                roleName = _context.UserRoles
+                    .Where(ur => ur.UserId == x.Id)
+                    .Join(_context.Roles,
+                          ur => ur.RoleId,
+                          r => r.Id,
+                          (ur, r) => r.Name)
+                    .FirstOrDefault()
+            }).ToList();
+
+            return result;
         }
         public async Task<List<ServiceProviderEventResponse>> GetMostUsedServicesGloballyAsync(int top)
         {
-            return await _context.UserEvents
+            var groupedData = await _context.UserEvents
+                .Include(x => x.serviceProvider)
+                .Where(x => x.serviceProvider.Status == UserStatus.Active)
                 .GroupBy(e => e.serviceProviderId)
-                .OrderByDescending(g => g.Count())
-                .Take(top)
-                .Select(g => new ServiceProviderEventResponse
+                .Select(g => new
                 {
-                    id = g.Key,
-                    name = g.First().serviceProvider.FullName,
-                    description = g.First().serviceProvider.Description,
-                    image = g.First().serviceProvider.ProfilePhoto,
-                    rating = g.First().serviceProvider.Rating,
-                    roleName = _context.UserRoles
-                                .Where(ur => ur.UserId == g.Key)
-                                .Join(_context.Roles,
-                                      ur => ur.RoleId,
-                                      r => r.Id,
-                                      (ur, r) => r.Name)
-                                .FirstOrDefault()
+                    Id = g.Key,
+                    Count = g.Count(),
+                    Provider = g.First().serviceProvider
                 })
+                .OrderByDescending(x => x.Count)
+                .Take(top)
+                .AsNoTracking()
                 .ToListAsync();
-        }
-        public async Task<List<ServiceProviderEventResponse>> GetTopServicesByStatusAsync(UserEventEnum status , int top)
-        {
-            return await _context.UserEvents
-            .Where(x => x.eventType == status)
-            .GroupBy(x => x.serviceProviderId)
-            .OrderByDescending(g => g.Count())
-            .Take(top)
-            .Select(g => new ServiceProviderEventResponse
+
+            var roles = await _context.UserRoles
+                .Join(_context.Roles,
+                    ur => ur.RoleId,
+                    r => r.Id,
+                    (ur, r) => new { ur.UserId, r.Name })
+                .AsNoTracking()
+                .ToListAsync();
+
+            return groupedData.Select(x => new ServiceProviderEventResponse
             {
-                id = g.Key,
-                name = g.First().serviceProvider.FullName,
-                description = g.First().serviceProvider.Description,
-                image = g.First().serviceProvider.ProfilePhoto,
-                rating = g.First().serviceProvider.Rating,
-                roleName = _context.UserRoles
-                                .Where(ur => ur.UserId == g.Key)
-                                .Join(_context.Roles,
-                                      ur => ur.RoleId,
-                                      r => r.Id,
-                                      (ur, r) => r.Name)
-                                .FirstOrDefault()
-            })
-            .ToListAsync();
+                id = x.Id,
+                name = x.Provider.BusinessName ?? x.Provider.FullName,
+                description = x.Provider.Description,
+                image = x.Provider.ProfilePhoto,
+                rating = x.Provider.Rating,
+                roleName = roles.FirstOrDefault(r => r.UserId == x.Id)?.Name
+            }).ToList();
         }
 
+        public async Task<List<ServiceProviderEventResponse>> GetTopServicesByStatusAsync(UserEventEnum status, int top)
+        {
+            var groupedData = await _context.UserEvents
+                .Include(x => x.serviceProvider)
+                .Where(x => x.eventType == status && x.serviceProvider.Status == UserStatus.Active)
+                .GroupBy(x => x.serviceProviderId)
+                .Select(g => new
+                {
+                    Id = g.Key,
+                    Count = g.Count(),
+                    Provider = g.First().serviceProvider
+                })
+                .OrderByDescending(x => x.Count)
+                .Take(top)
+                .AsNoTracking()
+                .ToListAsync();
+
+            var roles = await _context.UserRoles
+                .Join(_context.Roles,
+                    ur => ur.RoleId,
+                    r => r.Id,
+                    (ur, r) => new { ur.UserId, r.Name })
+                .AsNoTracking()
+                .ToListAsync();
+
+            return groupedData.Select(x => new ServiceProviderEventResponse
+            {
+                id = x.Id,
+                name = x.Provider.BusinessName ?? x.Provider.FullName,
+                description = x.Provider.Description,
+                image = x.Provider.ProfilePhoto,
+                rating = x.Provider.Rating,
+                roleName = roles.FirstOrDefault(r => r.UserId == x.Id)?.Name
+            }).ToList();
+        }
         public async Task<List<ServiceProviderConversionResponse>> GetConversionRatesByRoleAsync()
         {
             var query =
@@ -124,7 +157,8 @@ namespace Wasla_Backend.Repositories.Implementation
         public async Task<List<UserEvent>> GetUserEventsAsync(string userId)
         {
             return await _context.UserEvents
-                .Where(e => e.userId == userId)
+                .Include(x => x.serviceProvider)
+                .Where(e => e.userId == userId&&e.serviceProvider.Status == UserStatus.Active)
                 .OrderByDescending(e => e.timestamp)
                 .ToListAsync();
         }

@@ -15,10 +15,15 @@
                 .IgnoreQueryFilters()
                 .FirstOrDefaultAsync(p => p.id == postId);
         }
+        public async Task<int> GetPostsCountByUserId(string userId)
+        {
+            return await _dbSet.CountAsync(p => p.userId == userId);
+        }
 
         public async Task<PagedResult<Post>> GetPostsGeneral(PaginationParams paginationParams)
         {
             var query = _dbSet
+                .Where(p => p.user.Status == UserStatus.Active)
                 .AsNoTracking()
                 .Include(p => p.user)
                 .OrderByDescending(p => p.id)
@@ -29,19 +34,14 @@
                 paginationParams.PageSize
             );
         }
-
-        public async Task<int> GetPostsCountByUserId(string userId)
-        {
-            return await _dbSet.CountAsync(p => p.userId == userId);
-        }
-
+  
         public async Task<PagedResult<PostGeneralResponse>> GetPostsByUsingReactionType(GetPostsByUsingReactionTypeDto dto)
         {
             var reactionPostsQuery = _context.Reactions
                 .Where(r =>
                     r.userId == dto.userId &&
                     r.targetType == ReactionTargetType.post &&
-                    r.reactionType == dto.reactionType)
+                    r.reactionType == dto.reactionType&& r.user.Status == UserStatus.Active)
                 .Select(r => r.targetId);
 
             var postsQuery = _context.Posts
@@ -117,7 +117,7 @@
         public async Task<PagedResult<Post>> GetPostsByUserId(string userId, int pageNumber, int pageSize)
         {
             var query = _dbSet
-                .Where(p => p.userId == userId)
+                .Where(p => p.userId == userId&& p.user.Status == UserStatus.Active)
                 .AsNoTracking()
                 .Include(p => p.user);
 

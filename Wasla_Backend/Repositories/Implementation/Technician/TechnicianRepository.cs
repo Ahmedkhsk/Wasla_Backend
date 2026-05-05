@@ -20,7 +20,7 @@ namespace Wasla_Backend.Repositories.Implementation.technician
 
         public async Task<TechnicianProfileDto> GetProfileById(string id)
         {
-           return await _context.Technicians.Where(t => t.Id == id).AsNoTracking()
+           return await _context.Technicians.Where(t => t.Id == id&&t.Status == UserStatus.Active).AsNoTracking()
                 .Select(t => new TechnicianProfileDto
                 {
                     Email = t.Email,
@@ -54,6 +54,7 @@ namespace Wasla_Backend.Repositories.Implementation.technician
     string lan)
         {
             var query = _context.Technicians
+                .Where(t => t.Status == UserStatus.Active)
                 .AsNoTracking()
                 .AsQueryable();
 

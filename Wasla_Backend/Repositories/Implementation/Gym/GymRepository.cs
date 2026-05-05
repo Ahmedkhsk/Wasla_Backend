@@ -11,6 +11,7 @@ namespace Wasla_Backend.Repositories.Implementation.Gyms
         public async Task<List<AllGymsDataDto>> AllGyms(int pageNumber, int pageSize)
         {
             return await _context.Gyms
+                .Where(Status => Status.Status == UserStatus.Active)
                 .OrderBy(g => g.Id) 
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
@@ -33,14 +34,13 @@ namespace Wasla_Backend.Repositories.Implementation.Gyms
 
         public async Task<int> CountAsync()
         {
-            return await _context.Gyms.CountAsync();
+            return await _context.Gyms.Where(s => s.Status == UserStatus.Active).CountAsync();
         }
 
         public Task<GymProfileDto> GymProfile(string id)
         {
     
-            Console.WriteLine($"count of review second is {_context.Review.Where(r=>r.ServiceProviderId==id).Count()}"); 
-            return _context.Gyms.Where(g => g.Id == id).AsNoTracking().Select(g => new GymProfileDto
+            return _context.Gyms.Where(g => g.Id == id&&g.Status == UserStatus.Active).AsNoTracking().Select(g => new GymProfileDto
             {
                 id = g.Id,
                 email = g.Email,

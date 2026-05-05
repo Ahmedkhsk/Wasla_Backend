@@ -52,7 +52,7 @@ namespace Wasla_Backend.Services.Implementation.GymService
             if (gym == null)
                 throw new NotFoundException(LocalizationKey.GymNotFound);
 
-            var gymPhotoUrl = _fileUrlBuilderService.GetMediaUrl(gym.ProfilePhoto, MediaType.gymImage);
+            var gymPhotoUrl = _fileUrlBuilderService.GetMediaUrl(gym.ProfilePhoto, MediaType.userImage);
 
             var resident = await _residentRepository.GetByIdAsync(gymBookDto.residentId);
             if (resident == null)
