@@ -99,7 +99,7 @@
 {
     { "SenderName", sender.FullName ?? "User" }
 };
-            var refernce=string.Concat(receiver.FullName, " , ",_fileUrlBuilderService.GetMediaUrl(receiver.ProfilePhoto,MediaType.userImage));
+            var refernce=string.Concat(sender.FullName, " , ",sender.Id);
             var photo = _fileUrlBuilderService.GetMediaUrl(sender.ProfilePhoto, MediaType.userImage);
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
     receiver.Id,

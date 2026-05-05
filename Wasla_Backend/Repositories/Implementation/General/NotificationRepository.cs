@@ -30,7 +30,7 @@ namespace Wasla_Backend.Repositories.Implementation.General
         {
             var notifications = await _context.Notifications
                 .AsNoTracking()
-                .Where(n => n.UserId == userId)
+                .Where(n => n.UserId == userId&&n.Type!=NotificationType.messageReceived)
                 .OrderByDescending(n => n.CreatedAt)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
