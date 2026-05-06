@@ -10,6 +10,7 @@ namespace Wasla_Backend.Services.Implementation
         private readonly IRoleRepository _roleRepository;
         private readonly IEmailSenderHelper _emailSenderHelper;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
+        private readonly IOrderRepository _orderRepository;
 
         public AdminService(
             IBookingRepository bookingRepository,
@@ -17,7 +18,8 @@ namespace Wasla_Backend.Services.Implementation
             IGenericRepository<ContactUs> contatUsRepository,
             IRoleRepository roleRepository,
             IEmailSenderHelper emailSenderHelper,
-            IFileUrlBuilderService fileUrlBuilderService
+            IFileUrlBuilderService fileUrlBuilderService,
+            IOrderRepository orderRepository
             )
         {
             _bookingRepository = bookingRepository;
@@ -26,17 +28,25 @@ namespace Wasla_Backend.Services.Implementation
             _roleRepository = roleRepository;
             _emailSenderHelper = emailSenderHelper;
             _fileUrlBuilderService = fileUrlBuilderService;
+            _orderRepository = orderRepository;
         }
 
         public async Task<AdminChartResponse> GetCollectedCountBookingsPerYear()
         {
+            var countCompletedOrders = await _orderRepository.CountOrders(OrderStatus.Delivered);
+            var countCanceledOrders = await _orderRepository.CountOrders(OrderStatus.Cancelled);
+            var countCompletedBookings = await _bookingRepository.CountBookings(BookingStatus.completed);
+            var countCanceledBookings = await _bookingRepository.CountBookings(BookingStatus.canceled);
+
+            var bookingsPerYear = await _bookingRepository.GetCollectedPriceBookingsPerYear();
+            var ordersPerYear = await _orderRepository.GetCollectedPriceOrdersPerYear();
 
             return new AdminChartResponse
             {
-                completedBookingsCount = await _bookingRepository.CountBookings(BookingStatus.completed),
-                canceledBookingsCount = await _bookingRepository.CountBookings(BookingStatus.canceled),
+                completedBookingsCount = countCompletedOrders + countCompletedBookings,
+                canceledBookingsCount = countCanceledOrders + countCanceledBookings,
                 countOfUsers = await _userRepository.countUsers(),
-                years = await _bookingRepository.GetCollectedPriceBookingsPerYear()
+                years = MergeCollectedPerYear(bookingsPerYear, ordersPerYear)
             };
         }
 
@@ -183,6 +193,36 @@ namespace Wasla_Backend.Services.Implementation
             var details = new AdminRestaurantDetailsDto(rest);
             details.images = details.images.Select(img => _fileUrlBuilderService.GetMediaUrl(img, MediaType.restaurantImage)).ToList();
             return new AdminUserDetailsResponseDto { role = role, userBase = userBase, details = details };
+        }
+
+        private List<CollectedPerYearDto> MergeCollectedPerYear(
+            List<CollectedPerYearDto> bookings,
+            List<CollectedPerYearDto> orders)
+        {
+            var merged = bookings.ToDictionary(b => b.year);
+
+            foreach (var order in orders)
+            {
+                if (!merged.TryGetValue(order.year, out var existing))
+                {
+                    merged[order.year] = order;
+                    continue;
+                }
+
+                var monthDict = existing.months.ToDictionary(m => m.month);
+
+                foreach (var month in order.months)
+                {
+                    if (monthDict.TryGetValue(month.month, out var existingMonth))
+                        existingMonth.amount += month.amount;
+                    else
+                        existing.months.Add(month);
+                }
+
+                existing.months = existing.months.OrderBy(m => m.month).ToList();
+            }
+
+            return merged.Values.OrderBy(y => y.year).ToList();
         }
     }
 }

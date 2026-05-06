@@ -25,6 +25,36 @@ namespace Wasla_Backend.Repositories.Implementation
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<int> CountOrders(OrderStatus? status)
+        {
+            var query = _dbSet.AsQueryable();
+            if (status.HasValue)
+                query = query.Where(o => o.status == status);
+            return await query.CountAsync();
+        }
+
+        public async Task<List<CollectedPerYearDto>> GetCollectedPriceOrdersPerYear()
+        {
+            return await _context.Orders
+                .Where(o => o.status == OrderStatus.Delivered)
+                .GroupBy(o => o.createdAt.Year)
+                .Select(yearGroup => new CollectedPerYearDto
+                {
+                    year = yearGroup.Key,
+                    months = yearGroup
+                        .GroupBy(o => o.createdAt.Month)
+                        .Select(monthGroup => new CollectedPerMonthDto
+                        {
+                            month = monthGroup.Key,
+                            amount = (double)monthGroup.Sum(o => o.totalPrice + o.deliveryFee)
+                        })
+                        .OrderBy(m => m.month)
+                        .ToList()
+                })
+                .OrderBy(y => y.year)
+                .ToListAsync();
+        }
+
         public async Task<PagedResult<Order>> OrdersRestaurent(GetGeneralWithPaginationDto<string> dto)
         {
             var query = _dbSet

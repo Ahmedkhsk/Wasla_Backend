@@ -4,6 +4,8 @@
     {
         public Task<PagedResult<Order>> OrdersResident(GetGeneralWithPaginationDto<string> dto);
         public Task<PagedResult<Order>> OrdersRestaurent(GetGeneralWithPaginationDto<string> dto);
+        public Task<List<CollectedPerYearDto>> GetCollectedPriceOrdersPerYear();
+        public Task<int> CountOrders(OrderStatus? status);
         public Task<Order?> GetOrderWithIncludeUsers(int orderId);
         public Task<Order?> GetOrderDetails(int orderId);
         public Task<int> CountOrders(string restaurantId, OrderStatus? status);
