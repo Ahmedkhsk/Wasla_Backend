@@ -2,6 +2,7 @@
 {
     public class RideDetailsForDriverDto
     {
+        public string ResidentId { get; set; }
         public string ResidentName { get; set; }
         public string ResidentPhone { get; set; }
         

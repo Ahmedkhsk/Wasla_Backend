@@ -28,6 +28,7 @@ namespace Wasla_Backend.Repositories.Implementation.driver
                 .AsNoTracking()
                 .Select(r => new
                 {
+                    r.ResidentId,
                     r.Resident.FullName,
                     r.Resident.PhoneNumber,
                     r.Resident.ProfilePhoto,
@@ -44,6 +45,7 @@ namespace Wasla_Backend.Repositories.Implementation.driver
 
             return new RideDetailsForDriverDto
             {
+                ResidentId = raw.ResidentId,
                 ResidentName = raw.FullName,
                 ResidentPhone = raw.PhoneNumber,
                 ResidentImage = _fileUrlBuilderService.GetMediaUrl(raw.ProfilePhoto, MediaType.userImage),
