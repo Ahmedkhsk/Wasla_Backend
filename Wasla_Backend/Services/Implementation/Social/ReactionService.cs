@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Services.Implementation
+﻿using Wasla_Backend.Models.Social;
+
+namespace Wasla_Backend.Services.Implementation
 {
     public class ReactionService : IReactionService
     {
@@ -7,9 +9,11 @@
         private readonly IUserRepository _userRepository;
         private readonly IPostRepository _postRepository;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
         public ReactionService(IReactionRepository reactionReepository,IDateTimeHelper dateTimeHelper,IUserRepository userRepository
-            , IPostRepository postRepository, IFileUrlBuilderService fileUrlBuilderService
+            , IPostRepository postRepository, IFileUrlBuilderService fileUrlBuilderService,
+            IUserAuthorizationService userAuthorizationService
             ) 
         {
             _reactionReepository = reactionReepository;
@@ -17,6 +21,7 @@
             _userRepository = userRepository;
             _postRepository = postRepository;
             _fileUrlBuilderService = fileUrlBuilderService;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task ToggleReaction(ToggleReactionDto dto)
@@ -24,6 +29,8 @@
             var user = await _userRepository.GetUserByIdAsync(dto.userId);
             if (user == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
+
+            await _userAuthorizationService.CheckOwnershipByIdAsync(user.Id);
 
             var existingReaction = await _reactionReepository.GetReaction(dto);
             
@@ -70,6 +77,9 @@
             var user = await _userRepository.GetUserByIdAsync(dto.userId);
             if (user == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
+
+            await _userAuthorizationService.CheckOwnershipByIdAsync(user.Id);
+
             var existingReaction = await _reactionReepository.GetReaction(dto);
 
             return existingReaction != null;

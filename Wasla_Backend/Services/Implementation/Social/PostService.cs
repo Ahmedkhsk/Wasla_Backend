@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Services.Implementation
+﻿using Wasla_Backend.Models.Social;
+
+namespace Wasla_Backend.Services.Implementation
 {
     public class PostService : IPostService
     {
@@ -11,7 +13,7 @@
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly ICommentRepository _commentRepository;
         private readonly ToxicityClassifier _toxicityClassifier;
-
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
         public PostService(
             IPostRepository postRepository,
@@ -22,7 +24,8 @@
             IFileService fileService,
             IFileUrlBuilderService fileUrlBuilderService,
             ICommentRepository commentRepository,
-            ToxicityClassifier toxicityClassifier
+            ToxicityClassifier toxicityClassifier,
+            IUserAuthorizationService userAuthorizationService
         )
         {
             _postRepository = postRepository;
@@ -34,6 +37,7 @@
             _fileUrlBuilderService = fileUrlBuilderService;
             _commentRepository = commentRepository;
             _toxicityClassifier = toxicityClassifier;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task AddPost(AddPostDto dto)
@@ -68,7 +72,8 @@
             if (post == null)
                 throw new NotFoundException(LocalizationKey.PostNotFound);
 
-            if(dto.content != null)
+            await _userAuthorizationService.CheckOwnershipByIdAsync(post.userId);
+            if (dto.content != null)
             {
                 var isToxic = _toxicityClassifier.IsBadWord(dto.content);
                 if (isToxic)
@@ -98,6 +103,7 @@
             if (post == null)
                 throw new NotFoundException(LocalizationKey.PostNotFound);
 
+            await _userAuthorizationService.CheckOwnershipByIdAsync(post.userId);
             post.isDeleted = true;
 
             _postRepository.Update(post);

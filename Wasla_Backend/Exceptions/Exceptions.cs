@@ -30,5 +30,15 @@
         }
     }
 
+    public class ForbiddenException : Exception
+    {
+        public LocalizationKey Key { get; }
+
+        public ForbiddenException(LocalizationKey key)
+        {
+            Key = key;
+        }
+    }
+
 
 }

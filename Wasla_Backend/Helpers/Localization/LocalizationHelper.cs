@@ -10,6 +10,11 @@
                 ["en"] = "User is not logged in.",
                 ["ar"] = "المستخدم غير مسجل الدخول."
             },
+            [LocalizationKey.NotAllowed] = new()
+            {
+                ["en"] = "You are not allowed to perform this action.",
+                ["ar"] = "غير مسموح لك بتنفيذ هذا الإجراء."
+            },
             [LocalizationKey.InvalidRequest] = new()
             {
                 ["en"] = "Invalid Request Data",

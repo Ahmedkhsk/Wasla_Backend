@@ -8,11 +8,13 @@
         private readonly IMapper _mapper;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly IFileService _fileService;
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
         public MenuItemService
             (IMenuItemRepository menuItemRepository, IRestaurantRepository restaurantRepository,
             IMenuItemCategoryRepository menuItemCategoryRepository, IMapper mapper,
-            IFileUrlBuilderService fileUrlBuilderService, IFileService fileService)
+            IFileUrlBuilderService fileUrlBuilderService, IFileService fileService,
+            IUserAuthorizationService userAuthorizationService)
         {
             _menuItemRepository = menuItemRepository;
             _restaurantRepository = restaurantRepository;
@@ -20,6 +22,7 @@
             _mapper = mapper;
             _fileUrlBuilderService = fileUrlBuilderService;
             _fileService = fileService;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task AddItem(AddMenuItemDto dto)
@@ -48,6 +51,8 @@
             if (menuItem == null)
                 throw new NotFoundException(LocalizationKey.MenuItemNotFound);
 
+            await _userAuthorizationService.CheckOwnershipByIdAsync(menuItem.restaurantId);
+
             _mapper.Map(dto, menuItem);
             if (dto.imageUrl != null)
             {
@@ -66,6 +71,8 @@
             if (restaurant == null)
                 throw new NotFoundException(LocalizationKey.RestaurantNotFound);
 
+            await _userAuthorizationService.CheckOwnershipByIdAsync(restaurant.Id);
+
             var menuItem = await _menuItemRepository.GetByIdAsync(dto.menuItemId);
             if (menuItem == null)
                 throw new NotFoundException(LocalizationKey.MenuItemNotFound);
@@ -79,6 +86,9 @@
             var menuItem = await _menuItemRepository.GetByIdAsync(id);
             if (menuItem == null)
                 throw new NotFoundException(LocalizationKey.MenuItemNotFound);
+
+            await _userAuthorizationService.CheckOwnershipByIdAsync(menuItem.restaurantId);
+
             menuItem.isDeleted = true;
             _menuItemRepository.Update(menuItem);
             await _menuItemRepository.SaveChangesAsync();

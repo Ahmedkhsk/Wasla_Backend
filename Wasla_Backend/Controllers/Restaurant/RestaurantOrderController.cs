@@ -1,9 +1,8 @@
-﻿using Wasla_Backend.Models.Restaurant;
-
-namespace Wasla_Backend.Controllers.Restaurant
+﻿namespace Wasla_Backend.Controllers.Restaurant
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class RestaurantOrderController : ControllerBase
     {
         private readonly ICartService _cartService;
@@ -14,74 +13,109 @@ namespace Wasla_Backend.Controllers.Restaurant
             _cartService = cartService;
             _orderService = orderService;
         }
+
+        [Authorize(Roles = "resident")]
         [HttpPost("add-to-cart")]
         public async Task<IActionResult> AddToCart(AddCartItem dto, [FromQuery] LanDto lanDto)
         {
             await _cartService.AddCart(dto);
-            return Ok(ResponseHelper.Success(LocalizationKey.CartItemAddedSuccessfully, lanDto.lan));
+
+            return Ok(ResponseHelper.Success(LocalizationKey.CartItemAddedSuccessfully,
+                                             lanDto.lan));
         }
 
+        [Authorize(Roles = "resident")]
         [HttpDelete("remove-from-cart")]
         public async Task<IActionResult> RemoveFromCart([FromQuery] RemoveCartItemDto dto)
         {
             await _cartService.RemoveCartItem(dto);
-            return Ok(ResponseHelper.Success(LocalizationKey.CartItemRemovedSuccessfully, dto.lan));
+
+            return Ok(ResponseHelper.Success(LocalizationKey.CartItemRemovedSuccessfully,
+                                             dto.lan));
         }
 
+        [Authorize(Roles = "resident")]
         [HttpPut("quantity-cart-item")]
         public async Task<IActionResult> UpdateCartItem([FromQuery] UpdateQuantityDto dto)
         {
             await _cartService.UpdateQuantity(dto);
-            return Ok(ResponseHelper.Success(LocalizationKey.CartItemUpdatedSuccessfully, dto.lan));
+
+            return Ok(ResponseHelper.Success(LocalizationKey.CartItemUpdatedSuccessfully,
+                                             dto.lan));
         }
 
+        [Authorize(Roles = "resident")]
         [HttpGet("cart-items")]
         public async Task<IActionResult> GetCartItems([FromQuery] GetCartItems dto)
         {
             var cartItems = await _cartService.GetCartItems(dto);
-            return Ok(ResponseHelper.Success(LocalizationKey.CartRetrievedSuccessfully, dto.lan, cartItems));
+
+            return Ok(ResponseHelper.Success(LocalizationKey.CartRetrievedSuccessfully,
+                                             dto.lan,
+                                             cartItems));
         }
 
+        [Authorize(Roles = "resident")]
         [HttpPost("checkout")]
         public async Task<IActionResult> Checkout(CheckoutDto dto, [FromQuery] LanDto lanDto)
         {
             var res = await _orderService.Checkout(dto);
-            return Ok(ResponseHelper.Success(LocalizationKey.OrderCreatedSuccessfully, lanDto.lan, res));
+
+            return Ok(ResponseHelper.Success(LocalizationKey.OrderCreatedSuccessfully,
+                                             lanDto.lan,
+                                             res));
         }
 
+        [Authorize(Roles = "resident,restaurant")]
         [HttpPut("cancel-order")]
         public async Task<IActionResult> CancelOrder([FromQuery] CancleOrderDto dto)
         {
             await _orderService.CancelOrder(dto);
-            return Ok(ResponseHelper.Success(LocalizationKey.OrderCancelledSuccessfully, dto.lan));
+
+            return Ok(ResponseHelper.Success(LocalizationKey.OrderCancelledSuccessfully,
+                                             dto.lan));
         }
 
+        [Authorize(Roles = "restaurant")]
         [HttpPut("start-preparing-order")]
         public async Task<IActionResult> StartPreparingOrder([FromQuery] GetGeneralDto<int> dto)
         {
             await _orderService.StartPreparingOrder(dto.id);
-            return Ok(ResponseHelper.Success(LocalizationKey.OrderMarkedAsPreparingSuccessfully, dto.lan));
+
+            return Ok(ResponseHelper.Success(LocalizationKey.OrderMarkedAsPreparingSuccessfully,
+                                             dto.lan));
         }
 
+        [Authorize(Roles = "restaurant")]
         [HttpPut("mark-order-delivered")]
         public async Task<IActionResult> MarkOrderDelivered([FromQuery] GetGeneralDto<int> dto)
         {
             await _orderService.MarkOrderDelivered(dto.id);
-            return Ok(ResponseHelper.Success(LocalizationKey.OrderMarkedAsDeliveredSuccessfully, dto.lan));
+
+            return Ok(ResponseHelper.Success(LocalizationKey.OrderMarkedAsDeliveredSuccessfully,
+                                             dto.lan));
         }
 
+        [Authorize(Roles = "restaurant")]
         [HttpGet("orders-restaurant")]
         public async Task<IActionResult> OrdersRestaurant([FromQuery] GetGeneralWithPaginationDto<string> dto)
         {
             var orders = await _orderService.OrdersRestaurant(dto);
-            return Ok(ResponseHelper.Success(LocalizationKey.OrdersRetrievedSuccessfully, dto.lan, orders));
+
+            return Ok(ResponseHelper.Success(LocalizationKey.OrdersRetrievedSuccessfully,
+                                             dto.lan,
+                                             orders));
         }
 
+        [Authorize(Roles = "resident")]
         [HttpGet("orders-resident")]
         public async Task<IActionResult> OrdersResident([FromQuery] GetGeneralWithPaginationDto<string> dto)
         {
             var orders = await _orderService.OrdersResident(dto);
-            return Ok(ResponseHelper.Success(LocalizationKey.OrdersRetrievedSuccessfully, dto.lan, orders));
+
+            return Ok(ResponseHelper.Success(LocalizationKey.OrdersRetrievedSuccessfully,
+                                             dto.lan,
+                                             orders));
         }
     }
 }
