@@ -69,6 +69,18 @@ namespace Wasla_Backend.Services.Implementation
                 var emailBody = $"Dear {user.FullName},\n\nYour account has been Activated. You can now log in and start using our services.\n\nBest regards,\nWasla Team";
                 await _emailSenderHelper.SendEmailAsync(user.Email, emailSubject, emailBody);
             }
+            if(changeUserStsatus.status == UserStatus.Suspended)
+            {
+                var emailSubject = "Account Suspended";
+                var emailBody = $"Dear {user.FullName},\n\nWe regret to inform you that your account has been suspended due to a violation of our terms of service. If you believe this is a mistake, please contact our support team for further assistance.\n\nBest regards,\nWasla Team";
+                await _emailSenderHelper.SendEmailAsync(user.Email, emailSubject, emailBody);
+            }
+            if(changeUserStsatus.status==UserStatus.Disabled)
+            {
+                var emailSubject = "Account Disabled";
+                var emailBody = $"Dear {user.FullName},\n\nWe regret to inform you that your account has been disabled due to a violation of our terms of service. If you believe this is a mistake, please contact our support team for further assistance.\n\nBest regards,\nWasla Team";
+                await _emailSenderHelper.SendEmailAsync(user.Email, emailSubject, emailBody);
+            }
         }
 
         public async Task AddContact(ContactUsDto contactUsDto)
