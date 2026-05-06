@@ -6,6 +6,7 @@
         InvalidRequest,
         InvalidData,
         Unauthorized,
+        NotAllowed,
         InvalidToken,
         InvalidRefreshToken,
         TokenRefreshSuccess,

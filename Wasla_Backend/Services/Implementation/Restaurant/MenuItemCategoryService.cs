@@ -5,14 +5,17 @@
         private readonly IMenuItemCategoryRepository _menuItemCategoryRepo;
         private readonly IRestaurantRepository _restaurantRepository;
         private readonly IMenuItemRepository _menuItemRepository;
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
         public MenuItemCategoryService
             (IMenuItemCategoryRepository MenuItemCategoryRepo,
-            IRestaurantRepository restaurantRepository,IMenuItemRepository menuItemRepository)
+            IRestaurantRepository restaurantRepository,IMenuItemRepository menuItemRepository,
+            IUserAuthorizationService userAuthorizationService)
         {
             _menuItemCategoryRepo = MenuItemCategoryRepo;
             _restaurantRepository = restaurantRepository;
             _menuItemRepository = menuItemRepository;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task AddCategory(AddMenuItemCategoryDto dto)
@@ -38,6 +41,8 @@
             if (category == null)
                 throw new NotFoundException(LocalizationKey.MenuItemCategoryNotFound);
 
+            await _userAuthorizationService.CheckOwnershipByIdAsync(category.restaurantId);
+
             category.name = dto.name;
 
             _menuItemCategoryRepo.Update(category);
@@ -50,6 +55,8 @@
 
             if (category == null)
                 throw new NotFoundException(LocalizationKey.MenuItemCategoryNotFound);
+
+            await _userAuthorizationService.CheckOwnershipByIdAsync(category.restaurantId);
 
             var hasItems = await _menuItemRepository.AnyAsync(x => x.categoryId == id);
 

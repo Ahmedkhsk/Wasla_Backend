@@ -12,6 +12,7 @@ namespace Wasla_Backend.Services.Implementation
         private readonly IPostRepository _postRepository;
         private readonly IGenericRepository<ApplicationUser> _UserRepository;
         private readonly ToxicityClassifier _toxicityClassifier;
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
         public CommentService(
             ICommentRepository commentRepository,
@@ -20,7 +21,8 @@ namespace Wasla_Backend.Services.Implementation
             IFileUrlBuilderService fileUrlBuilderService,
             IPostRepository postRepository,
             IGenericRepository<ApplicationUser> UserRepository,
-            ToxicityClassifier toxicityClassifier
+            ToxicityClassifier toxicityClassifier,
+            IUserAuthorizationService userAuthorizationService
 
         )
         {
@@ -31,6 +33,7 @@ namespace Wasla_Backend.Services.Implementation
             _postRepository = postRepository;
             _UserRepository = UserRepository;
             _toxicityClassifier = toxicityClassifier;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task AddComment(AddCommentDto dto)
@@ -89,6 +92,8 @@ namespace Wasla_Backend.Services.Implementation
             if (comment == null)
                 throw new NotFoundException(LocalizationKey.CommentNotFound);
 
+            await _userAuthorizationService.CheckOwnershipByIdAsync(comment.userId);
+
             if (dto.content != null)
             {
                 var isToxic = _toxicityClassifier.IsBadWord(dto.content);
@@ -117,6 +122,8 @@ namespace Wasla_Backend.Services.Implementation
             var comment = await _commentRepository.GetByIdAsync(commentId);
             if (comment == null)
                 throw new NotFoundException(LocalizationKey.CommentNotFound);
+
+            await _userAuthorizationService.CheckOwnershipByIdAsync(comment.userId);
 
             comment.isDeleted = true;
 

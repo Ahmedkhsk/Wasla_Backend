@@ -6,14 +6,17 @@
         private readonly ICartItemRepository _cartItemRepo;
         private readonly IMenuItemRepository _menuItemRepository;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
         public CartService(ICartRepository cartRepo, ICartItemRepository cartItemRepo,
-                           IMenuItemRepository menuItemRepository, IFileUrlBuilderService fileUrlBuilderService)
+                           IMenuItemRepository menuItemRepository, IFileUrlBuilderService fileUrlBuilderService, 
+                           IUserAuthorizationService userAuthorizationService)
         {
             _cartRepo = cartRepo;
             _cartItemRepo = cartItemRepo;
             _menuItemRepository = menuItemRepository;
             _fileUrlBuilderService = fileUrlBuilderService;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task AddCart(AddCartItem dto)
@@ -24,7 +27,7 @@
             var menuItem = await _menuItemRepository.GetByIdAsync(dto.menuItemId);
             if (menuItem == null)
                 throw new NotFoundException(LocalizationKey.MenuItemNotFound);
-
+            
             var cart = await _cartRepo.GetCartAsync(dto.residentId, dto.restaurantId);
 
             if (cart != null && cart.restaurantId != menuItem.restaurantId)
@@ -73,8 +76,7 @@
             if (item == null)
                 throw new NotFoundException(LocalizationKey.CartItemNotFound);
 
-            if (item.cart.residentId != dto.residentId)
-                throw new UnauthorizedAccessException();
+            await _userAuthorizationService.CheckOwnershipByIdAsync(item.cart.residentId);
 
             _cartItemRepo.Delete(item);
             await _cartItemRepo.SaveChangesAsync();
@@ -102,8 +104,7 @@
             var item = await _cartItemRepo.GetCartItemAsync(dto.cartItemId);
             if (item == null)
                 throw new NotFoundException(LocalizationKey.CartItemNotFound);
-            if (item.cart.residentId != dto.residentId)
-                throw new UnauthorizedAccessException();
+            await _userAuthorizationService.CheckOwnershipByIdAsync(item.cart.residentId);
             item.quantity = dto.quantity;
             _cartItemRepo.Update(item);
             await _cartItemRepo.SaveChangesAsync();

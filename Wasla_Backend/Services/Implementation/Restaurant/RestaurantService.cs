@@ -10,13 +10,15 @@
         private readonly IGenericRepository<RestaurantCategory> _restaurantCategoryRepo;
         private readonly IReservationRepository _reservationRepository;
         private readonly IOrderRepository _orderRepository;
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
         public RestaurantService
             (
             IRestaurantRepository restaurantRepository, IUserRepository userRepository,
             IFileService fileService, IMapper mapper, IFileUrlBuilderService fileUrlBuilderService,
             IGenericRepository<RestaurantCategory> restaurantCategoryRepo,
-            IReservationRepository reservationRepository, IOrderRepository orderRepository
+            IReservationRepository reservationRepository, IOrderRepository orderRepository,
+            IUserAuthorizationService userAuthorizationService
             )
         {
             _restaurantRepository = restaurantRepository;
@@ -27,6 +29,7 @@
             _restaurantCategoryRepo = restaurantCategoryRepo;
             _reservationRepository = reservationRepository;
             _orderRepository = orderRepository;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task CompleteProfile(CompleteRegisterRestaurantDto dto)
@@ -35,6 +38,8 @@
 
             if (restaurant == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
+
+            await _userAuthorizationService.CheckOwnershipByIdAsync(restaurant.Id);
 
             var category = await _restaurantCategoryRepo.GetByIdAsync(dto.restaurantCategoryId);
             if (category == null)
@@ -67,6 +72,8 @@
 
             if (restaurant == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
+
+            await _userAuthorizationService.CheckOwnershipByIdAsync(restaurant.Id);
 
             var category = await _restaurantCategoryRepo.GetByIdAsync(dto.restaurantCategoryId);
             if (category == null)
@@ -133,6 +140,8 @@
             if (restaurant == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
 
+            await _userAuthorizationService.CheckOwnershipByIdAsync(restaurant.Id);
+
             var numberofOrders = await _orderRepository.CountOrders(restaurant.Id, OrderStatus.Delivered);
 
             var mapped = _mapper.Map<GetRestaurantResponse>(restaurant, opt =>
@@ -158,6 +167,8 @@
 
             if(user==null)
                 throw new NotFoundException(LocalizationKey.RestaurantNotFound);
+
+            await _userAuthorizationService.CheckOwnershipByIdAsync(user.Id);
 
             return new RestaurantCharts
             {

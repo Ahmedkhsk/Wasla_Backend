@@ -11,6 +11,7 @@
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly IUserRepository _userRepository;
         private readonly IPaymentService _paymentService;
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
         public OrderService(
             ICartRepository cartRepo,
@@ -21,7 +22,8 @@
             IHubContext<OrderHub> hubContext,
             IFileUrlBuilderService fileUrlBuilderService,
             IUserRepository userRepository,
-            IPaymentService paymentService)
+            IPaymentService paymentService,
+            IUserAuthorizationService userAuthorizationService)
         {
             _cartRepo = cartRepo;
             _orderRepo = orderRepo;
@@ -32,6 +34,7 @@
             _fileUrlBuilderService = fileUrlBuilderService;
             _userRepository = userRepository;
             _paymentService = paymentService;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task<CheckoutResponse> Checkout(CheckoutDto dto)
@@ -40,6 +43,8 @@
 
             if (cart == null || !cart.items.Any())
                 throw new NotFoundException(LocalizationKey.CartIsEmpty);
+
+            await _userAuthorizationService.CheckOwnershipByIdAsync(cart.residentId);
 
             var invalidItems = cart.items
                 .Where(x => x.menuItem.isDeleted)
@@ -108,6 +113,8 @@
             if (order.status != OrderStatus.Paid)
                 throw new BadRequestException(LocalizationKey.InvalidOrderStatus);
 
+            await _userAuthorizationService.CheckOwnershipByIdAsync(order.restaurantId);
+
             order.status = OrderStatus.Preparing;
 
             _orderRepo.Update(order);
@@ -146,7 +153,9 @@
             
             if (order.status != OrderStatus.OnTheWay)
                 throw new BadRequestException(LocalizationKey.InvalidOrderStatus);
-            
+
+            await _userAuthorizationService.CheckOwnershipByIdAsync(order.restaurantId);
+
             order.status = OrderStatus.Delivered;
            
             _orderRepo.Update(order);
@@ -167,6 +176,11 @@
 
             if (order.status != OrderStatus.Pending && order.status != OrderStatus.Paid)
                 throw new BadRequestException(LocalizationKey.InvalidOrderStatus);
+
+            if(dto.isResident)
+                await _userAuthorizationService.CheckOwnershipByIdAsync(order.residentId);
+            else
+                await _userAuthorizationService.CheckOwnershipByIdAsync(order.restaurantId);
 
             order.status = OrderStatus.Cancelled;
 

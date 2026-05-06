@@ -55,6 +55,11 @@
                     key = ue.Key;
                     break;
 
+                case ForbiddenException fe:
+                    statusCode = HttpStatusCode.Forbidden;
+                    key = fe.Key;
+                    break;
+
                 default:
                     statusCode = HttpStatusCode.InternalServerError;
                     key = LocalizationKey.ServerError;
@@ -66,7 +71,6 @@
                     };
                     break;
             }
-
             context.Response.StatusCode = (int)statusCode;
 
             var response = ResponseHelper.Fail(key, lan, data);

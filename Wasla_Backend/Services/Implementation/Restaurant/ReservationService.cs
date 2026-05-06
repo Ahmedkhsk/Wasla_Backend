@@ -1,8 +1,4 @@
-﻿using QRCoder;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using Wasla_Backend.Models.Restaurant;
-
-namespace Wasla_Backend.Services.Implementation
+﻿namespace Wasla_Backend.Services.Implementation
 {
     public class ReservationService : IReservationService
     {
@@ -13,11 +9,13 @@ namespace Wasla_Backend.Services.Implementation
         private readonly IMapper _mapper;
         private readonly IFileService _fileService;
         private readonly IDateTimeHelper _dateTimeHelper;
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
         public ReservationService(
             IReservationRepository reservationsRepository, IRestaurantRepository restaurantRepository,
             IResidentRepository residentRepository,IFileUrlBuilderService fileUrlBuilderService,
-            IMapper mapper, IFileService fileService , IDateTimeHelper dateTimeHelper)
+            IMapper mapper, IFileService fileService , IDateTimeHelper dateTimeHelper,
+            IUserAuthorizationService userAuthorizationService)
         {
             _reservationsRepository = reservationsRepository;
             _restaurantRepository = restaurantRepository;
@@ -26,6 +24,7 @@ namespace Wasla_Backend.Services.Implementation
             _mapper = mapper;
             _fileService = fileService;
             _dateTimeHelper = dateTimeHelper;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task AddReservatio(AddReservationDto dto)
@@ -84,6 +83,8 @@ namespace Wasla_Backend.Services.Implementation
             var reservation = await _reservationsRepository.GetWithResidentAndRestaurant(reservationId);
             if (reservation == null)
                 throw new NotFoundException(LocalizationKey.ReservationNotFound);
+
+            await _userAuthorizationService.CheckOwnershipByIdAsync(reservation.restaurantId);
 
             reservation.status = status;
         
