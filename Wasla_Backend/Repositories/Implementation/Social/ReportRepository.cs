@@ -6,6 +6,11 @@
         {
         }
 
+        public async Task DeleteReportByTargetId(int targetId)
+        {
+             await _context.Reports.Where(r => r.targetId == targetId).ExecuteDeleteAsync();
+        }
+
         public async Task<Report?> GetReportByUserIdAndTargetId(string userId, int targetId)
         {
             return await _dbSet

@@ -38,12 +38,9 @@ namespace Wasla_Backend.Services.Implementation
             await _reportRepository.SaveChangesAsync();
         }
 
-        public async Task DeleteReport(int reportId)
+        public async Task DeleteReport(int targetId)
         {
-            var report = await _reportRepository.GetByIdAsync(reportId);
-            if (report == null)
-                throw new NotFoundException(LocalizationKey.ReportNotFound);
-            _reportRepository.Delete(report);
+            await _reportRepository.DeleteReportByTargetId(targetId);
             await _reportRepository.SaveChangesAsync();
         }
 

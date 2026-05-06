@@ -4,7 +4,7 @@
     {
         Task AddReport(AddReportDto dto);
         Task ChangeStatus(ToggleHideDto dto);
-        Task DeleteReport(int reportId);
+        Task DeleteReport(int targetId);
         Task<PagedResult<GetReports>> GetReports(PaginationParams paginationParams);
     }
 }
