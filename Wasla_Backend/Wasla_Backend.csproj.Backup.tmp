@@ -14,12 +14,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="FirebaseAdmin" Version="3.4.0" />
     <PackageReference Include="Hangfire" Version="1.8.22" />
     <PackageReference Include="Hangfire.SqlServer" Version="1.8.22" />
-    <PackageReference Include="MailKit" Version="4.14.0" />
+    <PackageReference Include="MailKit" Version="4.16.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.3" />
@@ -45,7 +44,6 @@
     <Folder Include="wwwroot\assets\files\driver\" />
     <Folder Include="wwwroot\assets\files\technician\" />
     <Folder Include="wwwroot\assets\images\driver\" />
-    <Folder Include="wwwroot\assets\qrcodes\" />
   </ItemGroup>
 
   <ItemGroup>
