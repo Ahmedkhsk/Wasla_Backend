@@ -10,11 +10,28 @@ namespace Wasla_Backend.Repositories.Implementation.technician
             _fileUrlBuilderService = fileUrlBuilderService;
         }
 
+
+
+
         public async Task<int> ChangeBookingStatus(int bookingId, TechnicianBookingStatus status)
         {
-          return  await _context.TechnicianBookings.Where(tb => tb.Id == bookingId).ExecuteUpdateAsync(setters =>
-                setters.SetProperty(tb => tb.Status, status));
+            BaseBookingStatus? baseStatus = status switch
+            {
+                TechnicianBookingStatus.Done => BaseBookingStatus.Done,
+                TechnicianBookingStatus.Rejected or TechnicianBookingStatus.Cancelled => BaseBookingStatus.Cancelled,
+                _ => null
+            };
 
+            if (baseStatus.HasValue)
+            {
+                await _context.BaseBookings.Where(b => b.Id == bookingId)
+                    .ExecuteUpdateAsync(setters =>
+                        setters.SetProperty(b => b.baseBookingStatus, baseStatus.Value));
+            }
+
+            return await _context.TechnicianBookings.Where(tb => tb.Id == bookingId)
+                .ExecuteUpdateAsync(setters =>
+                    setters.SetProperty(tb => tb.Status, status));
         }
 
         public async Task<BookingDetailsForTechnicianDto> DetailsForTechnician(int bookingId)

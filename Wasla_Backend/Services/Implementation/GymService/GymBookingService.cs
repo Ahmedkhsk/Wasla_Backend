@@ -74,10 +74,12 @@
             if(gymBookDto.isPaymentOnline)
             {
                 gymBooking.BookingStatus = GymBookingStatus.PaymentPending;
+                gymBooking.baseBookingStatus = BaseBookingStatus.Pending;
             }
             else
             {
                 gymBooking.BookingStatus = GymBookingStatus.Active;
+                gymBooking.baseBookingStatus = BaseBookingStatus.Done;
             }
 
             int durationInMonths;
@@ -166,6 +168,8 @@
             if (booking == null) return;
 
             booking.BookingStatus = GymBookingStatus.Completed;
+            booking.baseBookingStatus = BaseBookingStatus.Done;
+            _gymBookingRepository.Update(booking);
             await _gymBookingRepository.SaveChangesAsync();
             var photo = _userRepository.GetUserPhoto(booking.GymId);
             photo = _fileUrlBuilderService.GetMediaUrl(photo, MediaType.userImage);
@@ -192,6 +196,7 @@
             if (!booking.IsPaid)
             {
                 booking.BookingStatus = GymBookingStatus.Cancelled;
+                booking.baseBookingStatus = BaseBookingStatus.Cancelled;
                 await _gymBookingRepository.SaveChangesAsync();
 
                 Hangfire.BackgroundJob.Enqueue<NotificationFunction>(
@@ -207,6 +212,7 @@
             else
             {
                 booking.BookingStatus = GymBookingStatus.Active;
+                booking.baseBookingStatus = BaseBookingStatus.Done;
                 await _gymBookingRepository.SaveChangesAsync();
 
                 var qrUrl = _fileUrlBuilderService.GetMediaUrl(qrPath, MediaType.qrCode);
@@ -238,6 +244,7 @@
             await _EntityLoader.LoadReferenceAsync(booking, b => b.Service);
 
             booking.BookingStatus = GymBookingStatus.Cancelled;
+            booking.baseBookingStatus = BaseBookingStatus.Cancelled;
             _gymBookingRepository.Update(booking);
             await _gymBookingRepository.SaveChangesAsync();
             var userName =  isResident ? booking.Resident.FullName : booking.Gym.BusinessName;

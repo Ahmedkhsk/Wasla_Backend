@@ -9,6 +9,7 @@
         public ApplicationUser Resident { get; set; }
         public ServiceProviderType ServiceProviderType { get; set; }
         public DateTime Date { get; set; }
+        public BaseBookingStatus baseBookingStatus { get; set; } = BaseBookingStatus.Pending;
 
 
         public bool IsPaid { get; set; } = false;

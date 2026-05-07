@@ -83,6 +83,7 @@ namespace Wasla_Backend.Services.Implementation
             }
 
             booking.bookingStatus = status;
+            booking.baseBookingStatus = BaseBookingStatus.Cancelled;
             await _bookingRepository.SaveChangesAsync();
 
             var bookhubdata = new BookHubData
@@ -301,6 +302,8 @@ namespace Wasla_Backend.Services.Implementation
             if (!booking.IsPaid)
             {
                 booking.bookingStatus = BookingStatus.canceled;
+                booking.baseBookingStatus = BaseBookingStatus.Cancelled;
+
 
                 if (booking.serviceDay != null)
                 {
