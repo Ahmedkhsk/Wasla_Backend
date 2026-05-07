@@ -4,5 +4,6 @@
     {
         public Task CheckOwnershipByIdAsync(string ownerId);
         public Task CheckOwnershipByEmailAsync(string email);
+        public Task CheckChatAccessAsync(string firstUserId, string secondUserId);
     }
 }

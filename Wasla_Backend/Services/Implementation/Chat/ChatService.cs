@@ -143,6 +143,8 @@
             if (chat == null || (chat.senderId != userId && chat.receiverId != userId))
                 throw new NotFoundException(LocalizationKey.ChatNotFoundOrNoPermission);
 
+            await _userAuthorizationService.CheckChatAccessAsync(chat.senderId,chat.receiverId);
+            
             if (chat.senderId == userId)
             {
                 chat.deletedBySenderId = userId;
@@ -153,10 +155,7 @@
                 chat.deletedByReceiverId = userId;
                 chat.receiverDeletedAt = _dateTimeHelper.Now;
             }
-            else
-            {
-                throw new NotFoundException(LocalizationKey.ChatNotFoundOrNoPermission);
-            }
+            
 
             await _chatRepository.SaveChangesAsync();
         }
@@ -224,6 +223,8 @@
             if (chat == null || (chat.senderId != userId && chat.receiverId != userId))
                 throw new NotFoundException(LocalizationKey.ChatNotFoundOrNoPermission);
 
+            await _userAuthorizationService.CheckChatAccessAsync(chat.senderId, chat.receiverId);
+
             var otherUserId = chat.senderId == userId
                 ? chat.receiverId
                 : chat.senderId;
@@ -288,6 +289,8 @@
 
             if (chat == null)
                 return null;
+
+            await _userAuthorizationService.CheckChatAccessAsync(chat.senderId, chat.receiverId);
 
             foreach (var message in chat.messages.Data)
             {

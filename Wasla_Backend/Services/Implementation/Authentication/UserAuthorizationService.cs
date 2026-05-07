@@ -41,5 +41,25 @@
 
             return Task.CompletedTask;
         }
+
+        public Task CheckChatAccessAsync(string firstUserId, string secondUserId)
+        {
+            var user = _httpContextAccessor.HttpContext?.User;
+
+            var currentUserId = user?
+                .FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(currentUserId))
+                throw new UnauthorizedException(LocalizationKey.Unauthorized);
+
+            var hasAccess =
+                currentUserId == firstUserId ||
+                currentUserId == secondUserId;
+
+            if (!hasAccess)
+                throw new ForbiddenException(LocalizationKey.NotAllowed);
+
+            return Task.CompletedTask;
+        }
     }
 }
