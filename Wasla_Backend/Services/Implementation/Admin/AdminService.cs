@@ -2,6 +2,7 @@
 
 namespace Wasla_Backend.Services.Implementation
 {
+
     public class AdminService : IAdminService
     {
         private readonly IBookingRepository _bookingRepository;

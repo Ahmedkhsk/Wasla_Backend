@@ -11,6 +11,7 @@
         private readonly IHubContext<RideHub> _hub;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly IEntityLoader _entityLoader;
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
 
         public RideService(
@@ -22,7 +23,8 @@
             IDriverRepository driverRepository,
             IHubContext<RideHub> hub,
             IFileUrlBuilderService fileUrlBuilderService,
-            IEntityLoader entityLoader
+            IEntityLoader entityLoader,
+            IUserAuthorizationService userAuthorizationService
         )
         {
             _rideRepository = rideRepository;
@@ -34,10 +36,13 @@
             _hub = hub;
             _entityLoader = entityLoader;
             _fileUrlBuilderService = fileUrlBuilderService;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task<int> AcceptRide(int rideId, string driverId, string lan)
         {
+            await _userAuthorizationService.CheckOwnershipByIdAsync(driverId);
+
             var ride = await _rideRepository.GetByIdAsync(rideId);
             if (ride == null)
                 throw new NotFoundException(LocalizationKey.RideNotFound);
@@ -83,7 +88,12 @@
             var ride = await _rideRepository.GetByIdAsync(rideId);
             if (ride == null)
                 throw new NotFoundException(LocalizationKey.RideNotFound);
-            if(ride.Status == RideStatus.Cancelled)
+            if(IsResident)
+                await _userAuthorizationService.CheckOwnershipByIdAsync(ride.ResidentId);
+            else
+                await _userAuthorizationService.CheckOwnershipByIdAsync(ride.DriverId);
+
+            if (ride.Status == RideStatus.Cancelled)
                 throw new BadRequestException(LocalizationKey.RideAlreadyCancelled);
 
             if (ride.DriverId != null && ride.Driver == null)
@@ -144,6 +154,7 @@
             var ride = await _rideRepository.GetByIdAsync(rideId);
             if (ride == null)
                 throw new NotFoundException(LocalizationKey.RideNotFound);
+            await _userAuthorizationService.CheckOwnershipByIdAsync(ride.DriverId);
 
             if (ride.Status != RideStatus.InProgress)
                 throw new BadRequestException(LocalizationKey.InvalidRideStatus);
@@ -214,6 +225,7 @@
 
         public async Task<DriverChartDto> GetDriverChart(string driverId)
         {
+            await _userAuthorizationService.CheckOwnershipByIdAsync(driverId);
             var driver =await _driverRepository.GetByIdAsync(driverId);
             if (driver == null)
                 throw new NotFoundException(LocalizationKey.DriverNotFound);
@@ -222,6 +234,7 @@
 
         public async Task<List<DriverRideDto>> GetDriverRides(string driverId)
         {
+            await _userAuthorizationService.CheckOwnershipByIdAsync(driverId);
             var driver= await _driverRepository.GetByIdAsync(driverId);
             if (driver == null)
                 throw new NotFoundException(LocalizationKey.DriverNotFound);
@@ -230,6 +243,7 @@
 
         public async Task<RideDetailsForDriverDto> GetrideDetailsForDriver(int rideId)
         {
+
             var rideDetails = await _rideRepository.GetrideDetailsForDriver(rideId);
             if (rideDetails == null)
                 throw new NotFoundException(LocalizationKey.RideNotFound);
@@ -246,6 +260,7 @@
             var ride = await _rideRepository.GetByIdAsync(rideId);
             if (ride == null)
                 throw new NotFoundException(LocalizationKey.RideNotFound);
+            await _userAuthorizationService.CheckOwnershipByIdAsync(ride.ResidentId);
 
             if (ride.DriverId == null)
                 throw new BadRequestException(LocalizationKey.RideNotAcceptedYet);
@@ -261,6 +276,7 @@
 
         public async Task<List<UserRideDto>> GetUserRides(string residentId)
         {
+            await _userAuthorizationService.CheckOwnershipByIdAsync(residentId);
             var resident= await _residentRepository.GetByIdAsync(residentId);
             if (resident == null)
                 throw new NotFoundException(LocalizationKey.ResidentNotFound);
@@ -269,6 +285,7 @@
 
         public async Task<int> RequestRide(RequestRideDto requestRideDto, string lan)
         {
+            await _userAuthorizationService.CheckOwnershipByIdAsync(requestRideDto.PassengerId);
             var resident = await _residentRepository.GetByIdAsync(requestRideDto.PassengerId);
             if (resident == null)
                 throw new NotFoundException(LocalizationKey.ResidentNotFound);
@@ -344,6 +361,7 @@
             var ride = await _rideRepository.GetByIdAsync(rideId);
             if (ride == null)
                 throw new NotFoundException(LocalizationKey.RideNotFound);
+            await _userAuthorizationService.CheckOwnershipByIdAsync(ride.DriverId);
 
             if (ride.Status != RideStatus.Accepted)
                 throw new BadRequestException(LocalizationKey.InvalidRideStatus);

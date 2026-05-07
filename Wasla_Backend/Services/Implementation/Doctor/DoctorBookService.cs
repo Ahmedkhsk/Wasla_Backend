@@ -21,6 +21,7 @@ namespace Wasla_Backend.Services.Implementation
             builder.AddConsole();
         }).CreateLogger<DoctorBookService>();
         private static readonly SemaphoreSlim _bookingLock = new SemaphoreSlim(1, 1);
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
         public DoctorBookService(
             IBookingRepository bookingRepository,
@@ -33,7 +34,8 @@ namespace Wasla_Backend.Services.Implementation
             IFileUrlBuilderService fileUrlBuilderService,
             IHubContext<BookingHub> hub,
             IMapper mapper,
-            IPaymentService paymentService
+            IPaymentService paymentService,
+            IUserAuthorizationService userAuthorizationService
         )
         {
             _bookingRepository = bookingRepository;
@@ -47,6 +49,7 @@ namespace Wasla_Backend.Services.Implementation
             _hub = hub;
             _mapper = mapper;
             _paymentService = paymentService;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task UpdateBookingStatus(int bookingId, BookingStatus status, bool isResident)
@@ -55,6 +58,7 @@ namespace Wasla_Backend.Services.Implementation
 
             if (booking == null)
                 throw new NotFoundException(LocalizationKey.BookingNotFound);
+            await _userAuthorizationService.CheckOwnershipByIdAsync(isResident ? booking.ResidentId : booking.serviceProviderId);
 
             if (booking.bookingStatus == BookingStatus.completed)
                 throw new BadRequestException(LocalizationKey.BookingStatusIsAlreadyCompleted);
@@ -131,6 +135,7 @@ namespace Wasla_Backend.Services.Implementation
 
             if (booking == null)
                 throw new NotFoundException(LocalizationKey.BookingNotFound);
+            await _userAuthorizationService.CheckOwnershipByIdAsync(booking.serviceProviderId);
 
             if (booking.bookingStatus == BookingStatus.completed)
                 throw new BadRequestException(LocalizationKey.BookingStatusIsAlreadyCompleted);
@@ -165,6 +170,7 @@ namespace Wasla_Backend.Services.Implementation
 
         public async Task<List<ServiceBookingDetailsDto>> GetBookingDetailsForUserAsync(string userId, string language)
         {
+            await _userAuthorizationService.CheckOwnershipByIdAsync(userId);
             var user = await _userRepository.GetUserByIdAsync(userId);
             if (user == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
@@ -174,6 +180,7 @@ namespace Wasla_Backend.Services.Implementation
 
         public async Task<int> Book(BookServiceDto dto)
         {
+            await _userAuthorizationService.CheckOwnershipByIdAsync(dto.userId);
             await _bookingLock.WaitAsync();
             try
             {

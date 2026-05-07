@@ -19,24 +19,28 @@ namespace Wasla_Backend.Controllers.Technician
             return Ok(ResponseHelper.Success(LocalizationKey.TechnicianCompleteRegisterSuccessfully, lan));
         }
         [HttpGet("GetProfile")]
+        [Authorize(Roles = "technician,resident")]
         public async Task<IActionResult> GetProfile(string id, string lan = "en")
         {
             var profile = await _technicianService.GetProfileById(id);
             return Ok(ResponseHelper.Success(LocalizationKey.TechnicianProfileRetrievedSuccessfully, lan, profile));
         }
         [HttpPut("UpdateProfile")]
+        [Authorize(Roles = "technician")]
         public async Task<IActionResult> UpdateProfile(TechnicianUpdateProfileDto technicianUpdateProfileDto, string lan = "en")
         {
             await _technicianService.UpdateProfile(technicianUpdateProfileDto);
             return Ok(ResponseHelper.Success(LocalizationKey.TechnicianProfileUpdatedSuccessfully, lan));
         }
         [HttpGet("Specializations")]
+        [AllowAnonymous]
         public IActionResult GetSpecialization(string lan = "en")
         {
             var specializations = _technicianService.GetSpecializations(lan);
             return Ok(ResponseHelper.Success(LocalizationKey.TechnicianSpecialtiesRetrievedSuccessfully, lan, specializations));
         }
         [HttpGet("GetBySpecialty")]
+        [Authorize(Roles = "resident")]
         public async Task<IActionResult> GetBySpecialty(TechnicianSpecialty? specialty, int pageNumber = 1, int pageSize = 10, string lan = "en")
         {
             var technicians = await _technicianService.GetTechniciansBySpecialty(specialty, pageNumber, pageSize, lan);
@@ -44,6 +48,7 @@ namespace Wasla_Backend.Controllers.Technician
 
         }
         [HttpGet("GetChart")]
+        [Authorize(Roles = "technician")]
         public async Task<IActionResult> GetChart(string TechnicianId, string lan = "en")
         {
             var chartData = await _technicianService.GetChartById(TechnicianId);

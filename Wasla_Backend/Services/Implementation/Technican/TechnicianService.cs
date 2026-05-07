@@ -11,17 +11,22 @@ namespace Wasla_Backend.Services.Implementation.technican
         private readonly IMapper _mapper;
         private readonly IFileService _fileService;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
-        public TechnicianService(ITechnicianRepository technicianRepository,IMapper mapper,IFileService fileService,IFileUrlBuilderService fileUrlBuilderService)
+        private readonly IUserAuthorizationService _userAuthorizationService;
+        public TechnicianService(ITechnicianRepository technicianRepository,IMapper mapper,IFileService fileService
+            ,IFileUrlBuilderService fileUrlBuilderService,
+            IUserAuthorizationService userAuthorizationService
+            )
         {
             _technicianRepository = technicianRepository;
             _mapper = mapper;
             _fileService = fileService;
             _fileUrlBuilderService = fileUrlBuilderService;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task CompleteRegisterAsync(TechnicianCompleteRegisterDto technicianCompleteRegisterDto)
         {
-           var Technician=await _technicianRepository.GetByEmailAsync(technicianCompleteRegisterDto.Email);
+            var Technician=await _technicianRepository.GetByEmailAsync(technicianCompleteRegisterDto.Email);
             if (Technician == null)
                 throw new NotFoundException(LocalizationKey.TechnicianNotFound);
     
@@ -52,6 +57,7 @@ namespace Wasla_Backend.Services.Implementation.technican
 
         public async Task<TechnicianChartDto> GetChartById(string TechnicianId)
         {
+            await _userAuthorizationService.CheckOwnershipByIdAsync(TechnicianId);
             var IdExist = await _technicianRepository.IsExistById(TechnicianId);
             if (!IdExist)
                 throw new NotFoundException(LocalizationKey.TechnicianNotFound);
@@ -104,7 +110,8 @@ namespace Wasla_Backend.Services.Implementation.technican
 
         public async Task UpdateProfile(TechnicianUpdateProfileDto technicianUpdateProfileDto)
         {
-           var Technician =await _technicianRepository.GetByIdAsync(technicianUpdateProfileDto.Id);
+            await _userAuthorizationService.CheckOwnershipByIdAsync(technicianUpdateProfileDto.Id);
+            var Technician =await _technicianRepository.GetByIdAsync(technicianUpdateProfileDto.Id);
             if (Technician == null)
                 throw new NotFoundException(LocalizationKey.TechnicianNotFound);
             _mapper.Map(technicianUpdateProfileDto, Technician);

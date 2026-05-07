@@ -19,12 +19,15 @@
         }
 
         [HttpPut("UpdateDoctorProfile")]
+        [Authorize(Roles = "doctor")]
+
         public async Task<IActionResult> UpdateDoctorProfile([FromForm] UpdateDoctorDto doctorDto, string lan = "en")
         {
             await _doctorService.UpdateDoctorProfile(doctorDto);
             return Ok(ResponseHelper.Success(LocalizationKey.UpdateDoctorProfileSuccess, lan));
         }
         [HttpGet("DoctorSpecializations")]
+        [AllowAnonymous]
         public async Task<IActionResult> DoctorSpecializations(string lan = "en")
         {
             var specializations = await _doctorService.DoctorSpecializations(lan);
@@ -32,6 +35,7 @@
         }
 
         [HttpGet("GetDoctorProfile/{id}")]
+        [Authorize(Roles = "doctor,resident")] 
         public async Task<IActionResult> GetDoctorProfile(string id, string lan = "en")
         {
             var doctorProfiles = await _doctorService.GetDoctorProfile(id, lan);
@@ -39,6 +43,7 @@
         }
 
         [HttpGet("GetDoctorChart/{doctorId}")]
+        [Authorize(Roles = "doctor")]
         public async Task<IActionResult> GetDoctorChart(string doctorId, string lan = "en")
         {
             var doctorChart = await _doctorService.GetDoctorChart(doctorId);
@@ -46,6 +51,7 @@
         }
 
         [HttpGet("GetAllBookingsOfDoctor/{doctorId}/{status}")]
+        [Authorize(Roles = "doctor")]
         public async Task<IActionResult> GetAllBookingOfDoctors(string doctorId, BookingStatus status = BookingStatus.upcoming, string lan = "en")
         {
             var bookings = await _doctorService.GetAllBookingOfDoctors(doctorId, status, lan);
@@ -53,6 +59,7 @@
         }
 
         [HttpGet("GetDoctorBySpecialist/{specialistId}")]
+        [Authorize(Roles = "resident")]
         public async Task<IActionResult> GetDoctorBySpecialist(int specialistId = 0, string lan = "en")
         {
             if (specialistId == 0)
@@ -67,6 +74,7 @@
             }
         }
         [HttpGet("GetDoctorData/{doctorId}")]
+        [Authorize(Roles = "doctor,resident")]
         public async Task<IActionResult> GetDoctorData(string doctorId, string lan = "en")
         {
             var doctorData = await _doctorService.GetDoctorData(doctorId, lan);

@@ -11,6 +11,7 @@
         }
 
         [HttpPost("BookService")]
+        [Authorize(Roles = "resident")]
         public async Task<IActionResult> BookService([FromForm] BookServiceDto bookServiceDto, string lan = "en")
         {
                 var id=await _doctorBookService.Book(bookServiceDto);
@@ -18,6 +19,7 @@
         }
 
         [HttpPut("UpdateBooking")]
+        [Authorize(Roles = "doctor")]  
         public async Task<IActionResult> UpdateBooking([FromBody] UpdateBookingDto updateBookingDto, [FromQuery] string lan = "en")
         {
             await _doctorBookService.UpdateBooking(updateBookingDto);
@@ -25,6 +27,7 @@
         }
 
         [HttpPut("UpdateBookingStatus")]
+        [Authorize(Roles = "doctor,resident")]
         public async Task<IActionResult> UpdateBookingStatus([FromQuery] int bookingId, [FromQuery] BookingStatus status,bool isResident, [FromQuery] string lan = "en")
         {
             await _doctorBookService.UpdateBookingStatus(bookingId, status, isResident);
@@ -32,6 +35,7 @@
         }
 
         [HttpGet("GetBookingDetailsForUser")]
+        [Authorize(Roles = "resident")]
         public async Task<IActionResult> GetBookingDetailsForUser([FromQuery]string userId, [FromQuery] string language="en")
         {
             var bookingDetails = await _doctorBookService.GetBookingDetailsForUserAsync(userId, language);
