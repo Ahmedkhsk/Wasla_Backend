@@ -2,6 +2,7 @@
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserEventController : ControllerBase
     {
         private readonly IUserEventService _userEventService;

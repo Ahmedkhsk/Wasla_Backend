@@ -12,6 +12,8 @@ namespace Wasla_Backend.Services.Implementation
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly IBaseBookingRepository _bookingRepository;
         private readonly IOrderRepository _orderRepository;
+        private readonly IUserAuthorizationService _userAuthorizationService;
+
 
         public ResidentService(
             IResidentRepository ResidentRepository,
@@ -21,7 +23,8 @@ namespace Wasla_Backend.Services.Implementation
             IFileService fileService,
             IFileUrlBuilderService fileUrlBuilderService,
             IBaseBookingRepository bookingRepository,
-            IOrderRepository orderRepository
+            IOrderRepository orderRepository,
+            IUserAuthorizationService userAuthorizationService
         )
         {
             _ResidentRepository = ResidentRepository;
@@ -32,7 +35,7 @@ namespace Wasla_Backend.Services.Implementation
             _fileUrlBuilderService = fileUrlBuilderService;
             _bookingRepository = bookingRepository;
             _orderRepository = orderRepository;
-
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task CompleteResidentRegister(ResidentCompleteRegisterDto model)
@@ -60,13 +63,13 @@ namespace Wasla_Backend.Services.Implementation
             await _ResidentRepository.SaveChangesAsync();
             var image = _fileUrlBuilderService.GetMediaUrl(resident.ProfilePhoto, MediaType.userImage);
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
-     resident.Id,
-     NotificationType.residentCompleteInfoScreen,
-     resident.Id,
-     image,
-     "en",
-     null
- ));
+             resident.Id,
+             NotificationType.residentCompleteInfoScreen,
+             resident.Id,
+             image,
+             "en",
+             null
+         ));
         }
 
         public async Task EditProfile(EditProfileDto editProfileDto)
@@ -74,6 +77,8 @@ namespace Wasla_Backend.Services.Implementation
             var user = await _ResidentRepository.GetByIdAsync(editProfileDto.id);
             if (user == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
+
+            await _userAuthorizationService.CheckOwnershipByIdAsync(user.Id);
 
             _mapper.Map(editProfileDto, user);
 
@@ -102,13 +107,15 @@ namespace Wasla_Backend.Services.Implementation
             if (resident == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
 
+            await _userAuthorizationService.CheckOwnershipByIdAsync(resident.Id);
+
             var bookings = await _bookingRepository.GetByResidentId(residentId);
             var orders = await _orderRepository.GetBookingPerUser(residentId);
 
             var allActivities = bookings
-    .Concat(orders)
-    .Where(x => x.Date.Year > 2000)
-    .ToList();
+            .Concat(orders)
+            .Where(x => x.Date.Year > 2000)
+            .ToList();
             var dto = new ResidentChartDto
             {
                 numOfBookings = allActivities.Count,
