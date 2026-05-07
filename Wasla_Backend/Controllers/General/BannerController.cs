@@ -2,6 +2,7 @@
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class BannerController : ControllerBase
     {
         private readonly IBannersService _bannersService;
@@ -12,6 +13,7 @@
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin,superadmin")]
         public async Task<IActionResult> AddBanner([FromForm] AddBannerDto dto, [FromQuery] LanDto lanDto)
         {
             await _bannersService.AddBanner(dto);
@@ -19,6 +21,7 @@
         }
 
         [HttpGet]
+        [Authorize(Roles = "resident")]
         public async Task<IActionResult> GetBanners([FromQuery] LanDto lanDto)
         {
             var banners = await _bannersService.GetBanners();

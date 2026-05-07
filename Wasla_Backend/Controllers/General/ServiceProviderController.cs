@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-
-namespace Wasla_Backend.Controllers.General
+﻿namespace Wasla_Backend.Controllers.General
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ServiceProviderController : ControllerBase
     {
         private readonly IServiceProviderService _serviceProviderService;
