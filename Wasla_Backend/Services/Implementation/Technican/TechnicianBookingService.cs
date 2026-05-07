@@ -68,6 +68,7 @@ namespace Wasla_Backend.Services.Implementation.technican
                 await _userAuthorizationService.CheckOwnershipByIdAsync(booking.TechnicianId);
 
             booking.Status = TechnicianBookingStatus.Cancelled;
+            booking.baseBookingStatus = BaseBookingStatus.Cancelled;
 
             _technicianBookingRepository.Update(booking);
             await _technicianBookingRepository.SaveChangesAsync();
@@ -127,6 +128,7 @@ namespace Wasla_Backend.Services.Implementation.technican
             await _userAuthorizationService.CheckOwnershipByIdAsync(booking.TechnicianId);
 
             booking.Status = TechnicianBookingStatus.Rejected;
+            booking.baseBookingStatus = BaseBookingStatus.Cancelled;
 
             _technicianBookingRepository.Update(booking);
             await _technicianBookingRepository.SaveChangesAsync();

@@ -88,7 +88,8 @@
             var ride = await _rideRepository.GetByIdAsync(rideId);
             if (ride == null)
                 throw new NotFoundException(LocalizationKey.RideNotFound);
-            if(IsResident)
+            ride.baseBookingStatus = BaseBookingStatus.Cancelled;
+            if (IsResident)
                 await _userAuthorizationService.CheckOwnershipByIdAsync(ride.ResidentId);
             else
                 await _userAuthorizationService.CheckOwnershipByIdAsync(ride.DriverId);
@@ -144,6 +145,8 @@
             if(ride.DriverId ==null)
             {
                 ride.Status = RideStatus.Cancelled;
+                ride.baseBookingStatus = BaseBookingStatus.Cancelled;
+                _rideRepository.Update(ride);
                 await _rideRepository.SaveChangesAsync();
             }
 
@@ -160,6 +163,7 @@
                 throw new BadRequestException(LocalizationKey.InvalidRideStatus);
 
             ride.Status = RideStatus.Completed;
+            ride.baseBookingStatus = BaseBookingStatus.Done;
 
 
             await _entityLoader.LoadReferenceAsync(ride, r => r.Driver);

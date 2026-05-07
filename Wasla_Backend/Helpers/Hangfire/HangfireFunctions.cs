@@ -27,6 +27,8 @@
             return;
 
         booking.bookingStatus = BookingStatus.completed;
+        booking.baseBookingStatus = BaseBookingStatus.Done;
+
         booking.serviceDay.isBooking = false;
 
         await _db.SaveChangesAsync();
