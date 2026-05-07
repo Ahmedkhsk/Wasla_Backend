@@ -5,6 +5,7 @@ namespace Wasla_Backend.Controllers.General
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class NotificationController : ControllerBase
     {
         private readonly INotificationService _notificationService;

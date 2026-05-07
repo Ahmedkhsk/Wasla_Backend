@@ -12,11 +12,12 @@ namespace Wasla_Backend.Services.Implementation
         private readonly ToxicityClassifier _toxicityClassifier;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly IDateTimeHelper _dateTimeHelper;
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
         public ReviewService(IMapper mapper, IReviewRepository reviewRepository, IResidentRepository residentRepository,
             IUserRepository userRepository, IGenericRepository<ServiceProvider> serviceProviderRepositpry,
             IHubContext<ReviewHub> hub, ToxicityClassifier toxicityClassifier,IFileUrlBuilderService fileUrlBuilderService,
-            IDateTimeHelper dateTimeHelper
+            IDateTimeHelper dateTimeHelper, IUserAuthorizationService userAuthorizationService
 
             )
         {
@@ -29,10 +30,12 @@ namespace Wasla_Backend.Services.Implementation
             _toxicityClassifier = toxicityClassifier;
             _fileUrlBuilderService=fileUrlBuilderService;
             _dateTimeHelper = dateTimeHelper;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task AddReviewAsync(AddReviewDto review,string lan="en")
         {
+            await _userAuthorizationService.CheckOwnershipByIdAsync(review.userId); 
             var user = await _resididentRepository.GetByIdAsync(review.userId);
             if (user == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
@@ -103,6 +106,7 @@ namespace Wasla_Backend.Services.Implementation
             var review = await _reviewRepository.GetByIdAsync(reviewId);
             if (review == null)
                 throw new NotFoundException(LocalizationKey.ReviewNotFound);
+            await _userAuthorizationService.CheckOwnershipByIdAsync(review.UserId);
 
             var serviceprovider = await _UserRepository.GetUserByIdAsync(review.ServiceProviderId);
 
@@ -134,6 +138,7 @@ namespace Wasla_Backend.Services.Implementation
 
         public async Task<IEnumerable<ReviewResponseDto>> GetReviewsByServiceProviderIdAsync(string serviceProviderId)
         {
+
             var reviews = await _reviewRepository.GetReviewsByServiceProviderIdAsync(serviceProviderId);
             return reviews;
         }
@@ -143,6 +148,7 @@ namespace Wasla_Backend.Services.Implementation
             var review = await _reviewRepository.GetByIdAsync(updatereview.reviewId);
             if (review == null)
                 throw new NotFoundException(LocalizationKey.ReviewNotFound);
+            await _userAuthorizationService.CheckOwnershipByIdAsync(review.UserId);
 
             var serviceprovider = await _UserRepository.GetUserByIdAsync(review.ServiceProviderId);
             var user = await _resididentRepository.GetByIdAsync(review.UserId);

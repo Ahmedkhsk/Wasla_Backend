@@ -4,6 +4,7 @@ namespace Wasla_Backend.Controllers.General
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class FirebaseController : ControllerBase
     {
         private readonly IFirebaseService _firebaseService;

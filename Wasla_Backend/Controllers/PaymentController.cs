@@ -1,5 +1,6 @@
 ﻿[Route("api/payment")]
 [ApiController]
+[Authorize]
 public class PaymentController : ControllerBase
 {
     private readonly IPaymentService _paymentService;
@@ -13,6 +14,7 @@ public class PaymentController : ControllerBase
 
 
     [HttpPost("create-payment-token")]
+    [Authorize(Roles = "resident")]
     public async Task<IActionResult> CreatePaymentToken(CreatePaymentDto dto, string lan = "en")
     {
         var (_, redirectUrl) = await _paymentService.ProcessPaymentAsync(dto);
@@ -29,6 +31,7 @@ public class PaymentController : ControllerBase
 
 
     [HttpGet("callback")]
+    [AllowAnonymous]
     public IActionResult Callback()
     {
         var query = Request.Query;
@@ -46,6 +49,7 @@ public class PaymentController : ControllerBase
 
 
     [HttpPost("server-callback")]
+    [AllowAnonymous]
     public async Task<IActionResult> ServerCallback([FromBody] JsonElement payload)
     {
         try
@@ -83,6 +87,7 @@ public class PaymentController : ControllerBase
 
 
     [HttpGet("AllPayment/{residentId}")]
+    [Authorize(Roles = "resident")]
     public async Task<IActionResult> GetAllPayment(string residentId, string lan = "en")
     {
         var result = await _paymentService.GetAllPaymentsAsync(residentId);

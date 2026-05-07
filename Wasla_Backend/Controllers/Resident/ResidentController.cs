@@ -28,6 +28,7 @@
         }
 
         [HttpPost("UploadIdentity")]
+        [Authorize(Roles = "admin")]
         public async Task AddIdentity(string NationalI, string gmail)
         {
             var residentIdentity = new ResidentIdentity { NationalId = NationalI, Gmail = gmail };

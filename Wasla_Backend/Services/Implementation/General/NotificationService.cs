@@ -11,13 +11,15 @@ namespace Wasla_Backend.Services.Implementation.General
         private readonly  IGenericRepository<ApplicationUser> _userRepository;
         private readonly IDateTimeHelper _dateTimeHelper ;
         private readonly IFirebaseService _firebaseService;
+        private readonly IUserAuthorizationService _userAuthorizationService;
         public NotificationService(INotificationRepository notificationRepository, IGenericRepository<ApplicationUser> userRepository,
-            IDateTimeHelper dateTimeHelper ,IFirebaseService firebaseService)
+            IDateTimeHelper dateTimeHelper ,IFirebaseService firebaseService,IUserAuthorizationService userAuthorizationService)
         {
             _notificationRepository = notificationRepository;
             _userRepository = userRepository;
             _dateTimeHelper = dateTimeHelper;
             _firebaseService = firebaseService;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task SendAndSaveNotificationAsync(
@@ -59,6 +61,7 @@ namespace Wasla_Backend.Services.Implementation.General
             var notification =await _notificationRepository.GetByIdAsync(notificationId);
             if (notification == null)
                 throw new NotFoundException(LocalizationKey.NotificationNotFound);
+            await _userAuthorizationService.CheckOwnershipByIdAsync(notification.UserId);
             await _notificationRepository.DeleteNotificationByNotificationIdAsync(notificationId);
             await _notificationRepository.SaveChangesAsync();
         }
@@ -67,7 +70,8 @@ namespace Wasla_Backend.Services.Implementation.General
 
         public async Task<PagedResult<NotificationResponseDto>> GetNotificationsByUserIdAsync(string userId, int pageNumber, int pageSize,string lan)
         {
-           var user =await _userRepository.GetByIdAsync(userId);
+            await _userAuthorizationService.CheckOwnershipByIdAsync(userId);
+            var user =await _userRepository.GetByIdAsync(userId);
             if (user == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
             var notifications =await _notificationRepository.GetNotificationsByUserIdAsync(userId,pageNumber,pageSize,lan);
@@ -83,7 +87,8 @@ namespace Wasla_Backend.Services.Implementation.General
 
         public async Task MarkAllAsSeenByUserIdAsync(string userId)
         {
-           var user =await _userRepository.GetByIdAsync(userId);
+            await _userAuthorizationService.CheckOwnershipByIdAsync(userId);
+            var user =await _userRepository.GetByIdAsync(userId);
             if (user == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
            await _notificationRepository.MarkAllAsSeenByUserIdAsync(userId);
@@ -94,6 +99,7 @@ namespace Wasla_Backend.Services.Implementation.General
             var notification =await _notificationRepository.GetByIdAsync(notificationId);
             if (notification == null)
                 throw new NotFoundException(LocalizationKey.NotificationNotFound);
+            await _userAuthorizationService.CheckOwnershipByIdAsync(notification.UserId);
             await _notificationRepository.MarkAsSeenAsync(notificationId);
         }
 
@@ -114,6 +120,7 @@ namespace Wasla_Backend.Services.Implementation.General
 
         public async Task<int> GetNotificationCountByUserIdAfterLastSeenAsync(string userId)
         {
+            await _userAuthorizationService.CheckOwnershipByIdAsync(userId);
             var user = await _userRepository.GetByIdAsync(userId);
             if (user == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);

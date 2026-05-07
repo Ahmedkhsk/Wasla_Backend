@@ -4,7 +4,7 @@ namespace Wasla_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin,superadmin")]
     public class AdminController : ControllerBase
     {
         private readonly IAdminService _adminService;

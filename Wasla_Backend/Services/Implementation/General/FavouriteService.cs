@@ -5,20 +5,24 @@
         private readonly IFavouriteRepository _favouriteRepository;
         private readonly IUserRepository _userRepository;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
         public FavouriteService(
             IFavouriteRepository favouriteRepository,
             IUserRepository userRepository,
-            IFileUrlBuilderService fileUrlBuilderService
+            IFileUrlBuilderService fileUrlBuilderService,
+                IUserAuthorizationService userAuthorizationService
         )
         {
             _favouriteRepository = favouriteRepository;
             _userRepository = userRepository;
             _fileUrlBuilderService = fileUrlBuilderService;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task<ServiceProviderFavourite> AddFavourite(string residentId, string serviceProviderId, string lan)
         {
+            await _userAuthorizationService.CheckOwnershipByIdAsync(residentId);
             var user = await _userRepository.GetUserByIdAsync(residentId);
             if (user == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
@@ -58,6 +62,8 @@
 
         public async Task<List<ServiceProviderFavourite>> GetAll(string residentId)
         {
+            await _userAuthorizationService.CheckOwnershipByIdAsync(residentId);
+
             var resident = await _userRepository.GetUserByIdAsync(residentId);
             if (resident == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
@@ -67,6 +73,7 @@
 
         public async Task<List<ServiceProviderFavourite>> GetByType(string residentId, ServiceProviderType serviceType)
         {
+            await _userAuthorizationService.CheckOwnershipByIdAsync(residentId);
             var resident = await _userRepository.GetUserByIdAsync(residentId);
             if (resident == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
@@ -79,6 +86,7 @@
             var favourite = await _favouriteRepository.GetByIdAsync(favouriteId);
             if (favourite == null)
                 throw new NotFoundException(LocalizationKey.FavouriteNotFound);
+            await _userAuthorizationService.CheckOwnershipByIdAsync(favourite.UserId);
 
             _favouriteRepository.Delete(favourite);
             await _favouriteRepository.SaveChangesAsync();

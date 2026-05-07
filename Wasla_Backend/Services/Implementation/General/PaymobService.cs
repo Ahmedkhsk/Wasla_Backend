@@ -7,20 +7,24 @@ namespace Wasla_Backend.Services.Implementation.General
         private readonly IConfiguration _configuration;
         private readonly IPaymentRepository _paymentRepository;
         private readonly IDateTimeHelper _dateTimeHelper;
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
         public PaymobService(
             IConfiguration configuration,
             IPaymentRepository paymentRepository,
-            IDateTimeHelper dateTimeHelper)
+            IDateTimeHelper dateTimeHelper,
+            IUserAuthorizationService userAuthorizationService)
         {
             _configuration = configuration;
             _paymentRepository = paymentRepository;
             _dateTimeHelper = dateTimeHelper;
+            _userAuthorizationService = userAuthorizationService;
         }
 
 
         public async Task<(Payment payment, string redirectUrl)> ProcessPaymentAsync(CreatePaymentDto dto)
         {
+            await _userAuthorizationService.CheckOwnershipByIdAsync(dto.UserId);
             ValidatePaymentDto(dto);
 
             var resident = await _paymentRepository.GetUserByIdAsync(dto.UserId)
@@ -102,7 +106,11 @@ namespace Wasla_Backend.Services.Implementation.General
 
 
         public async Task<List<UserPaymentDto>> GetAllPaymentsAsync(string residentId)
-            => await _paymentRepository.GetAllPaymentsByResidentAsync(residentId);
+        { 
+          await _userAuthorizationService.CheckOwnershipByIdAsync(residentId);
+
+            return await _paymentRepository.GetAllPaymentsByResidentAsync(residentId); 
+        }
 
      
 
@@ -250,9 +258,10 @@ namespace Wasla_Backend.Services.Implementation.General
                 _ => throw new BadRequestException(LocalizationKey.InvalidPaymentMethod)
             };
 
-        public Task<List<serviceProviderPaymentDto>> GetAllPaymentsByServiceProviderAsync(string serviceProviderId)
+        public async Task<List<serviceProviderPaymentDto>> GetAllPaymentsByServiceProviderAsync(string serviceProviderId)
         {
-            return _paymentRepository.GetAllPaymentsByServiceProviderAsync(serviceProviderId);
+            await _userAuthorizationService.CheckOwnershipByIdAsync(serviceProviderId);
+            return await _paymentRepository.GetAllPaymentsByServiceProviderAsync(serviceProviderId);
         }
     }
 }
