@@ -44,21 +44,22 @@
             _EntityLoader = loader; 
             _userRepository = userRepository;
             _paymentService = paymentService;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task<BookResponse> Book(GymBookDto gymBookDto, string lan)
         {
-            var gym = await _gymRepository.GetByIdAsync(gymBookDto.gymId);
-            if (gym == null)
-                throw new NotFoundException(LocalizationKey.GymNotFound);
-          
-            var gymPhotoUrl = _fileUrlBuilderService.GetMediaUrl(gym.ProfilePhoto, MediaType.userImage);
-
             var resident = await _residentRepository.GetByIdAsync(gymBookDto.residentId);
             if (resident == null)
                 throw new NotFoundException(LocalizationKey.ResidentNotFound);
 
             await _userAuthorizationService.CheckOwnershipByIdAsync(resident.Id);
+
+            var gym = await _gymRepository.GetByIdAsync(gymBookDto.gymId);
+            if (gym == null)
+                throw new NotFoundException(LocalizationKey.GymNotFound);
+          
+            var gymPhotoUrl = _fileUrlBuilderService.GetMediaUrl(gym.ProfilePhoto, MediaType.userImage);
 
             var service = await _packageRepository.GetByIdAsync(gymBookDto.serviceId);
             if (service == null)

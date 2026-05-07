@@ -20,6 +20,7 @@
             _mapper = mapper;
             _fileService = fileService;
             _fileUrlBuilderService = fileUrlBuilderService;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task<PagedResult<AllGymsDataDto>> AllGyms(int pageNumber, int pageSize)
