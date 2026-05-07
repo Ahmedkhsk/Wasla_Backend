@@ -34,7 +34,7 @@
     {
         public LocalizationKey Key { get; }
 
-        public ForbiddenException(LocalizationKey key)
+        public ForbiddenException(LocalizationKey key) : base(key.ToString())
         {
             Key = key;
         }

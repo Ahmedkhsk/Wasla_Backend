@@ -138,8 +138,6 @@
             if (restaurant == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
 
-            await _userAuthorizationService.CheckOwnershipByIdAsync(restaurant.Id);
-
             var numberofOrders = await _orderRepository.CountOrders(restaurant.Id, OrderStatus.Delivered);
 
             var mapped = _mapper.Map<GetRestaurantResponse>(restaurant, opt =>
