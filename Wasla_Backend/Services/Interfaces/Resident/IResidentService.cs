@@ -7,6 +7,7 @@
 
         public Task<ResponseProfileDto> GetProfile(string userId);
         Task<ResidentChartDto> GetResidentChartAsync(string residentId);
+        public Task UploadIdentity(string NationalId, string gmail);
 
     }
 }

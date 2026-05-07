@@ -28,13 +28,10 @@
         }
 
         [HttpPost("UploadIdentity")]
-        [Authorize(Roles = "admin")]
-        public async Task AddIdentity(string NationalI, string gmail)
+        [Authorize(Roles = "admin,superadmin")]
+        public async Task AddIdentity(string NationalId, string gmail)
         {
-            var residentIdentity = new ResidentIdentity { NationalId = NationalI, Gmail = gmail };
-            await _userAuthorizationService.CheckOwnershipByEmailAsync(gmail);
-            await _residentIdentityRepository.AddAsync(residentIdentity);
-            await _residentIdentityRepository.SaveChangesAsync();
+            await _residentService.UploadIdentity(NationalId, gmail);
         }
 
         [HttpPut("edit-Profile")]

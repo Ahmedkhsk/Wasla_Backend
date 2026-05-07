@@ -143,5 +143,12 @@ namespace Wasla_Backend.Services.Implementation
 
             return dto;
         }
+
+        public async Task UploadIdentity(string NationalId, string gmail)
+        {
+            var residentIdentity = new ResidentIdentity { NationalId = NationalId, Gmail = gmail };
+            await _ResidentIdentityRepository.AddAsync(residentIdentity);
+            await _ResidentIdentityRepository.SaveChangesAsync();
+        }
     }
 }
