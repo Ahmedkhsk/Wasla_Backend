@@ -9,6 +9,7 @@
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
         private readonly IDateTimeHelper _dateTimeHelper;
         private readonly IHubContext<ChatHub> _hubContext;
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
         public ChatService(
             IChatRepository chatRepository,
@@ -17,8 +18,8 @@
             IFileService fileService,
             IFileUrlBuilderService fileUrlBuilderService,
             IDateTimeHelper dateTimeHelper,
-            IHubContext<ChatHub> hubContext
-        )
+            IHubContext<ChatHub> hubContext,
+            IUserAuthorizationService userAuthorizationService)
         {
             _chatRepository = chatRepository;
             _messageRepository = messageRepository;
@@ -27,6 +28,7 @@
             _fileUrlBuilderService = fileUrlBuilderService;
             _dateTimeHelper = dateTimeHelper;
             _hubContext = hubContext;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task AddMessage(AddMessageDto dto)
@@ -105,19 +107,21 @@
             var refernce=string.Concat(sender.FullName, " , ",sender.Id , " , " , senderImage);
             var photo = _fileUrlBuilderService.GetMediaUrl(sender.ProfilePhoto, MediaType.userImage);
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
-    receiver.Id,
-    NotificationType.messageReceived,
-    refernce,
-    photo,   
-    "en",
-    metadata
-));
+                receiver.Id,
+                NotificationType.messageReceived,
+                refernce,
+                photo,   
+                "en",
+                metadata
+            ));
         }
         public async Task DeleteMessage(int messageId, string userId)
         {
             var message = await _messageRepository.GetByIdAsync(messageId);
             if (message == null || message.senderId != userId)
                 throw new NotFoundException(LocalizationKey.MessageNotFoundOrNoPermission);
+
+            await _userAuthorizationService.CheckOwnershipByIdAsync(message.senderId);
 
             if (!string.IsNullOrEmpty(message.audio))
                 _fileService.DeleteFile(message.audio, _fileUrlBuilderService.GetPath(MediaType.chatFile));
@@ -144,10 +148,14 @@
                 chat.deletedBySenderId = userId;
                 chat.senderDeletedAt = _dateTimeHelper.Now;
             }
-            else
+            else if (chat.receiverId == userId)
             {
                 chat.deletedByReceiverId = userId;
                 chat.receiverDeletedAt = _dateTimeHelper.Now;
+            }
+            else
+            {
+                throw new NotFoundException(LocalizationKey.ChatNotFoundOrNoPermission);
             }
 
             await _chatRepository.SaveChangesAsync();
@@ -159,6 +167,7 @@
             if (user == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
 
+            await _userAuthorizationService.CheckOwnershipByIdAsync(user.Id);
             user.bio = updateBioDto.bio;
             await _userRepository.UpdateUserAsync(user);
         }
@@ -168,6 +177,8 @@
             var message = await _messageRepository.GetByIdAsync(updateMessage.messageId);
             if (message == null || message.senderId != updateMessage.senderId)
                 throw new NotFoundException(LocalizationKey.MessageNotFoundOrNoPermission);
+
+            await _userAuthorizationService.CheckOwnershipByIdAsync(message.senderId);
 
             message.messageText = updateMessage.messageText;
             message.type = updateMessage.type;
@@ -249,7 +260,7 @@
         public async Task<PagedResult<GetChats>> GetChats(GetGeneralWithPaginationDto<string> pagination)
         {
             var result = await _chatRepository.GetChats(pagination);
-
+            
             foreach (var chat in result.Data)
             {
                 chat.profileReceiver = _fileUrlBuilderService.GetMediaUrl(chat.profileReceiver, MediaType.userImage);

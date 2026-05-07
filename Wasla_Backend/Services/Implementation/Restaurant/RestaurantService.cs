@@ -39,8 +39,6 @@
             if (restaurant == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
 
-            await _userAuthorizationService.CheckOwnershipByIdAsync(restaurant.Id);
-
             var category = await _restaurantCategoryRepo.GetByIdAsync(dto.restaurantCategoryId);
             if (category == null)
                 throw new NotFoundException(LocalizationKey.RestaurantCategoryNotFound);

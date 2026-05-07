@@ -12,7 +12,7 @@
             _restaurantService = restaurantService;
         }
 
-        [Authorize(Roles = "restaurant")]
+        [AllowAnonymous]
         [HttpPost("CompleteProfile")]
         public async Task<IActionResult> CompleteProfile([FromForm] CompleteRegisterRestaurantDto dto)
         {
