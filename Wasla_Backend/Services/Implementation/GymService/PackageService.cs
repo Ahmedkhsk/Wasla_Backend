@@ -9,13 +9,15 @@
         private readonly IGymRepository _gymRepository;
         private readonly IFileService _fileService;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
         public PackageService(
             IPackageRepository packageRepository,
             IMapper mapper,
             IGymRepository gymRepository,
             IFileService fileService,
-            IFileUrlBuilderService fileUrlBuilderService
+            IFileUrlBuilderService fileUrlBuilderService,
+            IUserAuthorizationService userAuthorizationService
         )
         {
             _packageRepository = packageRepository;
@@ -23,6 +25,7 @@
             _gymRepository = gymRepository;
             _fileService = fileService;
             _fileUrlBuilderService = fileUrlBuilderService;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task<ServiceHubData> AddPackage(AddPackageDto addPackageDto)
@@ -54,6 +57,8 @@
             if (service == null)
                 throw new NotFoundException(LocalizationKey.PackageNotFound);
 
+            await _userAuthorizationService.CheckOwnershipByIdAsync(service.ServiceProviderId);
+
             service.IsDeleted = true;
             _packageRepository.Update(service);
             await _packageRepository.SaveChangesAsync();
@@ -70,6 +75,8 @@
             var package = await _packageRepository.GetByIdAsync(updatePackageDto.id);
             if (package == null)
                 throw new NotFoundException(LocalizationKey.PackageNotFound);
+
+            await _userAuthorizationService.CheckOwnershipByIdAsync(package.ServiceProviderId);
 
             _mapper.Map(updatePackageDto, package);
 

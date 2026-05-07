@@ -6,12 +6,14 @@
         private readonly IMapper _mapper;
         private readonly IFileService _fileService;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
         public GymService(
             IGymRepository gymRepo,
             IMapper mapper,
             IFileService fileService,
-            IFileUrlBuilderService fileUrlBuilderService
+            IFileUrlBuilderService fileUrlBuilderService,
+            IUserAuthorizationService userAuthorizationService
         )
         {
             _gymRepo = gymRepo;
@@ -78,6 +80,8 @@
             var gym = await _gymRepo.GetByGmailAsync(dto.gmail);
             if (gym == null)
                 throw new NotFoundException(LocalizationKey.GymNotFound);
+
+            await _userAuthorizationService.CheckOwnershipByIdAsync(gym.Id);
 
             _mapper.Map(dto, gym);
 

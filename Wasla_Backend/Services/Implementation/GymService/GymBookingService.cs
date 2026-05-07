@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace Wasla_Backend.Services.Implementation.GymService
+﻿namespace Wasla_Backend.Services.Implementation.GymService
 {
     public class GymBookingService : IGymBookingService
     {
@@ -16,6 +14,7 @@ namespace Wasla_Backend.Services.Implementation.GymService
         private readonly IEntityLoader _EntityLoader;
         private readonly IUserRepository _userRepository;
         private readonly IPaymentService _paymentService;
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
         public GymBookingService(
             IGymBookingRepository gymBookingRepository,
@@ -27,9 +26,10 @@ namespace Wasla_Backend.Services.Implementation.GymService
             IFileUrlBuilderService fileUrlBuilderService,
             IDateTimeHelper dateTimeHelper,
             IHubContext<BookingHub> hub,
-           IEntityLoader loader,
+            IEntityLoader loader,
             IUserRepository userRepository,
-            IPaymentService paymentService
+            IPaymentService paymentService,
+            IUserAuthorizationService userAuthorizationService
         )
         {
             _gymBookingRepository = gymBookingRepository;
@@ -51,12 +51,14 @@ namespace Wasla_Backend.Services.Implementation.GymService
             var gym = await _gymRepository.GetByIdAsync(gymBookDto.gymId);
             if (gym == null)
                 throw new NotFoundException(LocalizationKey.GymNotFound);
-
+          
             var gymPhotoUrl = _fileUrlBuilderService.GetMediaUrl(gym.ProfilePhoto, MediaType.userImage);
 
             var resident = await _residentRepository.GetByIdAsync(gymBookDto.residentId);
             if (resident == null)
                 throw new NotFoundException(LocalizationKey.ResidentNotFound);
+
+            await _userAuthorizationService.CheckOwnershipByIdAsync(resident.Id);
 
             var service = await _packageRepository.GetByIdAsync(gymBookDto.serviceId);
             if (service == null)
@@ -135,9 +137,9 @@ namespace Wasla_Backend.Services.Implementation.GymService
             );
             var metadata = new Dictionary<string, string>
 {
-    { "UserName", resident.FullName ?? "User" },
-    { "PackageName", service.Name.English    }
-};
+                { "UserName", resident.FullName ?? "User" },
+                { "PackageName", service.Name.English    }
+            };
             var image = _fileUrlBuilderService.GetMediaUrl(resident.ProfilePhoto, MediaType.userImage);
 
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
@@ -168,13 +170,13 @@ namespace Wasla_Backend.Services.Implementation.GymService
             var photo = _userRepository.GetUserPhoto(booking.GymId);
             photo = _fileUrlBuilderService.GetMediaUrl(photo, MediaType.userImage);
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
-    booking.ResidentId,
-    NotificationType.gymPackageExpired,
-    booking.ServiceId.ToString(),
-    photo,
-    "en",
-    null
-));
+                booking.ResidentId,
+                NotificationType.gymPackageExpired,
+                booking.ServiceId.ToString(),
+                photo,
+                "en",
+                null
+            ));
         }
 
         public async Task CheckPayment(string qrPath, int bookingId, string gymName, string gymPhotoUrl, string lan)
@@ -228,6 +230,9 @@ namespace Wasla_Backend.Services.Implementation.GymService
             var booking = await _gymBookingRepository.GetByIdAsync(bookingId);
             if (booking == null)
                 throw new NotFoundException(LocalizationKey.BookingNotFound);
+
+            await _userAuthorizationService.CheckOwnershipByIdAsync(isResident ? booking.ResidentId : booking.GymId);
+
             await _EntityLoader.LoadReferenceAsync(booking, b => b.Resident);
             await _EntityLoader.LoadReferenceAsync(booking, b => b.Gym);
             await _EntityLoader.LoadReferenceAsync(booking, b => b.Service);
@@ -241,17 +246,17 @@ namespace Wasla_Backend.Services.Implementation.GymService
             var photourl = _fileUrlBuilderService.GetMediaUrl(photo, MediaType.userImage);
             var targetId = isResident ? booking.GymId : booking.ResidentId;
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
-   targetId,
-    NotificationType.gymBookingCancelled,
-    booking.Id.ToString(),
-    photourl,
-    "en",
-    new Dictionary<string, string>
-    {
-        { "UserName", userName },
-        { "PackageName", packageName }
-    }
-));
+               targetId,
+                NotificationType.gymBookingCancelled,
+                booking.Id.ToString(),
+                photourl,
+                "en",
+                new Dictionary<string, string>
+                {
+                    { "UserName", userName },
+                    { "PackageName", packageName }
+                }
+            ));
 
             return new BookHubData
             {
@@ -315,6 +320,8 @@ namespace Wasla_Backend.Services.Implementation.GymService
             var gym = await _gymRepository.GetByIdAsync(gymId);
             if (gym == null)
                 throw new NotFoundException(LocalizationKey.GymNotFound);
+
+            await _userAuthorizationService.CheckOwnershipByIdAsync(gym.Id);
 
             return new ChartsResponse
             {
