@@ -12,3 +12,4 @@ Wasla_Backend/Properties/PublishProfiles/launchSettings.json
 Wasla_Backend/appsettings.Development.json
 Wasla_Backend/.config/
 /Wasla_Backend/bad words.txt
+/Wasla_Backend/libman.json
