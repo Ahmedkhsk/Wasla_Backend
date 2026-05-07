@@ -7,13 +7,15 @@
         private readonly IGenericRepository<ServiceDay> _serviceDayRepo;
         private readonly IBookingRepository _bookingRepository;
         private readonly IHubContext<ServiceHub> _hub;
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
         public DoctorServiceService(
             IDoctorServiceRepository doctorServiceRepository,
             IDoctorRepository doctorRepository,
             IGenericRepository<ServiceDay> serviceDayRepo,
             IBookingRepository bookingRepository,
-            IHubContext<ServiceHub> hub
+            IHubContext<ServiceHub> hub,
+            IUserAuthorizationService userAuthorizationService
         )
         {
             _doctorServiceRepository = doctorServiceRepository;
@@ -21,10 +23,12 @@
             _bookingRepository = bookingRepository;
             _serviceDayRepo = serviceDayRepo;
             _hub = hub;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task AddServiceAsync(ServiceDto dto)
         {
+            await _userAuthorizationService.CheckOwnershipByIdAsync(dto.doctorId);
             var doctor = await _doctorRepository.GetByIdAsync(dto.doctorId);
             if (doctor == null)
                 throw new NotFoundException(LocalizationKey.DoctorNotFound);
@@ -71,6 +75,7 @@
             var service = await _doctorServiceRepository.GetServiceIncludeDaysAsync(dto.serviceId);
             if (service == null)
                 throw new NotFoundException(LocalizationKey.ServiceNotFound);
+            await _userAuthorizationService.CheckOwnershipByIdAsync(service.ServiceProviderId);
 
             var hasAnyBookings = await _bookingRepository
                             .AnyAsync(b => b.serviceDay.serviceId == dto.serviceId);
@@ -158,6 +163,7 @@
 
             if (service == null)
                 throw new NotFoundException(LocalizationKey.ServiceNotFound);
+            await _userAuthorizationService.CheckOwnershipByIdAsync(service.ServiceProviderId);
 
             if (service.ServiceDays.Any(s => s.isBooking))
                 throw new BadRequestException(LocalizationKey.CannotDeleteServiceWithExistingBookings);

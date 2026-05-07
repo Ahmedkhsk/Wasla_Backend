@@ -11,9 +11,10 @@ namespace Wasla_Backend.Services.Implementation.technican
         private readonly IDateTimeHelper _dateTimeHelper ;
         private readonly IHubContext<BookingHub> _hub;
         private readonly IUserRepository _userrepository;
+        private readonly IUserAuthorizationService _userAuthorizationService;
         public TechnicianBookingService(ITechnicianBookingRepository technicianBookingRepository, IFileUrlBuilderService fileUrlBuilderService
             , IResidentRepository residentRepository, ITechnicianRepository technicianRepository, IDateTimeHelper dateTimeHelper
-            , IHubContext<BookingHub> hub,IUserRepository userRepository
+            , IHubContext<BookingHub> hub,IUserRepository userRepository, IUserAuthorizationService userAuthorizationService
 
             )
         {
@@ -24,6 +25,7 @@ namespace Wasla_Backend.Services.Implementation.technican
             _dateTimeHelper = dateTimeHelper;
             _hub = hub;
             _userrepository = userRepository;
+            _userAuthorizationService = userAuthorizationService;
         }
 
        
@@ -33,6 +35,7 @@ namespace Wasla_Backend.Services.Implementation.technican
 
             if (booking == null)
                 throw new NotFoundException(LocalizationKey.BookingNotFound);
+            await _userAuthorizationService.CheckOwnershipByIdAsync(booking.TechnicianId);
 
             await _technicianBookingRepository.ChangeBookingStatus(bookingId, TechnicianBookingStatus.Accepted);
 
@@ -59,6 +62,10 @@ namespace Wasla_Backend.Services.Implementation.technican
 
             if (booking == null)
                 throw new NotFoundException(LocalizationKey.BookingNotFound);
+            if (isResident)
+                await _userAuthorizationService.CheckOwnershipByIdAsync(booking.ResidentId);
+            else
+                await _userAuthorizationService.CheckOwnershipByIdAsync(booking.TechnicianId);
 
             booking.Status = TechnicianBookingStatus.Cancelled;
 
@@ -105,6 +112,7 @@ namespace Wasla_Backend.Services.Implementation.technican
 
         public async Task<List<TechnicianBookingOfResident>> GetByResidentIdAndSpecialization(string residentId, TechnicianSpecialty specialization)
         {
+            await _userAuthorizationService.CheckOwnershipByIdAsync(residentId);
             var result= await _technicianBookingRepository.GetByResidentIdAndSpecialization(residentId, specialization);
             result.ForEach(r => r.TechnicianImage = _fileUrlBuilderService.GetMediaUrl(r.TechnicianImage, MediaType.userImage));
             return result;
@@ -116,6 +124,7 @@ namespace Wasla_Backend.Services.Implementation.technican
 
             if (booking == null)
                 throw new NotFoundException(LocalizationKey.BookingNotFound);
+            await _userAuthorizationService.CheckOwnershipByIdAsync(booking.TechnicianId);
 
             booking.Status = TechnicianBookingStatus.Rejected;
 
@@ -136,6 +145,7 @@ namespace Wasla_Backend.Services.Implementation.technican
 
         public async Task<int> RequestBooking(TechnicianBookingRequestDto request)
         {
+            await _userAuthorizationService.CheckOwnershipByIdAsync(request.ResidentId);
             var resident =await _residentRepository.GetByIdAsync(request.ResidentId);
             if (resident == null)
                 throw new NotFoundException(LocalizationKey.ResidentNotFound);
@@ -175,6 +185,7 @@ namespace Wasla_Backend.Services.Implementation.technican
 
         public async Task<List<TechnicianBookingOfResident>> technicianBookingOfResidents(string residentId)
         {
+            await _userAuthorizationService.CheckOwnershipByIdAsync(residentId);
             var result= await _technicianBookingRepository.technicianBookingOfResidents(residentId);
             result.ForEach(r => r.TechnicianImage = _fileUrlBuilderService.GetMediaUrl(r.TechnicianImage, MediaType.userImage));
             return result;
@@ -182,6 +193,7 @@ namespace Wasla_Backend.Services.Implementation.technican
 
         public async Task<List<BookingDetailsForTechnicianDto>> technicianBookingOfTechnician(string technicianId)
         {
+            await _userAuthorizationService.CheckOwnershipByIdAsync(technicianId);
             var result= await _technicianBookingRepository.technicianBookingOfTechnician(technicianId);
             result.ForEach(r => r.ResidentImage = _fileUrlBuilderService.GetMediaUrl(r.ResidentImage, MediaType.userImage));
             return result;

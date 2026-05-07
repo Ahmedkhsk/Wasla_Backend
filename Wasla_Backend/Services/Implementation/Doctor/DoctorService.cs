@@ -8,6 +8,7 @@
         private readonly IBookingRepository _bookingRepository;
         private readonly IFileService _fileService;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
         public DoctorService(
             IDoctorRepository doctorRepository,
@@ -16,7 +17,8 @@
             IGenericRepository<DoctorSpecialization> doctorSpecializationRepository,
             IBookingRepository bookingRepository,
             IFileService fileService,
-            IFileUrlBuilderService fileUrlBuilderService
+            IFileUrlBuilderService fileUrlBuilderService,
+            IUserAuthorizationService userAuthorizationService
         )
         {
             _doctorRepository = doctorRepository;
@@ -25,10 +27,12 @@
             _bookingRepository = bookingRepository;
             _fileService = fileService;
             _fileUrlBuilderService = fileUrlBuilderService;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task CompleteData(DoctorCompleteDto doctorCompleteDto)
         {
+            await _userAuthorizationService.CheckOwnershipByEmailAsync(doctorCompleteDto.Email);
             var doctor = await _doctorRepository.GetByEmail(doctorCompleteDto.Email);
             if (doctor == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
@@ -93,6 +97,7 @@
 
         public async Task<DoctorChartDto> GetDoctorChart(string doctorId)
         {
+            await _userAuthorizationService.CheckOwnershipByIdAsync(doctorId);
             var doctor = await _doctorRepository.GetByIdAsync(doctorId);
             if (doctor == null)
                 throw new NotFoundException(LocalizationKey.DoctorNotFound);
@@ -109,6 +114,7 @@
 
         public async Task<List<GetAllBookingResponse>> GetAllBookingOfDoctors(string docId, BookingStatus status, string lan)
         {
+            await _userAuthorizationService.CheckOwnershipByIdAsync(docId);
             var doctor = await _doctorRepository.GetByIdAsync(docId);
             if (doctor == null)
                 throw new BadRequestException(LocalizationKey.DoctorNotFound);
@@ -126,6 +132,7 @@
 
         public async Task UpdateDoctorProfile(UpdateDoctorDto updateDoctorDto)
         {
+            await _userAuthorizationService.CheckOwnershipByIdAsync(updateDoctorDto.userId);
             var doctor = await _doctorRepository.GetByIdAsync(updateDoctorDto.userId);
             if (doctor == null)
                 throw new NotFoundException(LocalizationKey.DoctorNotFound);

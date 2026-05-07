@@ -12,6 +12,7 @@
         }
 
         [HttpPost("AddService")]
+        [Authorize(Roles = "doctor")]
         public async Task<IActionResult> AddService(ServiceDto addServiceDto,string lan = "en")
         {
             await _doctorServiceService.AddServiceAsync(addServiceDto);
@@ -19,6 +20,7 @@
         }
 
         [HttpPut("UpdateService")]
+        [Authorize(Roles = "doctor")]
         public async Task<IActionResult> UpdateService(UpdateServiceDto updateServiceDto, string lan = "en")
         {
             await _doctorServiceService.UpdateServiceAsync(updateServiceDto);
@@ -26,6 +28,7 @@
         }
 
         [HttpGet("GetServices/{doctorId}")]
+        [Authorize(Roles = "doctor,resident")]
         public async Task<IActionResult> GetServices(string doctorId, string lan = "en")
         {
             var services = await _doctorServiceService.GetServices(doctorId, lan);
@@ -33,6 +36,7 @@
         }
 
         [HttpDelete("DeleteService/{serviceId}")]
+        [Authorize(Roles = "doctor")]
         public async Task<IActionResult> DeleteService(int serviceId, string lan = "en")
         {
             await _doctorServiceService.DeleteServiceAsync(serviceId);
