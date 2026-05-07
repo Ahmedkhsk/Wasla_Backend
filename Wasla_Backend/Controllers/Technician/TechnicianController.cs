@@ -13,7 +13,6 @@ namespace Wasla_Backend.Controllers.Technician
             _technicianService = technicianService;
         }
         [HttpPost("CompleteRegister")]
-        [Authorize(Roles = "technician")]
         public async Task<IActionResult> CompleteRegister(TechnicianCompleteRegisterDto technicianCompleteRegisterDto, string lan = "en")
         {
             await _technicianService.CompleteRegisterAsync(technicianCompleteRegisterDto);

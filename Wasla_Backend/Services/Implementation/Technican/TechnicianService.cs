@@ -26,7 +26,6 @@ namespace Wasla_Backend.Services.Implementation.technican
 
         public async Task CompleteRegisterAsync(TechnicianCompleteRegisterDto technicianCompleteRegisterDto)
         {
-            await _userAuthorizationService.CheckOwnershipByEmailAsync(technicianCompleteRegisterDto.Email);
             var Technician=await _technicianRepository.GetByEmailAsync(technicianCompleteRegisterDto.Email);
             if (Technician == null)
                 throw new NotFoundException(LocalizationKey.TechnicianNotFound);

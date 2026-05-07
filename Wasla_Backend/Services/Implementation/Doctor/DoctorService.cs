@@ -32,7 +32,6 @@
 
         public async Task CompleteData(DoctorCompleteDto doctorCompleteDto)
         {
-            await _userAuthorizationService.CheckOwnershipByEmailAsync(doctorCompleteDto.Email);
             var doctor = await _doctorRepository.GetByEmail(doctorCompleteDto.Email);
             if (doctor == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);

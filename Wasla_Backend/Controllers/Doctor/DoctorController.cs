@@ -12,7 +12,6 @@
         }
 
         [HttpPost("CompleteData")]
-        [Authorize(Roles = "doctor")]
         public async Task<IActionResult> CompleteData([FromForm] DoctorCompleteDto doctorCompleteDto, string lan = "en")
         {
             await _doctorService.CompleteData(doctorCompleteDto);

@@ -35,7 +35,6 @@
 
         public async Task CompleteRegister(DriverCompleteRegisterDto driverCompleteRegisterDto)
         {
-            await _userAuthorizationService.CheckOwnershipByEmailAsync(driverCompleteRegisterDto.Email);
             var driver = await _driverRepository.GetDriverByGmailAsync(driverCompleteRegisterDto.Email);
             if (driver == null)
                 throw new NotFoundException(LocalizationKey.DriverNotFound);
