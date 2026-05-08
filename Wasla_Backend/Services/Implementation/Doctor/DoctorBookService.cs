@@ -87,6 +87,9 @@ namespace Wasla_Backend.Services.Implementation
 
             booking.bookingStatus = status;
             booking.baseBookingStatus = BaseBookingStatus.Cancelled;
+            if (!booking.isPaymentOnline)
+                booking.IsPaid = false;
+
             await _bookingRepository.SaveChangesAsync();
 
             var bookhubdata = new BookHubData

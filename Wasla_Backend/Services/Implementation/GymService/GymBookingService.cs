@@ -80,6 +80,7 @@
             else
             {
                 gymBooking.BookingStatus = GymBookingStatus.Active;
+                gymBooking.IsPaid = true;
                 gymBooking.baseBookingStatus = BaseBookingStatus.Done;
             }
 
@@ -246,11 +247,16 @@
 
             booking.BookingStatus = GymBookingStatus.Cancelled;
             booking.baseBookingStatus = BaseBookingStatus.Cancelled;
+            
+            if(!booking.isPaymentOnline)
+                booking.IsPaid = false;
+                
+          
             _gymBookingRepository.Update(booking);
             await _gymBookingRepository.SaveChangesAsync();
             var userName =  isResident ? booking.Resident.FullName : booking.Gym.BusinessName;
             var packageName = booking.Service?.Name.English ?? "Package";
-           var photo= isResident ? booking.Resident.ProfilePhoto : booking.Gym.ProfilePhoto;
+            var photo = isResident ? booking.Resident.ProfilePhoto : booking.Gym.ProfilePhoto;
             var photourl = _fileUrlBuilderService.GetMediaUrl(photo, MediaType.userImage);
             var targetId = isResident ? booking.GymId : booking.ResidentId;
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
@@ -266,13 +272,7 @@
                 }
             ));
 
-            return new BookHubData
-            {
-                serviceId = booking.ServiceId,
-                serviceProviderId = booking.GymId,
-                residentId = booking.ResidentId
-            };
-            if(booking.isPaymentOnline)
+            if (booking.isPaymentOnline)
             {
                 var entityTypeDto = new EntityTypeDto
                 {
@@ -281,6 +281,13 @@
                 };
                 await _paymentService.RefundPaymentAsync(entityTypeDto);
             }
+
+            return new BookHubData
+            {
+                serviceId = booking.ServiceId,
+                serviceProviderId = booking.GymId,
+                residentId = booking.ResidentId
+            };
         }
 
         public async Task<List<BookingOfGym>> PackageBookingOFGym(string gymId)

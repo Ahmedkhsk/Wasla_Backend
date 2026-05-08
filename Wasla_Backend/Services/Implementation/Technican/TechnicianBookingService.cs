@@ -40,19 +40,19 @@ namespace Wasla_Backend.Services.Implementation.technican
             await _technicianBookingRepository.AcceptBookingAsync(bookingId);
 
             BackgroundJob.Schedule(
-     () => _technicianBookingRepository.CompleteBookingAsync(bookingId),
-     booking.Date
- );
+                 () => _technicianBookingRepository.CompleteBookingAsync(bookingId),
+                 booking.Date
+             );
             var photo=_userrepository.GetUserPhoto(booking.TechnicianId);
             photo = _fileUrlBuilderService.GetMediaUrl(photo, MediaType.userImage);
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
-    booking.ResidentId,
-    NotificationType.technicianAcceptBooking,
-    booking.Id.ToString(),
-    photo,
-    "en",
-    null
-));
+                booking.ResidentId,
+                NotificationType.technicianAcceptBooking,
+                booking.Id.ToString(),
+                photo,
+                "en",
+                null
+            ));
         }
 
 
@@ -69,6 +69,7 @@ namespace Wasla_Backend.Services.Implementation.technican
 
             booking.Status = TechnicianBookingStatus.Cancelled;
             booking.baseBookingStatus = BaseBookingStatus.Cancelled;
+            booking.IsPaid = false;
 
             _technicianBookingRepository.Update(booking);
             await _technicianBookingRepository.SaveChangesAsync();
