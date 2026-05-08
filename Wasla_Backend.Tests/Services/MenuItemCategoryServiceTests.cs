@@ -27,7 +27,9 @@ namespace Wasla_Backend.Tests.Services
             _sut = new MenuItemCategoryService(
                 _mocks.MenuItemCategoryRepo.Object,
                 _mocks.RestaurantRepository.Object,
-                _mocks.MenuItemRepository.Object
+                _mocks.MenuItemRepository.Object,
+                _mocks.UserAuthorizationService.Object
+
             );
         }
 

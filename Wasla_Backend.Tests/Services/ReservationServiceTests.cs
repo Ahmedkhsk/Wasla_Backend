@@ -34,7 +34,9 @@ namespace Wasla_Backend.Tests.Services
                 _mocks.FileUrlBuilder.Object,
                 _mocks.CreateRealMapper(),
                 _mocks.FileService.Object,
-                _mocks.DateTimeHelper.Object
+                _mocks.DateTimeHelper.Object,
+               _mocks.UserAuthorizationService.Object
+
             );
             GlobalConfiguration.Configuration.UseStorage(new MemoryStorage());
         }

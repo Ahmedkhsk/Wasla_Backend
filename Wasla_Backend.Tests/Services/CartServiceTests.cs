@@ -27,7 +27,8 @@ namespace Wasla_Backend.Tests.Services
                 _mocks.CartRepo.Object,
                 _mocks.CartItemRepo.Object,
                 _mocks.MenuItemRepo.Object,
-                _mocks.FileUrlBuilder.Object
+                _mocks.FileUrlBuilder.Object,
+                _mocks.UserAuthorizationService.Object
             );
         }
 
@@ -210,6 +211,9 @@ namespace Wasla_Backend.Tests.Services
             var item = new CartItem { id = 1, cart = cart };
 
             _mocks.CartItemRepo.Setup(r => r.GetCartItemAsync(dto.cartItemId)).ReturnsAsync(item);
+            _mocks.UserAuthorizationService
+    .Setup(x => x.CheckOwnershipByIdAsync(It.IsAny<string>()))
+    .ThrowsAsync(new UnauthorizedAccessException());
 
             Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await _sut.RemoveCartItem(dto));
         }
@@ -269,6 +273,9 @@ namespace Wasla_Backend.Tests.Services
             var item = new CartItem { id = 1, cart = cart };
 
             _mocks.CartItemRepo.Setup(r => r.GetCartItemAsync(dto.cartItemId)).ReturnsAsync(item);
+            _mocks.UserAuthorizationService
+    .Setup(x => x.CheckOwnershipByIdAsync(It.IsAny<string>()))
+    .ThrowsAsync(new UnauthorizedAccessException());
 
             Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await _sut.UpdateQuantity(dto));
         }

@@ -104,7 +104,9 @@ namespace Wasla_Backend.Tests.Services
                 _hubContextMock.Object,
                 _mocks.FileUrlBuilder.Object,
                 _mocks.UserRepo.Object,
-                _mocks.PaymentService.Object
+                _mocks.PaymentService.Object,
+                 _mocks.UserAuthorizationService.Object
+
             );
         }
 

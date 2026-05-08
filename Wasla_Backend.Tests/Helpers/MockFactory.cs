@@ -75,6 +75,7 @@ namespace Wasla_Backend.Tests.Helpers
         public Mock<IHubContext<RideHub>> RideHubContext { get; } = new();
         public Mock<IHubClients> RideHubClients { get; } = new();
         public Mock<ISingleClientProxy> SingleClient { get; } = new();
+        public Mock<IUserAuthorizationService> UserAuthorizationService { get; } = new();
 
         private static Mock<UserManager<ApplicationUser>> MockUserManager()
         {

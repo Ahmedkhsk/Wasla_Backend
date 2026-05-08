@@ -5,6 +5,8 @@ VisualStudioVersion = 17.13.35919.96
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wasla_Backend", "Wasla_Backend\Wasla_Backend.csproj", "{1FE715BB-3181-4063-9A89-BE53D1030104}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wasla_Backend.Tests", "Wasla_Backend.Tests\Wasla_Backend.Tests.csproj", "{19789512-5A17-4D9D-988C-CE1EC3AC385F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{1FE715BB-3181-4063-9A89-BE53D1030104}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FE715BB-3181-4063-9A89-BE53D1030104}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1FE715BB-3181-4063-9A89-BE53D1030104}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19789512-5A17-4D9D-988C-CE1EC3AC385F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19789512-5A17-4D9D-988C-CE1EC3AC385F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19789512-5A17-4D9D-988C-CE1EC3AC385F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19789512-5A17-4D9D-988C-CE1EC3AC385F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

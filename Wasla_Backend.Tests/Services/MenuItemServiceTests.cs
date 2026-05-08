@@ -33,7 +33,9 @@ namespace Wasla_Backend.Tests.Services
                 _mocks.MenuItemCategoryRepository.Object,
                 _mocks.Mapper.Object,
                 _mocks.FileUrlBuilderService.Object,
-                _mocks.FileService.Object
+                _mocks.FileService.Object,
+                _mocks.UserAuthorizationService.Object
+
             );
         }
 

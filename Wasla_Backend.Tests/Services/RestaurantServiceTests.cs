@@ -35,7 +35,9 @@ namespace Wasla_Backend.Tests.Services
                 _mocks.FileUrlBuilder.Object,
                 _mocks.RestaurantCategoryRepo.Object,
                 _mocks.ReservationRepo.Object,
-                _mocks.OrderRepo.Object
+                _mocks.OrderRepo.Object,
+                _mocks.UserAuthorizationService.Object
+
             );
         }
 

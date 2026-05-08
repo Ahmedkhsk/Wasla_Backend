@@ -50,7 +50,9 @@ namespace Wasla_Backend.Tests.Services
                 _mocks.DriverRepo.Object,
                 _mocks.RideHubContext.Object,
                 _mocks.FileUrlBuilder.Object,
-                _mocks.EntityLoader.Object
+                _mocks.EntityLoader.Object,
+              _mocks.UserAuthorizationService.Object
+
             );
         }
 
