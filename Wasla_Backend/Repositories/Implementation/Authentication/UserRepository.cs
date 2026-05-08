@@ -69,7 +69,7 @@
         public async Task<PagedResult<GetUsersDto>> GetUsers(string userId, PaginationParams pagination)
         {
             var query = _context.Users.
-                Where(u => u.Status == UserStatus.Active).AsQueryable();
+                Where(u => u.Status == UserStatus.Active && !(u is SuperAdmin)).AsQueryable();
 
 
             if (!string.IsNullOrWhiteSpace(pagination.search))

@@ -13,25 +13,26 @@ namespace Wasla_Backend.Repositories.Implementation.technician
 
 
 
-        public async Task<int> ChangeBookingStatus(int bookingId, TechnicianBookingStatus status)
+        public async Task AcceptBookingAsync(int bookingId)
         {
-            BaseBookingStatus? baseStatus = status switch
-            {
-                TechnicianBookingStatus.Done => BaseBookingStatus.Done,
-                TechnicianBookingStatus.Rejected or TechnicianBookingStatus.Cancelled => BaseBookingStatus.Cancelled,
-                _ => null
-            };
-
-            if (baseStatus.HasValue)
-            {
-                await _context.BaseBookings.Where(b => b.Id == bookingId)
-                    .ExecuteUpdateAsync(setters =>
-                        setters.SetProperty(b => b.baseBookingStatus, baseStatus.Value));
-            }
-
-            return await _context.TechnicianBookings.Where(tb => tb.Id == bookingId)
+            await _context.TechnicianBookings
+                .Where(tb => tb.Id == bookingId)
                 .ExecuteUpdateAsync(setters =>
-                    setters.SetProperty(tb => tb.Status, status));
+                    setters.SetProperty(tb => tb.Status, TechnicianBookingStatus.Accepted));
+        }
+
+        public async Task CompleteBookingAsync(int bookingId)
+        {
+            await _context.BaseBookings
+                .Where(b => b.Id == bookingId)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(b => b.baseBookingStatus, BaseBookingStatus.Done)
+                    .SetProperty(b => b.IsPaid, true));
+
+            await _context.TechnicianBookings
+                .Where(tb => tb.Id == bookingId)
+                .ExecuteUpdateAsync(setters =>
+                    setters.SetProperty(tb => tb.Status, TechnicianBookingStatus.Done));
         }
 
         public async Task<BookingDetailsForTechnicianDto> DetailsForTechnician(int bookingId)

@@ -37,12 +37,12 @@ namespace Wasla_Backend.Services.Implementation.technican
                 throw new NotFoundException(LocalizationKey.BookingNotFound);
             await _userAuthorizationService.CheckOwnershipByIdAsync(booking.TechnicianId);
 
-            await _technicianBookingRepository.ChangeBookingStatus(bookingId, TechnicianBookingStatus.Accepted);
+            await _technicianBookingRepository.AcceptBookingAsync(bookingId);
 
-            Hangfire.BackgroundJob.Schedule(
-                () => _technicianBookingRepository.ChangeBookingStatus(bookingId, TechnicianBookingStatus.Done),
-                booking.Date
-            );
+            BackgroundJob.Schedule(
+     () => _technicianBookingRepository.CompleteBookingAsync(bookingId),
+     booking.Date
+ );
             var photo=_userrepository.GetUserPhoto(booking.TechnicianId);
             photo = _fileUrlBuilderService.GetMediaUrl(photo, MediaType.userImage);
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(

@@ -164,6 +164,7 @@
 
             ride.Status = RideStatus.Completed;
             ride.baseBookingStatus = BaseBookingStatus.Done;
+            ride.IsPaid=true;
 
 
             await _entityLoader.LoadReferenceAsync(ride, r => r.Driver);

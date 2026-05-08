@@ -28,6 +28,7 @@
 
         booking.bookingStatus = BookingStatus.completed;
         booking.baseBookingStatus = BaseBookingStatus.Done;
+        booking.IsPaid=true;
 
         booking.serviceDay.isBooking = false;
 
