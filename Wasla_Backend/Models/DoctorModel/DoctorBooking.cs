@@ -3,7 +3,6 @@
     [Table("DoctorBookings")]
     public class Booking : BaseBooking
     {
-      
         public int serviceDayId { get; set; }
 
         [ForeignKey("serviceDayId")]
@@ -11,8 +10,8 @@
         public string serviceProviderId { get; set; }
         public BookingStatus bookingStatus { get; set; } = BookingStatus.upcoming;
         public WeekDayEnum newDayOfWeek { get; set; } = WeekDayEnum.none;
-        public string? newStart { get; set; }
-        public string? newEnd { get; set; }
+        public TimeOnly? newStart { get; set; }
+        public TimeOnly? newEnd { get; set; }
         public BookingType bookingType { get; set; }
         public string? imagesJson { get; set; }
         public bool isPaymentOnline { get; set; } 

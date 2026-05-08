@@ -6,10 +6,10 @@
         public string serviceName { get; set; }
         public string userName { get; set; }
         public string userImage { get; set; }
-        public string date { get; set; }
+        public DateTime date { get; set; }
         public BookingStatus status { get; set; }
-        public string start { get; set; }
-        public string end { get; set; }
+        public TimeOnly start { get; set; }
+        public TimeOnly end { get; set; }
         public bool isPaid { get; set; }
         public WeekDayEnum day { get; set; }
         public BookingType bookingType { get; set; }

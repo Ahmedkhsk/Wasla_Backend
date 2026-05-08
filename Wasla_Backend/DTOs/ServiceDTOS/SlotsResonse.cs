@@ -3,8 +3,8 @@
     public class SlotsResonse
     {
         public int id { get; set; }
-        public string start { get; set; }
-        public string end { get; set; }
+        public TimeOnly start { get; set; }
+        public TimeOnly end { get; set; }
         public bool isBooking { get; set; } = false;
     }
 }

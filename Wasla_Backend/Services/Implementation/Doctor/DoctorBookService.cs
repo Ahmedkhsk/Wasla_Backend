@@ -22,6 +22,7 @@ namespace Wasla_Backend.Services.Implementation
         }).CreateLogger<DoctorBookService>();
         private static readonly SemaphoreSlim _bookingLock = new SemaphoreSlim(1, 1);
         private readonly IUserAuthorizationService _userAuthorizationService;
+        private readonly IDateTimeHelper _dateTimeHelper;
 
         public DoctorBookService(
             IBookingRepository bookingRepository,
@@ -35,7 +36,8 @@ namespace Wasla_Backend.Services.Implementation
             IHubContext<BookingHub> hub,
             IMapper mapper,
             IPaymentService paymentService,
-            IUserAuthorizationService userAuthorizationService
+            IUserAuthorizationService userAuthorizationService,
+            IDateTimeHelper dateTimeHelper
         )
         {
             _bookingRepository = bookingRepository;
@@ -50,6 +52,7 @@ namespace Wasla_Backend.Services.Implementation
             _mapper = mapper;
             _paymentService = paymentService;
             _userAuthorizationService = userAuthorizationService;
+            _dateTimeHelper = dateTimeHelper;
         }
 
         public async Task UpdateBookingStatus(int bookingId, BookingStatus status, bool isResident)
@@ -112,13 +115,13 @@ namespace Wasla_Backend.Services.Implementation
             }
             photo = _fileUrlBuilderService.GetMediaUrl(photo, MediaType.userImage);
             Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
-    TargetId,
-    type,
-    booking.Id.ToString(),
-    photo,
-    "en",
-    null
-));
+                TargetId,
+                type,
+                booking.Id.ToString(),
+                photo,
+                "en",
+                null
+            ));
             if (booking.isPaymentOnline)
             { 
                 var entityTypeDto = new EntityTypeDto
@@ -133,22 +136,39 @@ namespace Wasla_Backend.Services.Implementation
         public async Task UpdateBooking(UpdateBookingDto updateBookingDto)
         {
             var booking = await _bookingRepository.GetByIdAsync(updateBookingDto.BookingId);
-
             if (booking == null)
                 throw new NotFoundException(LocalizationKey.BookingNotFound);
+
             await _userAuthorizationService.CheckOwnershipByIdAsync(booking.serviceProviderId);
 
             if (booking.bookingStatus == BookingStatus.completed)
                 throw new BadRequestException(LocalizationKey.BookingStatusIsAlreadyCompleted);
 
-            if (updateBookingDto.newDayOfWeek == WeekDayEnum.none ||
-               string.IsNullOrWhiteSpace(updateBookingDto.newStart) ||
-               string.IsNullOrWhiteSpace(updateBookingDto.newEnd))
+            if (updateBookingDto.newDayOfWeek == WeekDayEnum.none)
                 throw new BadRequestException(LocalizationKey.InvalidBookingUpdateDetails);
 
-            booking = _mapper.Map(updateBookingDto, booking);
+            if (updateBookingDto.newEnd <= updateBookingDto.newStart)
+                throw new BadRequestException(LocalizationKey.InvalidBookingUpdateDetails);
+
+            _mapper.Map(updateBookingDto, booking);
             _bookingRepository.Update(booking);
             await _bookingRepository.SaveChangesAsync();
+
+            var bookingDate = DateOnly.FromDateTime(booking.Date);
+            var endDate = booking.newEnd!.Value <= booking.newStart!.Value
+                ? bookingDate.AddDays(1)
+                : bookingDate;
+            var endDateTime = endDate.ToDateTime(booking.newEnd!.Value);
+
+            var delay = _dateTimeHelper.CalculateDelay(
+                DateOnly.FromDateTime(endDateTime),
+                TimeOnly.FromDateTime(endDateTime)
+            );
+
+            BackgroundJob.Schedule<HangfireFunctions>(
+                f => f.CompleteBookingAsync(booking.Id),
+                delay
+            );
 
             var bookhubdata = new BookHubData
             {
@@ -157,18 +177,20 @@ namespace Wasla_Backend.Services.Implementation
                 serviceProviderId = booking.serviceProviderId
             };
             await _hub.Clients.All.SendAsync("BookingUpdated", bookhubdata);
+
             var photo = _userRepository.GetUserPhoto(booking.serviceProviderId);
             photo = _fileUrlBuilderService.GetMediaUrl(photo, MediaType.userImage);
-            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
-              booking.ResidentId,
-              NotificationType.doctorEditBookingScreen,
-              booking.Id.ToString(),
-             photo,
-              "en",
-              null
-          ));
-        }
 
+            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
+                booking.ResidentId,
+                NotificationType.doctorEditBookingScreen,
+                booking.Id.ToString(),
+                photo,
+                "en",
+                null
+            ));
+        }
+        
         public async Task<List<ServiceBookingDetailsDto>> GetBookingDetailsForUserAsync(string userId, string language)
         {
             await _userAuthorizationService.CheckOwnershipByIdAsync(userId);
@@ -247,25 +269,28 @@ namespace Wasla_Backend.Services.Implementation
                 };
                 await _hub.Clients.All.SendAsync("ServiceDayBooked", bookhubdata);
 
-                var endString = booking.newEnd ?? booking.serviceDay.end;
+                var endTime = booking.newEnd ?? booking.serviceDay.end;
+                var startTime = booking.serviceDay.start;
 
-                if (TimeOnly.TryParse(endString, out var endTime))
-                {
-                    var endDateTime = booking.Date;
-                    if (endTime <= TimeOnly.Parse(booking.serviceDay.start))
-                        endDateTime = endDateTime.AddDays(1);
+                var bookingDate = DateOnly.FromDateTime(booking.Date);
+                var endDate = endTime <= startTime ? bookingDate.AddDays(1) : bookingDate;
+                var endDateTime = endDate.ToDateTime(endTime);
 
-                    BackgroundJob.Schedule<HangfireFunctions>(
-                        f => f.CompleteBookingAsync(booking.Id),
-                        endDateTime
-                    );
-                }
+                var delay = _dateTimeHelper.CalculateDelay(
+                    DateOnly.FromDateTime(endDateTime),
+                    TimeOnly.FromDateTime(endDateTime)
+                );
+
+                BackgroundJob.Schedule<HangfireFunctions>(
+                    f => f.CompleteBookingAsync(booking.Id),
+                    delay
+                );
 
                 var metadata = new Dictionary<string, string>
-{
-    { "UserName", user.FullName ?? "User" },
-    { "Date", dto.bookingDate.ToString() }
-};
+                {
+                    { "UserName", user.FullName ?? "User" },
+                    { "Date", dto.bookingDate.ToString() }
+                };
 
                 var image = _fileUrlBuilderService.GetMediaUrl(user.ProfilePhoto, MediaType.userImage);
 

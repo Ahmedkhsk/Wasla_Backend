@@ -41,13 +41,9 @@ namespace Wasla_Backend.Repositories.Implementation
                 .Select(b => new GetAllBookingResponse
                 {
                     bookingId = b.Id,
-                    date = b.Date.ToString(),
-                    start = !string.IsNullOrWhiteSpace(b.newStart)
-                            ? b.newStart
-                            : b.serviceDay.start,
-                    end = !string.IsNullOrWhiteSpace(b.newEnd)
-                            ? b.newEnd
-                            : b.serviceDay.end,
+                    date = b.Date,
+                    start = b.newStart ?? b.serviceDay.start,
+                    end = b.newEnd ?? b.serviceDay.end,
                     day = !(b.newDayOfWeek == WeekDayEnum.none)
                             ? b.newDayOfWeek
                             : b.serviceDay.dayOfWeek,
@@ -93,6 +89,7 @@ namespace Wasla_Backend.Repositories.Implementation
                     .ThenInclude(sd => sd.service)
                 .FirstOrDefaultAsync(b => b.Id == id);
         }
+        
         public async Task<Booking> GetBookingByServiceDayIdAsync(int serviceDayId)
         {
             return await _context.Booking
@@ -111,30 +108,19 @@ namespace Wasla_Backend.Repositories.Implementation
                 .Select(b => new ServiceBookingDetailsDto
                 {
                     id = b.Id,
-                    start = !string.IsNullOrWhiteSpace(b.newStart)
-                            ? b.newStart
-                            : b.serviceDay.start,
-                    end = !string.IsNullOrWhiteSpace(b.newEnd)
-                            ? b.newEnd
-                            : b.serviceDay.end,
-                    day = !(b.newDayOfWeek == WeekDayEnum.none)
-                            ? b.newDayOfWeek
-                            : b.serviceDay.dayOfWeek,
-                    date = b.Date.ToString(),
+                    start = b.newStart ?? b.serviceDay.start,
+                    end = b.newEnd ?? b.serviceDay.end,
+                    day = b.newDayOfWeek != WeekDayEnum.none ? b.newDayOfWeek : b.serviceDay.dayOfWeek,
+                    date = b.Date,
                     status = b.bookingStatus,
-
                     ServiceProviderName = b.serviceDay.service.ServiceProvider.FullName,
                     ServiceProviderProfilePhoto = b.serviceDay.service.ServiceProvider.ProfilePhoto,
-
                     ServiceName = language.ToLower() == "ar"
-                        ? b.serviceDay.service.serviceName.Arabic
-                        : b.serviceDay.service.serviceName.English,
-
+                    ? b.serviceDay.service.serviceName.Arabic
+                    : b.serviceDay.service.serviceName.English,
                     Price = b.price,
                     isPaid = b.IsPaid
-
-                })
-                .ToListAsync();
+                }).ToListAsync();
 
             return bookingDetails;
         }

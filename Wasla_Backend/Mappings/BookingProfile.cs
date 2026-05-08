@@ -2,10 +2,10 @@
 {
     public class BookingProfile : Profile
     {
-        public BookingProfile() 
+        public BookingProfile()
         {
             CreateMap<UpdateBookingDto, Booking>()
                 .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.bookingDate));
-        }    
+        }
     }
 }

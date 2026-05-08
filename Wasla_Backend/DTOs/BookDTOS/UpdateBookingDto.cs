@@ -4,8 +4,8 @@
     {
         public int BookingId { get; set; }
         public WeekDayEnum newDayOfWeek { get; set; }
-        public string newStart { get; set; }
-        public string newEnd { get; set; }
+        public TimeOnly newStart { get; set; }
+        public TimeOnly newEnd { get; set; }
         public DateTime bookingDate { get; set; }
     }
 }
