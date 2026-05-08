@@ -167,28 +167,7 @@ namespace Wasla_Backend.Repositories.Implementation
                 .ToListAsync();
         }
 
-        public async Task<List<CollectedPerYearDto>> GetCollectedPriceBookingsPerYear()
-        {
-            return await _context.Booking
-                .Where(b => b.bookingStatus == BookingStatus.completed)
-                .GroupBy(b => b.Date.Year)
-                .Select(yearGroup => new CollectedPerYearDto
-                {
-                    year = yearGroup.Key,
-                    months = yearGroup
-                        .GroupBy(b => b.Date.Month)
-                        .Select(monthGroup => new CollectedPerMonthDto
-                        {
-                            month = monthGroup.Key,
-                            amount = monthGroup.Sum(b => b.price)
-                        })
-                        .OrderBy(m => m.month)
-                        .ToList()
-                })
-                .OrderBy(y => y.year)
-                .ToListAsync();
-        }
-
+        
         public async Task<int> GetNumberOfPatientByDoctorId(string doctorId)
         {
             return await _context.Booking

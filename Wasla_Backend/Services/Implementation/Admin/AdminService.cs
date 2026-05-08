@@ -5,7 +5,7 @@ namespace Wasla_Backend.Services.Implementation
 
     public class AdminService : IAdminService
     {
-        private readonly IBookingRepository _bookingRepository;
+        private readonly IBaseBookingRepository _bookingRepository;
         private readonly IUserRepository _userRepository;
         private readonly IGenericRepository<ContactUs> _contatUsRepository;
         private readonly IRoleRepository _roleRepository;
@@ -14,7 +14,7 @@ namespace Wasla_Backend.Services.Implementation
         private readonly IOrderRepository _orderRepository;
 
         public AdminService(
-            IBookingRepository bookingRepository,
+            IBaseBookingRepository bookingRepository,
             IUserRepository userRepository,
             IGenericRepository<ContactUs> contatUsRepository,
             IRoleRepository roleRepository,
@@ -36,8 +36,8 @@ namespace Wasla_Backend.Services.Implementation
         {
             var countCompletedOrders = await _orderRepository.CountOrders(OrderStatus.Delivered);
             var countCanceledOrders = await _orderRepository.CountOrders(OrderStatus.Cancelled);
-            var countCompletedBookings = await _bookingRepository.CountBookings(BookingStatus.completed);
-            var countCanceledBookings = await _bookingRepository.CountBookings(BookingStatus.canceled);
+            var countCompletedBookings = await _bookingRepository.CountBookings(BaseBookingStatus.Done);
+            var countCanceledBookings = await _bookingRepository.CountBookings(BaseBookingStatus.Cancelled);
 
             var bookingsPerYear = await _bookingRepository.GetCollectedPriceBookingsPerYear();
             var ordersPerYear = await _orderRepository.GetCollectedPriceOrdersPerYear();

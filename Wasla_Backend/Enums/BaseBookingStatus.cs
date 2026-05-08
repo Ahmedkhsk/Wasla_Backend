@@ -2,9 +2,9 @@
 { 
     public enum BaseBookingStatus
     {
-    Pending,
-    Done,
-    Cancelled
+        Pending,
+        Done,
+        Cancelled
     }
 
 }
