@@ -21,7 +21,7 @@
             return Ok(ResponseHelper.Success(LocalizationKey.ReservationCreatedSuccessfully, lanDto.lan));
         }
 
-        [Authorize(Roles = "restaurant")]
+        [Authorize(Roles = "restaurant,resident")]
         [HttpPut("ChangeStatus")]
         public async Task<IActionResult> ChangeStatus([FromQuery] ChangeStatusOfReservationDto dto)
         {

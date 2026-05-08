@@ -184,6 +184,12 @@
 
             order.status = OrderStatus.Cancelled;
 
+
+            if (order.paymentStatus == PaymentStatus.Completed && order.paymentMethod == PaymentMethodType.CashCollection)
+            {
+                order.paymentStatus = PaymentStatus.Refunded;
+            }
+
             _orderRepo.Update(order);
             await _orderRepo.SaveChangesAsync();
 
@@ -214,6 +220,7 @@
 
                 await _paymentService.RefundPaymentAsync(entityTypeDto);
             }
+
 
             await _hub.Clients.Users(
                 order.residentId,

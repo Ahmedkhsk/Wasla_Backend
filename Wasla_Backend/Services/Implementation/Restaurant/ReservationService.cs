@@ -84,8 +84,6 @@
             if (reservation == null)
                 throw new NotFoundException(LocalizationKey.ReservationNotFound);
 
-            await _userAuthorizationService.CheckOwnershipByIdAsync(reservation.restaurantId);
-
             reservation.status = status;
         
             if (status == Status.Accepted)

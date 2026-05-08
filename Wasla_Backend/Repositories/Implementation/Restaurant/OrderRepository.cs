@@ -124,7 +124,7 @@ namespace Wasla_Backend.Repositories.Implementation
 
         public async Task<List<BookingData>> GetBookingPerUser(string residentId)
         {
-            return await _context.Orders.Where(o => o.residentId == residentId&&o.status==OrderStatus.Paid)
+            return await _context.Orders.Where(o => o.residentId == residentId&&o.status==OrderStatus.Delivered)
                 .Select(o => new BookingData
                 {
                     Date = o.createdAt,

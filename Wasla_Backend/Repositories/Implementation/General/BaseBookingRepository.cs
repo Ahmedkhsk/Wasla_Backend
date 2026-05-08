@@ -38,7 +38,7 @@ namespace Wasla_Backend.Repositories.Implementation.General
 
         public async Task<List<BookingData>> GetByResidentId(string residentId)
         {
-            return await _context.BaseBookings.Where(b => b.ResidentId == residentId&&b.IsPaid)
+            return await _context.BaseBookings.Where(b => b.ResidentId == residentId&&b.baseBookingStatus == BaseBookingStatus.Done)
                 .Select(b => new BookingData
                 {
               
