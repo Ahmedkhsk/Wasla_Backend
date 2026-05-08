@@ -9,14 +9,14 @@ namespace Wasla_Backend.Repositories.Implementation.General
 
         public async Task<int> CountBookings(BaseBookingStatus status)
         {
-            return await _context.Booking
+            return await _context.BaseBookings
                 .Where(b => b.baseBookingStatus == status)
                 .CountAsync();
         }
 
         public async Task<List<CollectedPerYearDto>> GetCollectedPriceBookingsPerYear()
         {
-            return await _context.Booking
+            return await _context.BaseBookings
                 .Where(b => b.baseBookingStatus == BaseBookingStatus.Done)
                 .GroupBy(b => b.Date.Year)
                 .Select(yearGroup => new CollectedPerYearDto
