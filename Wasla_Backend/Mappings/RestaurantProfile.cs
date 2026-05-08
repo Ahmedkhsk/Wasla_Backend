@@ -36,9 +36,15 @@
                 .ForMember(dest => dest.description, opt => opt.MapFrom(src => src.Description))
                 .ForMember(dest => dest.phoneNumber, opt => opt.MapFrom(src => src.Phone))
                 .ForMember(dest => dest.restaurantCategoryId, opt => opt.MapFrom(src => src.restaurantCategoryId))
-                .ForMember(dest => dest.restaurantCategoryName, opt => opt.MapFrom((src, dest, destMember, context) =>
-                    src.restaurantCategory.name.GetText(context.Items["lang"].ToString())
-                ))
+                .ForMember(dest => dest.restaurantCategoryName,
+                opt => opt.MapFrom((src, dest, destMember, context) =>
+                {
+                    var lang = context.Items.TryGetValue("lang", out var value)
+                        ? value?.ToString() ?? "en"
+                        : "en";
+
+                    return src.restaurantCategory?.name?.GetText(lang);
+                }))                
                 .ForMember(dest => dest.profile, opt => opt.Ignore())
                 .ForMember(dest => dest.gallery, opt => opt.Ignore());
         }
