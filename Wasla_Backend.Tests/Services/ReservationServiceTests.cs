@@ -46,7 +46,7 @@ namespace Wasla_Backend.Tests.Services
         [Test]
         public async Task AddReservation_ValidDto_AddsAndSaves()
         {
-            // Arrange
+             
             var dto = TestDataBuilder.BuildAddReservationDto();
             var restaurant = TestDataBuilder.BuildRestaurant(id: dto.restaurantId);
             var resident = TestDataBuilder.BuildResident(id: dto.userId);
@@ -58,10 +58,10 @@ namespace Wasla_Backend.Tests.Services
             _mocks.FileUrlBuilder.Setup(f => f.GetMediaUrl(It.IsAny<string>(), It.IsAny<MediaType>())).Returns("url/img.jpg");
             _mocks.DateTimeHelper.Setup(d => d.CalculateDelay(It.IsAny<DateOnly>(), It.IsAny<TimeOnly>())).Returns(TimeSpan.FromMinutes(10));
 
-            // Act
+             
             await _sut.AddReservatio(dto);
 
-            // Assert
+             
             _mocks.ReservationRepo.Verify(r => r.AddAsync(It.Is<Reservations>(res =>
                 res.userId == dto.userId &&
                 res.restaurantId == dto.restaurantId &&
@@ -74,31 +74,31 @@ namespace Wasla_Backend.Tests.Services
         [Test]
         public async Task AddReservation_RestaurantNotFound_ThrowsNotFoundException()
         {
-            // Arrange
+             
             var dto = TestDataBuilder.BuildAddReservationDto();
             _mocks.RestaurantRepo.Setup(r => r.GetByIdAsync(dto.restaurantId)).ReturnsAsync((Restaurant?)null);
 
-            // Act
+             
             var act = async () => await _sut.AddReservatio(dto);
 
-            // Assert
+             
             await act.Should().ThrowAsync<NotFoundException>();
         }
 
         [Test]
         public async Task AddReservation_ResidentNotFound_ThrowsNotFoundException()
         {
-            // Arrange
+             
             var dto = TestDataBuilder.BuildAddReservationDto();
             var restaurant = TestDataBuilder.BuildRestaurant(id: dto.restaurantId);
 
             _mocks.RestaurantRepo.Setup(r => r.GetByIdAsync(dto.restaurantId)).ReturnsAsync(restaurant);
             _mocks.ResidentRepo.Setup(r => r.GetByIdAsync(dto.userId)).ReturnsAsync((Resident?)null);
 
-            // Act
+             
             var act = async () => await _sut.AddReservatio(dto);
 
-            // Assert
+             
             await act.Should().ThrowAsync<NotFoundException>();
         }
 
@@ -109,7 +109,7 @@ namespace Wasla_Backend.Tests.Services
         [Test]
         public async Task ChangeStatus_ToPending_UpdatesStatusAndSaves()
         {
-            // Arrange
+             
             var reservation = TestDataBuilder.BuildReservation();
             reservation.restaurants = TestDataBuilder.BuildRestaurant();
             reservation.user = TestDataBuilder.BuildResident();
@@ -118,10 +118,10 @@ namespace Wasla_Backend.Tests.Services
             _mocks.ReservationRepo.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask);
             _mocks.FileUrlBuilder.Setup(f => f.GetMediaUrl(It.IsAny<string>(), It.IsAny<MediaType>())).Returns("url/img.jpg");
 
-            // Act
+             
             await _sut.ChangeStatus(reservation.id, Status.Canceled);
 
-            // Assert
+             
             reservation.status.Should().Be(Status.Canceled);
             _mocks.ReservationRepo.Verify(r => r.Update(reservation), Times.Once);
             _mocks.ReservationRepo.Verify(r => r.SaveChangesAsync(), Times.Once);
@@ -130,7 +130,7 @@ namespace Wasla_Backend.Tests.Services
         [Test]
         public async Task ChangeStatus_ToAccepted_GeneratesQrAndSaves()
         {
-            // Arrange
+             
             var reservation = TestDataBuilder.BuildReservation();
             reservation.restaurants = TestDataBuilder.BuildRestaurant();
             reservation.user = TestDataBuilder.BuildResident();
@@ -142,10 +142,10 @@ namespace Wasla_Backend.Tests.Services
             _mocks.FileService.Setup(f => f.AddFileAsync(It.IsAny<IFormFile>(), "path/qr")).ReturnsAsync(qrPath);
             _mocks.ReservationRepo.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask);
 
-            // Act
+             
             await _sut.ChangeStatus(reservation.id, Status.Accepted);
 
-            // Assert
+             
             reservation.status.Should().Be(Status.Accepted);
             reservation.QRCode.Should().Be(qrPath);
             _mocks.FileService.Verify(f => f.AddFileAsync(It.IsAny<IFormFile>(), "path/qr"), Times.Once);
@@ -154,13 +154,13 @@ namespace Wasla_Backend.Tests.Services
         [Test]
         public async Task ChangeStatus_ReservationNotFound_ThrowsNotFoundException()
         {
-            // Arrange
+             
             _mocks.ReservationRepo.Setup(r => r.GetWithResidentAndRestaurant(It.IsAny<int>())).ReturnsAsync((Reservations?)null);
 
-            // Act
+             
             var act = async () => await _sut.ChangeStatus(99, Status.Accepted);
 
-            // Assert
+             
             await act.Should().ThrowAsync<NotFoundException>();
         }
 
@@ -171,7 +171,7 @@ namespace Wasla_Backend.Tests.Services
         [Test]
         public async Task GetRestaurantReservations_ReturnsPagedMappedResult()
         {
-            // Arrange
+             
             var dto = new GetGeneralWithPaginationDto<string> { id = "rest-001", PageNumber = 1, PageSize = 10 };
             var resident = TestDataBuilder.BuildResident();
             var pagedData = new PagedResult<Reservations>
@@ -188,10 +188,10 @@ namespace Wasla_Backend.Tests.Services
             _mocks.ReservationRepo.Setup(r => r.GetRestaurantReservations(dto)).ReturnsAsync(pagedData);
             _mocks.FileUrlBuilder.Setup(f => f.GetMediaUrl(It.IsAny<string>(), MediaType.userImage)).Returns("url/photo.jpg");
 
-            // Act
+             
             var result = await _sut.GetRestaurantReservations(dto);
 
-            // Assert
+             
             Assert.That(result, Is.Not.Null);
             result.Data.Should().HaveCount(1);
             result.Data.First().profile.Should().Be("url/photo.jpg");
@@ -200,7 +200,7 @@ namespace Wasla_Backend.Tests.Services
         [Test]
         public async Task GetRestaurantReservations_EmptyList_ReturnsEmpty()
         {
-            // Arrange
+             
             var dto = new GetGeneralWithPaginationDto<string> { id = "rest-001", PageNumber = 1, PageSize = 10 };
             var pagedData = new PagedResult<Reservations>
             {
@@ -212,10 +212,10 @@ namespace Wasla_Backend.Tests.Services
 
             _mocks.ReservationRepo.Setup(r => r.GetRestaurantReservations(dto)).ReturnsAsync(pagedData);
 
-            // Act
+             
             var result = await _sut.GetRestaurantReservations(dto);
 
-            // Assert
+             
             result.Data.Should().BeEmpty();
             result.TotalCount.Should().Be(0);
         }
@@ -227,7 +227,7 @@ namespace Wasla_Backend.Tests.Services
         [Test]
         public async Task GetResidentReservations_ReturnsPagedMappedResult()
         {
-            // Arrange
+             
             var dto = new GetGeneralWithPaginationDto<string> { id = "res-001", PageNumber = 1, PageSize = 10 };
             var restaurant = TestDataBuilder.BuildRestaurant();
             var pagedData = new PagedResult<Reservations>
@@ -252,10 +252,10 @@ namespace Wasla_Backend.Tests.Services
             _mocks.FileUrlBuilder.Setup(f => f.GetMediaUrl(It.IsAny<string>(), MediaType.userImage)).Returns("url/photo.jpg");
             _mocks.FileUrlBuilder.Setup(f => f.GetMediaUrl(It.IsAny<string>(), MediaType.qrCode)).Returns("url/qr.png");
 
-            // Act
+             
             var result = await _sut.GetResidentReservations(dto);
 
-            // Assert
+             
             result.Data.Should().HaveCount(1);
             result.Data.First().restaurantProfile.Should().Be("url/photo.jpg");
             result.Data.First().QRCode.Should().Be("url/qr.png");

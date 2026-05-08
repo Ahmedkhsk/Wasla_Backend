@@ -206,7 +206,6 @@ namespace Wasla_Backend.Tests.Services
         [Test]
         public async Task GetItemsByRestaurant_ReturnsPaged()
         {
-            // Arrange
             var dto = new GetGeneralWithPaginationDto<string>
             {
                 lan = "en"

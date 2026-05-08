@@ -105,7 +105,7 @@ namespace Wasla_Backend.Tests.Services
         [Test]
         public async Task CompleteProfile_NoPhoto_NoGallery_DoesNotCallFileService()
         {
-            // 
+           
             var dto = TestDataBuilder.BuildCompleteProfileDto();
             var restaurant = TestDataBuilder.BuildRestaurant(email: dto.email);
             var category = TestDataBuilder.BuildCategory();

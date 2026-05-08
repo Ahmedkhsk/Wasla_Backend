@@ -31,9 +31,7 @@ using Wasla_Backend.Services.Interfaces.Driver;
 
 namespace Wasla_Backend.Tests.Helpers
 {
-    // ============================================================
-    //  MockFactory — كل الـ Mocks في مكان واحد
-    // ============================================================
+   
     public class MockFactory
     {
         public Mock<IRestaurantRepository> RestaurantRepo { get; } = new();
@@ -111,7 +109,6 @@ namespace Wasla_Backend.Tests.Helpers
             restaurantCategoryId = 1,
         };
 
-        // User — برضو child class
         public static Restaurant BuildUser(string? id = null, string? email = null) => new()
         {
             Id = id ?? "user-001",

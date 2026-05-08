@@ -32,9 +32,7 @@ namespace Wasla_Backend.Tests.Services
             );
         }
 
-        // ================================================================
-        //  AddCart
-        // ================================================================
+
         #region AddCart
 
         [Test]
@@ -67,7 +65,7 @@ namespace Wasla_Backend.Tests.Services
              
             var dto = new AddCartItem { residentId = "res-001", restaurantId = "rest-001", menuItemId = 1, quantity = 2 };
 
-            var menuItem = new MenuItem { id = 1, restaurantId = "rest-002", price = 50 }; // restaurant مختلف
+            var menuItem = new MenuItem { id = 1, restaurantId = "rest-002", price = 50 }; 
             var existingCart = new Cart { id = 1, residentId = "res-001", restaurantId = "rest-001" };
 
             _mocks.MenuItemRepo.Setup(r => r.GetByIdAsync(dto.menuItemId)).ReturnsAsync(menuItem);
@@ -168,9 +166,7 @@ namespace Wasla_Backend.Tests.Services
 
         #endregion
 
-        // ================================================================
-        //  RemoveCartItem
-        // ================================================================
+   
         #region RemoveCartItem
 
         [Test]
@@ -207,7 +203,7 @@ namespace Wasla_Backend.Tests.Services
         {
              
             var dto = new RemoveCartItemDto { cartItemId = 1, residentId = "wrong-res" };
-            var cart = new Cart { residentId = "res-001" }; // owner مختلف
+            var cart = new Cart { residentId = "res-001" }; 
             var item = new CartItem { id = 1, cart = cart };
 
             _mocks.CartItemRepo.Setup(r => r.GetCartItemAsync(dto.cartItemId)).ReturnsAsync(item);
@@ -220,9 +216,7 @@ namespace Wasla_Backend.Tests.Services
 
         #endregion
 
-        // ================================================================
-        //  UpdateQuantity
-        // ================================================================
+     
         #region UpdateQuantity
 
         [Test]
@@ -282,9 +276,7 @@ namespace Wasla_Backend.Tests.Services
 
         #endregion
 
-        // ================================================================
-        //  GetCartItems
-        // ================================================================
+      
         #region GetCartItems
 
         [Test]

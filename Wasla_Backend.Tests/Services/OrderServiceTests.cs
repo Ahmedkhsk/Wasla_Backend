@@ -28,7 +28,6 @@ namespace Wasla_Backend.Tests.Services
         private MockFactory _mocks;
         private OrderService _sut;
 
-        // ── SignalR mocks ──────────────────────────────────────────────
         private Mock<IClientProxy> _clientProxyMock;
         private Mock<IHubClients> _hubClientsMock;
         private Mock<IHubContext<OrderHub>> _hubContextMock;
@@ -38,31 +37,17 @@ namespace Wasla_Backend.Tests.Services
         {
             _mocks = new MockFactory();
 
-            // ── AutoMapper ────────────────────────────────────────────
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile<OrderProfile>();
             });
             var mapper = config.CreateMapper();
 
-            // ── Hangfire ──────────────────────────────────────────────
             GlobalConfiguration.Configuration.UseMemoryStorage();
             JobStorage.Current = new MemoryStorage();
 
-            // ── SignalR ───────────────────────────────────────────────
-            //
-            // The service calls:
-            //   _hub.Clients.Users(id1, id2).SendAsync("EventName", ...)
-            //
-            // Users(params string[]) is an EXTENSION METHOD on IHubClients.
-            // It iterates the ids and calls the real GroupManager internally,
-            // which returns a NEW IClientProxy — NOT whatever we return from
-            // Setup(c => c.User(...)). That's why the proxy was null.
-            //
-            // Fix: mock IHubClients.User(string) AND IHubClients.Group(string)
-            // so the extension method's internal plumbing always gets our proxy.
-            // Also mock IHubClients.All as a safety net.
-            //
+
+            
             _clientProxyMock = new Mock<IClientProxy>();
             _clientProxyMock
                 .Setup(x => x.SendCoreAsync(
@@ -73,14 +58,11 @@ namespace Wasla_Backend.Tests.Services
 
             _hubClientsMock = new Mock<IHubClients>();
 
-            // Users() extension resolves each id with User(id), then wraps
-            // the results in a MultipleClientProxy. We return the SAME proxy
-            // for every id so SendCoreAsync is always routed to our mock.
+           
             _hubClientsMock
                 .Setup(c => c.User(It.IsAny<string>()))
                 .Returns(_clientProxyMock.Object);
 
-            // Some SignalR internals also call Group() under the hood.
             _hubClientsMock
                 .Setup(c => c.Group(It.IsAny<string>()))
                 .Returns(_clientProxyMock.Object);
@@ -94,7 +76,6 @@ namespace Wasla_Backend.Tests.Services
                 .Setup(h => h.Clients)
                 .Returns(_hubClientsMock.Object);
 
-            // ── SUT ───────────────────────────────────────────────────
             _sut = new OrderService(
                 _mocks.CartRepo.Object,
                 _mocks.OrderRepo.Object,
@@ -110,9 +91,7 @@ namespace Wasla_Backend.Tests.Services
             );
         }
 
-        // ================================================================
-        //  Checkout
-        // ================================================================
+
         #region Checkout
 
         [Test]
@@ -201,7 +180,6 @@ namespace Wasla_Backend.Tests.Services
             var result = await _sut.Checkout(dto);
 
             Assert.That(result.paymentKey, Is.EqualTo("https://pay.com/checkout"));
-            // Cart should NOT be deleted while payment is still pending
             _mocks.CartRepo.Verify(r => r.Delete(It.IsAny<Cart>()), Times.Never);
         }
 
@@ -222,9 +200,9 @@ namespace Wasla_Backend.Tests.Services
                 items = new List<CartItem>
                 {
                     new() { id = 1, quantity = 2, price = 50,
-                            menuItem = new MenuItem { isDeleted = false } }, // 100
+                            menuItem = new MenuItem { isDeleted = false } }, 
                     new() { id = 2, quantity = 1, price = 30,
-                            menuItem = new MenuItem { isDeleted = false } }, //  30
+                            menuItem = new MenuItem { isDeleted = false } },
                 }
             };
 
@@ -249,15 +227,12 @@ namespace Wasla_Backend.Tests.Services
 
             await _sut.Checkout(dto);
 
-            // 100 + 30 + 20 (delivery fee) = 150
             Assert.That(capturedOrder.totalPrice, Is.EqualTo(150));
         }
 
         #endregion
 
-        // ================================================================
-        //  StartPreparingOrder
-        // ================================================================
+
         #region StartPreparingOrder
 
         [Test]
@@ -308,8 +283,6 @@ namespace Wasla_Backend.Tests.Services
             _mocks.OrderRepo.Verify(r => r.Update(order), Times.Once);
             _mocks.OrderRepo.Verify(r => r.SaveChangesAsync(), Times.Once);
 
-            // Users() calls User() once per id → 2 calls total, each routes to the
-            // same _clientProxyMock, so SendCoreAsync fires once per proxy instance.
             _clientProxyMock.Verify(x =>
                 x.SendCoreAsync(
                     It.IsAny<string>(),
@@ -320,9 +293,7 @@ namespace Wasla_Backend.Tests.Services
 
         #endregion
 
-        // ================================================================
-        //  MarkOrderDelivered
-        // ================================================================
+      
         #region MarkOrderDelivered
 
         [Test]
@@ -374,9 +345,7 @@ namespace Wasla_Backend.Tests.Services
 
         #endregion
 
-        // ================================================================
-        //  CancelOrder
-        // ================================================================
+       
         #region CancelOrder
 
         [Test]
@@ -467,9 +436,7 @@ namespace Wasla_Backend.Tests.Services
 
         #endregion
 
-        // ================================================================
-        //  OrdersRestaurant / OrdersResident
-        // ================================================================
+
         #region GetOrders
 
         [Test]
@@ -527,9 +494,6 @@ namespace Wasla_Backend.Tests.Services
 
         #endregion
 
-        // ================================================================
-        //  Private Helpers
-        // ================================================================
         private static Cart BuildValidCart(string residentId, string restaurantId) => new()
         {
             id = 1,
