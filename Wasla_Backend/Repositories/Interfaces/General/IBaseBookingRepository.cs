@@ -6,5 +6,7 @@
         public Task<List<CollectedPerYearDto>> GetCollectedPriceBookingsPerYear();
 
         public Task<List<BookingData>> GetByResidentId(string residentId);
+        public Task<bool> IsHasCompletedBooking(strin)
+        
     }
 }

@@ -126,7 +126,7 @@
             {
                 Hangfire.BackgroundJob.Schedule(
                 () => CheckPayment(filePath, gymBooking.Id, gym.BusinessName, gymPhotoUrl, lan),
-                TimeSpan.FromSeconds(100)
+                TimeSpan.FromMinutes(3)
             );
             }
 

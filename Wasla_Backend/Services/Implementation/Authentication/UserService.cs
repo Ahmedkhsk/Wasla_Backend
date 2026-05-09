@@ -75,7 +75,7 @@
             await _emailSender.SendEmailAsync(model.Email, "Verification Code", $"Your OTP is: <b>{verificationCode}</b>");
 
             string cacheKey = $"verify:{user.Id}";
-            _cacheManager.Set(cacheKey, verificationCode, TimeSpan.FromMinutes(1));
+            _cacheManager.Set(cacheKey, verificationCode, TimeSpan.FromMinutes(3));
 
             return IdentityResult.Success;
         }
@@ -192,7 +192,7 @@
             await _emailSender.SendEmailAsync(model.Email, "Verification Code", $"Your OTP is: <b>{verificationCode}</b>");
 
             string cacheKey = $"verify:{user.Id}";
-            _cacheManager.Set(cacheKey, verificationCode, TimeSpan.FromMinutes(1));
+            _cacheManager.Set(cacheKey, verificationCode, TimeSpan.FromMinutes(3));
             await _roleRepository.AddUserToRoleAsync(user, role.Name);
 
             return result;
