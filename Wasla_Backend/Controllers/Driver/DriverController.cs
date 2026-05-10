@@ -60,7 +60,7 @@ namespace Wasla_Backend.Controllers.Driver
 
         public async Task<IActionResult> GetDriverLocation(string driverId, string lan = "en")
         {
-            var location = _driverService.GetDriverLocation(driverId);
+            var location = await _driverService.GetDriverLocation(driverId);
             return Ok(ResponseHelper.Success(LocalizationKey.GetDriverLocationSuccess, lan, location));
         }
         [HttpGet("GetTopNearestDriver")]
