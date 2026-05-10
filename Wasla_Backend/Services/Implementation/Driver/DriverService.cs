@@ -202,7 +202,7 @@
         {
             await _userAuthorizationService.CheckOwnershipByIdAsync(trackingDriver.DriverId);
             var key = $"TrackingDriver_{trackingDriver.DriverId}";
-            _cacheManager.Set(key, trackingDriver, TimeSpan.FromMinutes(5));
+            _cacheManager.Set(key, trackingDriver, TimeSpan.FromMinutes(3));
             
         }
     }

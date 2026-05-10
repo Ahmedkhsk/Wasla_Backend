@@ -309,7 +309,7 @@ namespace Wasla_Backend.Services.Implementation
                 ));
                 if(booking.isPaymentOnline)
                 {
-                    Hangfire.BackgroundJob.Schedule(() => CheckPayment(booking.Id), TimeSpan.FromSeconds(110));
+                    Hangfire.BackgroundJob.Schedule(() => CheckPayment(booking.Id), TimeSpan.FromMinutes(3));
 
                 }
 
