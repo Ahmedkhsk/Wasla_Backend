@@ -25,9 +25,17 @@
         [HttpPut("ChangeStatus")]
         public async Task<IActionResult> ChangeStatus([FromQuery] ChangeStatusOfReservationDto dto)
         {
-            await _reservationService.ChangeStatus(dto.reservationId, dto.status);
+            await _reservationService.ChangeStatus(dto);
 
             return Ok(ResponseHelper.Success(LocalizationKey.ReservationStatusChangedSuccessfully, dto.lan));
+        }
+
+        [Authorize(Roles = "resident")]
+        [HttpPut("reservation")]
+        public async Task<IActionResult> EditReservation(UpdateReservationDto dto, [FromQuery] LanDto lanDto)
+        {
+            await _reservationService.UpdateReservation(dto);
+            return Ok(ResponseHelper.Success(LocalizationKey.ReservationUpdatedSuccessfully, lanDto.lan));
         }
 
         [Authorize(Roles = "restaurant")]

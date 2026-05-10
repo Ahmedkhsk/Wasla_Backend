@@ -400,6 +400,9 @@
 
         RestaurantNotFound,
         RestaurantCreatedSuccessfully,
+        CannotCancelReservation,
+        CannotEditReservation,
+        ReservationUpdatedSuccessfully,
         RestaurantUpdatedSuccessfully,
         RestaurantDeletedSuccessfully,
         RestaurantChartsRetrievedSuccessfully,

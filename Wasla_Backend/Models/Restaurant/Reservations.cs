@@ -5,6 +5,7 @@
         public int id { get; set; }
         public string userId { get; set; }
         public string restaurantId { get; set; }
+        public string jobId { get; set; }
         public int numberOfPersons { get; set; }
         public DateOnly reservationDate { get; set; }
         public TimeOnly reservationTime { get; set; }

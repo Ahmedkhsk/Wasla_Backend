@@ -277,6 +277,14 @@
             },
             new NotificationTemplate
             {
+            Type    = NotificationType.restaurantReservationUpdated,
+            TitleAr = "تم تعديل الحجز ✏️",
+            BodyAr  = "{UserName} قام بتعديل الحجز ليوم {Date} الساعة {Time} لعدد {Persons} أشخاص",
+            TitleEn = "Reservation Updated ✏️",
+            BodyEn  = "{UserName} updated the reservation for {Date} at {Time} for {Persons} persons"
+            },
+            new NotificationTemplate
+            {
                 Type    = NotificationType.restaurantReservationAccepted,
                 TitleAr = "تم قبول الحجز 🍽️",
                 BodyAr  = "تم تأكيد حجزك في {RestaurantName} يوم {Date}",

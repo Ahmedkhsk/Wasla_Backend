@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Services.Implementation
+﻿using Wasla_Backend.Models;
+
+namespace Wasla_Backend.Services.Implementation
 {
     public class ReservationService : IReservationService
     {
@@ -46,47 +48,59 @@
                 reservationDate = dto.reservationDate,
                 reservationTime = dto.reservationTime
             };
-            
+
+            var jobId = BackgroundJob.Schedule<HangfireFunctions>(
+               x => x.CheckReservationStatus(reservation.id),
+               _dateTimeHelper.CalculateDelay(reservation.reservationDate, reservation.reservationTime)
+            );
+
+            reservation.jobId = jobId;
+
             reservation.status = Status.Pending;
 
             await _reservationsRepository.AddAsync(reservation);
             await _reservationsRepository.SaveChangesAsync();
 
-            
-            BackgroundJob.Schedule<HangfireFunctions>(
-                x => x.CheckReservationStatus(reservation.id),
-                _dateTimeHelper.CalculateDelay(reservation.reservationDate, reservation.reservationTime)
-            );
 
             var metadata = new Dictionary<string, string>
-{
-                    { "UserName", resident.FullName ?? "User" },
-                    { "Date", dto.reservationDate.ToString() },
-                    { "Persons", dto.numberOfPersons.ToString() }
-                };
-                            var UserImage = _fileUrlBuilderService.GetMediaUrl(
-                                resident.ProfilePhoto,
-                                MediaType.userImage
-                            );
-                            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
-                    reservation.restaurantId,
-                    NotificationType.restaurantNewReservation,
-                    reservation.id.ToString(),
-                    UserImage,
-                    "en",
-                    metadata
-                ));
-                  }
+            {   
+                { "UserName", resident.FullName ?? "User" },
+                { "Date", dto.reservationDate.ToString() },
+                { "Persons", dto.numberOfPersons.ToString() }
+            };
 
-        public async Task ChangeStatus(int reservationId , Status status)
+            var UserImage = _fileUrlBuilderService.GetMediaUrl(
+                resident.ProfilePhoto,
+                MediaType.userImage
+            );
+           
+            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(x => x.sendNotification(
+                reservation.restaurantId,
+                NotificationType.restaurantNewReservation,
+                reservation.id.ToString(),
+                UserImage,
+                "en",
+                metadata
+           ));
+        }
+
+        public async Task ChangeStatus(ChangeStatusOfReservationDto dto)
         {
-            var reservation = await _reservationsRepository.GetWithResidentAndRestaurant(reservationId);
+            var reservation = await _reservationsRepository.GetWithResidentAndRestaurant(dto.reservationId);
             if (reservation == null)
                 throw new NotFoundException(LocalizationKey.ReservationNotFound);
 
-            reservation.status = status;
+            if (dto.isResident)
+                await _userAuthorizationService.CheckOwnershipByIdAsync(reservation.userId);
+            else
+                await _userAuthorizationService.CheckOwnershipByIdAsync(reservation.restaurantId);
+
+            if (dto.isResident && dto.status != Status.Canceled && reservation.status != Status.Pending) 
+                throw new BadRequestException(LocalizationKey.CannotCancelReservation);
+
+            reservation.status = dto.status;
         
-            if (status == Status.Accepted)
+            if (dto.status == Status.Accepted)
             {
                 var QrData = new
                 {
@@ -100,7 +114,7 @@
                       reservation.user.ProfilePhoto,
                       MediaType.userImage)
                 }; 
-              var QrCode= QRHelper.GenerateQRFile(QrData, fileName: $"Reservation_{reservation.id}.png");
+               var QrCode= QRHelper.GenerateQRFile(QrData, fileName: $"Reservation_{reservation.id}.png");
                reservation.QRCode= await _fileService.AddFileAsync(QrCode, _fileUrlBuilderService.GetPath(MediaType.qrCode));
                 _reservationsRepository.Update(reservation);
                 await _reservationsRepository.SaveChangesAsync();
@@ -120,7 +134,7 @@
                 Hangfire.BackgroundJob.Enqueue<NotificationFunction>( x => x.sendNotification(
                 reservation.userId,
                 NotificationType.restaurantReservationAccepted,
-               QrPath,
+                QrPath,
                 RestaurantImage,
                 "en",
                 metadata
@@ -128,6 +142,61 @@
             }
             _reservationsRepository.Update(reservation);
             await _reservationsRepository.SaveChangesAsync();
+        }
+
+        public async Task UpdateReservation(UpdateReservationDto dto)
+        {
+            var reservation = await _reservationsRepository.GetWithResidentAndRestaurant(dto.reservationId);
+            if (reservation == null) 
+                throw new NotFoundException(LocalizationKey.ReservationNotFound);
+
+            await _userAuthorizationService.CheckOwnershipByIdAsync(reservation.userId);
+
+            if (reservation.status != Status.Pending)
+                throw new BadRequestException(LocalizationKey.CannotEditReservation);
+
+            reservation.numberOfPersons = dto.numberOfPersons;
+            reservation.reservationTime = dto.reservationTime;
+            reservation.reservationDate = dto.reservationDate;
+
+            if (!string.IsNullOrEmpty(reservation.jobId))
+            {
+                BackgroundJob.Delete(reservation.jobId);
+            }
+
+            var jobId = BackgroundJob.Schedule<HangfireFunctions>(
+               x => x.CheckReservationStatus(reservation.id),
+               _dateTimeHelper.CalculateDelay(reservation.reservationDate, reservation.reservationTime)
+            );
+
+            reservation.jobId = jobId;
+
+            _reservationsRepository.Update(reservation);
+            await _reservationsRepository.SaveChangesAsync();
+
+            var userImage = _fileUrlBuilderService.GetMediaUrl(
+                reservation.user!.ProfilePhoto,
+                MediaType.userImage
+            );
+
+            var metadata = new Dictionary<string, string>
+            {
+                { "UserName", reservation.user.FullName ?? "User" },
+                { "Date", reservation.reservationDate.ToString("yyyy-MM-dd") },
+                { "Time", reservation.reservationTime.ToString() },
+                { "Persons", reservation.numberOfPersons.ToString() }
+            };
+
+            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(
+                x => x.sendNotification(
+                    reservation.restaurantId,
+                    NotificationType.restaurantReservationUpdated,
+                    reservation.id.ToString(),
+                    userImage,
+                    "en",
+                    metadata
+                )
+            );
         }
 
         public async Task<PagedResult<GetReservationsToRestaurantResponse>> GetRestaurantReservations(GetGeneralWithPaginationDto<string> dto)
