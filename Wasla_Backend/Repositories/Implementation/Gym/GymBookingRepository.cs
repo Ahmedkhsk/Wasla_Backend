@@ -100,7 +100,7 @@
         public async Task<List<UserPackageResponse>> UserPackageResponses(int serviceId)
         {
             return await _context.GymBooking
-                .Where(b => b.Service.Id == serviceId && b.BookingStatus != GymBookingStatus.Cancelled)
+                .Where(b => b.Service.Id == serviceId && b.BookingStatus == GymBookingStatus.Active)
                 .OrderByDescending(b => b.Date)
                 .Select(b => b.Resident)
                 .Distinct()

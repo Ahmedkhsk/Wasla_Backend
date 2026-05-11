@@ -61,6 +61,7 @@
 
                 menuItem.imageUrl = image;
             }
+
             _menuItemRepository.Update(menuItem);
             await _menuItemRepository.SaveChangesAsync();
         }
