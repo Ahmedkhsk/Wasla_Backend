@@ -7,13 +7,11 @@ namespace Wasla_Backend.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly Context _context;
         private readonly IConfiguration _configuration;
 
-        public AccountController(IUserService userService, Context context,IConfiguration configuration)
+        public AccountController(IUserService userService,IConfiguration configuration)
         {
             _userService = userService;
-            _context = context;
             _configuration = configuration;
         }
 
@@ -117,12 +115,6 @@ namespace Wasla_Backend.Controllers
             return Ok(ResponseHelper.Success(LocalizationKey.EmailVerified, lan, result));
         }
 
-        [HttpPost("approve-verify")]
-        public async Task<IActionResult> ApproveAndVerify([FromQuery] string gmail, string lan = "en")
-        {
-            await _userService.approveAndVerify(gmail);
-            return Ok();
-        }
 
         [HttpPost("check-mail-verification")]
         public async Task<IActionResult> CheckMailForVerification([FromBody] CheckMailDto model, string lan = "en")
@@ -190,11 +182,5 @@ namespace Wasla_Backend.Controllers
             return Ok(ResponseHelper.Success(LocalizationKey.UserLoggedOutSuccess, lan));
         }
 
-        [HttpPut("phone")]
-        public async Task<IActionResult> UpdatePhoneNumber(string gmail, string phone)
-        {
-         _context.Users.Where(u=>u.Email == gmail).ExecuteUpdate(s => s.SetProperty(u => u.PhoneNumber, phone));
-            return Ok();
-        }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Wasla_Backend.Helpers.Cashing
+﻿namespace Wasla_Backend.Helpers.Caching
 {
     public interface ICacheManager
     {

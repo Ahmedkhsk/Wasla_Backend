@@ -137,7 +137,7 @@ global using Wasla_Backend.Helpers.File;
 global using Wasla_Backend.Helpers.MlHelper;
 global using Wasla_Backend.Helpers.Resolvers;
 global using Wasla_Backend.Helpers.Time;
-global using Wasla_Backend.Helpers.Cashing;
+global using Wasla_Backend.Helpers.Caching; 
 global using Wasla_Backend.Helpers.NotificationHelper;
 global using Wasla_Backend.Helpers.Hangfire;
 global using Wasla_Backend.Helpers.MathHelper;

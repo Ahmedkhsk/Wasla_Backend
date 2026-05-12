@@ -15,6 +15,7 @@
         private readonly ICacheManager _cacheManager;
         private readonly IFileService _fileService;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
         public UserService(
             IUserFactory userFactory,
@@ -29,7 +30,8 @@
             IDateTimeHelper dateTimeHelper,
             ICacheManager cacheManager,
             IFileService fileService,
-            IFileUrlBuilderService fileUrlBuilderService
+            IFileUrlBuilderService fileUrlBuilderService,
+            IUserAuthorizationService userAuthorizationService
         )
         {
             _userFactory = userFactory;
@@ -45,6 +47,7 @@
             _cacheManager = cacheManager;
             _fileService = fileService;
             _fileUrlBuilderService = fileUrlBuilderService;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task<IdentityResult> VerifyEmailAsync(VerificationEmailDto model)
@@ -90,6 +93,7 @@
 
         public async Task<IdentityResult> ForgetPasswordAsync(ForgetPasswordDto model)
         {
+            await _userAuthorizationService.CheckOwnershipByEmailAsync(model.Email);
             var user = await _userRepository.GetUserByEmailAsync(model.Email);
             if (user == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
@@ -105,6 +109,7 @@
 
         public async Task<IdentityResult> ChangePasswordAsync(ChangePasswordDto model)
         {
+            await _userAuthorizationService.CheckOwnershipByEmailAsync(model.Email);
             var user = await _userRepository.GetUserByEmailAsync(model.Email);
             if (user == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
