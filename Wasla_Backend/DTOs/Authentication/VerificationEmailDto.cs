@@ -8,5 +8,6 @@
 
         [Required]
         public string VerificationCode { get; set; }
+        public VerificationType type { get; set; }
     }
 }

@@ -5,5 +5,6 @@
         [Required]
         [EmailAddress]
         public string Email { get; set; }
+        public VerificationType VerificationType {  get; set; }
     }
 }

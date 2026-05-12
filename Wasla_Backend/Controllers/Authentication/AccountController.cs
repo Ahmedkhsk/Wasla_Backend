@@ -86,6 +86,7 @@ namespace Wasla_Backend.Controllers
         }
 
         [HttpPost("change-password")]
+        [Authorize]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto model, string lan = "en")
         {
             if (!ModelState.IsValid)
@@ -132,6 +133,7 @@ namespace Wasla_Backend.Controllers
         }
 
         [HttpPost("forget-password")]
+
         public async Task<IActionResult> ForgetPassword([FromBody] ForgetPasswordDto model, string lan = "en")
         {
             if (!ModelState.IsValid)

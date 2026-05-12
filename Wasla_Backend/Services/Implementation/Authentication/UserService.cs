@@ -54,58 +54,85 @@
         {
             var user = await _userRepository.GetUserByEmailAsync(model.Email);
 
-            string cacheKey = $"verify:{user.Id}";
+            if (user == null)
+                throw new NotFoundException(LocalizationKey.UserNotFound);
+
+            string cacheKey = $"otp:{user.Id}:{model.type}";
+
             var cachedCode = _cacheManager.Get<string>(cacheKey);
 
-            if (string.IsNullOrEmpty(cachedCode) || cachedCode != model.VerificationCode)
+            if (string.IsNullOrEmpty(cachedCode) ||
+                cachedCode != model.VerificationCode)
                 throw new BadRequestException(LocalizationKey.InvalidOrExpiredCode);
 
             _cacheManager.Remove(cacheKey);
 
-            user.IsVerified = true;
-            var result = await _userRepository.UpdateUserAsync(user);
+            if (model.type == VerificationType.Registration)
+            {
+                user.IsVerified = true;
+                await _userRepository.UpdateUserAsync(user);
+            }
+            else if (model.type == VerificationType.ForgetPassword)
+            {
+                string resetKey = $"reset_verified:{user.Id}";
+                _cacheManager.Set(resetKey, true, TimeSpan.FromMinutes(5));
+            }
 
-            return result;
+            return IdentityResult.Success;
         }
 
         public async Task<IdentityResult> CheckMailForVerficatio(CheckMailDto model)
         {
             var user = await _userRepository.GetUserByEmailAsync(model.Email);
+
             if (user == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
 
-            string verificationCode = new Random().Next(1000, 9999).ToString();
-            await _emailSender.SendEmailAsync(model.Email, "Verification Code", $"Your OTP is: <b>{verificationCode}</b>");
+            string verificationCode = RandomNumberGenerator
+                .GetInt32(1000, 9999)
+                .ToString();
 
-            string cacheKey = $"verify:{user.Id}";
+            await _emailSender.SendEmailAsync(
+                model.Email,
+                "Verification Code",
+                $"Your OTP is: <b>{verificationCode}</b>");
+
+            string cacheKey = $"otp:{user.Id}:{model.VerificationType}";
+
             _cacheManager.Set(cacheKey, verificationCode, TimeSpan.FromMinutes(3));
 
             return IdentityResult.Success;
         }
 
-        public async Task approveAndVerify(string gmail)
-        {
-            var user = await _userRepository.GetUserByEmailAsync(gmail);
-            user.Status = UserStatus.Active;
-            user.IsVerified = true;
-            await _userManager.UpdateAsync(user);
-        }
+
 
         public async Task<IdentityResult> ForgetPasswordAsync(ForgetPasswordDto model)
         {
-            await _userAuthorizationService.CheckOwnershipByEmailAsync(model.Email);
             var user = await _userRepository.GetUserByEmailAsync(model.Email);
+
             if (user == null)
                 throw new NotFoundException(LocalizationKey.UserNotFound);
 
-            var result = await _userManager.RemovePasswordAsync(user);
+            string resetKey = $"reset_verified:{user.Id}";
+
+            var isVerified = _cacheManager.Get<bool>(resetKey);
+
+            if (!isVerified)
+                throw new BadRequestException(LocalizationKey.InvalidOrExpiredCode);
+
+            var result = await _userManager.ResetPasswordAsync(
+                user,
+                await _userManager.GeneratePasswordResetTokenAsync(user),
+                model.NewPassword);
+
             if (!result.Succeeded)
                 return result;
 
-            result = await _userManager.AddPasswordAsync(user, model.NewPassword);
+            _cacheManager.Remove(resetKey);
 
             return result;
         }
+
 
         public async Task<IdentityResult> ChangePasswordAsync(ChangePasswordDto model)
         {
@@ -250,23 +277,7 @@
             });
         }
 
-        public async Task Delete(string gmail)
-        {
-            var user = await _userRepository.GetUserByEmailAsync(gmail);
-            if (user == null)
-                throw new NotFoundException(LocalizationKey.UserNotFound);
 
-            var roles = await _userManager.GetRolesAsync(user);
-            if (roles.Any())
-                await _userManager.RemoveFromRolesAsync(user, roles);
-
-            var result = await _userManager.DeleteAsync(user);
-            if (!result.Succeeded)
-            {
-                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-                throw new Exception(errors);
-            }
-        }
 
         public async Task Logout()
         {
