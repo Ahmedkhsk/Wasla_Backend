@@ -168,12 +168,7 @@ namespace Wasla_Backend.Controllers
             return Ok(ResponseHelper.Success(LocalizationKey.GetAllUsersSuccess, lan, response));
         }
 
-        [HttpDelete("delete-user")]
-        public async Task<IActionResult> DeleteUser(string gmail, string lan = "en")
-        {
-            await _userService.Delete(gmail);
-            return Ok(ResponseHelper.Success(LocalizationKey.DeleteUserSuccess, lan));
-        }
+      
 
         [HttpPost("logout")]
         public async Task<IActionResult> Logout(string lan = "en")
