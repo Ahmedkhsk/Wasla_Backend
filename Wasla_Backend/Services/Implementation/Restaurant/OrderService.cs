@@ -47,7 +47,7 @@
             await _userAuthorizationService.CheckOwnershipByIdAsync(cart.residentId);
 
             var invalidItems = cart.items
-                .Where(x => x.menuItem.isDeleted)
+                .Where(x => x.menuItem.isDeleted || !x.menuItem.isAvailable)
                 .ToList();
 
             if (invalidItems.Any())
@@ -189,6 +189,7 @@
             {
                 order.paymentStatus = PaymentStatus.Refunded;
             }
+            
 
             _orderRepo.Update(order);
             await _orderRepo.SaveChangesAsync();
