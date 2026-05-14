@@ -300,8 +300,7 @@
 
         public async Task<List<AllNearestDriverDto>> RequestRide(RequestRideDto requestRideDto)
         {
-
-            var resident = await _residentRepository.GetByIdAsync(requestRideDto.PassengerId);
+                var resident = await _residentRepository.GetByIdAsync(requestRideDto.PassengerId);
             if (resident == null)
                 throw new NotFoundException(LocalizationKey.ResidentNotFound);
 

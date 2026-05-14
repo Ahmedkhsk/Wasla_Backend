@@ -22,7 +22,6 @@ namespace Wasla_Backend.Controllers.Driver
             return Ok(ResponseHelper.Success(LocalizationKey.DriverCompleteRegisterSuccess, lan));
         }
         [HttpGet("GetDriverProfileById")]
-        [Authorize(Roles = "driver")]
 
         public async Task<IActionResult> GetDriverProfileById(string id, string lan = "en")
         {
@@ -31,7 +30,6 @@ namespace Wasla_Backend.Controllers.Driver
         }
 
         [HttpPut("UpdateDriverProfile")]
-        [Authorize(Roles = "driver")]
 
         public async Task<IActionResult> UpdateDriverProfile([FromForm] UpdateDriverProfileDto dto, string lan = "en")
         {
@@ -40,7 +38,6 @@ namespace Wasla_Backend.Controllers.Driver
         }
 
         [HttpPut("ChangeStatus")]
-        [Authorize(Roles = "driver")]
 
         public async Task<IActionResult> ChangeStatus(string driverId, DriverStatus newStatus, string lan = "en")
         {
@@ -48,7 +45,6 @@ namespace Wasla_Backend.Controllers.Driver
             return Ok(ResponseHelper.Success(LocalizationKey.ChangeDriverStatusSuccess, lan));
         }
         [HttpPost("TrackingDriver")]
-        [Authorize(Roles = "driver")]
 
         public async Task<IActionResult> TrackingDriver(TrackingDriverDto trackingDriver, string lan = "en")
         {
@@ -56,7 +52,6 @@ namespace Wasla_Backend.Controllers.Driver
             return Ok(ResponseHelper.Success(LocalizationKey.TrackingDriverSuccess, lan));
         }
         [HttpGet("GetDriverLocation")]
-        [Authorize(Roles = "driver")]
 
         public async Task<IActionResult> GetDriverLocation(string driverId, string lan = "en")
         {
@@ -64,7 +59,6 @@ namespace Wasla_Backend.Controllers.Driver
             return Ok(ResponseHelper.Success(LocalizationKey.GetDriverLocationSuccess, lan, location));
         }
         [HttpGet("GetTopNearestDriver")]
-        [Authorize(Roles = "driver")]
 
         public async Task<IActionResult> GetTopNearestDriver(double latitude, double longitude,VehicleType vehicleType, string lan = "en")
         {

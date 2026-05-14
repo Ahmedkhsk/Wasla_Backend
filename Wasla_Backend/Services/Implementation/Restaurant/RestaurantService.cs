@@ -1,4 +1,6 @@
-﻿namespace Wasla_Backend.Services.Implementation
+﻿using Wasla_Backend.Models.Restaurant;
+
+namespace Wasla_Backend.Services.Implementation
 {
     public class RestaurantService : IRestaurantService
     {
@@ -146,6 +148,7 @@
             });
 
             mapped.numberOfCompletedOrders = numberofOrders;
+            mapped.isAvailable = restaurant.isOnline;
             mapped.profile = _fileUrlBuilderService.GetMediaUrl(
                 restaurant.ProfilePhoto,
                 MediaType.userImage
@@ -174,6 +177,18 @@
                 totalAmount = (decimal)await _orderRepository.TotalAmountOfOrders(user.Id),
                 years = await _orderRepository.GetCollectedPriceByYear(user.Id)
             };
+        }
+
+        public async Task ChangeStatus(string restaurantId, bool available)
+        {
+            await _userAuthorizationService.CheckOwnershipByIdAsync(restaurantId);
+            var restaurant = await _restaurantRepository.GetByUserIdAsync(restaurantId);
+
+            if (restaurant == null)
+                throw new NotFoundException(LocalizationKey.RestaurantNotFound);
+            restaurant.isOnline=available;
+            await _restaurantRepository.SaveChangesAsync();
+
         }
     }
 }

@@ -7,14 +7,12 @@
         private readonly ICacheManager _cacheManager;
         private readonly IFileService _fileService;
         private readonly IFileUrlBuilderService _fileUrlBuilderService;
-        private readonly IUserAuthorizationService _userAuthorizationService;
         public DriverService(
             IDriverRepository driverRepository,
             IMapper mapper,
             ICacheManager cacheManager,
             IFileService fileService,
-            IFileUrlBuilderService fileUrlBuilderService,
-            IUserAuthorizationService userAuthorizationService
+            IFileUrlBuilderService fileUrlBuilderService
         )
         {
             _driverRepository = driverRepository;
@@ -22,12 +20,10 @@
             _cacheManager = cacheManager;
             _fileService = fileService;
             _fileUrlBuilderService = fileUrlBuilderService;
-            _userAuthorizationService = userAuthorizationService;
         }
 
         public async Task ChangeStatus(string driverId, DriverStatus newStatus)
         {
-            await _userAuthorizationService.CheckOwnershipByIdAsync(driverId);
             var affectedRows = await _driverRepository.ChangeStatus(driverId, newStatus);
             if (affectedRows == 0)
                 throw new NotFoundException(LocalizationKey.DriverNotFound);
@@ -83,7 +79,6 @@
 
         public async Task UpdateDriverProfile(UpdateDriverProfileDto dto)
         {
-            await _userAuthorizationService.CheckOwnershipByIdAsync(dto.Id);
             var driver =await _driverRepository.GetByIdAsync(dto.Id);
 
             if (driver == null)
@@ -128,7 +123,6 @@
 
         public async Task<LocationDto> GetDriverLocation(string driverId)
         {
-            await _userAuthorizationService.CheckOwnershipByIdAsync(driverId);
             var key = $"TrackingDriver_{driverId}";
             var location = _cacheManager.Get<TrackingDriverDto>(key);
             if (location == null)
@@ -143,7 +137,6 @@
 
         public async Task<DriverProfileDTO> GetDriverProfileByIdAsync(string id)
         {
-            await _userAuthorizationService.CheckOwnershipByIdAsync(id);
             var driver = await _driverRepository.GetByIdAsync(id);
             if (driver == null)
                 throw new NotFoundException(LocalizationKey.DriverNotFound);
@@ -201,9 +194,8 @@
 
         public async Task TrackingDriver(TrackingDriverDto trackingDriver)
         {
-            await _userAuthorizationService.CheckOwnershipByIdAsync(trackingDriver.DriverId);
             var key = $"TrackingDriver_{trackingDriver.DriverId}";
-            _cacheManager.Set(key, trackingDriver, TimeSpan.FromMinutes(3));
+            _cacheManager.Set(key, trackingDriver, TimeSpan.FromMinutes(30));
             
         }
     }

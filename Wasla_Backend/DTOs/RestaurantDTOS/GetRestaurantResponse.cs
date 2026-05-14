@@ -13,5 +13,6 @@
         public string restaurantCategoryName { get; set; }
         public string? profile { get; set; }
         public List<string>? gallery { get; set; }
+        public bool isAvailable { get; set; }
     }
 }
