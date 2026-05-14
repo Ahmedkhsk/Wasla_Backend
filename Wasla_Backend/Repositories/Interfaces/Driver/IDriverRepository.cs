@@ -8,5 +8,7 @@ namespace Wasla_Backend.Repositories.Interfaces.Driver
         public Task<DriverProfileDTO> GetDriverProfileByIdAsync(string id);
         public Task<int> ChangeStatus(string driverId, DriverStatus newStatus);
         public Task<List<string>> GetAllOnlineDriversIds(VehicleType vehicleType);
+        public Task<List<AllNearestDriverDto>> GetDriversByIds(List<string> ids);
+
     }
 }

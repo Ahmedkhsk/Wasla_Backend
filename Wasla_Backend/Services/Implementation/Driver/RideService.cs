@@ -139,17 +139,27 @@
 
         public async Task CheckRideAcceptance(int rideId)
         {
-            var ride=await _rideRepository.GetByIdAsync(rideId);
-            if (ride == null)
-                throw new NotFoundException(LocalizationKey.RideNotFound);
-            if(ride.DriverId ==null)
-            {
-                ride.Status = RideStatus.Cancelled;
-                ride.baseBookingStatus = BaseBookingStatus.Cancelled;
-                _rideRepository.Update(ride);
-                await _rideRepository.SaveChangesAsync();
-            }
+            var ride = await _rideRepository.GetByIdAsync(rideId);
+            if (ride == null || ride.Status != RideStatus.Pending)
+                return;
+            ride.baseBookingStatus = BaseBookingStatus.Cancelled;
+            
+            await _rideRepository.UpdateRideStatusAsync(rideId, RideStatus.Rejected, null);
+            await _rideRepository.SaveChangesAsync();
 
+            var target = string.Concat(ride.Id, " , ", ride.DriverId);
+
+            BackgroundJob.Enqueue<NotificationFunction>(
+                x => x.sendNotification(
+                    ride.ResidentId,
+                    NotificationType.rideRejected,
+                    target,
+                    null,
+                    "en",
+                    null
+                ));
+
+            await _hub.Clients.User(ride.ResidentId).SendAsync("RideRejected", ride.Id);
         }
 
         public async Task<int> CompleteRide(int rideId, string lan)
@@ -288,9 +298,9 @@
             return await _rideRepository.GetUserRides(residentId);
         }
 
-        public async Task<int> RequestRide(RequestRideDto requestRideDto, string lan)
+        public async Task<List<AllNearestDriverDto>> RequestRide(RequestRideDto requestRideDto)
         {
-            await _userAuthorizationService.CheckOwnershipByIdAsync(requestRideDto.PassengerId);
+
             var resident = await _residentRepository.GetByIdAsync(requestRideDto.PassengerId);
             if (resident == null)
                 throw new NotFoundException(LocalizationKey.ResidentNotFound);
@@ -308,20 +318,67 @@
                 VehicleType = requestRideDto.VehicleType
             });
 
+            var onlineDrivers = await _driverService.GetTopNearestDriver(
+                requestRideDto.PickupLatitude,
+                requestRideDto.PickupLongitude,
+                requestRideDto.VehicleType
+            );
+
+            onlineDrivers.ForEach(d => d.Price = CalculatePriceByRating(estimateResult.EstimatedPrice, d.Rate));
+            onlineDrivers.ForEach(d => d.Photo = _fileUrlBuilderService.GetMediaUrl(d.Photo, MediaType.userImage));
+
+            return onlineDrivers;
+        }
+
+        private double CalculatePriceByRating(double basePrice, double rating)
+        {
+            var multiplier = 1 + (rating - 3) * 0.1;
+            return Math.Round(basePrice * multiplier, 2);
+        }
+        public async Task<int> ChooseDriver(ChooseDriverDto chooseDriverDto, string lan)
+        {
+
+            var resident = await _residentRepository.GetByIdAsync(chooseDriverDto.PassengerId);
+            if (resident == null)
+                throw new NotFoundException(LocalizationKey.ResidentNotFound);
+
+            var hasActiveRide = await _rideRepository.IsHasActiveRide(chooseDriverDto.PassengerId);
+            if (hasActiveRide)
+                throw new BadRequestException(LocalizationKey.ResidentHasActiveRide);
+
+            var driver = await _driverRepository.GetByIdAsync(chooseDriverDto.DriverId);
+            if (driver == null)
+                throw new NotFoundException(LocalizationKey.DriverNotFound);
+
+            if (driver.DriverStatus == DriverStatus.OnTrip)
+                throw new BadRequestException(LocalizationKey.DriverOnTrip);
+
+            var estimateResult = EstimateRide(new CalculateRideDto
+            {
+                PickupLatitude = chooseDriverDto.PickupLatitude,
+                PickupLongitude = chooseDriverDto.PickupLongitude,
+                DropoffLatitude = chooseDriverDto.DropoffLatitude,
+                DropoffLongitude = chooseDriverDto.DropoffLongitude,
+                VehicleType = chooseDriverDto.VehicleType
+            });
+
+            var price = CalculatePriceByRating(estimateResult.EstimatedPrice, driver.Rating);
+
             var ride = new RideModel
             {
-                ResidentId = requestRideDto.PassengerId,
-                PickupLatitude = requestRideDto.PickupLatitude,
-                PickupLongitude = requestRideDto.PickupLongitude,
-                DropoffLatitude = requestRideDto.DropoffLatitude,
-                DropoffLongitude = requestRideDto.DropoffLongitude,
+                ResidentId = chooseDriverDto.PassengerId,
+                DriverId = chooseDriverDto.DriverId,
+                PickupLatitude = chooseDriverDto.PickupLatitude,
+                PickupLongitude = chooseDriverDto.PickupLongitude,
+                DropoffLatitude = chooseDriverDto.DropoffLatitude,
+                DropoffLongitude = chooseDriverDto.DropoffLongitude,
                 Date = _dateTimeHelper.Now,
                 Status = RideStatus.Pending,
-                price = estimateResult.EstimatedPrice,
+                price = price,
                 Distance = estimateResult.Distance,
                 ServiceProviderType = ServiceProviderType.Driver,
-                PickUpPlace = requestRideDto.PickUpPlace,
-                DropOffPlace = requestRideDto.DropOffPlace
+                PickUpPlace = chooseDriverDto.PickUpPlace,
+                DropOffPlace = chooseDriverDto.DropOffPlace
             };
 
             await _rideRepository.AddAsync(ride);
@@ -329,34 +386,63 @@
 
             var residentPhotoUrl = _fileUrlBuilderService.GetMediaUrl(resident.ProfilePhoto, MediaType.userImage);
 
-            var onlineDrivers = await _driverService.GetTopNearestDriver(
-                requestRideDto.PickupLatitude,
-                requestRideDto.PickupLongitude,
-                requestRideDto.VehicleType
-            );
+            var metadata = new Dictionary<string, string>
+    {
+        { "Distance", ride.Distance.ToString("0.0") },
+        { "Price", ride.price.ToString("0.0") }
+    };
 
-            foreach (var driverId in onlineDrivers)
-            {
-                var metadata = new Dictionary<string, string>
-                {
-                    { "Distance", ride.Distance.ToString("0.0") },
-                    { "Price", ride.price.ToString("0.0") }
-                };
+            Hangfire.BackgroundJob.Enqueue<NotificationFunction>(
+                x => x.sendNotification(
+                    chooseDriverDto.DriverId,
+                    NotificationType.newRideRequest,
+                    ride.Id.ToString(),
+                    residentPhotoUrl,
+                    lan,
+                    metadata
+                ));
 
-                Hangfire.BackgroundJob.Enqueue<NotificationFunction>(
-                    x => x.sendNotification(
-                        driverId,
-                        NotificationType.newRideRequest,
-                        ride.Id.ToString(),
-                        residentPhotoUrl,
-                        lan,
-                        metadata
-                    ));
-            }
             Hangfire.BackgroundJob.Schedule<DriverFunctions>(
                 x => x.CheckRideAcceptance(ride.Id),
-                TimeSpan.FromMinutes(4)
+                TimeSpan.FromMinutes(2)
             );
+
+            return ride.Id;
+        }
+        public async Task<int> RejectRide(int rideId, string driverId, string lan)
+        {
+
+            var ride = await _rideRepository.GetByIdAsync(rideId);
+            if (ride == null)
+                throw new NotFoundException(LocalizationKey.RideNotFound);
+
+            if (ride.DriverId != driverId)
+                throw new BadRequestException(LocalizationKey.Unauthorized);
+
+            if (ride.Status != RideStatus.Pending)
+                throw new BadRequestException(LocalizationKey.RideNotAvailable);
+
+            await _rideRepository.UpdateRideStatusAsync(rideId, RideStatus.Rejected, null);
+            var target = string.Concat(ride.Id, " , ", ride.DriverId);
+            var driver = await _driverRepository.GetByIdAsync(ride.DriverId);
+
+            var metadata = new Dictionary<string, string>
+    {
+        { "DriverName", driver?.FullName ?? "" }
+    };
+            driver.ProfilePhoto = _fileUrlBuilderService.GetMediaUrl(driver.ProfilePhoto, MediaType.userImage);
+
+            BackgroundJob.Enqueue<NotificationFunction>(
+                x => x.sendNotification(
+                    ride.ResidentId,
+                    NotificationType.rideRejected,
+                   target,
+                    driver.ProfilePhoto,
+                    lan,
+                    metadata
+                ));
+
+            await _hub.Clients.User(ride.ResidentId).SendAsync("RideRejected", target);
 
             return ride.Id;
         }

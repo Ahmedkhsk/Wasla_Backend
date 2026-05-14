@@ -165,37 +165,38 @@
             return response;
         }
 
-        public async Task<List<string>> GetTopNearestDriver(double latitude, double longitude, VehicleType vehicleType)
+        public async Task<List<AllNearestDriverDto>> GetTopNearestDriver(double latitude, double longitude, VehicleType vehicleType)
         {
             var onlineDriversIds = await _driverRepository.GetAllOnlineDriversIds(vehicleType);
-
             var queue = new PriorityQueue<string, double>();
 
             foreach (var driverId in onlineDriversIds)
             {
                 var key = $"TrackingDriver_{driverId}";
                 var location = _cacheManager.Get<TrackingDriverDto>(key);
-
                 if (location == null)
                     continue;
 
                 var distance = GeoHelper.CalculateDistance(
-                    latitude,
-                    longitude,
-                    location.Latitude,
-                    location.Longitude);
+                    latitude, longitude,
+                    location.Latitude, location.Longitude);
 
                 queue.Enqueue(driverId, -distance);
-
                 if (queue.Count > 5)
                     queue.Dequeue();
             }
 
-            return queue.UnorderedItems
+            var nearestDrivers = queue.UnorderedItems
                 .Select(x => (DriverId: x.Element, Distance: -x.Priority))
                 .OrderBy(d => d.Distance)
-                .Select(d => d.DriverId)
                 .ToList();
+
+            var ids = nearestDrivers.Select(d => d.DriverId).ToList();
+
+            var driversData = await _driverRepository.GetDriversByIds(ids);
+            driversData.ForEach(d => d.Photo = _fileUrlBuilderService.GetMediaUrl(d.Photo, MediaType.userImage));
+            return driversData;
+        
         }
 
         public async Task TrackingDriver(TrackingDriverDto trackingDriver)

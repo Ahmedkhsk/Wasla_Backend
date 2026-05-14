@@ -61,6 +61,20 @@ namespace Wasla_Backend.Repositories.Implementation.Drivers
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<List<AllNearestDriverDto>> GetDriversByIds(List<string> ids)
+        {
+            return await _context.Drivers
+                .Where(d => ids.Contains(d.Id))
+                .OrderByDescending(d => d.Rating)
+                .Select(d => new AllNearestDriverDto
+                {
+                    Id = d.Id,
+                    Name = d.FullName,
+                    Photo = d.ProfilePhoto,
+                    Rate = d.Rating
+                })
+                .ToListAsync();
+        }
         public Task<bool> IsExistByVehicleNumberAsync(string vehicleNumber)
         {
             return _context.Drivers.AnyAsync(d => d.VehicleNumber == vehicleNumber);

@@ -34,6 +34,7 @@
         orderStartedPreparing,
         SocialHidden,
         orderCancelled,
-        restaurantReservationUpdated
+        restaurantReservationUpdated,
+        rideRejected
     }
 }

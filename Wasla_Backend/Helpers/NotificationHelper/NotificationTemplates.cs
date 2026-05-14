@@ -135,6 +135,14 @@
                 TitleEn = "Ride Cancelled ❌",
                 BodyEn  = "{UserName} cancelled the ride"
             },
+            new NotificationTemplate
+            {
+                Type    = NotificationType.rideRejected,
+                TitleAr = "تم رفض الرحلة ❌",
+                BodyAr  = "السائق {DriverName} رفض طلب رحلتك",
+                TitleEn = "Ride Rejected ❌",
+                BodyEn  = "Driver {DriverName} rejected your ride request"
+            },
 
             #endregion
 

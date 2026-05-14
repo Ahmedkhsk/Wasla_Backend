@@ -6,7 +6,8 @@
         Accepted,
         InProgress,
         Completed,
-        Cancelled
+        Cancelled,
+        Rejected
 
     }
 }
